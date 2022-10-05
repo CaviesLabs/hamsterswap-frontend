@@ -1,0 +1,51 @@
+{
+  "name": "nextjs-starter",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "eslint-check": "eslint --print-config path/to/main.js | eslint-config-prettier-check",
+    "format": "prettier --write ./**/*.ts{,x}",
+    "lint": "tsc --noEmit && eslint \"**/*.ts\" \"**/*.tsx\" --fix",
+    "pre-commit": "npm run lint",
+    "prepare": "husky install",
+    "dev:prod-env": "APP_ENV=prod next dev",
+    "build:prod-env": "APP_ENV=prod next build",
+    "dev:dev-env": "APP_ENV=dev next dev",
+    "build:dev-env": "APP_ENV=dev next build"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.8.0",
+    "axios": "^1.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.13.2",
+    "dotenv": "^16.0.3",
+    "husky": "^8.0.1",
+    "next": "12.1.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-redux": "^7.2.6",
+    "redux": "^4.1.2",
+    "redux-saga": "^1.1.3"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.21",
+    "@types/react": "17.0.40",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
+    "autoprefixer": "^10.4.2",
+    "eslint": "8.10.0",
+    "eslint-config-next": "12.1.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.30.1",
+    "husky": "^8.0.0",
+    "postcss": "^8.4.8",
+    "prettier": "^2.7.1",
+    "sass": "^1.49.9",
+    "tailwindcss": "^3.0.23",
+    "typescript": "4.6.2"
+  }
+}
