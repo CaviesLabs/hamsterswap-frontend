@@ -8,6 +8,7 @@ const withPWA = require("next-pwa")({
 
 /** @type {import('next').NextConfig} */
 module.exports = withPWA({
+  source: "/",
   reactStrictMode: true,
   env: {
     HOST_URL: process.env.HOST_URL,
@@ -19,6 +20,10 @@ module.exports = withPWA({
         source: "/api/:path*",
         destination: `${process.env.API_URL}/api/:path*`,
       },
+      // {
+      //   source: "/",
+      //   destination: "/dashboard",
+      // },
     ];
   },
 });
