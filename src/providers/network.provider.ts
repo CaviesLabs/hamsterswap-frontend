@@ -87,3 +87,5 @@ export class NetworkProvider {
     return this.request<RequestResponse>(url, options);
   }
 }
+
+export const networkProvider = new NetworkProvider();

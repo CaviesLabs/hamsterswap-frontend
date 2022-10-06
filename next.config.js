@@ -1,7 +1,13 @@
 require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
+const withPWA = require("next-pwa")({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === "dev",
+});
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = withPWA({
   reactStrictMode: true,
   env: {
     HOST_URL: process.env.HOST_URL,
@@ -15,6 +21,4 @@ const nextConfig = {
       },
     ];
   },
-};
-
-module.exports = nextConfig;
+});

@@ -8,7 +8,7 @@ import { CallBackSaga } from "@/src/redux/entities";
  * @description
  * Fetch user profile with credential
  */
-export const getUser = (callback: CallBackSaga<UserEntity>) => ({
+export const getUser = (callback?: CallBackSaga<UserEntity>) => ({
   type: GET_USER_PROFILE,
   callback,
 });

@@ -14,11 +14,13 @@ export function* getUserProfile({
 }: SagaPayload<unknown, UserEntity>) {
   try {
     const profile: UserEntity = yield call(userService.getUser);
+    console.log(profile);
 
     yield put(setUser(profile));
 
     callback && callback(profile);
-  } catch {
+  } catch (err) {
+    console.error(err);
     callback && callback(null);
   }
 }

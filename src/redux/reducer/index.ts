@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import userReducer from "./user";
-import State from "@/src/redux/entities/interfaces/state";
+import State from "@/src/redux/entities/state";
 
 const reducer = combineReducers<State>({
   user: userReducer,

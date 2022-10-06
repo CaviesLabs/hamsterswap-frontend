@@ -1,9 +1,9 @@
-import { NetworkProvider } from "@/src/providers/network.provider";
+import { networkProvider } from "@/src/providers/network.provider";
 import { UserEntity } from "@/src/entities/user.entity";
 
-export class UserService extends NetworkProvider {
-  public async getUser(): Promise<UserEntity> {
-    return this.request<UserEntity>("/user/get-profile", {});
+export class UserService {
+  async getUser(): Promise<UserEntity> {
+    return networkProvider.request<UserEntity>("/user/get-profile", {});
   }
 }
 

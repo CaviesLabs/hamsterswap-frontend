@@ -11,10 +11,10 @@
     "lint": "tsc --noEmit && eslint \"**/*.ts\" \"**/*.tsx\" --fix",
     "pre-commit": "npm run lint",
     "prepare": "husky install",
-    "dev:prod-env": "APP_ENV=prod next dev",
-    "build:prod-env": "APP_ENV=prod next build",
-    "dev:dev-env": "APP_ENV=dev next dev",
-    "build:dev-env": "APP_ENV=dev next build"
+    "dev:prod-env": "NODE_ENV=prod next dev",
+    "dev:dev-env": "NODE_ENV=dev next dev",
+    "build:prod-env": "NODE_ENV=prod next build",
+    "build:dev-env": "NODE_ENV=dev next build"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.0",
@@ -24,6 +24,7 @@
     "dotenv": "^16.0.3",
     "husky": "^8.0.1",
     "next": "12.1.0",
+    "next-pwa": "^5.6.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-redux": "^7.2.6",

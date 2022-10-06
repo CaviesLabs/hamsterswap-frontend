@@ -126,7 +126,7 @@ export const SeoComponent: FC = () => {
         href="https://cavies.xyz/favicon.ico"
         type="image/x-icon"
       />
-      <link rel="manifest" href="https://cavies.xyz/manifest.json" />
+      <link rel="manifest" href="/manifest.json" />
       <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
