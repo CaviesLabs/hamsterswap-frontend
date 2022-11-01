@@ -1,8 +1,10 @@
+import { FC } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import styles from "@/styles/Home.module.css";
+import { DashboardPageProvider } from "@/src/hooks/pages/dashboard";
 
-const Home: NextPage = () => {
+const Layout: FC = () => {
   return (
     <MainLayout>
       <div className={styles.container}>
@@ -11,6 +13,14 @@ const Home: NextPage = () => {
         </h1>
       </div>
     </MainLayout>
+  );
+};
+
+const Home: NextPage = () => {
+  return (
+    <DashboardPageProvider>
+      <Layout />
+    </DashboardPageProvider>
   );
 };
 
