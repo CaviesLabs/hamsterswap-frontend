@@ -1,0 +1,162 @@
+$cubic: cubic-bezier(0.4, 0.01, 0.165, 0.99);
+
+.toggle-button {
+  float: right;
+  padding: 9px 10px;
+  height: 20px;
+  width: 40px;
+  padding-top: 0;
+  cursor: pointer;
+  z-index: 6;
+  padding-right: 0;
+  z-index: 77;
+
+  .bar {
+    display: block;
+    width: 100%;
+    height: 2px;
+    border: 0;
+    -webkit-transition: all .35s ease;
+    transition: all .35s ease;
+    background: rgba(32, 36, 45, 1);
+
+    &.middle {
+      top: 15px;
+      margin-top: 6px;
+    }
+
+    &.bottom {
+      top: 30px;
+      margin-top: 6px;
+    }
+  }
+
+  // &:hover {
+  //   opacity: .7;
+  // }
+
+  &.active {
+    position: fixed;
+    right: 16px;
+    transition: all 0.3s ease-in, background 0.5s ease-in;
+    transition-delay: 0.25s;
+    transform: rotate(90deg);
+    .bar {
+      transition: all 0.4s $cubic;
+      transition-delay: 0.5s;
+      &.middle {
+        opacity: 0;
+      }
+      &.top { -webkit-transform: translateY(5px) translateX(0) rotate(45deg); }
+      &.bottom {  -webkit-transform: translateY(-11px) translateX(0) rotate(-45deg); }
+    }
+  }
+}
+
+
+.mobile-nav {
+  display: none;
+  @media screen and (max-width: 768px) {
+    display: block;
+  }
+
+  .menu-container {
+    position: fixed;
+    background: #FFFFFF;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    visibility: hidden;
+    opacity: 0;
+    -webkit-transition: opacity .35s, visibility .35s, height .35s;
+    z-index: 100;
+
+    &.active {
+      opacity: 1;
+      visibility: visible;
+      height: 100%;
+      z-index: 45;
+    }
+
+    .mobile-menu {
+      li {
+        font-family: 'Orbitron', sans-serif;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 28px;
+        text-align: center;
+        margin-top: 30px;
+
+        :global {
+          a {
+            p {
+              color: #5F6C87;
+            }
+
+            &:hover {
+              p {
+                color: #735CF7;
+              }
+            }
+
+            &.active {
+              p {
+                color: #20242D;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+[data-theme="dark"] {
+  .toggle-button {
+    .bar {
+      background-color: #FFFFFF;
+    }
+  }
+  .mobile-nav {
+    .menu-container {
+      background: #20242D;
+
+      .mobile-menu {
+        li {
+          p {
+            color: #96A1B5;
+          }
+
+          :global {
+            .active {
+              p {
+                color: #FFFFFF
+              }
+            }
+
+            a:hover {
+              p {
+                color: #B998FB;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.desktop-menu-text {
+  &:hover {
+    color: #735CF7;
+  }
+}
+
+[data-theme="dark"] {
+  .desktop-menu-text:hover {
+    color: #B998FB;
+  }
+}

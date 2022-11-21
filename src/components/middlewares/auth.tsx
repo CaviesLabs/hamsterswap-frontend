@@ -1,33 +1,28 @@
 import { FC, ReactNode, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { getUser } from "@/src/redux/actions/user/user.action";
 
 interface Props {
   children: ReactNode;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const AUTH_ROUTES = ["/", "/dashboard"];
 
 const AuthMiddleware: FC<Props> = ({ children }) => {
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const dispatch = useDispatch();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const isAuth = useCallback(() => {
     return !(AUTH_ROUTES.find((item) => router.asPath === item) === undefined);
   }, [router.asPath]);
 
   useEffect(() => {
-    dispatch(
-      getUser((user) => {
-        if (user && !isAuth()) {
-          return router.push("/");
-        }
-        if (!user && isAuth()) {
-          return router.push("/login");
-        }
-      })
-    );
+    /** @dev Do something related authentication */
   }, [router.asPath]);
 
   return <>{children}</>;

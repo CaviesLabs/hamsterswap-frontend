@@ -2,12 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@font-face {
+  font-family: poppins-bold;
+  src: url(../public/assets/fonts/poppins/Poppins-Bold.otf);
+}
+
+@font-face {
+  font-family: semi-poppins-bold;
+  src: url(../public/assets/fonts/poppins/Poppins-SemiBold.otf);
+}
+
+@font-face {
+  font-family: poppins-medium;
+  src: url(../public/assets/fonts/poppins/Poppins-Medium.otf);
+}
+
+@font-face {
+  font-family: poppins-thin;
+  src: url(../public/assets/fonts/poppins/Poppins-Thin.otf);
+}
+
+@font-face {
+  font-family: poppins-regular;
+  src: url(../public/assets/fonts/poppins/Poppins-Regular.otf);
+}
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: poppins-bold;
 }
+
 
 a {
   color: inherit;
