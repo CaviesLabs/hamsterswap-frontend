@@ -75,6 +75,8 @@ module.exports = {
         navyDark: "#96A1B5",
         backgroundDark: "#20242D",
         twhite: "#FFFFFF",
+        dark10: "#F0F3FA",
+        dark60: "#5F6C87",
       },
       boxShadow: {
         xl: "0px 4px 4px rgba(0, 0, 0, 0.25);",

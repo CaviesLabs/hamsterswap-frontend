@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import styles from "@/styles/Home.module.css";
 import { DashboardPageProvider } from "@/src/hooks/pages/dashboard";
-import { ProposalItem } from "@/src/components/nfts";
+import { ProposalItem } from "@/src/components/proposal-item";
 
 const Layout: FC = () => {
   const [mobileFilterDisplayed, setMobileFilterDisplayed] = useState(false);
@@ -152,7 +152,7 @@ const Layout: FC = () => {
             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="flex items-baseline justify-between border-b border-gray-200 pt-24 pb-6">
                 <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-                  Explore NFTs
+                  Advertisers
                 </h1>
                 <div className="flex items-center">
                   <div className="relative inline-block text-left">
@@ -260,56 +260,10 @@ const Layout: FC = () => {
                 </h2>
 
                 <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
-                  <form className="hidden lg:block">
-                    <div className="border-b border-gray-200 py-6">
-                      <h3 className="-my-3 flow-root">
-                        <button
-                          type="button"
-                          className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500"
-                          aria-controls="filter-section-1"
-                          aria-expanded="false"
-                        >
-                          <span className="font-medium text-gray-900">
-                            Category
-                          </span>
-                        </button>
-                      </h3>
-                      <div className="pt-6" id="filter-section-1">
-                        <div className="space-y-4">
-                          {categoryOptions.map((item, index) => (
-                            <div
-                              className="flex items-center"
-                              key={`cacories-desktop-${index}`}
-                            >
-                              <input
-                                id="filter-category-0"
-                                name="category[]"
-                                value="new-arrivals"
-                                type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                              />
-                              <label
-                                htmlFor="filter-category-0"
-                                className="ml-3 text-sm text-gray-600"
-                              >
-                                {item.name}
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-
-                  <div className="lg:col-span-3">
-                    <div className="h-96 rounded-lg border-4 border-dashed border-gray-200 lg:h-full px-[10px] py-[20px]">
-                      <ProposalItem
-                        name="#2332"
-                        collection="Maya Spirits"
-                        image="https://i.seadn.io/gae/M1L6jf3EZJZ0ep-0XPA6HxAWH1flQXwgkKwdHVabbMMCVyCBd3cwcwXLl9ZR8vEDFBQ0fbbA1bPUQY2T7t0xpomrS6LwhPVZ4d5jAw?auto=format&w=1000"
-                        nftId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                        collectionId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                      />
+                  <div className="lg:col-span-8">
+                    <div className="h-96 rounded-lg  lg:h-full px-[10px] py-[20px]">
+                      <ProposalItem />
+                      <ProposalItem />
                     </div>
                   </div>
                 </div>

@@ -13,7 +13,7 @@ export const ProposalItem: FC<RowNftItemProps> = (props) => {
           <img
             src={props.image}
             alt="NFT image"
-            className="h-full w-[72px] object-cover"
+            className="h-full w-[72px] object-cover rounded-[8px]"
           ></img>
         </div>
         <div className="px-4 w-72 left">
