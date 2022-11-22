@@ -29,7 +29,6 @@
     "@saberhq/use-solana": "^1.13.19",
     "@solana/web3.js": "^1.43.2",
     "@types/bn.js": "^5.1.0",
-    "@types/react": "^18.0.9",
     "antd": "^5.0.0",
     "axios": "^1.0.0",
     "bn.js": "^5.2.1",

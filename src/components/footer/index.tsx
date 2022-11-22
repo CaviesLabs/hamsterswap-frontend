@@ -53,7 +53,7 @@ const Footer: FC = () => {
   );
 
   return (
-    <div className="footer pt-[100px]">
+    <div className="footer pt-[50px]">
       <div className="border-t-[#D2D7DF] dark:border-t-borderColorDark border-t-[1px]">
         <div className="md:px-[40px] px-[20px] lg:max-w-[1180px] lg:mx-auto">
           <div className="flex items-center pt-[20px]">
