@@ -4,6 +4,7 @@ import MainLayout from "@/src/layouts/main";
 import styles from "@/styles/Home.module.css";
 import { DashboardPageProvider } from "@/src/hooks/pages/dashboard";
 import { ProposalItem } from "@/src/components/proposal-item";
+import Messages from "@/src/components/messages";
 
 const Layout: FC = () => {
   const [mobileFilterDisplayed, setMobileFilterDisplayed] = useState(false);
@@ -272,6 +273,7 @@ const Layout: FC = () => {
           </div>
         </div>
       </div>
+      <Messages />
     </MainLayout>
   );
 };
