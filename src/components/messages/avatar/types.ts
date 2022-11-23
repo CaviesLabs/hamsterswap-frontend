@@ -4,4 +4,5 @@ export type UserAvatarCardItemProps = {
   avatar: string;
   opened: boolean;
   setOpened: (newState: boolean) => void;
+  setClosed: () => void;
 };

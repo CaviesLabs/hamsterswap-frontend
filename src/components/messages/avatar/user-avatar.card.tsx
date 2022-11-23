@@ -34,7 +34,7 @@ export const UserAvatarMessage: FC<UserAvatarCardItemProps> = (props) => {
             <rect width="20" height="1.5" rx="0.75" fill="white" />
           </svg>
         </button>
-        <button className="w-7 h-10">
+        <button className="w-7 h-10" onClick={() => props.setClosed()}>
           <svg
             className="h-6 w-6"
             xmlns="http://www.w3.org/2000/svg"
