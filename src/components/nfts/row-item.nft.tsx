@@ -1,10 +1,12 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { RowNftItemProps } from "./types";
 import { Button } from "@hamsterbox/ui-kit";
 import { useMain } from "@/src/hooks/pages/main";
+import { GameItemModal } from "../modal/game-item.modal";
 
 export const RowNftItem: FC<RowNftItemProps> = (props) => {
   const { openNftDetailModal } = useMain();
+  const [ openGameItemModal, setOpenGameItemModal ] = useState(false)
 
   return (
     <div className="md:left w-full mb-[20px] cursor-pointer">
@@ -32,11 +34,16 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
             <Button
               text="View details"
               size="small"
-              onClick={openNftDetailModal}
+              onClick={() => setOpenGameItemModal(true)}
             />
           </a>
         </div>
       </div>
+      <GameItemModal
+        isModalOpen={openGameItemModal}
+        handleOk={() => {}}
+        handleCancel={() => {}}
+      />
     </div>
   );
 };
