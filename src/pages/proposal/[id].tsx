@@ -4,6 +4,7 @@ import MainLayout from "@/src/layouts/main";
 import styles from "@/styles/Home.module.css";
 import { ProposalDetailPageProvider } from "@/src/hooks/pages/proposal-detail";
 import { RowNftItem } from "@/src/components/nfts";
+import Messages from "@/src/components/messages";
 
 const Layout: FC = () => {
   return (
@@ -61,6 +62,7 @@ const Layout: FC = () => {
           </div>
         </div>
       </div>
+      <Messages />
     </MainLayout>
   );
 };
