@@ -105,7 +105,9 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
           )}
           <div className="md:flex pt-[40px]">
             <div className="block md:left w-full md:w-[50%] md:pr-[20px]">
-              <p className="semi-bold text-[16px]">I Have</p>
+              <div className="h-[50px]">
+                <p className="semi-bold text-[16px]">I Have</p>
+              </div>
               <div className="pt-[20px]">
                 <RowNftItem
                   name="#2332"
@@ -131,7 +133,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
               </div>
             </div>
             <div className="block md:left w-full md:w-[50%] md:pl-[20px]">
-              <div className="flow-root items-center">
+              <div className="flow-root items-center h-[50px]">
                 <p
                   className="semi-bold text-[16px] float-left"
                   style={{ transform: "translateY(50%)" }}

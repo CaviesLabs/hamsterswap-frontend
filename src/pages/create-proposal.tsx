@@ -3,23 +3,52 @@ import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import { ProposalDetailPageProvider } from "@/src/hooks/pages/proposal-detail";
 import { ProposalItem } from "@/src/components/proposal-item";
-import { StyledProposalDetailPage } from "./proposal-detail-page.style";
 import { LayoutSection } from "@/src/components/layout-section";
-import { GuaranteedCard } from "@/src/components/guaranteed.card";
 import { UserInfoCard } from "@/src/components/user-card";
 import { BreadCrumb } from "@/src/components/bread-crumb";
 import { Button } from "@hamsterbox/ui-kit";
+import StepProgressBar from "@/src/components/stepper";
 
 const Layout: FC = () => {
+  function onFormSubmit() {
+    return true;
+  }
   return (
     <MainLayout>
-      <StyledProposalDetailPage>
-        <div className="cover-container">
+      <div className="bg-white">
+        <div className="cover-container bg-purpleBg">
           <LayoutSection>
-            <BreadCrumb data={["Home", "Advertiser"]} />
+            <BreadCrumb data={["Home", "Create a Proposal"]} />
             <div className="mt-[20px] block md:flex">
-              <p className="text-[32px]">Advertisement #675424</p>
-              <GuaranteedCard className="md:ml-[12px]" />
+              <p className="text-[32px]">Create a Proposal</p>
+            </div>
+            <div>
+              <StepProgressBar
+                startingStep={0}
+                onSubmit={onFormSubmit}
+                steps={[
+                  {
+                    label: "Swap Items",
+                    name: "Swap Items",
+                  },
+                  {
+                    label: "Expect Items",
+                    name: "Expect Items",
+                  },
+                  {
+                    label: "Additional info",
+                    name: "Additional info",
+                  },
+                  {
+                    label: "Warranty",
+                    name: "Warranty",
+                  },
+                  {
+                    label: "Confirm",
+                    name: "Confirm",
+                  },
+                ]}
+              />
             </div>
           </LayoutSection>
         </div>
@@ -67,7 +96,7 @@ const Layout: FC = () => {
             />
           </div>
         </LayoutSection>
-      </StyledProposalDetailPage>
+      </div>
     </MainLayout>
   );
 };
