@@ -1,11 +1,65 @@
-import { FC } from "react";
+import { FC, useState, useMemo } from "react";
 import { ProposalItemProps } from "./types";
 import { UserAvatarCardItem } from "@/src/components/user-card";
 import { RowNftItem } from "@/src/components/nfts";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "./proposal-item.style";
+import { Button } from "@hamsterbox/ui-kit";
+import classnames from "classnames";
 
 export const ProposalItem: FC<ProposalItemProps> = (props) => {
+  /**
+   * @dev Define value to display option.
+   */
+  const [optionSelected, setOptionSelected] = useState(0);
+
+  /**
+   * @dev Swap options.
+   */
+  const swapOptions = useMemo(
+    () => [
+      [
+        {
+          name: "#911",
+          collection: "Maya Spirits",
+          image:
+            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
+          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+        },
+      ],
+      [
+        {
+          name: "#911",
+          collection: "Maya Spirits",
+          image:
+            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
+          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+        },
+        {
+          name: "#911",
+          collection: "Maya Spirits",
+          image:
+            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
+          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+        },
+      ],
+      [
+        {
+          name: "#911",
+          collection: "Maya Spirits",
+          image:
+            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
+          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+        },
+      ],
+    ],
+    []
+  );
+
   return (
     <StyledProposalItem
       className="w-full bg-dark10 min-h-[200px] rounded-[32px] rounded-[32px] mb-[46px]"
@@ -51,7 +105,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
           )}
           <div className="md:flex pt-[40px]">
             <div className="block md:left w-full md:w-[50%] md:pr-[20px]">
-              <p className="semi-bold text-[16px]">I have</p>
+              <p className="semi-bold text-[16px]">I Have</p>
               <div className="pt-[20px]">
                 <RowNftItem
                   name="#2332"
@@ -77,22 +131,32 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
               </div>
             </div>
             <div className="block md:left w-full md:w-[50%] md:pl-[20px]">
-              <p className="semi-bold text-[16px]">want swap to</p>
+              <div className="flow-root items-center">
+                <p
+                  className="semi-bold text-[16px] float-left"
+                  style={{ transform: "translateY(50%)" }}
+                >
+                  Looking For
+                </p>
+                <div className="flex pl-[60px]">
+                  {swapOptions.map((_, index) => (
+                    <Button
+                      className={classnames(
+                        "float-right !rounded-[100px] after:!rounded-[100px] !px-[10px]",
+                        { "ml-[12px]": index > 0 }
+                      )}
+                      size="small"
+                      shape={optionSelected === index ? "primary" : "secondary"}
+                      text={`Option ${index + 1}`}
+                      onClick={() => setOptionSelected(index)}
+                    />
+                  ))}
+                </div>
+              </div>
               <div className="pt-[20px]">
-                <RowNftItem
-                  name="#911"
-                  collection="Maya Spirits"
-                  image="https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750"
-                  nftId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                  collectionId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                />
-                <RowNftItem
-                  name="#9924"
-                  collection="Monomyth"
-                  image="https://i.seadn.io/gae/KKMSj66V6UHOYJyub4i9R-VqPvVvgiXS97MIRMDoJ2fKrqnYWdvPhtwpdhVf9QRkFuj5zw6Xp9x0JIvkhMfNNg_1Sj_5DoZ3k8dQ0Q?auto=format&w=750"
-                  nftId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                  collectionId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                />
+                {swapOptions[optionSelected].map((item, index) => (
+                  <RowNftItem key={`swapoptions-${index}`} {...item} />
+                ))}
               </div>
             </div>
           </div>

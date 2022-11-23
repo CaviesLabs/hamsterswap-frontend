@@ -79,6 +79,7 @@ module.exports = {
         dark30: "#CBD4E1",
         dark60: "#5F6C87",
         purpleBg: "#EDECFF",
+        red300: "#DE2C47",
       },
       boxShadow: {
         xl: "0px 4px 4px rgba(0, 0, 0, 0.25);",
