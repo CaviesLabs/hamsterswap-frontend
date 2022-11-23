@@ -1,43 +1,14 @@
-import { useState, useMemo, FC } from "react";
+import { useState, FC } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import styles from "@/styles/Home.module.css";
 import { DashboardPageProvider } from "@/src/hooks/pages/dashboard";
 import { ProposalItem } from "@/src/components/proposal-item";
-import Messages from "@/src/components/messages";
+import { sortOptions, categoryOptions } from "@/src/utils/constants";
 
 const Layout: FC = () => {
   const [mobileFilterDisplayed, setMobileFilterDisplayed] = useState(false);
   const [sortPopupDisplayed, setSortPopupDisplayed] = useState(false);
-
-  /**
-   * @dev Define value data to sort NFTs.
-   */
-  const sortOptions = useMemo(
-    () => [
-      { value: "most_popular", name: "Most Popular" },
-      { value: "best_rating", name: "Best Rating" },
-      { value: "newest", name: "Newest" },
-      { value: "low_to_hight", name: "Low to high" },
-      { value: "hight_to_low", name: "Hight to low" },
-    ],
-    []
-  );
-
-  /**
-   * @dev Define value datas to filter NFTs by category.
-   */
-  const categoryOptions = useMemo(
-    () => [
-      { value: "top", name: "Top" },
-      { value: "art", name: "Art" },
-      { value: "collectibles", name: "Collectibles" },
-      { value: "domain_names", name: "Domain Names" },
-      { value: "music", name: "Music" },
-      { value: "sports", name: "Sports" },
-    ],
-    []
-  );
 
   return (
     <MainLayout>
@@ -69,13 +40,13 @@ const Layout: FC = () => {
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 24 24"
-                          stroke-width="1.5"
+                          strokeWidth={1.5}
                           stroke="currentColor"
                           aria-hidden="true"
                         >
                           <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                             d="M6 18L18 6M6 6l12 12"
                           />
                         </svg>
@@ -262,7 +233,7 @@ const Layout: FC = () => {
 
                 <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                   <div className="lg:col-span-8">
-                    <div className="h-96 rounded-lg  lg:h-full px-[10px] py-[20px]">
+                    <div className="rounded-lg  lg:h-full px-[10px] py-[20px]">
                       <ProposalItem />
                       <ProposalItem />
                     </div>
@@ -273,7 +244,6 @@ const Layout: FC = () => {
           </div>
         </div>
       </div>
-      <Messages />
     </MainLayout>
   );
 };
