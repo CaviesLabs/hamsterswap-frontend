@@ -1,68 +1,91 @@
 import { FC } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
-import styles from "@/styles/Home.module.css";
 import { ProposalDetailPageProvider } from "@/src/hooks/pages/proposal-detail";
-import { RowNftItem } from "@/src/components/nfts";
-import Messages from "@/src/components/messages";
+import { ProposalItem } from "@/src/components/proposal-item";
+import { StyledProposalDetailPage } from "./proposal-detail-page.style";
+import { LayoutSection } from "@/src/components/layout-section";
+import { GuaranteedCard } from "@/src/components/guaranteed.card";
+import { UserInfoCard } from "@/src/components/user-card";
 
 const Layout: FC = () => {
   return (
     <MainLayout>
-      <div
-        className={`${styles.container} mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-[20px] min-h-[60vh]`}
-      >
-        <div className="mb-[20px]">
-          <h3 className="text-3xl font-bold tracking-tight text-gray-900">
-            Sell items
-          </h3>
-          <div className="block mt-[20px]">
-            <RowNftItem
-              name="#2332"
-              collection="Maya Spirits"
-              image="https://i.seadn.io/gae/M1L6jf3EZJZ0ep-0XPA6HxAWH1flQXwgkKwdHVabbMMCVyCBd3cwcwXLl9ZR8vEDFBQ0fbbA1bPUQY2T7t0xpomrS6LwhPVZ4d5jAw?auto=format&w=1000"
-              nftId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-              collectionId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-            />
-            <RowNftItem
-              name="#727"
-              collection="Maya Spirits"
-              image="https://i.seadn.io/gae/Hvnc2AXHYZi8vmLXMZhW66gEvFxKHXuzrFzebLyMCyraXa-QtJm4wniZ3tsA5-IZlZ1lv-CkkOpLQOLFxHiUdDMg9E2Cb8May2kuNA?auto=format&w=1000"
-              nftId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-              collectionId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-            />
-            <RowNftItem
-              name="#911"
-              collection="Maya Spirits"
-              image="https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750"
-              nftId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-              collectionId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-            />
-          </div>
+      <StyledProposalDetailPage>
+        <div className="cover-container">
+          <LayoutSection>
+            <nav className="flex" aria-label="Breadcrumb">
+              <ol className="inline-flex items-center space-x-1 md:space-x-3">
+                <li className="inline-flex items-center">
+                  <a
+                    href="#"
+                    className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9.64373 20.7821V17.7152C9.64372 16.9381 10.2757 16.3067 11.0584 16.3018H13.9326C14.7189 16.3018 15.3563 16.9346 15.3563 17.7152V17.7152V20.7732C15.3563 21.4473 15.904 21.9951 16.5829 22H18.5438C19.4596 22.0023 20.3388 21.6428 20.9872 21.0007C21.6356 20.3586 22 19.4868 22 18.5775V9.86585C22 9.13139 21.6721 8.43471 21.1046 7.9635L14.443 2.67427C13.2785 1.74912 11.6154 1.77901 10.4854 2.74538L3.96701 7.9635C3.37274 8.42082 3.01755 9.11956 3 9.86585V18.5686C3 20.4637 4.54738 22 6.45617 22H8.37229C8.69917 22.0023 9.01349 21.8751 9.24547 21.6464C9.47746 21.4178 9.60793 21.1067 9.60792 20.7821H9.64373Z"
+                        fill="#7886A0"
+                      />
+                    </svg>
+                    <span className="ml-[10px] regular-text">Home</span>
+                  </a>
+                </li>
+                <li>
+                  <div className="flex items-center">
+                    <svg
+                      width="6"
+                      height="17"
+                      viewBox="0 0 6 17"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M5.838 0.812L2.002 16.38H0.742L4.564 0.812H5.838Z"
+                        fill="#353C4B"
+                      />
+                    </svg>
+
+                    <a
+                      href="#"
+                      className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                    >
+                      <span className="regular-text">Advertisers</span>
+                    </a>
+                  </div>
+                </li>
+              </ol>
+            </nav>
+            <div className="mt-[20px] block md:flex">
+              <p className="text-[32px]">Advertisement #675424</p>
+              <GuaranteedCard className="md:ml-[12px]" />
+            </div>
+          </LayoutSection>
         </div>
-        <div className="mb-[20px]">
-          <h3 className="text-3xl font-bold tracking-tight text-gray-900">
-            Revice items
-          </h3>
-          <div className="block mt-[20px]">
-            <RowNftItem
-              name="#9924"
-              collection="Monomyth"
-              image="https://i.seadn.io/gae/KKMSj66V6UHOYJyub4i9R-VqPvVvgiXS97MIRMDoJ2fKrqnYWdvPhtwpdhVf9QRkFuj5zw6Xp9x0JIvkhMfNNg_1Sj_5DoZ3k8dQ0Q?auto=format&w=750"
-              nftId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-              collectionId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-            />
-            <RowNftItem
-              name="#9945"
-              collection="Monomyth"
-              image="https://i.seadn.io/gae/iojORs1W27RcmqsXV6STXgBzrcWJz5S6zb0cpHHnIfj9L0iNzj5FdjiuvIfsSMz9IRJ1nbbAiPq7FeSQ5A7gfF0PSiRuTLyznPTnW4k?auto=format&w=750"
-              nftId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-              collectionId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-            />
+        <LayoutSection className="relative top-[-180px]">
+          <div className="mb-[20px]">
+            <h3 className="text-3xl font-bold tracking-tight text-gray-900">
+              Advertiser
+            </h3>
+            <div className="block mt-[20px]">
+              <UserInfoCard userId="sda" />
+            </div>
           </div>
-        </div>
-      </div>
-      <Messages />
+          <div className="mb-[20px]">
+            <h3 className="text-3xl font-bold tracking-tight text-gray-900">
+              Active Swaps
+            </h3>
+            <div className="block mt-[20px]">
+              <ProposalItem userInfoHidden={true} />
+            </div>
+          </div>
+        </LayoutSection>
+      </StyledProposalDetailPage>
     </MainLayout>
   );
 };

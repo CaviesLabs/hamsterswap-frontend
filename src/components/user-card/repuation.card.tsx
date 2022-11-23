@@ -1,5 +1,11 @@
 import { FC } from "react";
-import { StyledReputationCard } from "./reputation.card.style";
+import styled from "@emotion/styled";
+
+/** @dev Define styled component. */
+export const StyledReputationCard = styled.div`
+  background: linear-gradient(83.34deg, #fd9211 -5.88%, #f75d06 100%);
+  display: inline-flex;
+`;
 
 export const ReputationCard: FC = () => {
   return (
