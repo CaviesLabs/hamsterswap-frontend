@@ -12,7 +12,7 @@ import { RowEditNftItem } from "@/src/components/nfts";
 import { Carousel } from "react-responsive-carousel";
 
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { AddCashModal, AddNftModal } from "../components/modal";
+import { AddCashModal, AddNftModal, AddSolModal } from "../components/modal";
 
 const Layout: FC = () => {
   /**
@@ -152,6 +152,12 @@ const Layout: FC = () => {
                           color: "#FFFFFF",
                         }}
                         icon={<PlustIcon />}
+                        onClick={() => setIsAddSol(true)}
+                      />
+                      <AddSolModal
+                        isModalOpen={isAddSol}
+                        handleOk={() => {}}
+                        handleCancel={() => {}}
                       />
                       <Button
                         text="Add in-game item"
