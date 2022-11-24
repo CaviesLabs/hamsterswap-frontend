@@ -18,7 +18,7 @@ export const ConfirmedTransactionModal: FC<BuyModalProps> = (props) => {
           <img
             src="/assets/images/success-icon.png"
             alt="Swap item Success"
-            className="rounded-[50%] mx-auto"
+            className="mx-auto"
           />
 
           <h2 className="mt-4 mb-2 font-bold text-gray-800 text-2xl text-center">
