@@ -2,7 +2,8 @@ import { FC, useState } from "react";
 import { RowNftItemProps } from "./types";
 import { Button } from "@hamsterbox/ui-kit";
 import { useMain } from "@/src/hooks/pages/main";
-import { GameItemModal } from "../modal/game-item.modal";
+import { GameItemModal } from "../modal";
+import { WalletEmptyModal } from "../modal";
 
 export const RowNftItem: FC<RowNftItemProps> = (props) => {
   const { openNftDetailModal } = useMain();
@@ -39,7 +40,12 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
           </a>
         </div>
       </div>
-      <GameItemModal
+      {/*<GameItemModal*/}
+      {/*  isModalOpen={openGameItemModal}*/}
+      {/*  handleOk={() => {}}*/}
+      {/*  handleCancel={() => {}}*/}
+      {/*/>*/}
+      <WalletEmptyModal
         isModalOpen={openGameItemModal}
         handleOk={() => {}}
         handleCancel={() => {}}
