@@ -2,6 +2,7 @@ import { FC, useMemo, useState, useCallback, useRef } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import { ProposalDetailPageProvider } from "@/src/hooks/pages/proposal-detail";
+import { useWallet } from "@/src/hooks/useWallet";
 import { LayoutSection } from "@/src/components/layout-section";
 import { BreadCrumb } from "@/src/components/bread-crumb";
 import { Button } from "@hamsterbox/ui-kit";
@@ -14,6 +15,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const Layout: FC = () => {
+  const { signMessage } = useWallet();
   /**
    * @dev Define step state.
    */
@@ -232,6 +234,11 @@ const Layout: FC = () => {
                 text="Next"
                 className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right"
                 onClick={handleNextStep}
+              />
+              <Button
+                text="Sign"
+                className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right"
+                onClick={async () => console.log(await signMessage("send"))}
               />
             </div>
           </div>
