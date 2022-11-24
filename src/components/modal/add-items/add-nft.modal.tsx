@@ -38,7 +38,6 @@ const mockNftItems = [
   },
 ];
 
-// TODO set modal background color to #F8F9FE
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
   const [checkedList, setCheckedList] = useState<CheckboxValueType[]>([]);
 
