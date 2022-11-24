@@ -3,13 +3,13 @@ import { useRouter } from "next/router";
 import { useWalletKit } from "@gokiprotocol/walletkit";
 import { useConnectedWallet, useSolana } from "@saberhq/use-solana";
 import { Button } from "@hamsterbox/ui-kit";
-import { utilsProvider } from "@/src/utils/utils.provider";
+import { utilsProvider, PURPLE_HEADER_PAGES } from "@/src/utils";
 import classnames from "classnames";
 import styles from "./index.module.scss";
-
 interface MenuItem {
   title: string;
-  slug: string;
+  href: string;
+  button?: boolean | false;
 }
 
 const Header: FC = () => {
@@ -27,7 +27,7 @@ const Header: FC = () => {
    * @dev Define Menu Data.
    */
   const menuData = useMemo<MenuItem[]>(
-    () => [{ title: "Home", slug: "#" }],
+    () => [{ title: "Home", href: "/create-proposal", button: true }],
     []
   );
 
@@ -150,11 +150,21 @@ const Header: FC = () => {
     };
   }, []);
 
-  console.log(wallet);
+  console.log(router.asPath);
 
   return (
     <div
-      className="app-header border-borderColor dark:border-borderColorDark border-b-[0.5px]"
+      className={classnames(
+        "app-header border-borderColor dark:border-borderColorDark border-b-[0.5px]",
+        {
+          /**
+           * @dev Restrict fill purple background & clear border for specific pages.
+           */
+          "bg-purpleBg border-b-[0px]": PURPLE_HEADER_PAGES.filter((item) =>
+            router.asPath.includes(item)
+          ).length,
+        }
+      )}
       id="app-header"
     >
       <div className="py-[18px] md:py-[25px] pl-[20px] pr-0  lg:max-w-[1180px] lg:mx-auto flow-root">
@@ -178,13 +188,13 @@ const Header: FC = () => {
                 <Button text="Connect" onClick={connectWallet} />{" "}
               </div>
             ) : (
-              <div className="relative flex items-center h-full py-[3px] px-[10px] border-solid border-[2px] border-purple rounded-[5px] cursor-pointer">
+              <div className="relative flex items-center h-full py-[3px] px-[10px] border-solid border-[0px] border-purple rounded-[5px] cursor-pointer">
                 <img
                   className="w-[20px] md:w-[40px] h-[auto] mr-[10px]"
                   src="https://source.boringavatars.com/beam"
                   alt="Boring avatar"
                 />
-                <span className="text-[7px] md:text-[16px]">
+                <span className="text-[7px] md:text-[14px]">
                   {utilsProvider.makeShort(wallet?.publicKey?.toString(), 3)}
                 </span>
               </div>
@@ -233,25 +243,35 @@ const Header: FC = () => {
                 <li
                   key={`desktop-menu-item-${index}`}
                   className="float-left md:mr-[40px] lg:mr-[40px]"
-                  onClick={() => handleOnClickMenu(item.slug)}
+                  onClick={() => handleOnClickMenu(item.href)}
                 >
-                  <a
-                    className={classnames(
-                      "font-[16px] uppercase cursor-pointer",
-                      styles["desktop-menu-text"],
-                      {
-                        "text-menuItemSelected":
-                          item.slug === curSlug && isHomePage(),
-                        "dark:text-menuItemSelectedDark":
-                          item.slug === curSlug && isHomePage(),
-                        "text-menuItem": item.slug !== curSlug || !isHomePage(),
-                        "dark:text-menuItemDark":
-                          item.slug !== curSlug || !isHomePage(),
-                      }
-                    )}
-                  >
-                    {item.title}
-                  </a>
+                  {item.button ? (
+                    <Button
+                      className="!rounded-[100px] after:!rounded-[100px] !px-[20px]"
+                      text="Crreate a Proposal"
+                      size="small"
+                      onClick={() => router.push(item.href)}
+                    />
+                  ) : (
+                    <a
+                      className={classnames(
+                        "font-[16px] uppercase cursor-pointer",
+                        styles["desktop-menu-text"],
+                        {
+                          "text-menuItemSelected":
+                            item.href === curSlug && isHomePage(),
+                          "dark:text-menuItemSelectedDark":
+                            item.href === curSlug && isHomePage(),
+                          "text-menuItem":
+                            item.href !== curSlug || !isHomePage(),
+                          "dark:text-menuItemDark":
+                            item.href !== curSlug || !isHomePage(),
+                        }
+                      )}
+                    >
+                      {item.title}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
@@ -265,22 +285,31 @@ const Header: FC = () => {
             <ul className={styles["mobile-menu"]}>
               {menuData.map((item: any, index: number) => (
                 <li key={`mobile-menu-${index}`}>
-                  <a
-                    className={classnames("mt-[30px] md:mt-[60px]", {
-                      active: item.slug === curSlug,
-                    })}
-                    onClick={() => {
-                      handleOnClickMenu(item.slug, 200);
-                      handleToggleMobileMenu();
-                    }}
-                  >
-                    <div className="hidden-layer"></div>
-                    <button className="shown-layer">
-                      <p className="uppercase text-[16px] md:text-[32px] bold-text">
-                        {item.title}
-                      </p>
-                    </button>
-                  </a>
+                  {item.button ? (
+                    <Button
+                      className="!rounded-[100px] after:!rounded-[100px] !px-[20px] mx-auto"
+                      text="Crreate a Proposal"
+                      size="small"
+                      onClick={() => router.push(item.href)}
+                    />
+                  ) : (
+                    <a
+                      className={classnames("mt-[30px] md:mt-[60px]", {
+                        active: item.slug === curSlug,
+                      })}
+                      onClick={() => {
+                        handleOnClickMenu(item.slug, 200);
+                        handleToggleMobileMenu();
+                      }}
+                    >
+                      <div className="hidden-layer"></div>
+                      <button className="shown-layer">
+                        <p className="uppercase text-[16px] md:text-[32px] bold-text">
+                          {item.title}
+                        </p>
+                      </button>
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>

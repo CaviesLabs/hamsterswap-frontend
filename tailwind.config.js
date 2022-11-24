@@ -3,6 +3,9 @@ module.exports = {
     "./src/pages/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
     "./src/layouts/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/tw-elements/dist/js/**/*.js",
+    "./node_modules/flowbite/**/*.js",
+    "node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
   ],
   darkMode: "class",
   purge: {
@@ -76,7 +79,10 @@ module.exports = {
         backgroundDark: "#20242D",
         twhite: "#FFFFFF",
         dark10: "#F0F3FA",
+        dark30: "#CBD4E1",
         dark60: "#5F6C87",
+        purpleBg: "#EDECFF",
+        red300: "#DE2C47",
       },
       boxShadow: {
         xl: "0px 4px 4px rgba(0, 0, 0, 0.25);",
@@ -87,5 +93,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("tw-elements/dist/plugin"), require("flowbite/plugin")],
 };

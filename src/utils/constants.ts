@@ -20,3 +20,12 @@ export const categoryOptions = [
   { value: "music", name: "Music" },
   { value: "sports", name: "Sports" },
 ];
+
+/**
+ * @dev Define list of page which header will have purple background.
+ */
+export const PURPLE_HEADER_PAGES = [
+  "proposal",
+  "transaction",
+  "create-proposal",
+];
