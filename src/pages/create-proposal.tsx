@@ -12,12 +12,22 @@ import { RowEditNftItem } from "@/src/components/nfts";
 import { Carousel } from "react-responsive-carousel";
 
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { AddNftModal } from "../components/modal";
 
 const Layout: FC = () => {
   /**
    * @dev Define step state.
    */
   const [currentStep, setCurrentStep] = useState(0);
+
+  /**
+   * @dev handle open modal by type
+   */
+  const [isAddNft, setIsAddNft] = useState(false);
+  const [isAddSol, setIsAddSol] = useState(false);
+  const [isAddGameItem, setIsAddGameItem] = useState(false);
+  const [isAddCash, setIsAddCash] = useState(false);
+
 
   /**
    * @dev Swap options.
@@ -128,6 +138,12 @@ const Layout: FC = () => {
                         text="Add NFT"
                         className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
                         icon={<PlustIcon />}
+                        onClick={() => setIsAddNft(true)}
+                      />
+                      <AddNftModal
+                          isModalOpen={isAddNft}
+                          handleOk={() => {}}
+                          handleCancel={() => {}}
                       />
                       <Button
                         text="Add SOL"
