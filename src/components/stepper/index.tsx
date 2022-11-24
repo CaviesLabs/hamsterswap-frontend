@@ -1,5 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import * as React from "react";
+import {
+  FC,
+  useReducer,
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+  ForwardRefRenderFunction,
+} from "react";
 import styles from "./styles.module.css";
 
 import {
@@ -7,12 +15,19 @@ import {
   ProgressStep,
   StepProgressProps,
   ReducerAction,
-} from "./models";
+  StepProgressHandler,
+} from "./types";
 
-function stepsReducer(
+/**
+ * @dev Define step reducer.
+ * @param {ProgressStep[]} steps.
+ * @param {ReducerAction} action.
+ * @returns {ProgressStep[]}.
+ */
+const stepsReducer = (
   steps: ProgressStep[],
   action: ReducerAction
-): ProgressStep[] {
+): ProgressStep[] => {
   return steps.map(function (step, i) {
     if (i < action.payload.index) {
       step.state = StepStates.COMPLETED;
@@ -23,9 +38,12 @@ function stepsReducer(
     }
     return step;
   });
-}
+};
 
-function StepProgressBar(props: StepProgressProps): JSX.Element {
+export const Ref: ForwardRefRenderFunction<
+  StepProgressHandler,
+  StepProgressProps
+> = (props, ref) => {
   const {
     steps,
     startingStep,
@@ -34,66 +52,70 @@ function StepProgressBar(props: StepProgressProps): JSX.Element {
     stepClass,
     labelClass,
     subtitleClass,
-    contentClass,
-    buttonWrapperClass,
-    primaryBtnClass,
-    secondaryBtnClass,
-    submitBtnName,
     onSubmit,
-    previousBtnName,
-    nextBtnName,
   } = props;
-  const [state, dispatch] = React.useReducer(stepsReducer, steps);
-  const [currentIndex, setCurrentIndex] = React.useState(startingStep);
+  const [state, dispatch] = useReducer(stepsReducer, steps);
+  const [currentIndex, setCurrentIndex] = useState(startingStep);
 
-  React.useEffect(function () {
+  useEffect(function () {
     dispatch({
       type: "init",
       payload: { index: currentIndex, state: StepStates.CURRENT },
     });
   }, []);
 
-  function submitHandler(): void {
-    onSubmit();
-  }
+  /**
+   * @dev Expose next and previous function.
+   */
+  useImperativeHandle(ref, () => ({
+    /**
+     * @dev Define function to handle going to next step.
+     * @returns {Function}
+     */
+    nextHandler: () => {
+      if (currentIndex === steps.length - 1) {
+        return;
+      }
 
-  function nextHandler(): void {
-    if (currentIndex === steps.length - 1) {
-      return;
-    }
-    let isStateValid = true;
-    const stepValidator = state[currentIndex].validator;
+      /**
+       * @dev Check validation, if validate go Next.
+       */
+      let isStateValid = true;
+      const stepValidator = state[currentIndex].validator;
+      if (stepValidator) {
+        isStateValid = stepValidator();
+      }
 
-    if (stepValidator) {
-      isStateValid = stepValidator();
-    }
-    dispatch({
-      type: "next",
-      payload: {
-        index: isStateValid ? currentIndex + 1 : currentIndex,
-        state: isStateValid ? StepStates.CURRENT : StepStates.ERROR,
-      },
-    });
+      dispatch({
+        type: "next",
+        payload: {
+          index: isStateValid ? currentIndex + 1 : currentIndex,
+          state: isStateValid ? StepStates.CURRENT : StepStates.ERROR,
+        },
+      });
 
-    if (isStateValid) {
-      setCurrentIndex(currentIndex + 1);
-    }
-  }
-
-  function prevHandler(): void {
-    if (currentIndex === 0) {
-      return;
-    }
-
-    dispatch({
-      type: "previous",
-      payload: {
-        index: currentIndex - 1,
-        state: StepStates.CURRENT,
-      },
-    });
-    setCurrentIndex(currentIndex - 1);
-  }
+      if (isStateValid) {
+        setCurrentIndex(currentIndex + 1);
+      }
+    },
+    /**
+     * @dev Define function to handle going to previous step.
+     * @returns {Function}
+     */
+    prevHandler: () => {
+      if (currentIndex === 0) {
+        return;
+      }
+      dispatch({
+        type: "previous",
+        payload: {
+          index: currentIndex - 1,
+          state: StepStates.CURRENT,
+        },
+      });
+      setCurrentIndex(currentIndex - 1);
+    },
+  }));
 
   return (
     <div className={`${styles["progress-bar-wrapper"]} ${wrapperClass || ""}`}>
@@ -151,12 +173,10 @@ function StepProgressBar(props: StepProgressProps): JSX.Element {
           );
         })}
       </ul>
-
-      <div className={`${styles["step-content"]} ${contentClass || ""}`}>
-        {props.steps[currentIndex].content}
-      </div>
     </div>
   );
-}
+};
 
-export default StepProgressBar;
+export const StepProgressBar = forwardRef(Ref);
+
+export type StepProgressHandle = React.ElementRef<typeof StepProgressBar>;

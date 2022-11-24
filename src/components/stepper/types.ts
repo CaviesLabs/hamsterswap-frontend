@@ -1,3 +1,4 @@
+/** @dev Define enum for step state. */
 export enum StepStates {
   NOT_STARTED = "not_started",
   CURRENT = "current",
@@ -5,6 +6,7 @@ export enum StepStates {
   COMPLETED = "completed",
 }
 
+/** @dev Define progress step interface. */
 export interface ProgressStep {
   label: string;
   subtitle?: string;
@@ -14,6 +16,7 @@ export interface ProgressStep {
   validator?: (payload?: any) => boolean;
 }
 
+/** @dev Define props interface. */
 export interface StepProgressProps {
   steps: ProgressStep[];
   startingStep: number;
@@ -32,7 +35,14 @@ export interface StepProgressProps {
   nextBtnName?: string;
 }
 
+/** @dev Define props interface. */
 export interface ReducerAction {
   type: string;
   payload: { index: number; state: StepStates };
 }
+
+/** @dev Define props interface. */
+export type StepProgressHandler = {
+  nextHandler(): void;
+  prevHandler(): void;
+};

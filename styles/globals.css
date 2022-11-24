@@ -58,3 +58,11 @@ a {
 .semi-bold {
   font-family: semi-poppins-bold !important;
 }
+
+.carousel .slide {
+  text-align: initial !important;
+}
+
+.control-next, .control-prev, .carousel-status {
+  display: none !important;
+}

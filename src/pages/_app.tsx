@@ -32,6 +32,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
             crossOrigin="anonymous"
           />
+          <Script src="../path/to/flowbite/dist/flowbite.js" />
           {/**
            * @dev
            * Wrap the whole app in Goki Kit provider for use.

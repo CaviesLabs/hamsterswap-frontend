@@ -24,4 +24,8 @@ export const categoryOptions = [
 /**
  * @dev Define list of page which header will have purple background.
  */
-export const PURPLE_HEADER_PAGES = ["proposal", "transaction"];
+export const PURPLE_HEADER_PAGES = [
+  "proposal",
+  "transaction",
+  "create-proposal",
+];
