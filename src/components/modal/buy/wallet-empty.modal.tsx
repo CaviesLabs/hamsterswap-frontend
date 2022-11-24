@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { Button, Card, Carousel, Modal } from "antd";
-import { NftDetailsModalProps } from "./types";
+import { BuyModalProps } from "./types";
 import { Row, Col } from "antd"
 
-export const WalletEmptyModal: FC<NftDetailsModalProps> = (props) => {
+export const WalletEmptyModal: FC<BuyModalProps> = (props) => {
   return (
     <Modal
       open={props.isModalOpen}
