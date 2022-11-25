@@ -73,16 +73,6 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
           )}
         </div>
       </div>
-      {/*<GameItemModal*/}
-      {/*  isModalOpen={openGameItemModal}*/}
-      {/*  handleOk={() => {}}*/}
-      {/*  handleCancel={() => {}}*/}
-      {/*/>*/}
-      {/*<WalletEmptyModal*/}
-      {/*  isModalOpen={openGameItemModal}*/}
-      {/*  handleOk={() => {}}*/}
-      {/*  handleCancel={() => {}}*/}
-      {/*/>*/}
       <ConfirmedTransactionModal
         isModalOpen={openGameItemModal}
         handleOk={() => {}}

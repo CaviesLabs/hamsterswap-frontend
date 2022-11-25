@@ -154,16 +154,24 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
                 </p>
                 <div className="flex pl-[60px]">
                   {swapOptions.map((_, index) => (
-                    <Button
-                      className={classnames(
-                        "float-right !rounded-[100px] after:!rounded-[100px] !px-[10px]",
-                        { "ml-[12px]": index > 0 }
-                      )}
-                      size="small"
-                      shape={optionSelected === index ? "primary" : "secondary"}
-                      text={`Option ${index + 1}`}
-                      onClick={() => setOptionSelected(index)}
-                    />
+                    <div
+                      className={classnames("float-right", {
+                        "pl-[12px]": index > 0,
+                      })}
+                    >
+                      <Button
+                        className={classnames(
+                          "!rounded-[100px] after:!rounded-[100px] !px-[10px]",
+                          { "!ml-[22px]": index > 0 }
+                        )}
+                        size="small"
+                        shape={
+                          optionSelected === index ? "primary" : "secondary"
+                        }
+                        text={`Option ${index + 1}`}
+                        onClick={() => setOptionSelected(index)}
+                      />
+                    </div>
                   ))}
                 </div>
               </div>
