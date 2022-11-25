@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import styles from "@/styles/Home.module.css";
 import { DashboardPageProvider } from "@/src/hooks/pages/dashboard";
-import { ProposalItem } from "@/src/components/proposal-item";
+import { ProposalExploreItem } from "@/src/components/proposal-item";
 import { sortOptions, categoryOptions } from "@/src/utils/constants";
 
 const Layout: FC = () => {
@@ -234,8 +234,8 @@ const Layout: FC = () => {
                 <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                   <div className="lg:col-span-8">
                     <div className="rounded-lg  lg:h-full px-[10px] py-[20px]">
-                      <ProposalItem />
-                      <ProposalItem />
+                      <ProposalExploreItem />
+                      <ProposalExploreItem />
                     </div>
                   </div>
                 </div>
