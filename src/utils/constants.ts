@@ -29,3 +29,33 @@ export const PURPLE_HEADER_PAGES = [
   "transaction",
   "create-proposal",
 ];
+
+/**
+ * @dev Swap options.
+ */
+export const swapOptions = [
+  {
+    name: "#911",
+    collection: "Maya Spirits",
+    image:
+      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
+    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+  },
+  {
+    name: "#911",
+    collection: "Maya Spirits",
+    image:
+      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
+    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+  },
+  {
+    name: "#911",
+    collection: "Maya Spirits",
+    image:
+      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
+    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+  },
+];

@@ -39,6 +39,7 @@ body {
   margin: 0;
   font-family: semi-poppins-bold;
   color: #20242D;
+  overflow-x: hidden;
 }
 
 
@@ -65,4 +66,8 @@ a {
 
 .control-next, .control-prev, .carousel-status {
   display: none !important;
+}
+
+.ReactCollapse--collapse {
+  transition: height 500ms;
 }
