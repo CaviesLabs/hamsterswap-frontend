@@ -3,7 +3,7 @@ import "@hamsterbox/ui-kit/dist/cjs/styles/css/main.css";
 import Script from "next/script";
 import makeStore from "@/src/redux";
 import type { AppProps } from "next/app";
-import { FC, useMemo, useEffect } from "react";
+import { FC, useMemo } from "react";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "@hamsterbox/ui-kit";
 import { WalletKitProvider } from "@gokiprotocol/walletkit";
@@ -54,19 +54,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       new SolletWalletAdapter(),
     ];
   }, [network]);
-
-  useEffect(() => {
-    setInterval(() => {
-      const list = document.querySelectorAll(".slide");
-      list.forEach((item) => {
-        if (!item.classList.contains("selected")) {
-          (item as any).style.height = "0px";
-        } else {
-          (item as any).style.height = "auto";
-        }
-      });
-    }, 100);
-  }, []);
 
   return (
     <Provider store={store}>

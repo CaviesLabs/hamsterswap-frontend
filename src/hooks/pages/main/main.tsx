@@ -1,8 +1,12 @@
 import { ReactNode, useCallback, useState } from "react";
 import { MainContext } from "./types";
 import { NFTDetailsModal } from "@/src/components/modal";
+import { useUI } from "@/src/utils";
 
 export const MainProvider = (props: { children: ReactNode }) => {
+  /** @dev Call hook to use functions related to UI process. */
+  useUI();
+
   /**
    * @dev Define condition to show Nft-detail modal.
    */
