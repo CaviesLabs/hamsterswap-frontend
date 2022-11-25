@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Button, Card, Carousel, Modal } from "antd";
 import { BuyModalProps } from "./types";
-import { Row, Col } from "antd"
+import { Row, Col } from "antd";
 
 export const WalletEmptyModal: FC<BuyModalProps> = (props) => {
   return (
@@ -26,7 +26,10 @@ export const WalletEmptyModal: FC<BuyModalProps> = (props) => {
             You don't have the required items for swapping.
           </p>
 
-          <button onClick={() => props.handleCancel} className="w-full bg-purple text-white rounded-3xl text-lg font-bold py-3 hover:bg-blurPurple">
+          <button
+            onClick={() => props.handleCancel}
+            className="w-full bg-purple text-white rounded-3xl text-lg font-bold py-3 hover:bg-blurPurple"
+          >
             Got it
           </button>
         </div>

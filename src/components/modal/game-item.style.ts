@@ -70,7 +70,7 @@ export const ModalStyle = styled.div`
   }
 
   .flickity-button-icon {
-    fill: #735CF7;
+    fill: #735cf7;
   }
 
   /* ---- previous/next buttons ---- */
@@ -131,7 +131,7 @@ export const ModalStyle = styled.div`
     height: 10px;
     transition: width 0.2s linear;
     margin: 0 4px;
-    background: #735CF7;
+    background: #735cf7;
     border-radius: 20px;
     opacity: 0.25;
     cursor: pointer;
@@ -141,4 +141,4 @@ export const ModalStyle = styled.div`
     opacity: 1;
     width: 20px;
   }
-`
+`;

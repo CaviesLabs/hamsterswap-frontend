@@ -1,12 +1,16 @@
 import { FC, useState } from "react";
 import { RowNftItemProps } from "./types";
 import { useMain } from "@/src/hooks/pages/main";
-import { GameItemModal, WalletEmptyModal, ConfirmedTransactionModal } from "../modal";
+import {
+  GameItemModal,
+  WalletEmptyModal,
+  ConfirmedTransactionModal,
+} from "../modal";
 
 export const RowNftItem: FC<RowNftItemProps> = (props) => {
   const [collapse, setCollapse] = useState(false);
   const { openNftDetailModal } = useMain();
-  const [ openGameItemModal, setOpenGameItemModal ] = useState(false)
+  const [openGameItemModal, setOpenGameItemModal] = useState(false);
 
   return (
     <div
