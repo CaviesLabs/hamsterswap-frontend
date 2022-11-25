@@ -1,12 +1,12 @@
 import { FC, useState } from "react";
 import { RowNftItemProps } from "./types";
 import { useMain } from "@/src/hooks/pages/main";
-import { GameItemModal, WalletEmptyModal, ConfirmedTransactionModal } from "../modal";
+import { ConfirmedTransactionModal } from "../modal";
 
 export const RowNftItem: FC<RowNftItemProps> = (props) => {
   const [collapse, setCollapse] = useState(false);
   const { openNftDetailModal } = useMain();
-  const [ openGameItemModal, setOpenGameItemModal ] = useState(false)
+  const [openGameItemModal] = useState(false);
 
   return (
     <div
@@ -18,7 +18,7 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
           <img
             src={props.image}
             alt="NFT image"
-            className="h-full w-[72px] object-cover rounded-[8px]"
+            className="h-full !w-[72px] object-cover rounded-[8px]"
           ></img>
         </div>
         <div className="px-4 w-72 left">

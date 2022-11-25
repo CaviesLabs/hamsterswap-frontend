@@ -1,7 +1,7 @@
 import { FC } from "react";
-import { Button, Card, Carousel, Modal } from "antd";
+import { Modal } from "antd";
 import { NftDetailsModalProps } from "./types";
-import { Row, Col } from "antd"
+import { Row, Col } from "antd";
 import Flickity from "react-flickity-component";
 import { ModalStyle } from "./game-item.style";
 
@@ -20,7 +20,7 @@ export const GameItemModal: FC<NftDetailsModalProps> = (props) => {
             <Col span={10}>
               <div className="w-[80%] mx-auto">
                 <ModalStyle>
-                  <Flickity >
+                  <Flickity>
                     <img
                       src="https://placeimg.com/640/480/animals"
                       alt="nft image"
@@ -47,29 +47,21 @@ export const GameItemModal: FC<NftDetailsModalProps> = (props) => {
             </Col>
             <Col span={14}>
               <div className="md:basis-2/3 ml-16 mr-8">
-                <div>
-                  Item name
-                </div>
+                <div>Item name</div>
                 <h2 className="mb-6 leading-tight tracking-tight font-bold text-gray-800 text-2xl md:text-3xl">
                   Nhac Vuong Kiem
                 </h2>
-                <p className="text-gray-500">
-                  Game
-                </p>
+                <p className="text-gray-500">Game</p>
                 <a href="#" className="text-indigo-600 hover:underline">
                   Vo Lam Truyen Ky
                 </a>
-                <p className="mt-6 text-gray-500">
-                  Game ID
-                </p>
+                <p className="mt-6 text-gray-500">Game ID</p>
+                <p className="mb-6">6464242413 - Meow7</p>
+                <p className="mt-6 text-gray-500">Description</p>
                 <p className="mb-6">
-                  6464242413 - Meow7
-                </p>
-                <p className="mt-6 text-gray-500">
-                  Description
-                </p>
-                <p className="mb-6">
-                  Lorem ipsum dolor sit amet consectetur. Faucibus volutpat velit aliquam praesent donec habitant morbi id quis. Quis ut nunc nulla adipiscing duis.
+                  Lorem ipsum dolor sit amet consectetur. Faucibus volutpat
+                  velit aliquam praesent donec habitant morbi id quis. Quis ut
+                  nunc nulla adipiscing duis.
                 </p>
               </div>
             </Col>
