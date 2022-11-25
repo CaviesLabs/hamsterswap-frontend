@@ -7,3 +7,4 @@ export * from "./buy/confirmed-transaction.modal";
 export * from "./add-items/add-nft.modal";
 export * from "./add-items/add-cash.modal";
 export * from "./add-items/add-sol.modal";
+export * from "./add-items/add-game-item.modal";
