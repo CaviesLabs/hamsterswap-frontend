@@ -1,13 +1,28 @@
 import "../../styles/globals.css";
-import type { AppProps } from "next/app";
-import { FC } from "react";
-import { Provider } from "react-redux";
+import "@hamsterbox/ui-kit/dist/cjs/styles/css/main.css";
 import Script from "next/script";
 import makeStore from "@/src/redux";
-import "@hamsterbox/ui-kit/dist/cjs/styles/css/main.css";
+import type { AppProps } from "next/app";
+import { FC, useMemo } from "react";
+import { Provider } from "react-redux";
 import { ThemeProvider } from "@hamsterbox/ui-kit";
 import { WalletKitProvider } from "@gokiprotocol/walletkit";
+import { WalletProvider } from "@/src/hooks/useWallet";
 import { MainProvider } from "@/src/hooks/pages/main";
+import {
+  ConnectionProvider,
+  WalletProvider as SolanaWalletAdapterProvider,
+} from "@solana/wallet-adapter-react";
+import { clusterApiUrl } from "@solana/web3.js";
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import {
+  PhantomWalletAdapter,
+  BraveWalletAdapter,
+  Coin98WalletAdapter,
+  LedgerWalletAdapter,
+  SolflareWalletAdapter,
+  SolletWalletAdapter,
+} from "@solana/wallet-adapter-wallets";
 
 const store = makeStore();
 
@@ -19,6 +34,27 @@ const AppComponent: FC<{ Component: any; pageProps: any }> = ({
 };
 
 function MyApp({ Component, pageProps }: AppProps) {
+  /** @dev Process to select blockchain network. */
+  const network = useMemo(() => {
+    if ((process.env.ENV as string) === "prod") {
+      return WalletAdapterNetwork.Mainnet;
+    } else {
+      return WalletAdapterNetwork.Devnet;
+    }
+  }, [process.env.NODE_ENV]);
+
+  /** @dev Initilize needed wallet adapters. */
+  const walletAdapters = useMemo(() => {
+    return [
+      new PhantomWalletAdapter(),
+      new BraveWalletAdapter(),
+      new Coin98WalletAdapter(),
+      new LedgerWalletAdapter(),
+      new SolflareWalletAdapter(),
+      new SolletWalletAdapter(),
+    ];
+  }, [network]);
+
   return (
     <Provider store={store}>
       <MainProvider>
@@ -32,22 +68,27 @@ function MyApp({ Component, pageProps }: AppProps) {
             integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
             crossOrigin="anonymous"
           />
-          {/**
-           * @dev
-           * Wrap the whole app in Goki Kit provider for use.
-           */}
-          <WalletKitProvider
-            defaultNetwork={
-              (process.env.ENV as string) === "prod" ? "mainnet-beta" : "devnet"
-            }
-            app={{
-              name: "Hamsterswap",
-              icon: <img src="/assets/icons/apple-icon.png" alt="icon" />,
-            }}
-            debugMode={true} // you may want to set this in REACT_APP_DEBUG_MODE
-          >
-            <AppComponent {...{ Component, pageProps }} />
-          </WalletKitProvider>
+          <Script src="../path/to/flowbite/dist/flowbite.js" />
+          <ConnectionProvider endpoint={clusterApiUrl(network)}>
+            <SolanaWalletAdapterProvider wallets={walletAdapters}>
+              {/**
+               * @dev
+               * Wrap the whole app in Goki Kit provider for use.
+               */}
+              <WalletKitProvider
+                defaultNetwork={network}
+                app={{
+                  name: "Hamsterswap",
+                  icon: <img src="/assets/icons/apple-icon.png" alt="icon" />,
+                }}
+                debugMode={true} // you may want to set this in REACT_APP_DEBUG_MODE
+              >
+                <WalletProvider>
+                  <AppComponent {...{ Component, pageProps }} />
+                </WalletProvider>
+              </WalletKitProvider>
+            </SolanaWalletAdapterProvider>
+          </ConnectionProvider>
         </ThemeProvider>
       </MainProvider>
     </Provider>

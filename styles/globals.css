@@ -39,6 +39,7 @@ body {
   margin: 0;
   font-family: semi-poppins-bold;
   color: #20242D;
+  overflow-x: hidden;
 }
 
 
@@ -57,4 +58,16 @@ a {
 
 .semi-bold {
   font-family: semi-poppins-bold !important;
+}
+
+.carousel .slide {
+  text-align: initial !important;
+}
+
+.control-next, .control-prev, .carousel-status {
+  display: none !important;
+}
+
+.ReactCollapse--collapse {
+  transition: height 500ms;
 }
