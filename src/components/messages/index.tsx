@@ -6,8 +6,10 @@ import classnames from "classnames";
 import { Button, Input } from "antd";
 
 const Messages: FC = () => {
+  const [closed, setClosed] = useState(false);
   const [opened, setOpened] = useState(true);
 
+  if (closed) return null;
   return (
     <StyledMessages>
       <div className="container max-w-7xl mx-auto flex flex-row-reverse">
@@ -15,6 +17,7 @@ const Messages: FC = () => {
           <UserAvatarMessage
             opened={opened}
             setOpened={setOpened}
+            setClosed={() => setClosed(true)}
             avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
             walletAddress={utilsProvider.makeShort(
               "F8qedeJsnrFnLfKpT4QN3GeAQqQMtq4izNLR1dKb5eRS",

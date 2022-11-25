@@ -13,6 +13,12 @@ import { RowEditNftItem } from "@/src/components/nfts";
 import { Carousel } from "react-responsive-carousel";
 
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import {
+  AddCashModal,
+  AddGameItemModal,
+  AddNftModal,
+  AddSolModal,
+} from "../components/modal";
 
 const Layout: FC = () => {
   const { signMessage } = useWallet();
@@ -20,6 +26,14 @@ const Layout: FC = () => {
    * @dev Define step state.
    */
   const [currentStep, setCurrentStep] = useState(0);
+
+  /**
+   * @dev handle open modal by type
+   */
+  const [isAddNft, setIsAddNft] = useState(false);
+  const [isAddSol, setIsAddSol] = useState(false);
+  const [isAddGameItem, setIsAddGameItem] = useState(false);
+  const [isAddCash, setIsAddCash] = useState(false);
 
   /**
    * @dev Swap options.
@@ -130,6 +144,12 @@ const Layout: FC = () => {
                         text="Add NFT"
                         className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
                         icon={<PlustIcon />}
+                        onClick={() => setIsAddNft(true)}
+                      />
+                      <AddNftModal
+                        isModalOpen={isAddNft}
+                        handleOk={() => {}}
+                        handleCancel={() => {}}
                       />
                       <Button
                         text="Add SOL"
@@ -139,6 +159,12 @@ const Layout: FC = () => {
                           color: "#FFFFFF",
                         }}
                         icon={<PlustIcon />}
+                        onClick={() => setIsAddSol(true)}
+                      />
+                      <AddSolModal
+                        isModalOpen={isAddSol}
+                        handleOk={() => {}}
+                        handleCancel={() => {}}
                       />
                       <Button
                         text="Add in-game item"
@@ -148,6 +174,12 @@ const Layout: FC = () => {
                           color: "#FFFFFF",
                         }}
                         icon={<PlustIcon />}
+                        onClick={() => setIsAddGameItem(true)}
+                      />
+                      <AddGameItemModal
+                        isModalOpen={isAddGameItem}
+                        handleOk={() => {}}
+                        handleCancel={() => {}}
                       />
                       <Button
                         text="Add Cash"
@@ -157,6 +189,12 @@ const Layout: FC = () => {
                           color: "#FFFFFF",
                         }}
                         icon={<PlustIcon />}
+                        onClick={() => setIsAddCash(true)}
+                      />
+                      <AddCashModal
+                        isModalOpen={isAddCash}
+                        handleOk={() => {}}
+                        handleCancel={() => {}}
                       />
                     </div>
                     <div className="block mt-[20px]">
