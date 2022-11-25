@@ -28,6 +28,7 @@ export const PURPLE_HEADER_PAGES = [
   "proposal",
   "transaction",
   "create-proposal",
+  "profile",
 ];
 
 /**
