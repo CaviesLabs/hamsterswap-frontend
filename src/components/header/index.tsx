@@ -188,7 +188,10 @@ const Header: FC = () => {
                 <Button text="Connect" onClick={connectWallet} />{" "}
               </div>
             ) : (
-              <div className="relative flex items-center h-full py-[3px] px-[10px] border-solid border-[0px] border-purple rounded-[5px] cursor-pointer">
+              <div
+                className="relative flex items-center h-full py-[3px] px-[10px] border-solid border-[0px] border-purple rounded-[5px] cursor-pointer"
+                onClick={() => router.push("/profile")}
+              >
                 <img
                   className="w-[20px] md:w-[40px] h-[auto] mr-[10px]"
                   src="https://source.boringavatars.com/beam"
