@@ -1,8 +1,6 @@
 import { FC } from "react";
-import { Button, Card, Carousel, Modal } from "antd";
+import { Modal } from "antd";
 import { BuyModalProps } from "./types";
-import { Row, Col } from "antd";
-import { utilsProvider } from "@/src/utils/utils.provider";
 
 export const ConfirmedTransactionModal: FC<BuyModalProps> = (props) => {
   return (

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Button, Card, Modal } from "antd";
+import { Modal } from "antd";
 import { NftDetailsModalProps } from "./types";
 import { Row, Col } from "antd";
 
