@@ -150,21 +150,16 @@ const Header: FC = () => {
     };
   }, []);
 
-  console.log(router.asPath);
-
   return (
     <div
-      className={classnames(
-        "app-header border-borderColor dark:border-borderColorDark border-b-[0.5px]",
-        {
-          /**
-           * @dev Restrict fill purple background & clear border for specific pages.
-           */
-          "bg-purpleBg border-b-[0px]": PURPLE_HEADER_PAGES.filter((item) =>
-            router.asPath.includes(item)
-          ).length,
-        }
-      )}
+      className={classnames("app-header", {
+        /**
+         * @dev Restrict fill purple background & clear border for specific pages.
+         */
+        "bg-purpleBg border-b-[0px]": PURPLE_HEADER_PAGES.filter((item) =>
+          router.asPath.includes(item)
+        ).length,
+      })}
       id="app-header"
     >
       <div className="py-[18px] md:py-[25px] pl-[20px] pr-0  lg:max-w-[1180px] lg:mx-auto flow-root">
@@ -242,41 +237,14 @@ const Header: FC = () => {
         >
           {
             <ul className="menu-container float-left">
-              {menuData.map((item, index) => (
-                <li
-                  key={`desktop-menu-item-${index}`}
-                  className="float-left md:mr-[40px] lg:mr-[40px]"
-                  onClick={() => handleOnClickMenu(item.href)}
-                >
-                  {item.button ? (
-                    <Button
-                      className="!rounded-[100px] after:!rounded-[100px] !px-[20px]"
-                      text="Crreate a Proposal"
-                      size="small"
-                      onClick={() => router.push(item.href)}
-                    />
-                  ) : (
-                    <a
-                      className={classnames(
-                        "font-[16px] uppercase cursor-pointer",
-                        styles["desktop-menu-text"],
-                        {
-                          "text-menuItemSelected":
-                            item.href === curSlug && isHomePage(),
-                          "dark:text-menuItemSelectedDark":
-                            item.href === curSlug && isHomePage(),
-                          "text-menuItem":
-                            item.href !== curSlug || !isHomePage(),
-                          "dark:text-menuItemDark":
-                            item.href !== curSlug || !isHomePage(),
-                        }
-                      )}
-                    >
-                      {item.title}
-                    </a>
-                  )}
-                </li>
-              ))}
+              {wallet && (
+                <Button
+                  className="!rounded-[100px] after:!rounded-[100px] !px-[20px]"
+                  text="Create a Proposal"
+                  size="small"
+                  onClick={() => router.push("/create-proposal")}
+                />
+              )}
             </ul>
           }
         </div>
@@ -291,7 +259,7 @@ const Header: FC = () => {
                   {item.button ? (
                     <Button
                       className="!rounded-[100px] after:!rounded-[100px] !px-[20px] mx-auto"
-                      text="Crreate a Proposal"
+                      text="Create a Proposal"
                       size="small"
                       onClick={() => router.push(item.href)}
                     />

@@ -1,0 +1,23 @@
+
+.bannerWrap {
+  height: calc(100vh - 400px);
+
+  .heading {
+    position: absolute;
+    padding: 50px 0;
+    left: 0;
+    bottom: 0;
+
+    animation: MoveUpDown 7s linear infinite;
+    transform: perspective(3000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1);
+  }
+}
+
+@keyframes MoveUpDown {
+  0%, 100% {
+    top: 0;
+  }
+  50% {
+    top: 100px;
+  }
+}
