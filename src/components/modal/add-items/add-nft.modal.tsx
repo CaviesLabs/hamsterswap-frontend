@@ -43,7 +43,7 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
 
   return (
     <Modal
-      title="Add NFT"
+      title={<p className="text-3xl">Add NFT</p>}
       open={props.isModalOpen}
       onOk={props.handleOk}
       onCancel={props.handleCancel}
