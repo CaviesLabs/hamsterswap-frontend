@@ -75,23 +75,6 @@ const Header: FC = () => {
 
   /**
    * @description
-   * This function is used for checking if current page is home page or not
-   * if home page it will automatically focus on fist nav menu
-   * else it will be ignore
-   */
-  const isHomePage = useMemo(
-    () => () => {
-      const { asPath } = router;
-      if (asPath === "/" || asPath.startsWith("/#")) {
-        return true;
-      }
-      return false;
-    },
-    [router]
-  );
-
-  /**
-   * @description
    * This function will automatically make bold on menu item when user scroll
    * into the view that item present for
    */

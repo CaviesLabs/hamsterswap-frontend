@@ -44,8 +44,11 @@ export const AddGameItemModal: FC<AddItemModalProps> = (props) => {
             <p className="text-dark60">Support JPG, PNG, maximum 2MB</p>
 
             <div className="mt-5">
-              {mockImages.map((image) => (
-                <Row className="bg-dark10 rounded-lg p-4 w-full mb-4">
+              {mockImages.map((image, index) => (
+                <Row
+                  className="bg-dark10 rounded-lg p-4 w-full mb-4"
+                  key={`add-game-item-pr-${index}`}
+                >
                   <Col span={5}>
                     <img className="rounded" src={image.filepath} />
                   </Col>

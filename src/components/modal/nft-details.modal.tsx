@@ -93,8 +93,8 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
               </a>
               <p className="mt-6 mb-3 text-gray-500 text-sm">Attributes</p>
               <Row gutter={[16, 16]}>
-                {mockAttributes.map((attr) => (
-                  <Col span={12}>
+                {mockAttributes.map((attr, index) => (
+                  <Col span={12} key={`attr-item-${index}`}>
                     <div className="bg-gray-100 py-4 px-6 rounded-2xl	w-full">
                       <p className="uppercase">{attr.title}</p>
                       <p className="font-bold text-gray-800 text-xl py-3">
