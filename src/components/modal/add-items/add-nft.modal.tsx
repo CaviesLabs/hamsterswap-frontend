@@ -60,7 +60,10 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
             <CheckboxGroup onChange={(list) => setCheckedList(list)}>
               <div className="mt-10 max-h-96 overflow-scroll">
                 {mockNftItems.map((nftItem, i) => (
-                  <Row className="bg-white rounded-lg p-4 w-full mb-4">
+                  <Row
+                    className="bg-white rounded-lg p-4 w-full mb-4"
+                    key={`add-nft-item-pr-${i}`}
+                  >
                     <Col span={5}>
                       <img className="rounded" src={nftItem.image} />
                     </Col>

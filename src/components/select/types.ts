@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 type GameProps = {
   image: string;
   name: string;
@@ -7,6 +9,6 @@ type GameProps = {
 export type SelectProps = {
   options: GameProps[];
   className?: string;
-  placeholder?: string | HTMLElement;
-  searchPlaceholder?: string | HTMLElement;
+  placeholder?: ReactNode;
+  searchPlaceholder?: string;
 };

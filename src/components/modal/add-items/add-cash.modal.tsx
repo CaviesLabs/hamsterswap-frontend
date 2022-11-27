@@ -58,6 +58,7 @@ export const AddCashModal: FC<AddItemModalProps> = (props) => {
               <div className="w-full max-h-96 overflow-scroll">
                 {mockNftItems.map((nftItem, i) => (
                   <Row
+                    key={`add-cash-item-pr-${i}`}
                     align="middle"
                     className="bg-white rounded-lg p-4 w-full mb-4"
                   >

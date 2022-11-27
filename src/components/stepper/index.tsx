@@ -123,7 +123,7 @@ export const Ref: ForwardRefRenderFunction<
         {state.map(function (step, i) {
           return (
             <li
-              key={i}
+              key={`stepper-${i}`}
               className={`${styles["progress-step"]}${
                 step.state === StepStates.COMPLETED
                   ? ` ${styles.completed}`

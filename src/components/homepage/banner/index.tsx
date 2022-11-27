@@ -1,9 +1,8 @@
-import { SearchInputProps } from "@/src/components/search/types";
 import styles from "./banner.module.scss";
 import { Button } from "@hamsterbox/ui-kit";
 import { useRouter } from "next/router";
 
-export function Banner(props: SearchInputProps) {
+export function Banner() {
   const router = useRouter();
 
   return (

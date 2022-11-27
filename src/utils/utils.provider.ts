@@ -153,7 +153,6 @@ class UtilsProvider {
    * @param size
    */
   public makeShort(value: string, size: number) {
-    console.log(value.length, size);
     const arr = value.split("");
     if (arr.length > size) {
       return (

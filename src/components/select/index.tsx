@@ -31,7 +31,10 @@ export default function (props: SelectProps) {
 
           <div className="mt-4">
             {props.options.map((game, i) => (
-              <div className="cursor-pointer hover:bg-dark30">
+              <div
+                className="cursor-pointer hover:bg-dark30"
+                key={`${game.name}${i}`}
+              >
                 <div className="px-2 flex border-b py-4 ">
                   <div className="w-1/6 max-w-[60px]">
                     <img className="rounded-[50%]" src={game.image} />
