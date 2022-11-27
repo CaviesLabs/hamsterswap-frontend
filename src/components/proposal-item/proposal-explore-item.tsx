@@ -7,7 +7,34 @@ import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "./proposal-item.style";
 import { Button } from "@hamsterbox/ui-kit";
 import classnames from "classnames";
+import { Col, Row } from "antd";
 
+const mockHaves = [
+  {
+    name: "#911",
+    collection: "Maya Spirits",
+    image:
+      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
+    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+  },
+  {
+    name: "#911",
+    collection: "Maya Spirits",
+    image:
+      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
+    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+  },
+  {
+    name: "#911",
+    collection: "Maya Spirits",
+    image:
+      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
+    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+  },
+];
 export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
   const router = useRouter();
   /**
@@ -65,10 +92,10 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
   return (
     <StyledProposalItem
       className="w-full bg-dark10 min-h-[200px] rounded-[32px] rounded-[32px] mb-[46px]"
-      data-label={props.userInfoHidden ? "" : "Guaranteed payment"}
+      data-label={props.isGuaranteedPayment && "Guaranteed payment"}
       {...props}
     >
-      {!props.userInfoHidden && (
+      {props.isGuaranteedPayment && (
         <svg
           width="24"
           height="24"
@@ -91,79 +118,34 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
           <div></div>
         </div>
         <div className="pl-[20px] pr-[20px] md:pl-[77px]">
-          {!props.userInfoHidden && (
-            <div className="pt-[120px] md:pt-[32px]">
-              <UserAvatarCardItem
-                avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
-                orders={917}
-                completion={99.9}
-                reputation={true}
-                walletAddress={utilsProvider.makeShort(
-                  "F8qedeJsnrFnLfKpT4QN3GeAQqQMtq4izNLR1dKb5eRS",
-                  4
-                )}
-              />
-            </div>
-          )}
-          <div className="md:flex pt-[40px] md:px-[30px]">
-            <div className="block md:left w-full md:w-[50%] md:pr-[20px]">
-              <div className="h-[50px]">
-                <p className="semi-bold text-[16px]">I Have</p>
+          <div className="pt-[120px] md:pt-[32px]">
+            <UserAvatarCardItem
+              avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
+              orders={917}
+              completion={99.9}
+              reputation={true}
+              walletAddress={utilsProvider.makeShort(
+                "F8qedeJsnrFnLfKpT4QN3GeAQqQMtq4izNLR1dKb5eRS",
+                4
+              )}
+            />
+          </div>
+          <Row className="pt-[40px] md:px-10" gutter={20}>
+            <Col span={12}>
+              <div className="semi-bold text-[16px] h-[36px] leading-9">
+                I Have
               </div>
-              <div className="pt-[20px] h-[450px]">
-                <RowNftItem
-                  name="#2332"
-                  collection="Maya Spirits"
-                  image="https://i.seadn.io/gae/M1L6jf3EZJZ0ep-0XPA6HxAWH1flQXwgkKwdHVabbMMCVyCBd3cwcwXLl9ZR8vEDFBQ0fbbA1bPUQY2T7t0xpomrS6LwhPVZ4d5jAw?auto=format&w=1000"
-                  nftId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                  collectionId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                />
-                <RowNftItem
-                  name="#2332"
-                  collection="Maya Spirits"
-                  image="https://i.seadn.io/gae/M1L6jf3EZJZ0ep-0XPA6HxAWH1flQXwgkKwdHVabbMMCVyCBd3cwcwXLl9ZR8vEDFBQ0fbbA1bPUQY2T7t0xpomrS6LwhPVZ4d5jAw?auto=format&w=1000"
-                  nftId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                  collectionId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                />
-                <RowNftItem
-                  name="#2332"
-                  collection="Maya Spirits"
-                  image="https://i.seadn.io/gae/M1L6jf3EZJZ0ep-0XPA6HxAWH1flQXwgkKwdHVabbMMCVyCBd3cwcwXLl9ZR8vEDFBQ0fbbA1bPUQY2T7t0xpomrS6LwhPVZ4d5jAw?auto=format&w=1000"
-                  nftId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                  collectionId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                />
-              </div>
-              <div className="pt-[20px]">
-                <p>Note</p>
-                <p className="mt-[12px] text-[16px] regular-text">
-                  If you have the items which are the same with my proposal
-                  items, you can text me to discuss and swap them
-                </p>
-                <p className="mt-[12px] text-[16px] regular-text text-dark60">
-                  Expiration date: 12 Dec, 2022 11:06
-                </p>
-              </div>
-            </div>
-            <div className="block md:left w-full md:w-[50%] md:pl-[20px]">
-              <div className="flow-root items-center h-[50px]">
-                <p
-                  className="semi-bold text-[16px] float-left"
-                  style={{ transform: "translateY(50%)" }}
-                >
+            </Col>
+            <Col span={12}>
+              <div className="flex justify-between">
+                <div className="semi-bold text-[16px] leading-9">
                   Looking For
-                </p>
-                <div className="flex pl-[60px]">
+                </div>
+                <div className="flex">
                   {swapOptions.map((_, index) => (
-                    <div
-                      className={classnames("float-right", {
-                        "pl-[12px]": index > 0,
-                      })}
-                    >
+                    <div className="ml-3">
                       <Button
-                        className={classnames(
-                          "!rounded-[100px] after:!rounded-[100px] !px-[10px]",
-                          { "!ml-[22px]": index > 0 }
-                        )}
+                        className="!rounded-[100px] after:!rounded-[100px] !px-[10px]"
                         size="small"
                         shape={
                           optionSelected === index ? "primary" : "secondary"
@@ -175,12 +157,43 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
                   ))}
                 </div>
               </div>
-              <div className="pt-[20px] h-[450px]">
-                {swapOptions[optionSelected].map((item, index) => (
-                  <RowNftItem key={`swapoptions-${index}`} {...item} />
-                ))}
+            </Col>
+          </Row>
+          <Row className="mt-4 md:px-10" gutter={20}>
+            <Col span={12}>
+              {mockHaves.map((item) => (
+                <div className="mb-4">
+                  <RowNftItem
+                    name={item.name}
+                    collection={item.collection}
+                    image={item.image}
+                    nftId={item.nftId}
+                    collectionId={item.collectionId}
+                  />
+                </div>
+              ))}
+            </Col>
+            <Col span={12}>
+              {swapOptions[optionSelected].map((item, index) => (
+                <RowNftItem key={`swapoptions-${index}`} {...item} />
+              ))}
+            </Col>
+          </Row>
+          <Row className="pt-10 md:px-10" gutter={20}>
+            <Col span={12}>
+              <div className="md:left">
+                <p>Note</p>
+                <p className="mt-[12px] text-[16px] regular-text">
+                  If you have the items which are the same with my proposal
+                  items, you can text me to discuss and swap them
+                </p>
+                <p className="mt-[12px] text-[16px] regular-text text-dark60">
+                  Expiration date: 12 Dec, 2022 11:06
+                </p>
               </div>
-              <div className="pt-[20px]">
+            </Col>
+            <Col span={12}>
+              <div className="md:left">
                 <p>Warranty</p>
                 <p className="mt-[12px] text-[16px] regular-text flex">
                   Guaranteed payment amount:
@@ -191,17 +204,17 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
                   />
                   <span className="semi-bold">300.00 SOL</span>
                 </p>
-                <div className="flex mt-[20px] justify-end">
-                  <Button
-                    className={classnames(
-                      "float-right !rounded-[100px] after:!rounded-[100px] !px-[10px] relative right-[110px]"
-                    )}
-                    text="View Detail"
-                    onClick={() => router.push("/proposal/2")}
-                  />
-                </div>
               </div>
-            </div>
+            </Col>
+          </Row>
+          <div className="flex mt-[20px] justify-end px-10">
+            <Button
+              className={classnames(
+                "!rounded-[100px] after:!rounded-[100px] !px-[10px] relative"
+              )}
+              text="View Detail"
+              onClick={() => router.push("/proposal/2")}
+            />
           </div>
         </div>
       </div>

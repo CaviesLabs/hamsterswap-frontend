@@ -4,7 +4,7 @@ import { ProposalItemProps } from "./types";
 export const StyledProposalItem = styled.div<ProposalItemProps>`
   position: relative;
   ${(props: ProposalItemProps) => {
-    if (props.userInfoHidden) return;
+    if (!props.isGuaranteedPayment) return;
     return `
       &::before {
         position: absolute;

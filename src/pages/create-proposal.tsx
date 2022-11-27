@@ -129,8 +129,8 @@ const Layout: FC = () => {
                       />
                       <AddNftModal
                         isModalOpen={isAddNft}
-                        handleOk={() => {}}
-                        handleCancel={() => {}}
+                        handleOk={() => setIsAddNft(false)}
+                        handleCancel={() => setIsAddNft(false)}
                       />
                       <Button
                         text="Add SOL"
@@ -144,8 +144,8 @@ const Layout: FC = () => {
                       />
                       <AddSolModal
                         isModalOpen={isAddSol}
-                        handleOk={() => {}}
-                        handleCancel={() => {}}
+                        handleOk={() => setIsAddSol(false)}
+                        handleCancel={() => setIsAddSol(false)}
                       />
                       <Button
                         text="Add in-game item"
@@ -159,8 +159,8 @@ const Layout: FC = () => {
                       />
                       <AddGameItemModal
                         isModalOpen={isAddGameItem}
-                        handleOk={() => {}}
-                        handleCancel={() => {}}
+                        handleOk={() => setIsAddGameItem(false)}
+                        handleCancel={() => setIsAddGameItem(false)}
                       />
                       <Button
                         text="Add Cash"
@@ -174,8 +174,8 @@ const Layout: FC = () => {
                       />
                       <AddCashModal
                         isModalOpen={isAddCash}
-                        handleOk={() => {}}
-                        handleCancel={() => {}}
+                        handleOk={() => setIsAddCash(false)}
+                        handleCancel={() => setIsAddCash(false)}
                       />
                     </div>
                     <div className="block mt-[20px]">

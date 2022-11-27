@@ -9,7 +9,7 @@ export const AddSolModal: FC<AddItemModalProps> = (props) => {
 
   return (
     <Modal
-      title="Add SOL"
+      title={<p className="text-3xl">Add SOL</p>}
       open={props.isModalOpen}
       onOk={props.handleOk}
       onCancel={props.handleCancel}
@@ -28,7 +28,7 @@ export const AddSolModal: FC<AddItemModalProps> = (props) => {
               onChange={(e) => setValue(e.target.value)}
             />
 
-            <div className="text-lg text-regular flex items-center mt-5">
+            <div className="text-lg regular-text flex items-center mt-5">
               <p>Your balance:</p>
               <SolanaIcon className="ml-3 mr-2" />
               2,043.54 SOL
