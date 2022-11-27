@@ -2,8 +2,12 @@ import {
   Auth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signInWithCustomToken,
+  signOut,
+  UserCredential,
 } from "firebase/auth";
 import { SolanaSigner } from "@/src/providers/signature.provider";
+import { StorageProvider } from "@/src/providers/storage.provider";
 import * as bs from "bs58";
 
 /**
@@ -16,21 +20,52 @@ export class AuthService {
   private readonly authProvider: Auth;
 
   /**
+   * @dev Auth provider injected.
+   */
+  private readonly storageProvider: StorageProvider;
+
+  /**
    * @dev Initilize service.
    * @param {Auth} authProvider.
    */
-  constructor(authProvider: Auth) {
+  constructor(authProvider: Auth, storageProvider: StorageProvider) {
     /** @dev Import auth provider. */
     this.authProvider = authProvider;
+
+    /** @dev Import storage provider. */
+    this.storageProvider = storageProvider;
   }
 
   /**
-   * @dev The function to generate access token.
-   * @param {any} payload.
+   * @dev The function to re sigin if user already logged in before.
    */
-  public generateAccessToken(payload: any) {
-    //
-    console.log(payload);
+  public async reAuthenticate() {
+    try {
+      /** @dev Get auth credential from storage. */
+      const authData = JSON.parse(
+        this.storageProvider.getItem("userCredential")
+      );
+
+      /** @dev Re-authenticate to Firebase. */
+      return this.login(authData?.email, authData?.password);
+    } catch {
+      throw new Error("Unauthorized");
+    }
+  }
+
+  /**
+   * @dev The function to sign in with token.
+   */
+  public async signInWithToken() {
+    try {
+      const credential = await signInWithCustomToken(
+        this.authProvider,
+        this.storageProvider.getItem("accessToken")
+      );
+      return credential.user;
+    } catch {
+      throw new Error("Unauthorized");
+    }
   }
 
   /**
@@ -76,20 +111,38 @@ export class AuthService {
    * @dev Defie the function to restrict access token into firebase server.
    * @param {string} email.
    * @param {string} password.
-   * @return {Function}
+   * @return {UserCredential}
    */
-  public async login(email: string, password: string) {
+  public async login(email: string, password: string): Promise<UserCredential> {
     try {
       /**
        * @dev Sign in to Firebase server with username & password.
        */
-      const credential = await signInWithEmailAndPassword(
+      const userCredential = await signInWithEmailAndPassword(
         this.authProvider,
         email,
         password
       );
-      const user = credential.user;
-      console.log(user);
+
+      /**
+       * @dev Get user info from credential.
+       */
+      const { user } = userCredential;
+
+      /**
+       * @dev Save @var {accessToken} into storage.
+       */
+      this.storageProvider.setItem("accessToken", (user as any)?.accessToken);
+
+      /**
+       * @dev Decode credential and save to storage.
+       */
+      this.storageProvider.setItem(
+        "userCredential",
+        JSON.stringify({ email, password })
+      );
+
+      return userCredential;
     } catch {}
   }
 
@@ -101,6 +154,8 @@ export class AuthService {
     /**
      * @dev Logout from Firebase server.
      */
-    return this.authProvider.signOut();
+    try {
+      await signOut(this.authProvider);
+    } catch {}
   }
 }

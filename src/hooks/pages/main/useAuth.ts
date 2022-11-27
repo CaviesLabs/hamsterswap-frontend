@@ -33,11 +33,15 @@ export const useAuth = () => {
       /** @dev Get user profile. */
       const user = await userService.getProfile();
       if (!user.email.includes(wallet?.publicKey?.toString())) {
-        /**
-         * This mean user hasnt already login before
-         * and process authenticatiing by sign in a message to blockchain.
-         * */
-        handleLogin();
+        try {
+          await authService.reAuthenticate();
+        } catch {
+          /**
+           * This mean user hasnt already login before
+           * and process authenticatiing by sign in a message to blockchain.
+           * */
+          handleLogin();
+        }
       }
     } catch {
       /**

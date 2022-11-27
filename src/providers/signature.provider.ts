@@ -7,7 +7,6 @@ export class SolanaSigner {
     signedData: Uint8Array,
     walletAddress: string
   ): boolean {
-    console.log(signedData);
     const encodedMessage = new TextEncoder().encode(message);
     return sign.detached.verify(
       encodedMessage,

@@ -2,6 +2,9 @@ import { initializeApp, FirebaseOptions } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { AuthService } from "@/src/services/auth.service";
 import { UserService } from "@/src/services/user.service";
+import { getStorageProvider } from "@/src/providers";
+
+const storageProvider = getStorageProvider();
 
 /**
  * @dev Initialize configs from env configs.
@@ -33,7 +36,7 @@ export const authProvider = getAuth(app);
 
 /** @dev Expose function to initilzize auth service. */
 export const getAuthService = (): AuthService => {
-  return new AuthService(authProvider);
+  return new AuthService(authProvider, storageProvider);
 };
 
 /** @dev Expose function to initilzize auth and user service. */

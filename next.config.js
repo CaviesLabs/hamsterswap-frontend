@@ -29,6 +29,7 @@ module.exports = withTM(
       MESSAGING_SENDER_ID: process.env.MESSAGING_SENDER_ID,
       APP_ID: process.env.APP_ID,
       MEASUREMENT_ID: process.env.MEASUREMENT_ID,
+      HOST_NAME: process.env.HOST_NAME,
     },
     async rewrites() {
       return [
