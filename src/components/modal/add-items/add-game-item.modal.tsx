@@ -75,7 +75,7 @@ export const AddGameItemModal: FC<AddItemModalProps> = (props) => {
                     </div>
                   </div>
 
-                  <p className="text-lg text-left text-regular ml-4 text-gray-500">
+                  <p className="text-lg text-left regular-text ml-4 text-gray-500">
                     Drag and drop here or{" "}
                     <a className="text-indigo-600">browser</a>
                   </p>
@@ -95,6 +95,7 @@ export const AddGameItemModal: FC<AddItemModalProps> = (props) => {
             <p className="text-dark60 text-lg mt-4">Game Name *</p>
             <Select
               placeholder="Select game"
+              searchPlaceholder="Search game name / publisher"
               options={[
                 {
                   image:
@@ -104,7 +105,7 @@ export const AddGameItemModal: FC<AddItemModalProps> = (props) => {
                 },
                 {
                   image:
-                    "https://play-lh.googleusercontent.com/Iehzq0fyCTsAMX7_XEUEy8w8RRcgVNmX2UPDVDkqK8ezhl-4qOBOwm7tb7qe7XGYLqQ",
+                    "https://modtodo.com/uploads/2022/7/garena-free-fire-5th-anniv-thumbnail-150.jpg",
                   name: "Free Fire",
                   publisher: "Garena",
                 },
@@ -116,7 +117,7 @@ export const AddGameItemModal: FC<AddItemModalProps> = (props) => {
                 },
                 {
                   image:
-                    "https://play-lh.googleusercontent.com/TYVborOr3yjCKX1Q8D8_VaEfPmDX-N2zBzzwiVCxXrIlpP4FoZzAo2ddcA3Mj_yzBw",
+                    "https://cdna.artstation.com/p/assets/images/images/033/698/904/large/nkung-tran-04.jpg",
                   name: "Caravan War",
                   publisher: "HIKER GAMES",
                 },

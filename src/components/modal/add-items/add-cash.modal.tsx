@@ -68,7 +68,7 @@ export const AddCashModal: FC<AddItemModalProps> = (props) => {
                     </Col>
                     <Col span={18} className="pl-6">
                       <p className="font-bold text-lg">{nftItem.name}</p>
-                      <p className="text-lg text-regular">{nftItem.email}</p>
+                      <p className="text-lg regular-text">{nftItem.email}</p>
                     </Col>
                     <Col span={1}>
                       <div className="h-[56px] flex justify-end items-center">

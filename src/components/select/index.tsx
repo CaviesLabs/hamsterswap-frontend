@@ -11,8 +11,8 @@ export default function (props: SelectProps) {
     <div className="relative">
       <div
         className={classnames(
-          "p-3 text-lg font-regular border rounded-2xl cursor-pointer flex justify-between items-center",
-          props.className
+          props.className,
+          "p-3 text-lg font-regular border rounded-2xl cursor-pointer flex justify-between items-center"
         )}
         style={{ backgroundColor: "white", color: "#20242D" }}
         onClick={() => setIsOpenDropdown(!isOpenDropdown)}
@@ -25,7 +25,7 @@ export default function (props: SelectProps) {
           <div className="px-4">
             <SearchInput
               className="rounded-3xl p-3"
-              placeholder="Search game name / publisher"
+              placeholder={props.searchPlaceholder}
             />
           </div>
 

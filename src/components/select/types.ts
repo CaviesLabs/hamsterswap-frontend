@@ -7,5 +7,6 @@ type GameProps = {
 export type SelectProps = {
   options: GameProps[];
   className?: string;
-  placeholder?: string;
+  placeholder?: string | HTMLElement;
+  searchPlaceholder?: string | HTMLElement;
 };

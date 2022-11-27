@@ -7,11 +7,12 @@ import { ProposalExploreItem } from "@/src/components/proposal-item";
 import { categoryOptions } from "@/src/utils/constants";
 import { Banner } from "@/src/components/homepage";
 import { SearchIcon } from "@/src/components/icons";
-import { Button, Input } from "antd";
+import { Col, Input, Row } from "antd";
+import { Button } from "@hamsterbox/ui-kit";
+import Select from "@/src/components/select";
 
 const Layout: FC = () => {
   const [mobileFilterDisplayed, setMobileFilterDisplayed] = useState(false);
-  const [sortPopupDisplayed, setSortPopupDisplayed] = useState(false);
 
   return (
     <MainLayout>
@@ -126,39 +127,80 @@ const Layout: FC = () => {
             )}
 
             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <div className="flex items-baseline justify-between border-b border-gray-200 pt-24 pb-6">
+              <div className="flex items-center justify-between pt-24 pb-6">
                 <h1 className="text-4xl font-bold tracking-tight text-gray-900">
                   Active Swaps
                 </h1>
                 <div className="w-[550px] flex">
                   <Input
-                    size="large"
+                    size="middle"
                     className="!rounded-3xl"
                     placeholder="Search by NFT name, collection, game, seller"
                     prefix={<SearchIcon />}
                   />
-                  <Button
-                    className="!rounded-[100px] after:!rounded-[100px] !px-[20px] mx-auto"
-                    title="Search"
-                    size="large"
-                    onClick={() => {}}
-                  />
+                  <div className="ml-4">
+                    <Button
+                      className="!rounded-[100px] after:!rounded-[100px] !px-[30px] mx-auto"
+                      text="Search"
+                      shape="secondary"
+                      size="middle"
+                      onClick={() => {}}
+                    />
+                  </div>
                 </div>
               </div>
 
-              <section
-                aria-labelledby="products-heading"
-                className="pt-6 pb-24"
-              >
+              <section aria-labelledby="products-heading" className="pt-6">
                 <h2 id="products-heading" className="sr-only">
                   Products
                 </h2>
+
+                <div className="flex">
+                  <span className="font-bold mr-4">Filter</span>
+                  <span className="regular-text text-indigo-600">Reset</span>
+                </div>
+
+                <Row className="my-4" gutter={20}>
+                  <Col span={8}>
+                    <Select
+                      className="text-center rounded-3xl text-sm"
+                      placeholder={
+                        <div className="w-full regular-text text-center">
+                          Reputation advertisers
+                        </div>
+                      }
+                      options={[]}
+                    ></Select>
+                  </Col>
+                  <Col span={8}>
+                    <Select
+                      className="text-center rounded-3xl text-sm"
+                      placeholder={
+                        <div className="w-full regular-text text-center">
+                          All payment type
+                        </div>
+                      }
+                      options={[]}
+                    ></Select>
+                  </Col>
+                  <Col span={8}>
+                    <Select
+                      className="text-center rounded-3xl text-sm"
+                      placeholder={
+                        <div className="w-full regular-text text-center">
+                          Include Guaranted payment
+                        </div>
+                      }
+                      options={[]}
+                    ></Select>
+                  </Col>
+                </Row>
 
                 <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                   <div className="lg:col-span-8">
                     <div className="rounded-lg  lg:h-full px-[10px] py-[20px]">
                       <ProposalExploreItem />
-                      <ProposalExploreItem />
+                      <ProposalExploreItem isGuaranteedPayment />
                     </div>
                   </div>
                 </div>

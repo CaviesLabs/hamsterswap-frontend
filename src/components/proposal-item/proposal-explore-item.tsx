@@ -65,10 +65,10 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
   return (
     <StyledProposalItem
       className="w-full bg-dark10 min-h-[200px] rounded-[32px] rounded-[32px] mb-[46px]"
-      data-label={props.userInfoHidden ? "" : "Guaranteed payment"}
+      data-label={props.isGuaranteedPayment && "Guaranteed payment"}
       {...props}
     >
-      {!props.userInfoHidden && (
+      {props.isGuaranteedPayment && (
         <svg
           width="24"
           height="24"
@@ -91,24 +91,22 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
           <div></div>
         </div>
         <div className="pl-[20px] pr-[20px] md:pl-[77px]">
-          {!props.userInfoHidden && (
-            <div className="pt-[120px] md:pt-[32px]">
-              <UserAvatarCardItem
-                avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
-                orders={917}
-                completion={99.9}
-                reputation={true}
-                walletAddress={utilsProvider.makeShort(
-                  "F8qedeJsnrFnLfKpT4QN3GeAQqQMtq4izNLR1dKb5eRS",
-                  4
-                )}
-              />
-            </div>
-          )}
+          <div className="pt-[120px] md:pt-[32px]">
+            <UserAvatarCardItem
+              avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
+              orders={917}
+              completion={99.9}
+              reputation={true}
+              walletAddress={utilsProvider.makeShort(
+                "F8qedeJsnrFnLfKpT4QN3GeAQqQMtq4izNLR1dKb5eRS",
+                4
+              )}
+            />
+          </div>
           <div className="md:flex pt-[40px] md:px-[30px]">
             <div className="block md:left w-full md:w-[50%] md:pr-[20px]">
-              <div className="h-[50px]">
-                <p className="semi-bold text-[16px]">I Have</p>
+              <div className="semi-bold text-[16px] h-[36px] leading-9">
+                I Have
               </div>
               <div className="pt-[20px] h-[450px]">
                 <RowNftItem
@@ -145,25 +143,15 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
               </div>
             </div>
             <div className="block md:left w-full md:w-[50%] md:pl-[20px]">
-              <div className="flow-root items-center h-[50px]">
-                <p
-                  className="semi-bold text-[16px] float-left"
-                  style={{ transform: "translateY(50%)" }}
-                >
+              <div className="flex justify-between">
+                <div className="semi-bold text-[16px] leading-9">
                   Looking For
-                </p>
-                <div className="flex pl-[60px]">
+                </div>
+                <div className="flex">
                   {swapOptions.map((_, index) => (
-                    <div
-                      className={classnames("float-right", {
-                        "pl-[12px]": index > 0,
-                      })}
-                    >
+                    <div className="ml-3">
                       <Button
-                        className={classnames(
-                          "!rounded-[100px] after:!rounded-[100px] !px-[10px]",
-                          { "!ml-[22px]": index > 0 }
-                        )}
+                        className="!rounded-[100px] after:!rounded-[100px] !px-[10px]"
                         size="small"
                         shape={
                           optionSelected === index ? "primary" : "secondary"
