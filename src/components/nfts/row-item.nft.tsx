@@ -9,10 +9,7 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
   const [openGameItemModal] = useState(false);
 
   return (
-    <div
-      className="md:left w-full mb-[20px] cursor-pointer"
-      onClick={openNftDetailModal}
-    >
+    <div className="md:left w-full cursor-pointer" onClick={openNftDetailModal}>
       <div className="bg-white shadow-md hover:scale-105 hover:shadow-xl duration-500 flex rounded-[16px] p-[16px]">
         <div className="left pl-[2px]">
           <img
