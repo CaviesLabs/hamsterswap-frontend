@@ -5,9 +5,15 @@ export class ChatRoomEntity {
 
 /** @dev Export user chat entity. */
 export class UserChatEntity {
+  chatRoomId: string;
   userId: string;
+  reciverId: string;
   displayName: string;
   photoURL: string;
-  chatRoomId: string;
   date: string;
+  lastMessage: {
+    senderId: string;
+    message: string;
+    seen: boolean;
+  };
 }

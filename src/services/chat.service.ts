@@ -35,7 +35,7 @@ export class ChatService {
    * @dev Create chat room.
    * @param {CreateChatRoomDto} createChatRoomDto.
    */
-  public async createChatRom(createChatRoomDto: CreateChatRoomDto) {
+  public async createChatRoom(createChatRoomDto: CreateChatRoomDto) {
     try {
       const { senderId, reciverId } = createChatRoomDto;
 

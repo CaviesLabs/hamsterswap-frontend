@@ -15,6 +15,9 @@ export class CreateUserChatDto {
   userId: string;
 
   @IsString()
+  reciverId: string;
+
+  @IsString()
   displayName: string;
 
   @IsString()
@@ -22,4 +25,10 @@ export class CreateUserChatDto {
 
   @IsString()
   chatRoomId: string;
+
+  lastMessage: {
+    senderId: string;
+    message: string;
+    seen: boolean;
+  };
 }

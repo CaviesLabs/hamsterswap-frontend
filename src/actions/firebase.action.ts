@@ -11,6 +11,7 @@ import { AuthService } from "@/src/services/auth.service";
 import { UserService } from "@/src/services/user.service";
 import { getStorageProvider } from "@/src/providers";
 import { ChatRoomEntity, UserChatEntity } from "@/src/entities/chatroom.entity";
+import { UserEntity } from "@/src/entities/user.entity";
 
 const storageProvider = getStorageProvider();
 
@@ -50,21 +51,24 @@ export const createCollection = <T = DocumentData>(collectionName: string) => {
   ) as CollectionReference<T>;
 };
 
-/** @dev Export chatroom collection. */
+/** @dev Expose chatroom collection. */
 export const chatRoomCollection = createCollection<ChatRoomEntity>("ChatRooms");
 
-/** @dev Export user-chat-info collection */
+/** @dev Expose user-chat-info collection */
 export const userChatCollection = createCollection<UserChatEntity>("UserChats");
+
+/** @dev Expose user collection */
+export const userCollection = createCollection<UserEntity>("Users");
 
 /** @dev Expose @var {Auh} AuthProvider. */
 export const authProvider = getAuth(app);
 
-/** @dev Expose function to initilzize auth service. */
-export const getAuthService = (): AuthService => {
-  return new AuthService(authProvider, storageProvider);
-};
-
 /** @dev Expose function to initilzize auth and user service. */
 export const getUserService = (): UserService => {
   return new UserService(authProvider);
+};
+
+/** @dev Expose function to initilzize auth service. */
+export const getAuthService = (): AuthService => {
+  return new AuthService(authProvider, storageProvider, getUserService());
 };

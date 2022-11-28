@@ -1,16 +1,12 @@
 import { ReactNode, useCallback, useState } from "react";
 import { MainContext } from "./types";
 import { NFTDetailsModal } from "@/src/components/modal";
+import Messages from "@/src/components/messages";
 import { useUI } from "@/src/utils";
 import { useAuth } from "./useAuth";
+import { useAppState } from "./useAppState";
 
 export const MainProvider = (props: { children: ReactNode }) => {
-  /** @dev Call hook to use functions related to UI process. */
-  useUI();
-
-  /** @dev Call hook to use functions related to User Authentication process. */
-  useAuth();
-
   /**
    * @dev Define condition to show Nft-detail modal.
    */
@@ -21,8 +17,19 @@ export const MainProvider = (props: { children: ReactNode }) => {
    */
   const openNftDetailModal = useCallback(() => setNftModal(true), [nftModal]);
 
+  /**
+   * @dev Initilize app states and configure releated reducers.
+   */
+  const appState = useAppState();
+
+  /** @dev Call hook to use functions related to UI process. */
+  useUI();
+
+  /** @dev Call hook to use functions related to User Authentication process. */
+  useAuth();
+
   return (
-    <MainContext.Provider value={{ openNftDetailModal }}>
+    <MainContext.Provider value={{ openNftDetailModal, ...appState }}>
       {/**
        * @dev Render pages.
        */}
@@ -36,6 +43,7 @@ export const MainProvider = (props: { children: ReactNode }) => {
         handleOk={() => setNftModal(true)}
         handleCancel={() => setNftModal(false)}
       />
+      <Messages />
     </MainContext.Provider>
   );
 };
