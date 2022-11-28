@@ -1,8 +1,16 @@
 import { initializeApp, FirebaseOptions } from "firebase/app";
+import {
+  getFirestore,
+  collection,
+  Firestore,
+  CollectionReference,
+  DocumentData,
+} from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { AuthService } from "@/src/services/auth.service";
 import { UserService } from "@/src/services/user.service";
 import { getStorageProvider } from "@/src/providers";
+import { ChatRoomEntity, UserChatEntity } from "@/src/entities/chatroom.entity";
 
 const storageProvider = getStorageProvider();
 
@@ -31,7 +39,24 @@ export const app = initializeApp({
   measurementId: "G-GYG7DQE11J",
 });
 
-/** @dev Expose @var {Auh} AuthProvider */
+/** @dev Expose @var {Firestore} FireStoreProvider. */
+export const firestoreProvider: Firestore = getFirestore();
+
+/** @dev This is just a helper to add the type to the db responses. */
+export const createCollection = <T = DocumentData>(collectionName: string) => {
+  return collection(
+    firestoreProvider,
+    collectionName
+  ) as CollectionReference<T>;
+};
+
+/** @dev Export chatroom collection. */
+export const chatRoomCollection = createCollection<ChatRoomEntity>("ChatRooms");
+
+/** @dev Export user-chat-info collection */
+export const userChatCollection = createCollection<UserChatEntity>("UserChats");
+
+/** @dev Expose @var {Auh} AuthProvider. */
 export const authProvider = getAuth(app);
 
 /** @dev Expose function to initilzize auth service. */
