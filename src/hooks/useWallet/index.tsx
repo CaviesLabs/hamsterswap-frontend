@@ -9,13 +9,13 @@ import {
 import { useSolana as useSaberhq } from "@saberhq/use-solana";
 import { useWallet as useSolana } from "@solana/wallet-adapter-react";
 import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
-import { Base64 } from "js-base64";
+// import { Base64 } from "js-base64";
 import { getWalletName } from "./utils";
 
 /** @dev Define state for context. */
 export interface WalletContextState {
   /** @dev The function to sign message in Solana network. */
-  signMessage(message: string): Promise<string>;
+  signMessage(message: string): Promise<Uint8Array>;
 }
 
 /** @dev Initiize context. */
@@ -34,9 +34,9 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
     async (message: string) => {
       await wallet.adapter.connect();
       const data = new TextEncoder().encode(message);
-      return Base64.fromUint8Array(
-        await (wallet.adapter as MessageSignerWalletAdapter).signMessage(data)
-      ).toString();
+      return await (wallet.adapter as MessageSignerWalletAdapter).signMessage(
+        data
+      );
     },
     [walletProviderInfo, wallet]
   );
