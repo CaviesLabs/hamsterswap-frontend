@@ -31,33 +31,6 @@ export class UserAttributes {
  * @dev Keycloak user info.
  */
 export class UserEntity {
-  /**
-   * @dev Email attribute is retrieved with `email` scope.
-   */
   email: string;
-
-  /**
-   * @dev Profile attributes are retrieved with `profile` scope.
-   */
-  sub: string;
-  email_verified: boolean;
-  birthdate?: string;
-  name?: string;
-  family_name?: string;
-  middle_name?: string;
-  given_name?: string;
-  nickname?: string;
-  website?: string;
-  locale?: string;
-  avatar?: string;
-
-  /**
-   * @dev Wallet attribute is retrieved with `wallet` scope.
-   */
-  wallet?: string;
-
-  /**
-   * @dev Group attribute is retrieved with `group` scope.
-   */
-  group?: UserGroup[];
+  uid: string;
 }

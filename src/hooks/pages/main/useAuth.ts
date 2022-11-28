@@ -2,9 +2,13 @@ import { useEffect } from "react";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useWallet } from "@/src/hooks/useWallet";
 import { getUserService, getAuthService } from "@/src/actions/firebase.action";
+import { useAppState } from "./useAppState";
 
 /** @dev Expore authenticate hook to process tasks related user authentcation */
 export const useAuth = () => {
+  /** @dev Import hooks to update user */
+  const { updateUser } = useAppState();
+
   /** @dev Get Wallet info from @saberhq hook. */
   const wallet = useConnectedWallet();
 
@@ -21,28 +25,29 @@ export const useAuth = () => {
   const handleLogin = async () => {
     /** @dev Sign message to get signature. */
     const signature = await signMessage("SIGN::IN::HAMSTERBOX");
-    await authService.signInWithWallet(
+    const user = await authService.signInWithWallet(
       wallet?.publicKey?.toString(),
       signature
     );
+    updateUser(user.user);
   };
 
   /** @dev The function to handle authentication. */
   const handleAuth = async () => {
     try {
-      /** @dev Get user profile. */
+      /** Get user profile. */
       const user = await userService.getProfile();
-      if (!user.email.includes(wallet?.publicKey?.toString())) {
-        try {
-          await authService.reAuthenticate();
-        } catch {
-          /**
-           * This mean user hasnt already login before
-           * and process authenticatiing by sign in a message to blockchain.
-           * */
-          handleLogin();
-        }
+
+      /** Force to logout. */
+      await authService.logout();
+
+      if (user.email.includes(wallet?.publicKey?.toString())) {
+        /** Try to relogin with stored credentials. */
+        return await authService.reAuthenticate();
       }
+
+      /** Throw error to next block. */
+      throw Error("HASTN");
     } catch {
       /**
        * This mean user hasnt already login before
