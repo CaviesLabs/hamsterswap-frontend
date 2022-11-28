@@ -1,14 +1,17 @@
 import { ReactNode } from "react";
 
-type GameProps = {
-  image: string;
-  name: string;
-  publisher: string;
+type OptionProps = {
+  value: string;
+  image?: string;
+  description?: string;
 };
 
 export type SelectProps = {
-  options: GameProps[];
+  options: OptionProps[];
   className?: string;
   placeholder?: ReactNode;
   searchPlaceholder?: string;
+  showSearch?: boolean;
+  mode?: "multiple";
+  values?: string[];
 };

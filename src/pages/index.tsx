@@ -169,7 +169,15 @@ const Layout: FC = () => {
                           Reputation advertisers
                         </div>
                       }
-                      options={[]}
+                      values={["No Reputation"]}
+                      options={[
+                        {
+                          value: "Reputation",
+                        },
+                        {
+                          value: "No Reputation",
+                        },
+                      ]}
                     ></Select>
                   </Col>
                   <Col span={8}>
@@ -180,7 +188,18 @@ const Layout: FC = () => {
                           All payment type
                         </div>
                       }
-                      options={[]}
+                      values={["Paypal", "Stripe"]}
+                      options={[
+                        {
+                          value: "Bank transfer",
+                        },
+                        {
+                          value: "Paypal",
+                        },
+                        {
+                          value: "Stripe",
+                        },
+                      ]}
                     ></Select>
                   </Col>
                   <Col span={8}>
@@ -191,7 +210,15 @@ const Layout: FC = () => {
                           Include Guaranted payment
                         </div>
                       }
-                      options={[]}
+                      values={["No Guaranted payment"]}
+                      options={[
+                        {
+                          value: "Include Guaranted payment",
+                        },
+                        {
+                          value: "No Guaranted payment",
+                        },
+                      ]}
                     ></Select>
                   </Col>
                 </Row>

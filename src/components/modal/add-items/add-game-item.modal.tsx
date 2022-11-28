@@ -97,32 +97,34 @@ export const AddGameItemModal: FC<AddItemModalProps> = (props) => {
 
             <p className="text-dark60 text-lg mt-4">Game Name *</p>
             <Select
+              showSearch
               placeholder="Select game"
               searchPlaceholder="Search game name / publisher"
+              values={["Flappy Bird"]}
               options={[
                 {
                   image:
                     "https://ecdn.game4v.com/g4v-content/uploads/2020/12/ava-7-1024x1024.jpg",
-                  name: "Vo Lam Truyen Ky",
-                  publisher: "VNG Games",
+                  value: "Vo Lam Truyen Ky",
+                  description: "VNG Games",
                 },
                 {
                   image:
                     "https://modtodo.com/uploads/2022/7/garena-free-fire-5th-anniv-thumbnail-150.jpg",
-                  name: "Free Fire",
-                  publisher: "Garena",
+                  value: "Free Fire",
+                  description: "Garena",
                 },
                 {
                   image:
                     "https://upload.wikimedia.org/wikipedia/en/thumb/0/0a/Flappy_Bird_icon.png/220px-Flappy_Bird_icon.png",
-                  name: "Flappy Bird",
-                  publisher: "Nguyen Dinh Dong",
+                  value: "Flappy Bird",
+                  description: "Nguyen Dinh Dong",
                 },
                 {
                   image:
                     "https://cdna.artstation.com/p/assets/images/images/033/698/904/large/nkung-tran-04.jpg",
-                  name: "Caravan War",
-                  publisher: "HIKER GAMES",
+                  value: "Caravan War",
+                  description: "HIKER GAMES",
                 },
               ]}
             />
