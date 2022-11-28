@@ -1,4 +1,3 @@
-import { Type } from "class-transformer";
 import {
   IsDateString,
   IsEmail,
@@ -7,7 +6,6 @@ import {
   IsUrl,
   Length,
   MaxLength,
-  ValidateNested,
 } from "class-validator";
 
 /**
@@ -67,14 +65,10 @@ export class CreateUserAttributeDto implements UserAttributes {
  * @dev Declare create user dto
  */
 export class CreateUserDto {
-  @IsEmail()
-  email: string;
+  @IsString()
+  uid: string;
 
   @IsString()
-  @MaxLength(32)
-  password: string;
-
-  @ValidateNested()
-  @Type(() => CreateUserAttributeDto)
-  attributes?: CreateUserAttributeDto;
+  @IsEmail()
+  email: string;
 }

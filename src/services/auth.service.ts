@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import { SolanaSigner } from "@/src/providers/signature.provider";
 import { StorageProvider } from "@/src/providers/storage.provider";
+import { UserService } from "./user.service";
 import * as bs from "bs58";
 
 /**
@@ -25,15 +26,29 @@ export class AuthService {
   private readonly storageProvider: StorageProvider;
 
   /**
+   * @dev User service injected.
+   */
+  private readonly userService: UserService;
+
+  /**
    * @dev Initilize service.
    * @param {Auth} authProvider.
+   * @param {StorageProvider} storageProvider.
+   * @param {UserService} userService.
    */
-  constructor(authProvider: Auth, storageProvider: StorageProvider) {
+  constructor(
+    authProvider: Auth,
+    storageProvider: StorageProvider,
+    userService: UserService
+  ) {
     /** @dev Import auth provider. */
     this.authProvider = authProvider;
 
     /** @dev Import storage provider. */
     this.storageProvider = storageProvider;
+
+    /** @dev Import user service. */
+    this.userService = userService;
   }
 
   /**
@@ -103,8 +118,22 @@ export class AuthService {
       /**
        * @dev Sign up to Firebase server with username & password.
        */
-      await createUserWithEmailAndPassword(this.authProvider, email, password);
-    } catch {}
+      const userCredential = await createUserWithEmailAndPassword(
+        this.authProvider,
+        email,
+        password
+      );
+
+      /**
+       * @dev Create user collection.
+       */
+      await this.userService.createUser({
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+      });
+    } catch (err) {
+      console.error(`Error when creating user ${err}`);
+    }
   }
 
   /**

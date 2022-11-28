@@ -30,19 +30,19 @@ export const useAuth = () => {
   /** @dev The function to handle authentication. */
   const handleAuth = async () => {
     try {
-      /** @dev Get user profile. */
+      /** Get user profile. */
       const user = await userService.getProfile();
-      if (!user.email.includes(wallet?.publicKey?.toString())) {
-        try {
-          await authService.reAuthenticate();
-        } catch {
-          /**
-           * This mean user hasnt already login before
-           * and process authenticatiing by sign in a message to blockchain.
-           * */
-          handleLogin();
-        }
+
+      /** Force to logout. */
+      await authService.logout();
+
+      if (user.email.includes(wallet?.publicKey?.toString())) {
+        /** Try to relogin with stored credentials. */
+        return await authService.reAuthenticate();
       }
+
+      /** Throw error to next block. */
+      throw Error("HASTN");
     } catch {
       /**
        * This mean user hasnt already login before
