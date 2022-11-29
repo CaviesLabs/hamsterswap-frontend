@@ -163,7 +163,11 @@ const Header: FC = () => {
             {!wallet ? (
               <div className="relative">
                 {" "}
-                <Button text="Connect" onClick={connectWallet} />{" "}
+                <Button
+                  size="small"
+                  text="Connect"
+                  onClick={connectWallet}
+                />{" "}
               </div>
             ) : (
               <div
