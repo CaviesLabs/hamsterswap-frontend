@@ -175,7 +175,7 @@ export const Ref: ForwardRefRenderFunction<
         })}
       </ul>
       <div className="relative">
-        <div className="absolute w-full top-15 left-0">
+        <div className="absolute w-full top-16 left-0">
           <div className="flex">
             {state.map((step) => (
               <div className="w-1/5">
