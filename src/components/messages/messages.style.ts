@@ -18,6 +18,7 @@ const styledMessages = styled.div`
     background-color: rgb(237 233 254);
     padding: 0 25px;
     height: 440px;
+    overflow-y: scroll;
     .timing {
       text-align: center;
       font-size: 12px;

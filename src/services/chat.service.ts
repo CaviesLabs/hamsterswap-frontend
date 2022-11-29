@@ -1,6 +1,7 @@
 import {
   Firestore,
   doc,
+  updateDoc,
   getDoc,
   getDocs,
   setDoc,
@@ -8,13 +9,25 @@ import {
   where,
   onSnapshot,
   serverTimestamp,
+  QueryDocumentSnapshot,
+  arrayUnion,
 } from "firebase/firestore";
-import { CreateChatRoomDto, CreateUserChatDto } from "@/src/dto/chatroom.dto";
-import { ChatRoomEntity, UserChatEntity } from "@/src/entities/chatroom.entity";
+import {
+  CreateChatRoomDto,
+  CreateUserChatDto,
+  SendMessageDto,
+  UpdateUserChatDto,
+} from "@/src/dto/chatroom.dto";
+import {
+  ChatRoomEntity,
+  UserChatEntity,
+  MessageEntity,
+} from "@/src/entities/chatroom.entity";
 import {
   chatRoomCollection,
   userChatCollection,
 } from "@/src/actions/firebase.action";
+import { v4 as uuid } from "uuid";
 
 export class ChatService {
   /**
@@ -37,13 +50,13 @@ export class ChatService {
    */
   public async createChatRoom(createChatRoomDto: CreateChatRoomDto) {
     try {
-      const { senderId, reciverId } = createChatRoomDto;
+      const { senderId, recieverId } = createChatRoomDto;
 
       /** @dev Create combineid from id of sender and recive. */
       const combinedId =
-        senderId.length > reciverId.length
-          ? senderId + reciverId
-          : reciverId + senderId;
+        senderId.length > recieverId.length
+          ? senderId + recieverId
+          : recieverId + senderId;
 
       /** @dev Check whether the group(chats in firestore) exists, if not create. */
       if (!(await this.findChatRoomById(combinedId))) {
@@ -51,10 +64,10 @@ export class ChatService {
         await setDoc(doc(chatRoomCollection, combinedId), {
           messages: [],
         });
-
-        /** @dev Create chatroom info for sender & reciver */
       }
-    } catch {}
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   /**
@@ -65,6 +78,39 @@ export class ChatService {
   public async createUserChat(createUserChatDto: CreateUserChatDto) {
     return setDoc(doc(userChatCollection), {
       ...createUserChatDto,
+      date: serverTimestamp(),
+    });
+  }
+
+  /**
+   * @dev The function to update chat info for user.
+   * @param {UpdateUserChatDto} updateUserChatDto
+   */
+  public async updateUserChat(updateUserChatDto: UpdateUserChatDto) {
+    /** @dev Find doc with @var {userId} and @var {chatRoomId} */
+    let doc = await this.findChatByUserIdAndChatRoomId(
+      updateUserChatDto.userId,
+      updateUserChatDto.chatRoomId
+    );
+
+    /** @dev If doc is not found, create new chat for user. */
+    if (!doc) {
+      await this.createUserChat({
+        ...updateUserChatDto,
+        displayName: updateUserChatDto.recieverId,
+        photoURL: "https://source.boringavatars.com/beam",
+      });
+    }
+
+    /** @dev Get ref which recently create above. */
+    doc = await this.findChatByUserIdAndChatRoomId(
+      updateUserChatDto.userId,
+      updateUserChatDto.chatRoomId
+    );
+
+    /** @dev Update ref with last message and update date now. */
+    updateDoc(doc.ref, {
+      lastMessage: updateUserChatDto.lastMessage,
       date: serverTimestamp(),
     });
   }
@@ -82,6 +128,56 @@ export class ChatService {
     return (await chatroom).data();
   }
 
+  public async sendMessage(sendMesageDto: SendMessageDto) {
+    console.log(sendMesageDto);
+
+    /** @dev Check if the chatroom is not already exists in the database or create new one. */
+    const chatRoomExist = await this.findChatRoomById(sendMesageDto.chatRoomId);
+    console.log({ chatRoomExist });
+    if (!chatRoomExist) {
+      await this.createChatRoom({
+        senderId: sendMesageDto.userId,
+        recieverId: sendMesageDto.recieverId,
+      });
+    }
+
+    /** @dev Update chat for user 1. */
+    await this.updateUserChat({
+      ...sendMesageDto,
+      lastMessage: {
+        senderId: sendMesageDto.userId,
+        message: sendMesageDto.message,
+        seen: true,
+      },
+    });
+
+    /** @dev Update chat for user 2. */
+    await this.updateUserChat({
+      ...sendMesageDto,
+      recieverId: sendMesageDto.userId,
+      userId: sendMesageDto.recieverId,
+      lastMessage: {
+        senderId: sendMesageDto.userId,
+        message: sendMesageDto.message,
+        seen: false,
+      },
+    });
+
+    /** @dev Push message in chat room. */
+    const ref = doc(chatRoomCollection, sendMesageDto.chatRoomId);
+    await updateDoc(ref, {
+      messages: arrayUnion(
+        JSON.stringify({
+          id: uuid(),
+          date: Date.now().toString(),
+          message: sendMesageDto.message,
+          attached: sendMesageDto.attached,
+          senderId: sendMesageDto.userId,
+        })
+      ),
+    });
+  }
+
   /**
    * @dev The function to listen updates of chatroom.
    * @param {string} chatRoomId
@@ -89,11 +185,17 @@ export class ChatService {
    * @returns {Function}
    */
   public onMessage(chatRoomId: string, next: (data: ChatRoomEntity) => void) {
+    console.log(chatRoomId);
     const ref = doc(chatRoomCollection, chatRoomId);
 
     /** @dev Call callback function. */
     onSnapshot(ref, (doc) => {
-      next(doc.data());
+      if (!doc.exists()) return;
+      const messageData: MessageEntity[] = [];
+      doc.data().messages.map((item: any) => {
+        messageData.push(JSON.parse(item) as MessageEntity);
+      });
+      next({ messages: messageData });
     });
   }
 
@@ -124,6 +226,38 @@ export class ChatService {
         next(data);
       });
     } catch {}
+  }
+
+  /**
+   * @dev Find chats by userId.
+   * @param {string} userId
+   * @returns {UserChatEntity} data.
+   */
+  public async findChatByUserIdAndChatRoomId(
+    userId: string,
+    chatRoomId: string
+  ): Promise<QueryDocumentSnapshot<UserChatEntity>> {
+    try {
+      /** @dev Query chats by userId. */
+      const _query = await query(
+        userChatCollection,
+        where("userId", "==", userId),
+        where("chatRoomId", "==", chatRoomId)
+      );
+
+      /** @dev Initilize data to returns. */
+      const data: QueryDocumentSnapshot<UserChatEntity>[] = [];
+
+      /** @dev Get docs with _query already process above and push into arrays. */
+      (await getDocs(_query)).forEach((doc) => {
+        data.push(doc);
+      });
+
+      return data.length ? data[0] : null;
+    } catch (err) {
+      console.error(`Error when query UserChats table by userId: ${err}`);
+      return null;
+    }
   }
 
   /**

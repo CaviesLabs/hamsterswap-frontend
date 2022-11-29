@@ -6,6 +6,7 @@ import { Props, MOCK_DATA } from "./types";
 export const ChatListScreen: FC<Props> = (props) => {
   /** @dev Get user chats data from state. */
   const { userChats } = useMain();
+  console.log(MOCK_DATA.concat(userChats));
 
   return (
     <div className="overflow-y-scroll bg-white h-full">
@@ -13,7 +14,7 @@ export const ChatListScreen: FC<Props> = (props) => {
         <div
           key={`chat-room-list-item-${index}`}
           className="flex items-center p-[24px] bg-white hover:bg-dark30 cursor-pointer"
-          onClick={() => props.onClickItem(item.reciverId)}
+          onClick={() => props.onClickItem(item?.recieverId, item?.chatRoomId)}
         >
           <img
             src={item.photoURL}
@@ -23,7 +24,7 @@ export const ChatListScreen: FC<Props> = (props) => {
           <div className="float-left ml-[16px] border-b-solid border-b-[1px] border-b-dark30 w-[90%] pb-[10px]">
             <div className="flow-root">
               <p className="text-[18px] semi-bold float-left chatusername">
-                {utilsProvider.makeShort(item.reciverId, 4)}
+                {utilsProvider.makeShort(item?.recieverId, 4)}
               </p>
               <p className="float-right text-[14px] regular-text relative top-[5px]">
                 23:20

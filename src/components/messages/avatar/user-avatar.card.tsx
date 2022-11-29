@@ -35,18 +35,24 @@ export const UserAvatarMessage: FC<UserAvatarCardItemProps> = (props) => {
             />
           </svg>
         )}
-        <img
-          src="/assets/images/sample-avatar.png"
-          alt="User avatar"
-          className="rounded-[50%] w-[36px] h-[36px]"
-        />
-        <div className="pl-[20px]">
-          <div className="items-center">
-            <p className="text-[18px] text-bold semi-bold">
-              {props.walletAddress}
-            </p>
-          </div>
-        </div>
+        {props.walletAddress ? (
+          <>
+            <img
+              src="/assets/images/sample-avatar.png"
+              alt="User avatar"
+              className="rounded-[50%] w-[36px] h-[36px]"
+            />
+            <div className="pl-[20px]">
+              <div className="items-center">
+                <p className="text-[18px] text-bold semi-bold">
+                  {props.walletAddress}
+                </p>
+              </div>
+            </div>
+          </>
+        ) : (
+          <p className="text-[18px] text-bold semi-bold">Chat</p>
+        )}
       </div>
 
       <div className="flex items-center">

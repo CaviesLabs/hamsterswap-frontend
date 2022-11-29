@@ -1,4 +1,8 @@
 import { IsString } from "class-validator";
+import {
+  MessageEntity,
+  LastMessageEntity,
+} from "@/src/entities/chatroom.entity";
 
 /** @dev Expose dto for create-chat-room function. */
 export class CreateChatRoomDto {
@@ -6,7 +10,7 @@ export class CreateChatRoomDto {
   senderId: string;
 
   @IsString()
-  reciverId: string;
+  recieverId: string;
 }
 
 /** @dev Expose dto for create-user-chat function. */
@@ -15,7 +19,7 @@ export class CreateUserChatDto {
   userId: string;
 
   @IsString()
-  reciverId: string;
+  recieverId: string;
 
   @IsString()
   displayName: string;
@@ -26,9 +30,20 @@ export class CreateUserChatDto {
   @IsString()
   chatRoomId: string;
 
-  lastMessage: {
-    senderId: string;
-    message: string;
-    seen: boolean;
-  };
+  lastMessage: LastMessageEntity;
 }
+
+/** @dev Expose dto for send message function. */
+export interface SendMessageDto
+  extends Pick<MessageEntity, "message" | "attached"> {
+  chatRoomId: string;
+  userId: string;
+  recieverId: string;
+}
+
+/** @dev Expose dto for update data in @var {UserChat} */
+export interface UpdateUserChatDto
+  extends Pick<
+    CreateUserChatDto,
+    "userId" | "recieverId" | "chatRoomId" | "lastMessage"
+  > {}
