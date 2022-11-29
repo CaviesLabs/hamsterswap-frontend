@@ -23,13 +23,14 @@ export const Step1: FC = () => {
   return (
     <div>
       <h3 className="text-3xl font-bold tracking-tight text-gray-900">
-        Advertiser
+        Your items
       </h3>
       <p className="regular-text text-[16px] text-dark60">
         Max 4 items per swap. Choose an item below to add:
       </p>
       <div className="block mt-[20px]">
         <Button
+          size="small"
           text="Add NFT"
           className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
           icon={<PlustIcon />}
@@ -41,6 +42,7 @@ export const Step1: FC = () => {
           handleCancel={() => setIsAddNft(false)}
         />
         <Button
+          size="small"
           text="Add SOL"
           className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] ml-[12px]"
           theme={{
@@ -56,6 +58,7 @@ export const Step1: FC = () => {
           handleCancel={() => setIsAddSol(false)}
         />
         <Button
+          size="small"
           text="Add in-game item"
           className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[250px] ml-[12px]"
           theme={{
@@ -71,6 +74,7 @@ export const Step1: FC = () => {
           handleCancel={() => setIsAddGameItem(false)}
         />
         <Button
+          size="small"
           text="Add Cash"
           className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] ml-[12px]"
           theme={{
