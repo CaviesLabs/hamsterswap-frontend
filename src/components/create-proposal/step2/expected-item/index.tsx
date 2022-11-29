@@ -11,6 +11,7 @@ import {
   AddSolModal,
 } from "@/src/components/modal";
 import classnames from "classnames";
+import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 
 export const ExpectedItem: FC = () => {
   /**
@@ -115,8 +116,8 @@ export const ExpectedItem: FC = () => {
               handleCancel={() => {}}
             />
           </div>
-          <div className="block mt-[20px]">
-            <div className="md:flex pt-[40px] flex-wrap">
+          <div className="block">
+            <div className="md:flex py-5 flex-wrap">
               {swapOptions.map((item: any, index: any) => (
                 <div
                   className="block md:left w-full md:w-[50%] md:pl-[20px]"
@@ -124,7 +125,7 @@ export const ExpectedItem: FC = () => {
                 >
                   <div className="flow-root items-center h-[50px]">
                     <p
-                      className="semi-bold text-[16px] float-left"
+                      className="text-[16px] float-left text-gray-400 regular-text"
                       style={{ transform: "translateY(50%)" }}
                     >
                       Item #{index + 1}
@@ -135,6 +136,7 @@ export const ExpectedItem: FC = () => {
                   </div>
                 </div>
               ))}
+              <EmptyBox />
             </div>
           </div>
         </div>

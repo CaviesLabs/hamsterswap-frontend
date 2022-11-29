@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { ExpectedItem } from "@/src/components/expected-item";
+import { ExpectedItem } from "@/src/components/create-proposal/step2/expected-item";
 
 export const Step2: FC = () => {
   return (

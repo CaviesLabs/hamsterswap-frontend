@@ -14,7 +14,6 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
           ></img>
         </div>
         <div className="px-4 w-72 left">
-          {/* <span className="text-gray-400 mr-3 uppercase text-xs">Nft Name</span> */}
           <p className="text-lg semi-bold text-black truncate block capitalize">
             {props.name}
           </p>
