@@ -30,7 +30,7 @@ export const AddGameItemModal: FC<AddItemModalProps> = (props) => {
 
   return (
     <Modal
-      title={<p className="text-3xl">Add in-game item</p>}
+      title={<p className="text-2xl">Add in-game item</p>}
       open={props.isModalOpen}
       onOk={props.handleOk}
       onCancel={props.handleCancel}
