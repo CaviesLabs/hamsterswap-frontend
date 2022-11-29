@@ -98,6 +98,35 @@ export class ChatService {
   }
 
   /**
+   * @dev The function to list updates of UserChatEntity
+   */
+  public async onUserChats(
+    userId: string,
+    next: (data: UserChatEntity[]) => void
+  ) {
+    try {
+      /** @dev Query chats by userId. */
+      const _query = await query(
+        userChatCollection,
+        where("userId", "==", userId)
+      );
+
+      onSnapshot(_query, (querySnapshot) => {
+        /** @dev Initilize data to returns. */
+        const data: UserChatEntity[] = [];
+
+        /** @dev Loop in snapshot and passing to data. */
+        querySnapshot.forEach((doc) => {
+          try {
+            data.push(doc.data());
+          } catch {}
+        });
+        next(data);
+      });
+    } catch {}
+  }
+
+  /**
    * @dev Find chats by userId.
    * @param {string} userId
    * @returns {UserChatEntity} data.

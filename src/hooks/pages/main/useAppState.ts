@@ -1,41 +1,29 @@
-import { useReducer } from "react";
-import { User } from "firebase/auth";
-import { AppState, Action, ActionKind, AppStateHook } from "./types";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getChatService } from "@/src/actions/firebase.action";
+import { setUserChats } from "@/src/redux/actions/user-chat/user-chat.action";
+import State from "@/src/redux/entities/state";
 
-/**
- * @dev Init app state.
- */
-export const INIT_APP_STATE: AppState = {
-  user: null,
-  chats: [],
-  chatRoomId: "",
-};
+export const useAppState = () => {
+  /** @dev Import redux states. */
+  const { user } = useSelector((state: State) => state);
 
-export const useAppState = (): AppStateHook => {
-  /** @dev Config main reducer. */
-  const appReducer = (state: any, action: Action) => {
-    const newState: AppState = state as AppState;
-    switch (action.type) {
-      case ActionKind.CHANGE_CHAT_ROOM_ID:
-        newState.chatRoomId = action.roomId;
-        break;
-      case ActionKind.CHANGE_USER:
-        newState.user = action.user;
-        break;
-      default:
-        return state;
+  /** @dev Import dispatch hook to modify app states. */
+  const dispatch = useDispatch();
+
+  /** @dev Import services. */
+  const chatService = getChatService();
+
+  /** @dev Watch changes. */
+  useEffect(() => {
+    if (user) {
+      /**
+       * @dev Listen realtime updates from server in @var {UserChat} collection
+       */
+      chatService.onUserChats(user.uid, (userChats) => {
+        console.log("on change user chat and update dispatch", userChats);
+        dispatch(setUserChats(userChats));
+      });
     }
-    return newState;
-  };
-
-  /** @dev Config state. */
-  const [appState, dispatch] = useReducer(appReducer, INIT_APP_STATE);
-
-  return {
-    appState,
-    updateUser: (user: User) =>
-      dispatch({ type: ActionKind.CHANGE_USER, user }),
-    selectChatUser: (roomId: string) =>
-      dispatch({ type: ActionKind.CHANGE_CHAT_ROOM_ID, roomId }),
-  };
+  }, [user]);
 };

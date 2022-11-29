@@ -1,9 +1,9 @@
 import { networkProvider } from "@/src/providers/network.provider";
-import { UserEntity } from "@/src/entities/user.entity";
+import { User } from "firebase/auth";
 
 export class UserService {
-  async getUser(): Promise<UserEntity> {
-    return networkProvider.request<UserEntity>("/user/get-profile", {});
+  async getUser(): Promise<User> {
+    return networkProvider.request<User>("/user/get-profile", {});
   }
 }
 

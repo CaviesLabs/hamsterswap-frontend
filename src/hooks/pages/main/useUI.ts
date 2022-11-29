@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { utilsProvider } from "./";
+import { utilsProvider } from "@/src/utils/utils.provider";
 
 /** @dev Export UI hooks to prevent functions to handle UI jobs. */
 export const useUI = (): void => {

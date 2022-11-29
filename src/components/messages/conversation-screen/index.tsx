@@ -1,7 +1,8 @@
 import { FC } from "react";
 import { Button, Input } from "antd";
+import { ConversationScreenProps } from "./types";
 
-export const ConversationScreen: FC = () => {
+export const ConversationScreen: FC<ConversationScreenProps> = () => {
   return (
     <div>
       <div className="conversation">

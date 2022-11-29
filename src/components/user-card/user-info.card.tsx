@@ -13,8 +13,7 @@ export const StyledUserInfoCard = styled.div`
   width: 100%;
 `;
 
-export const UserInfoCard: FC<UserInfoCardProps> = (props) => {
-  console.log("userId", props.userId);
+export const UserInfoCard: FC<UserInfoCardProps> = () => {
   return (
     <StyledUserInfoCard>
       <div className="md:flex items-center ">

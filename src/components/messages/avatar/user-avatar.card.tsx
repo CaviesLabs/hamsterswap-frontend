@@ -5,6 +5,36 @@ export const UserAvatarMessage: FC<UserAvatarCardItemProps> = (props) => {
   return (
     <div className="flex justify-between items-center text-white py-2 px-4">
       <div className="flex items-center">
+        {props.curScreen > 0 && (
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="mr-[12px] cursor-pointer"
+            onClick={props.onBack}
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M22 13H2V11.5H22V13Z"
+              fill="white"
+            />
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M22 6.5H2V5H22V6.5Z"
+              fill="white"
+            />
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M22 19.5H2V18H22V19.5Z"
+              fill="white"
+            />
+          </svg>
+        )}
         <img
           src="/assets/images/sample-avatar.png"
           alt="User avatar"

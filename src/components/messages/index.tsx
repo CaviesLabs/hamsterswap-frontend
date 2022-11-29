@@ -3,14 +3,24 @@ import { FC, useState } from "react";
 import StyledMessages from "./messages.style";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { UserAvatarMessage } from "@/src/components/messages/avatar";
-import { ConversationScreen } from "./conversation.screen";
-import { ChatListScreen } from "./chat-list.screen";
+import { ConversationScreen } from "./conversation-screen";
+import { ChatListScreen } from "./chat-list-screen";
 import classnames from "classnames";
-// import { Button, Input } from "antd";
 
 const Messages: FC = () => {
   const [closed, setClosed] = useState(false);
   const [opened, setOpened] = useState(true);
+  const [userSelected, setUserSelected] = useState("");
+  const [curScreen, setCurScreen] = useState(0);
+
+  /**
+   * @dev Call function when click on each chat item.
+   * @param {string} reciverId.
+   */
+  const onClickItem = (reciverId: string) => {
+    setUserSelected(reciverId);
+    setCurScreen(1);
+  };
 
   if (closed) return null;
   return (
@@ -18,6 +28,8 @@ const Messages: FC = () => {
       <div className="container max-w-7xl mx-auto flex flex-row-reverse">
         <div className="bg-purple w-[460px] rounded-t-lg">
           <UserAvatarMessage
+            onBack={() => setCurScreen(0)}
+            curScreen={curScreen}
             opened={opened}
             setOpened={setOpened}
             setClosed={() => setClosed(true)}
@@ -28,8 +40,11 @@ const Messages: FC = () => {
             )}
           />
           <div className={classnames("message-body", opened && "open")}>
-            {/* <ConversationScreen /> */}
-            <ChatListScreen />
+            {curScreen === 0 ? (
+              <ChatListScreen onClickItem={onClickItem} />
+            ) : (
+              <ConversationScreen />
+            )}
           </div>
         </div>
       </div>

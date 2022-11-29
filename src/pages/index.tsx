@@ -9,17 +9,10 @@ import { Banner } from "@/src/components/homepage";
 import { SearchIcon } from "@/src/components/icons";
 import { Col, Input, Row } from "antd";
 import { Button } from "@hamsterbox/ui-kit";
-import { useMain } from "@/src/hooks/pages/main";
 import Select from "@/src/components/select";
 
 const Layout: FC = () => {
   const [mobileFilterDisplayed, setMobileFilterDisplayed] = useState(false);
-
-  const {
-    appState: { user },
-  } = useMain();
-
-  console.log("currentUser", user);
 
   return (
     <MainLayout>

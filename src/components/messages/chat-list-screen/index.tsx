@@ -1,31 +1,19 @@
 import { FC } from "react";
-import { UserChatEntity } from "@/src/entities/chatroom.entity";
 import { utilsProvider } from "@/src/utils/utils.provider";
+import { useMain } from "@/src/hooks/pages/main";
+import { Props, MOCK_DATA } from "./types";
 
-const mockData: UserChatEntity[] = [
-  {
-    chatRoomId: "",
-    userId: "WSf0DnjdpCP3duMc03y5tfZXqT22",
-    reciverId: "hMyHzFHfFgPbpjfjzj7F9N6qDVA2",
-    displayName: "hMyHzFHfFgPbpjfjzj7F9N6qDVA2",
-    photoURL:
-      "https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg",
-    date: "",
-    lastMessage: {
-      senderId: "hMyHzFHfFgPbpjfjzj7F9N6qDVA2",
-      message: "Hey, are you there?",
-      seen: false,
-    },
-  },
-];
+export const ChatListScreen: FC<Props> = (props) => {
+  /** @dev Get user chats data from state. */
+  const { userChats } = useMain();
 
-export const ChatListScreen: FC = () => {
   return (
     <div className="overflow-y-scroll bg-white h-full">
-      {mockData.map((item, index) => (
+      {MOCK_DATA.concat(userChats).map((item, index) => (
         <div
-          className="flex items-center p-[24px] bg-white hover:bg-dark30 cursor-pointer"
           key={`chat-room-list-item-${index}`}
+          className="flex items-center p-[24px] bg-white hover:bg-dark30 cursor-pointer"
+          onClick={() => props.onClickItem(item.reciverId)}
         >
           <img
             src={item.photoURL}
