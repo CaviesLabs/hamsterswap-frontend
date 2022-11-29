@@ -21,7 +21,6 @@ export const useAppState = () => {
        * @dev Listen realtime updates from server in @var {UserChat} collection
        */
       chatService.onUserChats(user.uid, (userChats) => {
-        console.log("on change user chat and update dispatch", userChats);
         dispatch(setUserChats(userChats));
       });
     }

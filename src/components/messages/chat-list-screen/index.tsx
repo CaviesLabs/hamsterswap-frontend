@@ -6,7 +6,6 @@ import { Props, MOCK_DATA } from "./types";
 export const ChatListScreen: FC<Props> = (props) => {
   /** @dev Get user chats data from state. */
   const { userChats } = useMain();
-  console.log(MOCK_DATA.concat(userChats));
 
   return (
     <div className="overflow-y-scroll bg-white h-full">

@@ -66,7 +66,7 @@ export class ChatService {
         });
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -129,11 +129,8 @@ export class ChatService {
   }
 
   public async sendMessage(sendMesageDto: SendMessageDto) {
-    console.log(sendMesageDto);
-
     /** @dev Check if the chatroom is not already exists in the database or create new one. */
     const chatRoomExist = await this.findChatRoomById(sendMesageDto.chatRoomId);
-    console.log({ chatRoomExist });
     if (!chatRoomExist) {
       await this.createChatRoom({
         senderId: sendMesageDto.userId,
@@ -185,7 +182,6 @@ export class ChatService {
    * @returns {Function}
    */
   public onMessage(chatRoomId: string, next: (data: ChatRoomEntity) => void) {
-    console.log(chatRoomId);
     const ref = doc(chatRoomCollection, chatRoomId);
 
     /** @dev Call callback function. */

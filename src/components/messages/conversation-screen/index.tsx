@@ -55,17 +55,12 @@ export const ConversationScreen: FC<ConversationScreenProps> = (props) => {
 
   /** @dev Listen realtime messages from server. */
   useEffect(() => {
-    console.log("chatRoomId", { u: user.uid, recieverId, chatRoomId });
     if (chatRoomId) {
       chatService.onMessage(chatRoomId, (chatData) => {
         setMessages(chatData?.messages);
       });
     }
   }, [chatRoomId]);
-
-  useEffect(() => {
-    console.log(messages);
-  }, [messages]);
 
   return (
     <div>
