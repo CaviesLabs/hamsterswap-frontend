@@ -20,13 +20,12 @@ const mockHaves: RowNftItemProps[] = [
     assetType: "nft",
   },
   {
-    name: "#911",
-    collection: "Maya Spirits",
-    image:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
+    name: "1,000.00 SOL",
+    collection: "",
+    image: "https://cryptologos.cc/logos/solana-sol-logo.png",
     nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
     collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    assetType: "nft",
+    assetType: "token",
   },
   {
     name: "#911",
@@ -36,6 +35,12 @@ const mockHaves: RowNftItemProps[] = [
     nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
     collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
     assetType: "game",
+  },
+  {
+    name: "2000 USD",
+    collection: "Paypal, Stripe",
+    image: "/assets/images/asset-cash.png",
+    assetType: "usd",
   },
 ];
 export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
@@ -182,7 +187,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
           <Row className="pt-10 md:px-10" gutter={20}>
             <Col span={12}>
               <div className="md:left">
-                <p>Note</p>
+                <p className="semi-bold text-[16px] h-[36px] leading-9">Note</p>
                 <p className="mt-[12px] text-[16px] regular-text">
                   If you have the items which are the same with my proposal
                   items, you can text me to discuss and swap them
@@ -194,7 +199,9 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
             </Col>
             <Col span={12}>
               <div className="md:left">
-                <p>Warranty</p>
+                <p className="semi-bold text-[16px] h-[36px] leading-9">
+                  Warranty
+                </p>
                 <p className="mt-[12px] text-[16px] regular-text flex">
                   Guaranteed payment amount:
                   <img
