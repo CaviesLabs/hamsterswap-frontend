@@ -70,10 +70,10 @@ const Layout: FC = () => {
         <div className="cover-container bg-purpleBg">
           <LayoutSection className="!min-h-[350px]">
             <BreadCrumb data={["Home", "Create a Proposal"]} />
-            <div className="mt-[20px] block md:flex">
+            <div className="mt-5 block md:flex">
               <p className="text-[32px]">Create a Proposal</p>
             </div>
-            <div>
+            <div className="mt-8">
               <StepProgressBar
                 ref={stepperRef}
                 startingStep={0}
