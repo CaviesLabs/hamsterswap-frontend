@@ -1,7 +1,7 @@
 import { FC, useState, useMemo } from "react";
 import { ProposalItemProps } from "./types";
 import { UserAvatarCardItem } from "@/src/components/user-card";
-import { RowNftItem } from "@/src/components/nfts";
+import { RowNftItem, RowNftItemProps } from "@/src/components/nfts";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "./proposal-item.style";
 import { Button } from "@hamsterbox/ui-kit";
@@ -16,7 +16,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
   /**
    * @dev Swap options.
    */
-  const swapOptions = useMemo(
+  const swapOptions: RowNftItemProps[][] = useMemo(
     () => [
       [
         {
@@ -26,6 +26,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
             "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
           nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
           collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          assetType: "game",
         },
       ],
       [
@@ -36,6 +37,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
             "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
           nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
           collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          assetType: "game",
         },
         {
           name: "#911",
@@ -44,6 +46,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
             "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
           nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
           collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          assetType: "nft",
         },
       ],
       [
@@ -54,6 +57,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
             "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
           nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
           collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          assetType: "game",
         },
       ],
     ],
@@ -133,19 +137,15 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
             <Col span={12}>
               {swapOptions[1].map((item, index) => (
                 <div className="mb-4" key={`proposal-item-${index}`}>
-                  <RowNftItem
-                    name={item.name}
-                    collection={item.collection}
-                    image={item.image}
-                    nftId={item.nftId}
-                    collectionId={item.collectionId}
-                  />
+                  <RowNftItem {...item} />
                 </div>
               ))}
             </Col>
             <Col span={12}>
               {swapOptions[optionSelected].map((item, index) => (
-                <RowNftItem key={`swapoptions-${index}`} {...item} />
+                <div className="mb-4" key={`swapoptions-${index}`}>
+                  <RowNftItem {...item} />
+                </div>
               ))}
             </Col>
           </Row>

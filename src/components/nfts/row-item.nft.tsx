@@ -1,25 +1,31 @@
 import { FC, useState } from "react";
 import { RowNftItemProps } from "./types";
-import { useMain } from "@/src/hooks/pages/main";
-import { ConfirmedTransactionModal } from "../modal";
+import { GameItemModal, NFTDetailsModal } from "../modal";
 
 export const RowNftItem: FC<RowNftItemProps> = (props) => {
+  const { assetType } = props;
+
   const [collapse, setCollapse] = useState(false);
-  const { openNftDetailModal } = useMain();
-  const [openGameItemModal] = useState(false);
+
+  /**
+   * @dev handle open modal by asset type
+   */
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   return (
-    <div className="md:left w-full cursor-pointer" onClick={openNftDetailModal}>
-      <div className="bg-white shadow-md hover:scale-105 hover:shadow-xl duration-500 flex rounded-[16px] p-[16px]">
+    <>
+      <div
+        className="bg-white cursor-pointer shadow-md hover:scale-105 hover:shadow-xl duration-500 flex rounded-[16px] p-[16px]"
+        onClick={() => setIsDetailOpen(true)}
+      >
         <div className="left pl-[2px]">
           <img
             src={props.image}
             alt="NFT image"
             className="h-full !w-[72px] object-cover rounded-[8px]"
-          ></img>
+          />
         </div>
         <div className="px-4 w-72 left">
-          {/* <span className="text-gray-400 mr-3 uppercase text-xs">Nft Name</span> */}
           <p className="text-lg semi-bold text-black truncate block capitalize">
             {props.name}
           </p>
@@ -70,11 +76,19 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
           )}
         </div>
       </div>
-      <ConfirmedTransactionModal
-        isModalOpen={openGameItemModal}
-        handleOk={() => {}}
-        handleCancel={() => {}}
-      />
-    </div>
+      {assetType === "nft" ? (
+        <NFTDetailsModal
+          isModalOpen={isDetailOpen}
+          handleCancel={() => setIsDetailOpen(false)}
+          handleOk={() => setIsDetailOpen(false)}
+        />
+      ) : assetType === "game" ? (
+        <GameItemModal
+          isModalOpen={isDetailOpen}
+          handleCancel={() => setIsDetailOpen(false)}
+          handleOk={() => setIsDetailOpen(false)}
+        />
+      ) : null}
+    </>
   );
 };

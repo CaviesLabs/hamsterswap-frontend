@@ -47,7 +47,7 @@ export const GameItemModal: FC<NftDetailsModalProps> = (props) => {
             </Col>
             <Col span={14}>
               <div className="md:basis-2/3 ml-16 mr-8">
-                <div>Item name</div>
+                <p className="text-gray-500">Item name</p>
                 <h2 className="mb-6 leading-tight tracking-tight font-bold text-gray-800 text-2xl md:text-3xl">
                   Nhac Vuong Kiem
                 </h2>

@@ -1,3 +1,5 @@
+export type AssetTypes = "nft" | "game" | "usd" | "token";
+
 /** @dev Define common props. */
 export type RowNftItemProps = {
   image: string;
@@ -5,6 +7,7 @@ export type RowNftItemProps = {
   collection: string;
   collectionId: string;
   nftId: string;
+  assetType: AssetTypes;
 };
 
 /** @dev Define props for specific nft item which is editable. */
