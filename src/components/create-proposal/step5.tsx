@@ -10,8 +10,8 @@ export const Step5: FC = () => {
       <div className="block mt-[60px] flex">
         <ProposalItem />
       </div>
-      <div className="block mt-[60px] flex">
-        <div className="block mt-[60px] float-left md:w-[65%] w-full pr-[20px] md:pr-[60px]">
+      <div className="block mt-20 flex">
+        <div className="block float-left md:w-[65%] w-full pr-[20px] md:pr-[60px]">
           <p className="text-3xl">Note</p>
           <p className="text-[16px] regular-text mt-[12px]">
             Lorem ipsum dolor sit amet consectetur. Dignissim elementum
@@ -23,7 +23,7 @@ export const Step5: FC = () => {
             Expiration date: Nov, 2022 11:06
           </p>
         </div>
-        <div className="mt-[60px] float-left md:w-[35%] w-full pl=[20px]">
+        <div className="float-left md:w-[35%] w-full pl=[20px]">
           <p className="text-3xl">Warranty</p>
           <div className="mt-[12px] flex items-center">
             <p className="regular-text text-[16px] float-left">

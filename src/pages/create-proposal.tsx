@@ -9,11 +9,13 @@ import { StepProgressBar } from "@/src/components/stepper";
 import type { StepProgressHandle } from "@/src/components/stepper";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Step1 } from "@/src/components/create-proposal/step1";
-import { Step2 } from "@/src/components/create-proposal/step2";
-import { Step3 } from "@/src/components/create-proposal/step3";
-import { Step4 } from "@/src/components/create-proposal/step4";
-import { Step5 } from "@/src/components/create-proposal/step5";
+import {
+  Step1,
+  Step2,
+  Step3,
+  Step4,
+  Step5,
+} from "@/src/components/create-proposal";
 
 const Layout: FC = () => {
   /**
