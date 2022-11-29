@@ -177,8 +177,8 @@ export const Ref: ForwardRefRenderFunction<
       <div className="relative">
         <div className="absolute w-full top-16 left-0">
           <div className="flex">
-            {state.map((step) => (
-              <div className="w-1/5">
+            {state.map((step, i) => (
+              <div className="w-1/5" key={`active-marker-${i}`}>
                 <div
                   className={classnames(
                     "mx-auto",
