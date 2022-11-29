@@ -67,10 +67,10 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
   return (
     <StyledProposalItem
       className="w-full bg-dark10 min-h-[200px] rounded-[32px] rounded-[32px] mb-[46px]"
-      data-label={props.userInfoHidden ? "" : "Guaranteed payment"}
+      data-label={props.isGuaranteedPayment && "Guaranteed payment"}
       {...props}
     >
-      {!props.userInfoHidden && (
+      {props.isGuaranteedPayment && (
         <svg
           width="24"
           height="24"
@@ -90,7 +90,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
       )}
       <div className="relative bg-dark10 w-full h-full min-h-[200px]  rounded-[32px] pb-[50px]">
         <div className="pl-[20px] pr-[20px] md:pl-[77px]">
-          {!props.userInfoHidden && (
+          {props.isGuaranteedPayment && (
             <div className="pt-[120px] md:pt-[32px]">
               <UserAvatarCardItem
                 avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
