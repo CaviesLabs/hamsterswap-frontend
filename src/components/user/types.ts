@@ -25,3 +25,12 @@ export type ProposalItem = {
 export type ProposalHistoryProps = {
   data: ProposalItem;
 };
+
+type PaymentType = "stripe" | "paypal" | "bank";
+
+export type PaymentItem = {
+  type: PaymentType;
+  label: string;
+  name: string;
+  detail: string;
+};
