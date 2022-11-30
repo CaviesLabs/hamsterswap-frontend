@@ -10,11 +10,13 @@ import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import { CancelProposalModal } from "@/src/components/modal/cancel-proposal.modal";
 import { mockHaves, mockSwapOptions } from "@/src/utils";
 import { ProposalDetailProps } from "./types";
+import { CanceledProposalModal } from "@/src/components/modal/canceled-proposal.modal";
 
 export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   const { status } = props;
   const router = useRouter();
   const [cancelModal, setCancelModal] = useState(false);
+  const [canceledModal, setCanceledModal] = useState(false);
 
   return (
     <StyledProposalItem
@@ -114,7 +116,15 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
               <CancelProposalModal
                 isModalOpen={cancelModal}
                 handleCancel={() => setCancelModal(false)}
-                handleOk={() => setCancelModal(false)}
+                handleOk={() => {
+                  setCancelModal(false);
+                  setCanceledModal(true);
+                }}
+              />
+              <CanceledProposalModal
+                isModalOpen={canceledModal}
+                handleCancel={() => setCanceledModal(false)}
+                handleOk={() => setCanceledModal(false)}
               />
               <div className="ml-4">
                 <Button

@@ -29,7 +29,7 @@ export const CancelProposalModal: FC<ModalProps> = (props) => {
 
           <button
             type="button"
-            onClick={props.handleCancel}
+            onClick={props.handleOk}
             className="w-full !bg-red-500 text-white rounded-3xl text-lg font-bold py-3"
           >
             Yes, Cancel Proposal
