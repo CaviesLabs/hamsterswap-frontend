@@ -2,7 +2,7 @@ import { Input } from "antd";
 import { SearchIcon } from "@/src/components/icons";
 import { SearchInputProps } from "@/src/components/search/types";
 
-export default function (props: SearchInputProps) {
+function Search(props: SearchInputProps) {
   return (
     <Input
       size="large"
@@ -12,3 +12,5 @@ export default function (props: SearchInputProps) {
     />
   );
 }
+
+export default Search;

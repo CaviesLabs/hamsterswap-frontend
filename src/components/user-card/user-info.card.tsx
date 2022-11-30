@@ -3,6 +3,7 @@ import { UserInfoCardProps } from "./types";
 import { utilsProvider } from "@/src/utils";
 import { ReputationCard } from "./repuation.card";
 import styled from "@emotion/styled";
+import CopyText from "@/src/components/copy-text";
 
 /** @dev Define styled component. */
 export const StyledUserInfoCard = styled.div`
@@ -23,27 +24,29 @@ export const UserInfoCard: FC<UserInfoCardProps> = () => {
           className="w-[120px] h-[120px] md:float-right mx-auto md:mx-initial"
         />
         <div className="md:float-left md:ml-[26px] flex justify-center items-center md:block mt-[20px] md:mt-0">
-          <p className="text-[24px]">
-            {utilsProvider.makeShort(
-              "F8qedeJsnrFnLfKpT4QN3GeAQqQMtq4izNLR1dKb5eRS",
-              4
-            )}
-          </p>
+          <CopyText content={"F8qedeJsnrFnLfKpT4QN3GeAQqQMtq4izNLR1dKb5eRS"}>
+            <p className="text-[24px]">
+              {utilsProvider.makeShort(
+                "F8qedeJsnrFnLfKpT4QN3GeAQqQMtq4izNLR1dKb5eRS",
+                4
+              )}
+            </p>
+          </CopyText>
           <div className="mt-[8px] ml-[8px] md:ml-0">
             <ReputationCard />
           </div>
         </div>
-        <div className="md:float-left md:ml-[20px]">
+        <div className="md:ml-[20px]">
           <div className="md:flex items-center justify-center">
-            <div className="md:float-left px-[75px] border-r-solid md:border-r-[1px] border-r-dark30 mt-[12px] md:mt-0">
+            <div className="md:float-left px-[70px] border-r-solid md:border-r-[1px] border-r-dark30 mt-[12px] md:mt-0">
               <p className="text-[24px] semi-bold text-center">917</p>
               <p className="text-[16px] regular-text text-center">Orders</p>
             </div>
-            <div className="md:float-left px-[75px] border-r-solid md:border-r-[1px] border-r-dark30 mt-[12px] md:mt-0">
+            <div className="md:float-left px-[70px] border-r-solid md:border-r-[1px] border-r-dark30 mt-[12px] md:mt-0">
               <p className="text-[24px] semi-bold text-center">99.9%</p>
               <p className="text-[16px] regular-text text-center">Completion</p>
             </div>
-            <div className="md:float-left px-[75px] border-r-solid md:border-r-[1px] border-r-dark30 mt-[12px] md:mt-0">
+            <div className="md:float-left px-[70px] border-r-solid md:border-r-[1px] border-r-dark30 mt-[12px] md:mt-0">
               <p className="text-[24px] semi-bold text-center md:text-start">
                 Contact
               </p>

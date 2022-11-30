@@ -1,5 +1,5 @@
 import { Button } from "@hamsterbox/ui-kit";
-import { PlustIcon } from "@/src/components/icons";
+import { PlusIcon } from "@/src/components/icons";
 import {
   AddCashModal,
   AddGameItemModal,
@@ -33,7 +33,7 @@ export const Step1: FC = () => {
           size="small"
           text="Add NFT"
           className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
-          icon={<PlustIcon />}
+          icon={<PlusIcon />}
           onClick={() => setIsAddNft(true)}
         />
         <AddNftModal
@@ -49,7 +49,7 @@ export const Step1: FC = () => {
             backgroundColor: "#41ADD1",
             color: "#FFFFFF",
           }}
-          icon={<PlustIcon />}
+          icon={<PlusIcon />}
           onClick={() => setIsAddSol(true)}
         />
         <AddSolModal
@@ -65,7 +65,7 @@ export const Step1: FC = () => {
             backgroundColor: "#F47048",
             color: "#FFFFFF",
           }}
-          icon={<PlustIcon />}
+          icon={<PlusIcon />}
           onClick={() => setIsAddGameItem(true)}
         />
         <AddGameItemModal
@@ -81,7 +81,7 @@ export const Step1: FC = () => {
             backgroundColor: "#97B544",
             color: "#FFFFFF",
           }}
-          icon={<PlustIcon />}
+          icon={<PlusIcon />}
           onClick={() => setIsAddCash(true)}
         />
         <AddCashModal

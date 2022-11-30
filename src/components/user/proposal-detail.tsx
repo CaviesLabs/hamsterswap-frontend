@@ -1,102 +1,24 @@
-import { FC, useState, useMemo } from "react";
+import { FC, useState } from "react";
 import { useRouter } from "next/router";
-import { ProposalItemProps } from "./types";
 import { UserAvatarCardItem } from "@/src/components/user-card";
-import { RowNftItem, RowNftItemProps } from "@/src/components/nfts";
 import { utilsProvider } from "@/src/utils/utils.provider";
-import { StyledProposalItem } from "./proposal-item.style";
+import { StyledProposalItem } from "@/src/components/proposal-item/proposal-item.style";
 import { Button } from "@hamsterbox/ui-kit";
 import classnames from "classnames";
 import { Col, Row } from "antd";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
+import { CancelProposalModal } from "@/src/components/user/modal/cancel-proposal.modal";
+import { mockHaves, mockSwapOptions } from "@/src/utils";
+import { ProposalDetailProps } from "./types";
+import { CanceledProposalModal } from "@/src/components/user/modal/canceled-proposal.modal";
+import { WithdrewProposalModal } from "@/src/components/user/modal/withdrew-proposal.modal";
 
-const mockHaves: RowNftItemProps[] = [
-  {
-    name: "#911",
-    collection: "Maya Spirits",
-    image:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    assetType: "nft",
-  },
-  {
-    name: "1,000.00 SOL",
-    collection: "",
-    image: "https://cryptologos.cc/logos/solana-sol-logo.png",
-    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    assetType: "token",
-  },
-  {
-    name: "#911",
-    collection: "Maya Spirits",
-    image:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    assetType: "game",
-  },
-  {
-    name: "2000 USD",
-    collection: "Paypal, Stripe",
-    image: "/assets/images/asset-cash.png",
-    assetType: "usd",
-  },
-];
-export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
+export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
+  const { status } = props;
   const router = useRouter();
-
-  /**
-   * @dev Swap options.
-   */
-  const swapOptions: RowNftItemProps[][] = useMemo(
-    () => [
-      [
-        {
-          name: "#911",
-          collection: "Maya Spirits",
-          image:
-            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          assetType: "game",
-        },
-      ],
-      [
-        {
-          name: "#911",
-          collection: "Maya Spirits",
-          image:
-            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          assetType: "game",
-        },
-        {
-          name: "#911",
-          collection: "Maya Spirits",
-          image:
-            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          assetType: "game",
-        },
-      ],
-      [
-        {
-          name: "#911",
-          collection: "Maya Spirits",
-          image:
-            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          assetType: "nft",
-        },
-      ],
-    ],
-    []
-  );
+  const [cancelModal, setCancelModal] = useState(false);
+  const [canceledModal, setCanceledModal] = useState(false);
+  const [withdrewModal, setWithdrewModal] = useState(false);
 
   return (
     <StyledProposalItem
@@ -136,9 +58,12 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
               )}
             />
           </div>
-          <ProposalItems userAssets={mockHaves} userLookingFor={swapOptions} />
+          <ProposalItems
+            userAssets={mockHaves}
+            userLookingFor={mockSwapOptions}
+          />
           <Row className="pt-10 md:px-10" gutter={20}>
-            <Col span={12}>
+            <Col span={status === "pending" ? 12 : 24}>
               <div className="md:left">
                 <p className="semi-bold text-[16px] h-[36px] leading-9">Note</p>
                 <p className="mt-[12px] text-[16px] regular-text">
@@ -148,9 +73,33 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
                 <p className="mt-[12px] text-[16px] regular-text text-dark60">
                   Expiration date: 12 Dec, 2022 11:06
                 </p>
+                <p className="mt-[12px] text-[16px] regular-text text-dark60">
+                  Status:{" "}
+                  {status === "success" ? (
+                    <span className="text-green font-bold">Swap Success</span>
+                  ) : (
+                    <span className="text-red-500 font-bold capitalize">
+                      {status}
+                    </span>
+                  )}
+                </p>
+                {status === "expired" && (
+                  <div className="mt-4">
+                    <Button
+                      onClick={() => setWithdrewModal(true)}
+                      shape="secondary"
+                      text="Withdraw"
+                    />
+                    <WithdrewProposalModal
+                      isModalOpen={withdrewModal}
+                      handleCancel={() => setWithdrewModal(false)}
+                      handleOk={() => setWithdrewModal(false)}
+                    />
+                  </div>
+                )}
               </div>
             </Col>
-            <Col span={12}>
+            <Col span={status === "pending" ? 12 : 0}>
               <div className="md:left">
                 <p className="semi-bold text-[16px] h-[36px] leading-9">
                   Warranty
@@ -167,15 +116,38 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
               </div>
             </Col>
           </Row>
-          <div className="flex mt-[20px] justify-end px-10">
-            <Button
-              className={classnames(
-                "!rounded-[100px] after:!rounded-[100px] !px-[10px] relative"
-              )}
-              text="View Detail"
-              onClick={() => router.push("/proposal/2")}
-            />
-          </div>
+          {status === "pending" && (
+            <div className="flex mt-[20px] justify-end px-10">
+              <button
+                className="border-red-500 text-red-500 !border-2 px-4 rounded-3xl"
+                onClick={() => setCancelModal(true)}
+              >
+                Cancel Proposal
+              </button>
+              <CancelProposalModal
+                isModalOpen={cancelModal}
+                handleCancel={() => setCancelModal(false)}
+                handleOk={() => {
+                  setCancelModal(false);
+                  setCanceledModal(true);
+                }}
+              />
+              <CanceledProposalModal
+                isModalOpen={canceledModal}
+                handleCancel={() => setCanceledModal(false)}
+                handleOk={() => setCanceledModal(false)}
+              />
+              <div className="ml-4">
+                <Button
+                  className={classnames(
+                    "!rounded-[100px] after:!rounded-[100px] !px-[10px] relative"
+                  )}
+                  text="View on market"
+                  onClick={() => router.push("/proposal/2")}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </StyledProposalItem>
