@@ -17,6 +17,7 @@ import {
   ReducerAction,
   StepProgressHandler,
 } from "./types";
+import classnames from "classnames";
 
 /**
  * @dev Define step reducer.
@@ -173,6 +174,22 @@ export const Ref: ForwardRefRenderFunction<
           );
         })}
       </ul>
+      <div className="relative">
+        <div className="absolute w-full top-16 left-0">
+          <div className="flex">
+            {state.map((step, i) => (
+              <div className="w-1/5" key={`active-marker-${i}`}>
+                <div
+                  className={classnames(
+                    "mx-auto",
+                    step.state === StepStates.CURRENT && styles.triangleUp
+                  )}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

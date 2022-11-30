@@ -129,6 +129,14 @@
   cursor: default;
 }
 
+.triangleUp {
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 25px solid #fff;
+}
+
 @keyframes spring-up {
   0% { transform: scale(1); }
   10% { transform: scale(0.975); }

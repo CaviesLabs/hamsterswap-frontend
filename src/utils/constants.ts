@@ -1,3 +1,5 @@
+import { RowNftItemProps } from "@/src/components/nfts";
+
 /**
  * @dev Define value data to sort NFTs.
  */
@@ -34,7 +36,7 @@ export const PURPLE_HEADER_PAGES = [
 /**
  * @dev Swap options.
  */
-export const swapOptions = [
+export const swapOptions: RowNftItemProps[] = [
   {
     name: "#911",
     collection: "Maya Spirits",
@@ -42,6 +44,7 @@ export const swapOptions = [
       "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
     nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
     collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+    assetType: "nft",
   },
   {
     name: "#911",
@@ -50,13 +53,12 @@ export const swapOptions = [
       "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
     nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
     collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+    assetType: "game",
   },
   {
-    name: "#911",
-    collection: "Maya Spirits",
-    image:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+    name: "2000 UDD",
+    collection: "Paypal",
+    image: "/assets/images/asset-cash.png",
+    assetType: "usd",
   },
 ];

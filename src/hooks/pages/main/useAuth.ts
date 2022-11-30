@@ -1,10 +1,14 @@
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/src/redux/actions/user/user.action";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useWallet } from "@/src/hooks/useWallet";
 import { getUserService, getAuthService } from "@/src/actions/firebase.action";
 
 /** @dev Expore authenticate hook to process tasks related user authentcation */
 export const useAuth = () => {
+  const dispatch = useDispatch();
+
   /** @dev Get Wallet info from @saberhq hook. */
   const wallet = useConnectedWallet();
 
@@ -21,10 +25,11 @@ export const useAuth = () => {
   const handleLogin = async () => {
     /** @dev Sign message to get signature. */
     const signature = await signMessage("SIGN::IN::HAMSTERBOX");
-    await authService.signInWithWallet(
+    const user = await authService.signInWithWallet(
       wallet?.publicKey?.toString(),
       signature
     );
+    dispatch(setUser(user.user));
   };
 
   /** @dev The function to handle authentication. */
@@ -38,7 +43,7 @@ export const useAuth = () => {
 
       if (user.email.includes(wallet?.publicKey?.toString())) {
         /** Try to relogin with stored credentials. */
-        return await authService.reAuthenticate();
+        return dispatch(setUser((await authService.reAuthenticate()).user));
       }
 
       /** Throw error to next block. */

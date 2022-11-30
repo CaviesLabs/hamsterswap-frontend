@@ -9,7 +9,7 @@ export const AddSolModal: FC<AddItemModalProps> = (props) => {
 
   return (
     <Modal
-      title={<p className="text-3xl">Add SOL</p>}
+      title={<p className="text-2xl">Add SOL</p>}
       open={props.isModalOpen}
       onOk={props.handleOk}
       onCancel={props.handleCancel}

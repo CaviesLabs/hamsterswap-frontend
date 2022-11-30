@@ -1,11 +1,11 @@
 import { FC, useState, useMemo } from "react";
 import { ProposalItemProps } from "./types";
 import { UserAvatarCardItem } from "@/src/components/user-card";
-import { RowNftItem } from "@/src/components/nfts";
+import { RowNftItem, RowNftItemProps } from "@/src/components/nfts";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "./proposal-item.style";
 import { Button } from "@hamsterbox/ui-kit";
-import classnames from "classnames";
+import { Col, Row } from "antd";
 
 export const ProposalItem: FC<ProposalItemProps> = (props) => {
   /**
@@ -16,7 +16,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
   /**
    * @dev Swap options.
    */
-  const swapOptions = useMemo(
+  const swapOptions: RowNftItemProps[][] = useMemo(
     () => [
       [
         {
@@ -26,6 +26,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
             "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
           nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
           collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          assetType: "game",
         },
       ],
       [
@@ -36,6 +37,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
             "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
           nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
           collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          assetType: "game",
         },
         {
           name: "#911",
@@ -44,6 +46,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
             "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
           nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
           collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          assetType: "nft",
         },
       ],
       [
@@ -54,6 +57,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
             "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
           nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
           collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          assetType: "game",
         },
       ],
     ],
@@ -63,10 +67,10 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
   return (
     <StyledProposalItem
       className="w-full bg-dark10 min-h-[200px] rounded-[32px] rounded-[32px] mb-[46px]"
-      data-label={props.userInfoHidden ? "" : "Guaranteed payment"}
+      data-label={props.isGuaranteedPayment && "Guaranteed payment"}
       {...props}
     >
-      {!props.userInfoHidden && (
+      {props.isGuaranteedPayment && (
         <svg
           width="24"
           height="24"
@@ -85,11 +89,8 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
         </svg>
       )}
       <div className="relative bg-dark10 w-full h-full min-h-[200px]  rounded-[32px] pb-[50px]">
-        <div className="header-section pr-[20px] pl-[20px] md:pl-[77px]">
-          <div></div>
-        </div>
         <div className="pl-[20px] pr-[20px] md:pl-[77px]">
-          {!props.userInfoHidden && (
+          {props.isGuaranteedPayment && (
             <div className="pt-[120px] md:pt-[32px]">
               <UserAvatarCardItem
                 avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
@@ -103,56 +104,22 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
               />
             </div>
           )}
-          <div className="md:flex pt-[40px]">
-            <div className="block md:left w-full md:w-[50%] md:pr-[20px]">
-              <div className="h-[50px]">
-                <p className="semi-bold text-[16px]">I Have</p>
+          <Row className="pt-[40px] md:px-10" gutter={20}>
+            <Col span={12}>
+              <div className="semi-bold text-[16px] h-[36px] leading-9">
+                I Have
               </div>
-              <div className="pt-[20px]">
-                <RowNftItem
-                  name="#2332"
-                  collection="Maya Spirits"
-                  image="https://i.seadn.io/gae/M1L6jf3EZJZ0ep-0XPA6HxAWH1flQXwgkKwdHVabbMMCVyCBd3cwcwXLl9ZR8vEDFBQ0fbbA1bPUQY2T7t0xpomrS6LwhPVZ4d5jAw?auto=format&w=1000"
-                  nftId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                  collectionId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                />
-                <RowNftItem
-                  name="#2332"
-                  collection="Maya Spirits"
-                  image="https://i.seadn.io/gae/M1L6jf3EZJZ0ep-0XPA6HxAWH1flQXwgkKwdHVabbMMCVyCBd3cwcwXLl9ZR8vEDFBQ0fbbA1bPUQY2T7t0xpomrS6LwhPVZ4d5jAw?auto=format&w=1000"
-                  nftId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                  collectionId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                />
-                <RowNftItem
-                  name="#2332"
-                  collection="Maya Spirits"
-                  image="https://i.seadn.io/gae/M1L6jf3EZJZ0ep-0XPA6HxAWH1flQXwgkKwdHVabbMMCVyCBd3cwcwXLl9ZR8vEDFBQ0fbbA1bPUQY2T7t0xpomrS6LwhPVZ4d5jAw?auto=format&w=1000"
-                  nftId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                  collectionId="0xbf69783fa630ed65d396dca51216a391a4bb1fd0"
-                />
-              </div>
-            </div>
-            <div className="block md:left w-full md:w-[50%] md:pl-[20px]">
-              <div className="flow-root items-center h-[50px]">
-                <p
-                  className="semi-bold text-[16px] float-left"
-                  style={{ transform: "translateY(50%)" }}
-                >
+            </Col>
+            <Col span={12}>
+              <div className="flex justify-between">
+                <div className="semi-bold text-[16px] leading-9">
                   Looking For
-                </p>
-                <div className="flex pl-[60px]">
+                </div>
+                <div className="flex">
                   {swapOptions.map((_, index) => (
-                    <div
-                      key={`swap-item-option-${index}`}
-                      className={classnames("float-right", {
-                        "pl-[12px]": index > 0,
-                      })}
-                    >
+                    <div className="ml-3" key={`ml3dix-${index}`}>
                       <Button
-                        className={classnames(
-                          "!rounded-[100px] after:!rounded-[100px] !px-[10px]",
-                          { "!ml-[22px]": index > 0 }
-                        )}
+                        className="!rounded-[100px] after:!rounded-[100px] !px-[10px]"
                         size="small"
                         shape={
                           optionSelected === index ? "primary" : "secondary"
@@ -164,13 +131,24 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
                   ))}
                 </div>
               </div>
-              <div className="pt-[20px]">
-                {swapOptions[optionSelected].map((item, index) => (
-                  <RowNftItem key={`swapoptions-${index}`} {...item} />
-                ))}
-              </div>
-            </div>
-          </div>
+            </Col>
+          </Row>
+          <Row className="mt-4 md:px-10" gutter={20}>
+            <Col span={12}>
+              {swapOptions[1].map((item, index) => (
+                <div className="mb-4" key={`proposal-item-${index}`}>
+                  <RowNftItem {...item} />
+                </div>
+              ))}
+            </Col>
+            <Col span={12}>
+              {swapOptions[optionSelected].map((item, index) => (
+                <div className="mb-4" key={`swapoptions-${index}`}>
+                  <RowNftItem {...item} />
+                </div>
+              ))}
+            </Col>
+          </Row>
         </div>
       </div>
     </StyledProposalItem>

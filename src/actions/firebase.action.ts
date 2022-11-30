@@ -9,6 +9,7 @@ import {
 import { getAuth } from "firebase/auth";
 import { AuthService } from "@/src/services/auth.service";
 import { UserService } from "@/src/services/user.service";
+import { ChatService } from "@/src/services/chat.service";
 import { getStorageProvider } from "@/src/providers";
 import { ChatRoomEntity, UserChatEntity } from "@/src/entities/chatroom.entity";
 import { UserEntity } from "@/src/entities/user.entity";
@@ -71,4 +72,9 @@ export const getUserService = (): UserService => {
 /** @dev Expose function to initilzize auth service. */
 export const getAuthService = (): AuthService => {
   return new AuthService(authProvider, storageProvider, getUserService());
+};
+
+/** @dev Expose function to initilzize chat service. */
+export const getChatService = (): ChatService => {
+  return new ChatService(firestoreProvider);
 };

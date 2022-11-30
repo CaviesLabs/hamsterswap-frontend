@@ -2,14 +2,14 @@ import { FC, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import { ProposalItemProps } from "./types";
 import { UserAvatarCardItem } from "@/src/components/user-card";
-import { RowNftItem } from "@/src/components/nfts";
+import { RowNftItem, RowNftItemProps } from "@/src/components/nfts";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "./proposal-item.style";
 import { Button } from "@hamsterbox/ui-kit";
 import classnames from "classnames";
 import { Col, Row } from "antd";
 
-const mockHaves = [
+const mockHaves: RowNftItemProps[] = [
   {
     name: "#911",
     collection: "Maya Spirits",
@@ -17,6 +17,15 @@ const mockHaves = [
       "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
     nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
     collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+    assetType: "nft",
+  },
+  {
+    name: "1,000.00 SOL",
+    collection: "",
+    image: "https://cryptologos.cc/logos/solana-sol-logo.png",
+    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+    assetType: "token",
   },
   {
     name: "#911",
@@ -25,14 +34,13 @@ const mockHaves = [
       "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
     nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
     collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+    assetType: "game",
   },
   {
-    name: "#911",
-    collection: "Maya Spirits",
-    image:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+    name: "2000 USD",
+    collection: "Paypal, Stripe",
+    image: "/assets/images/asset-cash.png",
+    assetType: "usd",
   },
 ];
 export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
@@ -45,7 +53,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
   /**
    * @dev Swap options.
    */
-  const swapOptions = useMemo(
+  const swapOptions: RowNftItemProps[][] = useMemo(
     () => [
       [
         {
@@ -55,6 +63,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
             "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
           nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
           collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          assetType: "game",
         },
       ],
       [
@@ -65,6 +74,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
             "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
           nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
           collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          assetType: "game",
         },
         {
           name: "#911",
@@ -73,6 +83,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
             "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
           nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
           collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          assetType: "game",
         },
       ],
       [
@@ -83,6 +94,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
             "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
           nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
           collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
+          assetType: "nft",
         },
       ],
     ],
@@ -114,9 +126,6 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
         </svg>
       )}
       <div className="relative bg-dark10 w-full h-full min-h-[200px]  rounded-[32px] pb-[50px]">
-        <div className="header-section pr-[20px] pl-[20px] md:pl-[77px]">
-          <div></div>
-        </div>
         <div className="pl-[20px] pr-[20px] md:pl-[77px]">
           <div className="pt-[120px] md:pt-[32px]">
             <UserAvatarCardItem
@@ -163,26 +172,22 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
             <Col span={12}>
               {mockHaves.map((item, index) => (
                 <div className="mb-4" key={`proposal-item-${index}`}>
-                  <RowNftItem
-                    name={item.name}
-                    collection={item.collection}
-                    image={item.image}
-                    nftId={item.nftId}
-                    collectionId={item.collectionId}
-                  />
+                  <RowNftItem {...item} />
                 </div>
               ))}
             </Col>
             <Col span={12}>
               {swapOptions[optionSelected].map((item, index) => (
-                <RowNftItem key={`swapoptions-${index}`} {...item} />
+                <div className="mb-4" key={`swapoptions-${index}`}>
+                  <RowNftItem {...item} />
+                </div>
               ))}
             </Col>
           </Row>
           <Row className="pt-10 md:px-10" gutter={20}>
             <Col span={12}>
               <div className="md:left">
-                <p>Note</p>
+                <p className="semi-bold text-[16px] h-[36px] leading-9">Note</p>
                 <p className="mt-[12px] text-[16px] regular-text">
                   If you have the items which are the same with my proposal
                   items, you can text me to discuss and swap them
@@ -194,7 +199,9 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
             </Col>
             <Col span={12}>
               <div className="md:left">
-                <p>Warranty</p>
+                <p className="semi-bold text-[16px] h-[36px] leading-9">
+                  Warranty
+                </p>
                 <p className="mt-[12px] text-[16px] regular-text flex">
                   Guaranteed payment amount:
                   <img

@@ -5,18 +5,54 @@ export const UserAvatarMessage: FC<UserAvatarCardItemProps> = (props) => {
   return (
     <div className="flex justify-between items-center text-white py-2 px-4">
       <div className="flex items-center">
-        <img
-          src="/assets/images/sample-avatar.png"
-          alt="User avatar"
-          className="rounded-[50%] w-[36px] h-[36px]"
-        />
-        <div className="pl-[20px]">
-          <div className="items-center">
-            <p className="text-[18px] text-bold semi-bold">
-              {props.walletAddress}
-            </p>
-          </div>
-        </div>
+        {props.curScreen > 0 && (
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="mr-[12px] cursor-pointer"
+            onClick={props.onBack}
+          >
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M22 13H2V11.5H22V13Z"
+              fill="white"
+            />
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M22 6.5H2V5H22V6.5Z"
+              fill="white"
+            />
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M22 19.5H2V18H22V19.5Z"
+              fill="white"
+            />
+          </svg>
+        )}
+        {props.walletAddress ? (
+          <>
+            <img
+              src="/assets/images/sample-avatar.png"
+              alt="User avatar"
+              className="rounded-[50%] w-[36px] h-[36px]"
+            />
+            <div className="pl-[20px]">
+              <div className="items-center">
+                <p className="text-[18px] text-bold semi-bold">
+                  {props.walletAddress}
+                </p>
+              </div>
+            </div>
+          </>
+        ) : (
+          <p className="text-[18px] text-bold semi-bold">Chat</p>
+        )}
       </div>
 
       <div className="flex items-center">

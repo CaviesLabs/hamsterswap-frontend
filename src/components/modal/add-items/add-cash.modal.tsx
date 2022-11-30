@@ -27,7 +27,7 @@ export const AddCashModal: FC<AddItemModalProps> = (props) => {
 
   return (
     <Modal
-      title={<p className="text-3xl">Add Cash</p>}
+      title={<p className="text-2xl">Add Cash</p>}
       open={props.isModalOpen}
       onOk={props.handleOk}
       onCancel={props.handleCancel}

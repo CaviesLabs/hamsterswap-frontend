@@ -1,8 +1,8 @@
 import { SET_USER } from "@/src/redux/actions";
 import { Action } from "@/src/redux/entities/interfaces/action";
-import { UserEntity } from "@/src/entities/user.entity";
+import { User } from "firebase/auth";
 
-export default (state: UserEntity = null, action: Action) => {
+export default (state: User = null, action: Action) => {
   if (action.type === SET_USER) {
     return action.payload;
   }
