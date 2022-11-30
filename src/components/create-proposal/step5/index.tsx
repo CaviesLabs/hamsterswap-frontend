@@ -1,8 +1,12 @@
 import { FC } from "react";
 import { ProposalItem } from "@/src/components/proposal-item";
 import { Col, Row } from "antd";
+import { ConfirmedTransactionModal } from "@/src/components/create-proposal/step5/confirmed-transaction.modal";
+import { SummaryProps } from "@/src/components/create-proposal/step5/types";
 
-export const Step5: FC = () => {
+export const Step5: FC<SummaryProps> = (props) => {
+  const { modalOpened, setModalOpened } = props;
+
   return (
     <div>
       <h3 className="text-3xl font-bold tracking-tight text-gray-900">
@@ -44,6 +48,11 @@ export const Step5: FC = () => {
           </div>
         </Col>
       </Row>
+      <ConfirmedTransactionModal
+        handleCancel={() => setModalOpened(false)}
+        handleOk={() => setModalOpened(false)}
+        isModalOpen={modalOpened}
+      />
     </div>
   );
 };

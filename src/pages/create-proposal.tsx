@@ -23,6 +23,11 @@ const Layout: FC = () => {
    */
   const [currentStep, setCurrentStep] = useState(0);
 
+  /**
+   * @dev display modal when user confirm transaction successfully
+   */
+  const [modalOpened, setModalOpened] = useState(false);
+
   /** @dev Initilize ref for stepper component. */
   const stepperRef = useRef<StepProgressHandle>(null);
 
@@ -100,7 +105,10 @@ const Layout: FC = () => {
                   <Step2 />
                   <Step3 />
                   <Step4 />
-                  <Step5 />
+                  <Step5
+                    modalOpened={modalOpened}
+                    setModalOpened={(v) => setModalOpened(v)}
+                  />
                 </Carousel>
               </div>
             </div>
@@ -115,11 +123,19 @@ const Layout: FC = () => {
                   onClick={handleBackStep}
                 />
               )}
-              <Button
-                text={currentStep < 4 ? "Next" : "Confirm"}
-                className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right"
-                onClick={handleNextStep}
-              />
+              {currentStep < 4 ? (
+                <Button
+                  text="Next"
+                  className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right"
+                  onClick={handleNextStep}
+                />
+              ) : (
+                <Button
+                  text="Confirm"
+                  className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right"
+                  onClick={() => setModalOpened(true)}
+                />
+              )}
             </div>
           </div>
         </LayoutSection>
