@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { Modal } from "antd";
-import { ModalProps } from "./types";
+import { ModalProps } from "../../modal/types";
 
-export const CanceledProposalModal: FC<ModalProps> = (props) => {
+export const WithdrewProposalModal: FC<ModalProps> = (props) => {
   return (
     <Modal
       open={props.isModalOpen}

@@ -7,16 +7,18 @@ import { Button } from "@hamsterbox/ui-kit";
 import classnames from "classnames";
 import { Col, Row } from "antd";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
-import { CancelProposalModal } from "@/src/components/modal/cancel-proposal.modal";
+import { CancelProposalModal } from "@/src/components/user/modal/cancel-proposal.modal";
 import { mockHaves, mockSwapOptions } from "@/src/utils";
 import { ProposalDetailProps } from "./types";
-import { CanceledProposalModal } from "@/src/components/modal/canceled-proposal.modal";
+import { CanceledProposalModal } from "@/src/components/user/modal/canceled-proposal.modal";
+import { WithdrewProposalModal } from "@/src/components/user/modal/withdrew-proposal.modal";
 
 export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   const { status } = props;
   const router = useRouter();
   const [cancelModal, setCancelModal] = useState(false);
   const [canceledModal, setCanceledModal] = useState(false);
+  const [withdrewModal, setWithdrewModal] = useState(false);
 
   return (
     <StyledProposalItem
@@ -83,7 +85,16 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                 </p>
                 {status === "expired" && (
                   <div className="mt-4">
-                    <Button shape="secondary" text="Withdraw" />
+                    <Button
+                      onClick={() => setWithdrewModal(true)}
+                      shape="secondary"
+                      text="Withdraw"
+                    />
+                    <WithdrewProposalModal
+                      isModalOpen={withdrewModal}
+                      handleCancel={() => setWithdrewModal(false)}
+                      handleOk={() => setWithdrewModal(false)}
+                    />
                   </div>
                 )}
               </div>
