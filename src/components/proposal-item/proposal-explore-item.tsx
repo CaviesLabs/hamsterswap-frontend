@@ -8,6 +8,7 @@ import { StyledProposalItem } from "./proposal-item.style";
 import { Button } from "@hamsterbox/ui-kit";
 import classnames from "classnames";
 import { Col, Row } from "antd";
+import ProposalItems from "@/src/components/proposal-item/proposal-items";
 
 const mockHaves: RowNftItemProps[] = [
   {
@@ -45,10 +46,6 @@ const mockHaves: RowNftItemProps[] = [
 ];
 export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
   const router = useRouter();
-  /**
-   * @dev Define value to display option.
-   */
-  const [optionSelected, setOptionSelected] = useState(0);
 
   /**
    * @dev Swap options.
@@ -139,51 +136,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
               )}
             />
           </div>
-          <Row className="pt-[40px] md:px-10" gutter={20}>
-            <Col span={12}>
-              <div className="semi-bold text-[16px] h-[36px] leading-9">
-                I Have
-              </div>
-            </Col>
-            <Col span={12}>
-              <div className="flex justify-between">
-                <div className="semi-bold text-[16px] leading-9">
-                  Looking For
-                </div>
-                <div className="flex">
-                  {swapOptions.map((_, index) => (
-                    <div className="ml-3" key={`ml3dix-${index}`}>
-                      <Button
-                        className="!rounded-[100px] after:!rounded-[100px] !px-[10px]"
-                        size="small"
-                        shape={
-                          optionSelected === index ? "primary" : "secondary"
-                        }
-                        text={`Option ${index + 1}`}
-                        onClick={() => setOptionSelected(index)}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Col>
-          </Row>
-          <Row className="mt-4 md:px-10" gutter={20}>
-            <Col span={12}>
-              {mockHaves.map((item, index) => (
-                <div className="mb-4" key={`proposal-item-${index}`}>
-                  <RowNftItem {...item} />
-                </div>
-              ))}
-            </Col>
-            <Col span={12}>
-              {swapOptions[optionSelected].map((item, index) => (
-                <div className="mb-4" key={`swapoptions-${index}`}>
-                  <RowNftItem {...item} />
-                </div>
-              ))}
-            </Col>
-          </Row>
+          <ProposalItems userAssets={mockHaves} userLookingFor={swapOptions} />
           <Row className="pt-10 md:px-10" gutter={20}>
             <Col span={12}>
               <div className="md:left">

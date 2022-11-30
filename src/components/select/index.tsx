@@ -4,7 +4,7 @@ import { CheckIcon, ChevronDownIcon } from "@/src/components/icons";
 import SearchInput from "@/src/components/search";
 import { useState } from "react";
 
-export default function (props: SelectProps) {
+function Select(props: SelectProps) {
   const { showSearch, values } = props;
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
 
@@ -60,3 +60,5 @@ export default function (props: SelectProps) {
     </div>
   );
 }
+
+export default Select;

@@ -7,9 +7,10 @@ import { LayoutSection } from "@/src/components/layout-section";
 import { UserInfoCard } from "@/src/components/user-card";
 import { sortOptions } from "@/src/utils";
 import { Button } from "@hamsterbox/ui-kit";
-import { Select } from "antd";
 import Breadcrumb from "@/src/components/user/breadcrumb";
 import SubMenu from "@/src/components/user/sub-menu";
+import Select from "@/src/components/select";
+import Search from "@/src/components/search";
 
 const Layout: FC = () => {
   /** @dev Storage sort value, default is @var {sortOptions[0]} */
@@ -31,38 +32,21 @@ const Layout: FC = () => {
           </h3>
           <div className="block py-[50px]">
             <div className="md:flex items-center">
-              <div className="flex md:float-left items-center">
-                <p>Sort by</p>
-                <div className="float-left ml-[12px]">
-                  <Select
-                    options={sortOptions.map((_) => ({
-                      label: _.name,
-                      value: _.value,
-                    }))}
-                    className="w-44 text-center text-sm text-gray-500 font-medium regular-text rounded-2xl"
-                    defaultValue={
-                      sortOptions.find((_) => _.value === "success").value
-                    }
-                    onChange={(v) => setSortValue(v)}
-                    size="large"
-                  ></Select>
-                </div>
+              <p>Sort by</p>
+              <Select
+                placeholder="All status"
+                options={sortOptions.map((_) => ({
+                  value: _.value,
+                }))}
+                className="w-44 ml-6"
+              />
+              <div className="max-w-2xl ml-6">
+                <Search
+                  className="py-3 text-lg rounded-2xl"
+                  placeholder="Enter SOL amount"
+                />
               </div>
-              <div className="flex md:float-left items-center md:pl-[12px]">
-                <div className="relative">
-                  <input
-                    type="text"
-                    className="border-[1px] border-solid border-dark30 rounded-[16px] w-full pl-[64px] pr-[10px] py-[16px] focus:ring-0 focus:outline-0 regular-text md:w-[444px]"
-                    placeholder="Enter SOL amount"
-                  />
-                  <img
-                    src="/assets/images/search-icon.svg"
-                    alt="Solana Icon"
-                    className="!w-[24px] h-[24px] absolute left-[24px] top-[16px]"
-                  />
-                </div>
-              </div>
-              <div className="md:float-left md:pl-[12px]">
+              <div className="md:ml-6">
                 <Button
                   text="Search"
                   shape="secondary"
