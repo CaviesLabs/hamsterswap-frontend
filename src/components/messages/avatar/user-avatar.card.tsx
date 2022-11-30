@@ -16,20 +16,20 @@ export const UserAvatarMessage: FC<UserAvatarCardItemProps> = (props) => {
             onClick={props.onBack}
           >
             <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
+              fillRule="evenodd"
+              clipRule="evenodd"
               d="M22 13H2V11.5H22V13Z"
               fill="white"
             />
             <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
+              fillRule="evenodd"
+              clipRule="evenodd"
               d="M22 6.5H2V5H22V6.5Z"
               fill="white"
             />
             <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
+              fillRule="evenodd"
+              clipRule="evenodd"
               d="M22 19.5H2V18H22V19.5Z"
               fill="white"
             />

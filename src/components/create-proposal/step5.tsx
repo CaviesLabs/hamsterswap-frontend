@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { ProposalItem } from "@/src/components/proposal-item";
+import { Col, Row } from "antd";
 
 export const Step5: FC = () => {
   return (
@@ -10,8 +11,11 @@ export const Step5: FC = () => {
       <div className="block mt-[60px] flex">
         <ProposalItem />
       </div>
-      <div className="block mt-20 flex">
-        <div className="block float-left md:w-[65%] w-full pr-[20px] md:pr-[60px]">
+      <Row gutter={24}>
+        <Col
+          span={12}
+          className="block float-left w-full pr-[20px] md:pr-[60px]"
+        >
           <p className="text-3xl">Note</p>
           <p className="text-[16px] regular-text mt-[12px]">
             Lorem ipsum dolor sit amet consectetur. Dignissim elementum
@@ -22,8 +26,8 @@ export const Step5: FC = () => {
           <p className="regular-text text-[14px] text-red300 mt-12">
             Expiration date: Nov, 2022 11:06
           </p>
-        </div>
-        <div className="float-left md:w-[35%] w-full pl=[20px]">
+        </Col>
+        <Col span={12} className="float-left w-full pl=[20px]">
           <p className="text-3xl">Warranty</p>
           <div className="mt-[12px] flex items-center">
             <p className="regular-text text-[16px] float-left">
@@ -38,8 +42,8 @@ export const Step5: FC = () => {
               2,043.54 SOL
             </p>
           </div>
-        </div>
-      </div>
+        </Col>
+      </Row>
     </div>
   );
 };
