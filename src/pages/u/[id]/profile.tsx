@@ -23,7 +23,7 @@ const Layout: FC = () => {
           </div>
         </div>
         <SubMenu curTab={0} />
-        <div className="mb-[20px] mt-[50px]">
+        <div className="mb-4 mt-10">
           <h3 className="text-3xl font-bold tracking-tight text-gray-900">
             Your Proposal
           </h3>
