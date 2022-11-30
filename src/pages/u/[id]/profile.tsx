@@ -1,8 +1,7 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import { ProfilePageProvider } from "@/src/hooks/pages/profile";
-import { ProposalExploreItem } from "@/src/components/proposal-item";
 import { LayoutSection } from "@/src/components/layout-section";
 import { UserInfoCard } from "@/src/components/user-card";
 import { sortOptions } from "@/src/utils";
@@ -11,11 +10,9 @@ import Breadcrumb from "@/src/components/user/breadcrumb";
 import SubMenu from "@/src/components/user/sub-menu";
 import Select from "@/src/components/select";
 import Search from "@/src/components/search";
+import { ProposalDetail } from "@/src/components/user/proposal-detail";
 
 const Layout: FC = () => {
-  /** @dev Storage sort value, default is @var {sortOptions[0]} */
-  const [, setSortValue] = useState(sortOptions[0].value);
-
   return (
     <MainLayout>
       <Breadcrumb title="Profile" />
@@ -55,11 +52,10 @@ const Layout: FC = () => {
               </div>
             </div>
           </div>
-          <div className="block mt-[20px]">
-            <ProposalExploreItem />
-            <ProposalExploreItem />
-            <ProposalExploreItem />
-          </div>
+          <ProposalDetail status="pending" />
+          <ProposalDetail status="success" />
+          <ProposalDetail status="canceled" />
+          <ProposalDetail status="expired" />
         </div>
       </LayoutSection>
     </MainLayout>
