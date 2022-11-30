@@ -19,7 +19,7 @@ const SubMenu: FC<SubMenuProps> = (props) => {
           ["History", "history"],
           ["Game ID", "#"],
           ["Payment", "payment"],
-          ["Contacts", "contacts"],
+          ["Contacts", "contact"],
         ].map((item, index) => (
           <div
             onClick={() => router.push(`/u/${userId}/${item[1]}`)}
