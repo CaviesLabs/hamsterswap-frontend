@@ -4,11 +4,9 @@ import { RowNftItemProps } from "@/src/components/nfts";
  * @dev Define value data to sort NFTs.
  */
 export const sortOptions = [
-  { value: "most_popular", name: "Most Popular" },
-  { value: "best_rating", name: "Best Rating" },
-  { value: "newest", name: "Newest" },
-  { value: "low_to_hight", name: "Low to high" },
-  { value: "hight_to_low", name: "Hight to low" },
+  { value: "expired", name: "Expired" },
+  { value: "success", name: "Success" },
+  { value: "cancel", name: "Cancel" },
 ];
 
 /**

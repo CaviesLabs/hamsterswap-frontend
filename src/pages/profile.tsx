@@ -9,13 +9,11 @@ import { BreadCrumb } from "@/src/components/bread-crumb";
 import { sortOptions } from "@/src/utils";
 import classnames from "classnames";
 import { Button } from "@hamsterbox/ui-kit";
+import { Select } from "antd";
 
 const Layout: FC = () => {
-  /** @dev Condition to display sort select. */
-  const [sortDisplayed, setSortDisplayed] = useState(false);
-
   /** @dev Storage sort value, default is @var {sortOptions[0]} */
-  const [sortValue, setSortValue] = useState(sortOptions[0]);
+  const [sortValue, setSortValue] = useState(sortOptions[0].value);
 
   /** @dev The value to display tab which its selected. */
   const [curTab, setCurTab] = useState(0);
@@ -76,58 +74,18 @@ const Layout: FC = () => {
               <div className="flex md:float-left items-center">
                 <p>Sort by</p>
                 <div className="float-left ml-[12px]">
-                  <button
-                    id="states-button"
-                    data-dropdown-toggle="dropdown-states"
-                    className="z-10 items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 focus:ring-0 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600 w-44 rounded-[16px] text-center flow-root regular-text"
-                    type="button"
-                    onClick={() => setSortDisplayed((prev) => !prev)}
-                  >
-                    {sortValue.name}
-                    <svg
-                      aria-hidden="true"
-                      className="w-4 h-4 ml-1 float-right"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      ></path>
-                    </svg>
-                  </button>
-                  {sortDisplayed && (
-                    <div className="relative">
-                      <div
-                        className="z-4 bg-white divide-y divide-gray-100 rounded w-44 h-[200px] dark:bg-gray-700 top-[10px] absolute"
-                        style={{ zIndex: 200 }}
-                      >
-                        <ul
-                          className="py-1 text-sm text-gray-700 dark:text-gray-200 h-[200px] overflow-y-scroll rounded-[16px] border-[1px] border-solid border-dark10"
-                          aria-labelledby="states-button"
-                        >
-                          {sortOptions.map((item, index) => (
-                            <li key={`prp-profile-${index}`}>
-                              <button
-                                type="button"
-                                className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                                onClick={() => {
-                                  setSortDisplayed(false);
-                                  setSortValue(item);
-                                }}
-                              >
-                                <p className="text-center relative left-[-10px] regular-text">
-                                  {item.name}
-                                </p>
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  )}
+                  <Select
+                    options={sortOptions.map((_) => ({
+                      label: _.name,
+                      value: _.value,
+                    }))}
+                    className="w-44 text-center text-sm text-gray-500 font-medium regular-text rounded-2xl"
+                    defaultValue={
+                      sortOptions.find((_) => _.value === "success").value
+                    }
+                    onChange={(v) => setSortValue(v)}
+                    size="large"
+                  ></Select>
                 </div>
               </div>
               <div className="flex md:float-left items-center md:pl-[12px]">

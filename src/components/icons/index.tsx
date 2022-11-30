@@ -268,3 +268,25 @@ export const DetailIcon: FC<IconProps> = (props) => {
     </svg>
   );
 };
+
+export const CopyIcon: FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="1.75"
+        y="1.75"
+        width="9.5"
+        height="9.5"
+        rx="1.25"
+        stroke="#94A3B8"
+        strokeWidth="1.5"
+      />
+      <rect x="4" y="4" width="11" height="11" rx="2" fill="#94A3B8" />
+    </svg>
+  );
+};
