@@ -3,7 +3,7 @@ import { Checkbox, Col, Input, Modal, Row } from "antd";
 import { AddItemModalProps } from "./types";
 import { StyledModal } from "@/src/components/modal/add-items/add-nft.styled";
 import type { CheckboxValueType } from "antd/es/checkbox/Group";
-import { DollarIcon, PlustIcon } from "@/src/components/icons";
+import { DollarIcon, PlusIcon } from "@/src/components/icons";
 
 const CheckboxGroup = Checkbox.Group;
 
@@ -47,7 +47,7 @@ export const AddCashModal: FC<AddItemModalProps> = (props) => {
             <div className="flex justify-between items-center mt-6">
               <p className="text-lg font-bold">Payment Method</p>
               <div className="flex items-center text-indigo-600">
-                <PlustIcon className="border-indigo-600" />
+                <PlusIcon className="border-indigo-600" />
                 <p className="text-lg ml-4">Add more</p>
               </div>
             </div>

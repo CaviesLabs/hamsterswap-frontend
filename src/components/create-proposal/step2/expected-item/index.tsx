@@ -3,7 +3,7 @@ import { Collapse } from "react-collapse";
 import { RowEditNftItem } from "@/src/components/nfts";
 import { swapOptions } from "@/src/utils/constants";
 import { Button } from "@hamsterbox/ui-kit";
-import { PlustIcon } from "@/src/components/icons";
+import { PlusIcon } from "@/src/components/icons";
 import {
   AddCashModal,
   AddGameItemModal,
@@ -57,7 +57,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
             <Button
               text="Add NFT"
               className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[120px]"
-              icon={<PlustIcon />}
+              icon={<PlusIcon />}
               onClick={() => setIsAddNft(true)}
               size="small"
             />
@@ -73,7 +73,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                 backgroundColor: "#41ADD1",
                 color: "#FFFFFF",
               }}
-              icon={<PlustIcon />}
+              icon={<PlusIcon />}
               onClick={() => setIsAddSol(true)}
               size="small"
             />
@@ -89,7 +89,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                 backgroundColor: "#F47048",
                 color: "#FFFFFF",
               }}
-              icon={<PlustIcon />}
+              icon={<PlusIcon />}
               onClick={() => setIsAddGameItem(true)}
               size="small"
             />
@@ -105,7 +105,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                 backgroundColor: "#97B544",
                 color: "#FFFFFF",
               }}
-              icon={<PlustIcon />}
+              icon={<PlusIcon />}
               onClick={() => setIsAddCash(true)}
               size="small"
             />

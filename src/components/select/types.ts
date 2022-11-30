@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-type OptionProps = {
+export type OptionProps = {
   value: string;
   image?: string;
   description?: string;
@@ -14,4 +14,5 @@ export type SelectProps = {
   showSearch?: boolean;
   mode?: "multiple";
   values?: string[];
+  onChange?: (v: any) => void;
 };

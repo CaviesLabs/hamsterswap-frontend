@@ -3,7 +3,7 @@ import { IconProps } from "./types";
 import classnames from "classnames";
 
 /** @dev Expore Plus Icon Component */
-export const PlustIcon: FC<IconProps> = (props) => {
+export const PlusIcon: FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
