@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Col, Modal, Row } from "antd";
 import { AddItemModalProps } from "./types";
 import SearchInput from "../../search";
-import { StyledModal } from "@/src/components/modal/add-items/add-nft.styled";
+import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
 
 const mockNftItems = [
   {

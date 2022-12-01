@@ -3,3 +3,7 @@ export * from "./step2/index";
 export * from "./step3";
 export * from "./step4";
 export * from "./step5/index";
+export * from "./modal/add-cash.modal";
+export * from "./modal/add-nft.modal";
+export * from "./modal/add-game-item.modal";
+export * from "./modal/add-sol.modal";

@@ -5,7 +5,7 @@ import {
   AddGameItemModal,
   AddNftModal,
   AddSolModal,
-} from "@/src/components/modal";
+} from "@/src/components/create-proposal";
 import { swapOptions } from "@/src/utils";
 import { RowEditNftItem } from "@/src/components/nfts";
 import { FC, useState } from "react";

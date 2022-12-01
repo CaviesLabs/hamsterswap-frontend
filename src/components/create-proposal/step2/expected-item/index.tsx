@@ -9,7 +9,7 @@ import {
   AddGameItemModal,
   AddNftModal,
   AddSolModal,
-} from "@/src/components/modal";
+} from "@/src/components/create-proposal";
 import classnames from "classnames";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 import { ExpectedItemProps } from "@/src/components/create-proposal/step2/types";
