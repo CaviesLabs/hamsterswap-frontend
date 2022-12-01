@@ -1,11 +1,8 @@
-import { FC, useState } from "react";
-import { Checkbox, Col, Modal, Row } from "antd";
+import { FC } from "react";
+import { Col, Modal, Row } from "antd";
 import { AddItemModalProps } from "./types";
 import SearchInput from "../../search";
 import { StyledModal } from "@/src/components/modal/add-items/add-nft.styled";
-import type { CheckboxValueType } from "antd/es/checkbox/Group";
-
-const CheckboxGroup = Checkbox.Group;
 
 const mockNftItems = [
   {

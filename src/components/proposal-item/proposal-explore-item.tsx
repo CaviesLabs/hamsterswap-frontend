@@ -1,8 +1,8 @@
-import { FC, useState, useMemo } from "react";
+import { FC, useMemo } from "react";
 import { useRouter } from "next/router";
 import { ProposalItemProps } from "./types";
 import { UserAvatarCardItem } from "@/src/components/user-card";
-import { RowNftItem, RowNftItemProps } from "@/src/components/nfts";
+import { RowNftItemProps } from "@/src/components/nfts";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "./proposal-item.style";
 import { Button } from "@hamsterbox/ui-kit";
