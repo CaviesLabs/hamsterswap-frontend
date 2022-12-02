@@ -10,6 +10,7 @@ import { SolanaSigner } from "@/src/providers/signature.provider";
 import { StorageProvider } from "@/src/providers/storage.provider";
 import { UserService } from "./user.service";
 import * as bs from "bs58";
+import { SIGN_MESSAGE } from "@/src/utils";
 
 /**
  * @dev Declare service serve for firebase authentication.
@@ -91,9 +92,7 @@ export class AuthService {
    */
   public async signInWithWallet(walletAddress: string, signedData: Uint8Array) {
     /** @dev Check if @var {signedData} is valid. */
-    if (
-      !SolanaSigner.verify("SIGN::IN::HAMSTERBOX", signedData, walletAddress)
-    ) {
+    if (!SolanaSigner.verify(SIGN_MESSAGE, signedData, walletAddress)) {
       throw new Error("The wallet is not authorized by user");
     }
 
