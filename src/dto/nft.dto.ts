@@ -5,6 +5,8 @@ export class GetListNftDto {
   address: string;
 }
 
-export class NftDto extends GetListNftDto {
-  id: string;
+export class NftDto {
+  list_nfts: any[];
+  num_nfts: number;
+  page: number;
 }

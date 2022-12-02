@@ -7,13 +7,13 @@ import State from "@/src/redux/entities/state";
 const reducer = combineReducers<State>({
   user: userReducer,
   userChats: userChatReducer,
-  nfts: nftReducer,
+  nft: nftReducer,
 });
 
 export const initState: State = {
   user: null,
   userChats: [],
-  nfts: [],
+  nft: { num_nfts: 0, page: 0, list_nfts: [] },
 };
 
 export default reducer;

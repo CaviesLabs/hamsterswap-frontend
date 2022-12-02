@@ -12,4 +12,4 @@ export const SET_PROPOSALS = "SET_PROPOSALS";
  * Actions for nft service
  */
 export const GET_LIST_NFT = "GET_LIST_NFT";
-export const SET_NFTS = "SET_NFTS";
+export const SET_NFT = "SET_NFT";

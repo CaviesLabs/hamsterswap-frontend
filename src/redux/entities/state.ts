@@ -5,5 +5,5 @@ import { NftDto } from "@/src/dto/nft.dto";
 export default interface State {
   user: User;
   userChats: UserChatEntity[];
-  nfts: NftDto[];
+  nft: NftDto;
 }

@@ -2,57 +2,22 @@ import { FC, useEffect } from "react";
 import { Col, Modal, Row } from "antd";
 import { AddItemModalProps } from "./types";
 import SearchInput from "../../search";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
 import { getListNft } from "@/src/redux/actions/nft/nft.action";
 import { useConnectedWallet } from "@saberhq/use-solana";
 
-const mockNftItems = [
-  {
-    image:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    name: "CyBall Chicken #124",
-    resource: "CyBall",
-    resourceUrl: "#",
-  },
-  {
-    image:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    name: "CyBall Chicken #124",
-    resource: "CyBall",
-    resourceUrl: "#",
-  },
-  {
-    image:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    name: "CyBall Chicken #124",
-    resource: "CyBall",
-    resourceUrl: "#",
-  },
-  {
-    image:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    name: "CyBall Chicken #124",
-    resource: "CyBall",
-    resourceUrl: "#",
-  },
-];
-
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
   const dispatch = useDispatch();
   const wallet = useConnectedWallet();
+  const nfts = useSelector((state: any) => state.nft?.list_nfts);
 
   useEffect(() => {
     if (!wallet) return;
     dispatch(
-      getListNft(
-        {
-          address: wallet.publicKey.toString(),
-        },
-        (nfts) => {
-          console.log(nfts);
-        }
-      )
+      getListNft({
+        address: wallet.publicKey.toString(),
+      })
     );
   }, [wallet]);
 
@@ -73,18 +38,24 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
               placeholder="Search for NFT, collection "
             />
             <div className="mt-10 max-h-96 overflow-scroll">
-              {mockNftItems.map((nftItem, i) => (
+              {nfts?.map((nftItem: any, i: number) => (
                 <Row
-                  className="bg-white rounded-lg p-4 w-full mb-4"
+                  className="bg-white rounded-lg p-4 w-full mb-4 cursor-pointer hover:bg-dark30"
                   key={`add-nft-item-pr-${i}`}
+                  onClick={() => props.handleOk(nftItem)}
                 >
                   <Col span={5}>
-                    <img className="rounded" src={nftItem.image} />
+                    <img
+                      className="rounded bg-dark10"
+                      src={nftItem.nft_image_uri}
+                    />
                   </Col>
                   <Col span={18} className="pl-6">
-                    <p className="font-bold text-lg">{nftItem.name}</p>
+                    <p className="font-bold text-lg">{nftItem.nft_name}</p>
                     <p className="text-lg">
-                      <div className="text-indigo-600">{nftItem.resource}</div>
+                      <div className="text-indigo-600">
+                        {nftItem.nft_symbol}
+                      </div>
                     </p>
                   </Col>
                 </Row>
