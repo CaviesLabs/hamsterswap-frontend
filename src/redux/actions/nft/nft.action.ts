@@ -1,5 +1,22 @@
-import { SET_NFTS } from "@/src/redux/actions";
-import { NftDto } from "@/src/dto/nft.dto";
+import { SET_NFTS, GET_LIST_NFT } from "@/src/redux/actions";
+import { CallBackSaga } from "@/src/redux/entities";
+import { NftDto, GetListNftDto } from "@/src/dto/nft.dto";
+
+/**
+ * @param emailSignUpDto
+ * @param callback
+ * @returns
+ * @description
+ * Register a new user with new email payload
+ */
+export const getListNft = (
+  getListNftDto: GetListNftDto,
+  callback: CallBackSaga<NftDto[]>
+) => ({
+  type: GET_LIST_NFT,
+  payload: getListNftDto,
+  callback,
+});
 
 /**
  * @param nfts
