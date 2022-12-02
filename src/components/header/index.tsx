@@ -164,6 +164,7 @@ const Header: FC = () => {
               <div className="relative">
                 {" "}
                 <Button
+                  className="!px-4"
                   size="small"
                   text="Connect"
                   onClick={connectWallet}

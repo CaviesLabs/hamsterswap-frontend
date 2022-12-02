@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { Input, Modal } from "antd";
 import { AddItemModalProps } from "./types";
-import { StyledModal } from "@/src/components/modal/add-items/add-nft.styled";
+import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
 import { SolanaIcon } from "@/src/components/icons";
 
 export const AddSolModal: FC<AddItemModalProps> = (props) => {

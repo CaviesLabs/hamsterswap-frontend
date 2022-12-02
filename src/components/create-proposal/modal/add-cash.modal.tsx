@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { Checkbox, Col, Input, Modal, Row } from "antd";
 import { AddItemModalProps } from "./types";
-import { StyledModal } from "@/src/components/modal/add-items/add-nft.styled";
+import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
 import type { CheckboxValueType } from "antd/es/checkbox/Group";
 import { DollarIcon, PlusIcon } from "@/src/components/icons";
 

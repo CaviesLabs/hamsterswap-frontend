@@ -4,6 +4,7 @@ import { setUser } from "@/src/redux/actions/user/user.action";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useWallet } from "@/src/hooks/useWallet";
 import { getUserService, getAuthService } from "@/src/actions/firebase.action";
+import { SIGN_MESSAGE } from "@/src/utils";
 
 /** @dev Expore authenticate hook to process tasks related user authentcation */
 export const useAuth = () => {
@@ -24,7 +25,7 @@ export const useAuth = () => {
   /** @dev The function to login. */
   const handleLogin = async () => {
     /** @dev Sign message to get signature. */
-    const signature = await signMessage("SIGN::IN::HAMSTERBOX");
+    const signature = await signMessage(SIGN_MESSAGE);
     const user = await authService.signInWithWallet(
       wallet?.publicKey?.toString(),
       signature
@@ -55,7 +56,7 @@ export const useAuth = () => {
     } catch (err) {
       /**
        * This mean user hasnt already login before
-       * and process authenticatiing by sign in a message to blockchain.
+       * and process authenticating by sign in a message to blockchain.
        * */
       handleLogin();
     }

@@ -7,9 +7,9 @@ import { PlusIcon } from "@/src/components/icons";
 import {
   AddCashModal,
   AddGameItemModal,
-  AddNftModal,
+  AddExpectedNftModal,
   AddSolModal,
-} from "@/src/components/modal";
+} from "@/src/components/create-proposal";
 import classnames from "classnames";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 import { ExpectedItemProps } from "@/src/components/create-proposal/step2/types";
@@ -61,7 +61,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
               onClick={() => setIsAddNft(true)}
               size="small"
             />
-            <AddNftModal
+            <AddExpectedNftModal
               isModalOpen={isAddNft}
               handleOk={() => setIsAddNft(false)}
               handleCancel={() => setIsAddNft(false)}

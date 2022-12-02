@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { Modal } from "antd";
-import { NftDetailsModalProps } from "./types";
+import { AttributeProps, NftDetailsModalProps } from "./types";
 import { Row, Col } from "antd";
 
-const mockAttributes = [
+const mockAttributes: AttributeProps[] = [
   {
     title: "Background",
     value: "Purple",
@@ -54,6 +54,22 @@ const mockAttributes = [
   },
 ];
 
+export const AttributeCard = (attr: AttributeProps) => (
+  <div className="bg-gray-100 py-4 px-6 rounded-2xl	w-full">
+    <p className="uppercase">{attr.title}</p>
+    <p className="font-bold text-gray-800 text-xl py-3">{attr.value}</p>
+    <div className="flex flex-row justify-between">
+      <div className="bg-gray-300 rounded-3xl px-4 flex justify-center items-center">
+        {attr.percent}
+      </div>
+      <div className="flex">
+        <img src="/assets/images/solana.svg" />
+        <p className="font-bold text-lg ml-1">{attr.solAmount}</p>
+      </div>
+    </div>
+  </div>
+);
+
 export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
   return (
     <Modal
@@ -95,23 +111,7 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
               <Row gutter={[16, 16]}>
                 {mockAttributes.map((attr, index) => (
                   <Col span={12} key={`attr-item-${index}`}>
-                    <div className="bg-gray-100 py-4 px-6 rounded-2xl	w-full">
-                      <p className="uppercase">{attr.title}</p>
-                      <p className="font-bold text-gray-800 text-xl py-3">
-                        {attr.value}
-                      </p>
-                      <div className="flex flex-row justify-between">
-                        <div className="bg-gray-300 rounded-3xl px-4 flex justify-center items-center">
-                          {attr.percent}
-                        </div>
-                        <div className="flex">
-                          <img src="/assets/images/solana.svg" />
-                          <p className="font-bold text-lg ml-1">
-                            {attr.solAmount}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    <AttributeCard {...attr} />
                   </Col>
                 ))}
               </Row>

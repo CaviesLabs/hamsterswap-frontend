@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { Col, Input, Modal, Row, Upload } from "antd";
 import { AddItemModalProps } from "./types";
-import { StyledModal } from "@/src/components/modal/add-items/add-nft.styled";
+import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
 import { CheckIcon, LoadingIcon } from "@/src/components/icons";
 import Select from "@/src/components/select";
 

@@ -9,7 +9,7 @@ export class NetworkProvider {
    * @dev
    * Base api url located in evn file
    */
-  private BASE_URL = "/api";
+  private BASE_URL = process.env.API_URL;
 
   /**
    * Default network options
@@ -44,20 +44,20 @@ export class NetworkProvider {
     url: string,
     requestConfig: RequestConfig
   ): Promise<RequestResponse> {
-    const endpoint = `${this.BASE_URL}/api${url}`;
-    const resp = await axios(endpoint, {
+    const resp = await axios(url, {
       ...requestConfig,
+      baseURL: `${this.BASE_URL}/api`,
       headers: {
         ...this.defaultNetWorkOptions,
         ...requestConfig.headers,
       },
     });
 
-    if (resp.status !== 200) {
+    if (resp.status >= 400) {
       throw new Error(`Error when request server, ${resp.statusText}`);
     }
 
-    let jsonData = null;
+    let jsonData = resp.data;
     try {
       jsonData = JSON.parse(resp.data);
     } catch {}
@@ -76,12 +76,13 @@ export class NetworkProvider {
     url: string,
     requestConfig: RequestConfig
   ): Promise<RequestResponse> {
-    const credential = this.storageProvider.getItem("jwt");
+    const credential = this.storageProvider.getItem("hAccessToken");
     if (!credential) {
       throw new Error("Credential not found");
     }
     const options = Object.assign({}, requestConfig);
     options.headers = {
+      ...options.headers,
       Authorization: `Bearer ${credential}`,
     };
     return this.request<RequestResponse>(url, options);
