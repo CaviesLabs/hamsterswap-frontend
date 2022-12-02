@@ -76,12 +76,13 @@ export class NetworkProvider {
     url: string,
     requestConfig: RequestConfig
   ): Promise<RequestResponse> {
-    const credential = this.storageProvider.getItem("jwt");
+    const credential = this.storageProvider.getItem("hAccessToken");
     if (!credential) {
       throw new Error("Credential not found");
     }
     const options = Object.assign({}, requestConfig);
     options.headers = {
+      ...options.headers,
       Authorization: `Bearer ${credential}`,
     };
     return this.request<RequestResponse>(url, options);

@@ -1,12 +1,19 @@
 import { networkProvider } from "@/src/providers/network.provider";
-import { ProposalItem } from "@/src/components/user/types";
+import { DetailDto } from "@/src/dto/detail.dto";
+import { CreateProposalDto, ProposalDto } from "@/src/dto/proposal.dto";
 
 export class ProposalService {
-  listProposal(): Promise<ProposalItem[]> {
-    return networkProvider.request<ProposalItem[]>("/proposal", {});
+  listProposal(): Promise<ProposalDto[]> {
+    return networkProvider.request<ProposalDto[]>("/proposal", {});
   }
-  getProposal(id: string): Promise<ProposalItem> {
-    return networkProvider.request<ProposalItem>(`/proposal/${id}`, {});
+  getProposal(payload: DetailDto): Promise<ProposalDto> {
+    return networkProvider.request<ProposalDto>(`/proposal/${payload.id}`, {});
+  }
+  createProposal(payload: CreateProposalDto): Promise<ProposalDto> {
+    return networkProvider.request<ProposalDto>(`/proposal/`, {
+      method: "POST",
+      data: payload,
+    });
   }
 }
 
