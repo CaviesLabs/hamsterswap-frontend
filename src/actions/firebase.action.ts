@@ -66,7 +66,7 @@ export const authProvider = getAuth(app);
 
 /** @dev Expose function to initilzize auth and user service. */
 export const getUserService = (): UserService => {
-  return new UserService(authProvider);
+  return new UserService(authProvider, storageProvider);
 };
 
 /** @dev Expose function to initilzize auth service. */

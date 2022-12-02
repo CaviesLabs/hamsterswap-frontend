@@ -52,14 +52,31 @@ export class AuthService {
   }
 
   /**
-   * @dev The function to re sigin if user already logged in before.
+   * @dev Get stored credentials.
    */
-  public async reAuthenticate() {
+  public async getStoredCredentials(): Promise<{
+    email: string;
+    password: string;
+  }> {
     try {
       /** @dev Get auth credential from storage. */
       const authData = JSON.parse(
         this.storageProvider.getItem("userCredential")
       );
+
+      return authData as { email: string; password: string };
+    } catch {
+      throw new Error("Unauthorized");
+    }
+  }
+
+  /**
+   * @dev The function to re sigin if user already logged in before.
+   */
+  public async reAuthenticate() {
+    try {
+      /** @dev Get auth credential from storage. */
+      const authData = await this.getStoredCredentials();
 
       /** @dev Re-authenticate to Firebase. */
       return this.login(authData?.email, authData?.password);

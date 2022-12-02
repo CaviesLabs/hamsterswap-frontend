@@ -41,14 +41,18 @@ export const useAuth = () => {
       /** Force to logout. */
       await authService.logout();
 
-      if (user.email.includes(wallet?.publicKey?.toString())) {
+      if (
+        user.email
+          .toLowerCase()
+          .includes(wallet?.publicKey?.toString().toLowerCase())
+      ) {
         /** Try to relogin with stored credentials. */
         return dispatch(setUser((await authService.reAuthenticate()).user));
       }
 
       /** Throw error to next block. */
       throw Error("HASTN");
-    } catch {
+    } catch (err) {
       /**
        * This mean user hasnt already login before
        * and process authenticatiing by sign in a message to blockchain.

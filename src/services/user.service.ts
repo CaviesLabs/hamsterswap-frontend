@@ -1,6 +1,8 @@
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { Auth } from "firebase/auth";
+import { AuthService } from "@/src/services/auth.service";
 import { userCollection } from "@/src/actions/firebase.action";
+import { StorageProvider } from "@/src/providers/storage.provider";
 import { CreateUserDto } from "@/src/dto/create-user.dto";
 import { UserEntity } from "@/src/entities/user.entity";
 
@@ -11,12 +13,25 @@ export class UserService {
   private readonly authProvider: Auth;
 
   /**
+   * @dev Auth service injected.
+   */
+  private readonly authService: AuthService;
+
+  /**
+   * @dev Storage provider injected.
+   */
+
+  /**
    * @dev Initilize service.
    * @param {Auth} authProvider.
+   * @param {StorageProvider} storageProvider.
    */
-  constructor(authProvider: Auth) {
+  constructor(authProvider: Auth, storageProvider: StorageProvider) {
     /** @dev Import auth provider. */
     this.authProvider = authProvider;
+
+    /** @dev Import storage provider. */
+    this.authService = new AuthService(authProvider, storageProvider, this);
   }
 
   /**
@@ -25,7 +40,7 @@ export class UserService {
   public async getProfile() {
     const user = this.authProvider.currentUser;
     if (!user) {
-      throw new Error("Unauthorized");
+      return await this.authService.getStoredCredentials();
     }
     return user;
   }

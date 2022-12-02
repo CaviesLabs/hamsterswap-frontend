@@ -22,6 +22,7 @@
     "@emotion/styled": "^11.8.1",
     "@gokiprotocol/walletkit": "^1.7.3",
     "@hamsterbox/ui-kit": "^0.5.9",
+    "@project-serum/anchor": "^0.25.0",
     "@project-serum/sol-wallet-adapter": "^0.2.6",
     "@reach/dialog": "^0.17.0",
     "@reduxjs/toolkit": "^1.8.0",
