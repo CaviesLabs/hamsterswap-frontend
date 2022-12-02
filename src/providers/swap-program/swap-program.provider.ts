@@ -1,7 +1,7 @@
-import { Connection, Keypair, PublicKey } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
-import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
+import { Wallet } from "@project-serum/anchor/dist/esm/provider";
 
 import { SwapIdl, IDL } from "./swap.idl";
 
@@ -16,6 +16,7 @@ export class SwapProgramProvider {
   private readonly idl: SwapIdl = IDL;
   private readonly rpcEndpoint: string;
   private readonly programId: string;
+  private readonly walletProvider: Wallet;
 
   /**
    * @dev This is to indicate whether the program is initialized or not.
@@ -27,7 +28,12 @@ export class SwapProgramProvider {
   /**
    * @dev Initialize swap program provider.
    */
-  constructor() {
+  constructor(walletProvider: Wallet) {
+    /**
+     * @dev Initilize wallet provider context.
+     */
+    this.walletProvider = walletProvider;
+
     /**
      * @dev Binding cluster
      */
@@ -72,12 +78,14 @@ export class SwapProgramProvider {
      * @dev Prepares for some infra config
      */
     const connection = new Connection(this.rpcEndpoint, "processed");
-    const defaultKeyPair = Keypair.generate();
-    const senderWallet = new NodeWallet(defaultKeyPair);
-    const provider = new anchor.AnchorProvider(connection, senderWallet, {
-      preflightCommitment: "processed",
-      commitment: "processed",
-    });
+    const provider = new anchor.AnchorProvider(
+      connection,
+      this.walletProvider,
+      {
+        preflightCommitment: "processed",
+        commitment: "processed",
+      }
+    );
 
     /**
      * @dev Now we create program instance

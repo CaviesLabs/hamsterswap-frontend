@@ -9,7 +9,7 @@ import {
 import { useSolana as useSaberhq } from "@saberhq/use-solana";
 import { useWallet as useSolana } from "@solana/wallet-adapter-react";
 import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
-// import { Base64 } from "js-base64";
+import { getSwapProgramProvider } from "@/src/providers/swap-program";
 import { getWalletName } from "./utils";
 
 /** @dev Define state for context. */
@@ -27,25 +27,32 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
   const { walletProviderInfo } = useSaberhq();
 
   /** @dev Import providers to use from solana. */
-  const { select, wallet } = useSolana();
+  const solanaWallet = useSolana();
 
   /** @dev The function to sign message in Solana network. */
   const signMessage = useCallback(
     async (message: string) => {
-      await wallet.adapter.connect();
+      await solanaWallet.wallet.adapter.connect();
       const data = new TextEncoder().encode(message);
-      return await (wallet.adapter as MessageSignerWalletAdapter).signMessage(
-        data
-      );
+      return await (
+        solanaWallet.wallet.adapter as MessageSignerWalletAdapter
+      ).signMessage(data);
     },
-    [walletProviderInfo, wallet]
+    [walletProviderInfo, solanaWallet.wallet]
   );
 
   /** @dev Watch changes in wallet adpater and update. */
   useEffect(() => {
     if (!walletProviderInfo) return;
-    select(getWalletName(walletProviderInfo.name));
+    solanaWallet.select(getWalletName(walletProviderInfo.name));
   }, [walletProviderInfo]);
+
+  /** @dev Initilize when wallet changed. */
+  useEffect(() => {
+    if (solanaWallet?.publicKey?.toString()) {
+      getSwapProgramProvider(solanaWallet);
+    }
+  }, [solanaWallet]);
 
   return (
     <WalletContext.Provider value={{ signMessage }}>
