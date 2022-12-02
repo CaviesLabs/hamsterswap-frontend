@@ -3,6 +3,7 @@ import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
 import { Wallet } from "@project-serum/anchor/dist/esm/provider";
 import { CreateProposalDto } from "@/src/entities/proposal.entity";
+import type { SignerWalletAdapter } from "@solana/wallet-adapter-base";
 import { SwapIdl, IDL } from "./swap.idl";
 
 export const SOLANA_DEVNET_RPC_ENDPOINT = "https://api.devnet.solana.com";
@@ -157,7 +158,10 @@ export class SwapProgramProvider {
    * @param {CreateProposalDto} createProposalDto.
    * @returns {any}.
    */
-  public async createProposal(createProposalDto: CreateProposalDto) {
+  public async createProposal(
+    signer: SignerWalletAdapter,
+    createProposalDto: CreateProposalDto
+  ) {
     try {
       const [swapProposal] = await PublicKey.findProgramAddress(
         [
@@ -179,7 +183,7 @@ export class SwapProgramProvider {
           swapRegistry: this.swapRegistry,
           swapProposal,
         })
-        .signers([this.signer])
+        .signers([signer as any])
         .rpc({ commitment: "confirmed" });
     } catch {}
   }

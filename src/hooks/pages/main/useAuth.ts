@@ -26,11 +26,15 @@ export const useAuth = () => {
   const handleLogin = async () => {
     /** @dev Sign message to get signature. */
     const signature = await signMessage(SIGN_MESSAGE);
+
+    /** @dev Call function to sign message in wallet and login firebase & hamsterbox server. */
     const user = await authService.signInWithWallet(
       wallet?.publicKey?.toString(),
       signature
     );
-    dispatch(setUser(user.user));
+
+    /** @dev Update user in state. */
+    dispatch(setUser(user?.user));
   };
 
   /** @dev The function to handle authentication. */
@@ -48,7 +52,7 @@ export const useAuth = () => {
           .includes(wallet?.publicKey?.toString().toLowerCase())
       ) {
         /** Try to relogin with stored credentials. */
-        return dispatch(setUser((await authService.reAuthenticate()).user));
+        return dispatch(setUser((await authService.reAuthenticate())?.user));
       }
 
       /** Throw error to next block. */

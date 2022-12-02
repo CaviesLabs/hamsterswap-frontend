@@ -1,3 +1,4 @@
+export { SwapProgramProvider } from "./swap-program.provider";
 import { SwapProgramProvider } from "./swap-program.provider";
 import { Wallet } from "@project-serum/anchor/dist/esm/provider";
 
