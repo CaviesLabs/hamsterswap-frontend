@@ -42,10 +42,10 @@ export const useAuth = () => {
       /** Force to logout. */
       await authService.logout();
 
-      if (user.email.includes(wallet?.publicKey?.toString().toLowerCase())) {
-        /** Try to relogin with stored credentials. */
-        return dispatch(setUser((await authService.reAuthenticate()).user));
-      }
+      // if (user.email.includes(wallet?.publicKey?.toString().toLowerCase())) {
+      //   /** Try to relogin with stored credentials. */
+      //   return dispatch(setUser((await authService.reAuthenticate()).user));
+      // }
 
       /** Throw error to next block. */
       throw Error("HASTN");

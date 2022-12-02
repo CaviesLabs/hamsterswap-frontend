@@ -11,6 +11,7 @@ import { StorageProvider } from "@/src/providers/storage.provider";
 import { UserService } from "./user.service";
 import * as bs from "bs58";
 import { SIGN_MESSAGE } from "@/src/utils";
+import { networkProvider } from "@/src/providers/network.provider";
 
 /**
  * @dev Declare service serve for firebase authentication.
@@ -63,7 +64,7 @@ export class AuthService {
       );
 
       /** @dev Re-authenticate to Firebase. */
-      return this.login(authData?.email, authData?.password);
+      return this.loginWithFirebase(authData?.email, authData?.password);
     } catch {
       throw new Error("Unauthorized");
     }
@@ -102,8 +103,12 @@ export class AuthService {
       bs.encode(signedData)
     );
 
+    return this.loginWithHamsterApi(walletAddress, signedData);
     /** @dev Login to firebase. */
-    return this.login(`${walletAddress}@hamsterbox.xyz`, bs.encode(signedData));
+    return this.loginWithFirebase(
+      `${walletAddress}@hamsterbox.xyz`,
+      bs.encode(signedData)
+    );
   }
 
   /**
@@ -136,12 +141,15 @@ export class AuthService {
   }
 
   /**
-   * @dev Defie the function to restrict access token into firebase server.
+   * @dev Define the function to restrict access token into firebase server.
    * @param {string} email.
    * @param {string} password.
    * @return {UserCredential}
    */
-  public async login(email: string, password: string): Promise<UserCredential> {
+  public async loginWithFirebase(
+    email: string,
+    password: string
+  ): Promise<UserCredential> {
     try {
       /**
        * @dev Sign in to Firebase server with username & password.
@@ -172,6 +180,78 @@ export class AuthService {
 
       return userCredential;
     } catch {}
+  }
+
+  /**
+   * @dev Define the function to restrict access token into hamsterswap server.
+   * @param {string} identityId.
+   * @param {Uint8Array} signedData.
+   * @return {UserCredential}
+   */
+  public async loginWithHamsterApi(
+    identityId: string,
+    signedData: Uint8Array
+  ): Promise<any> {
+    await networkProvider.request(`/auth/challenge/request`, {
+      method: "POST",
+      data: {
+        target: identityId,
+      },
+    });
+    const userCredentials = await networkProvider
+      .request(`/user/idp/solana-wallet/availability/check`, {
+        method: "POST",
+        data: {
+          identityId,
+        },
+      })
+      .then(async () => {
+        /**
+         * @dev Sign up to Hamster server with signature
+         * once user haven't registered yet
+         */
+        const base64Signature = btoa(
+          JSON.stringify({
+            desiredWallet: identityId,
+            rawContent: SIGN_MESSAGE,
+            signature: bs.encode(signedData),
+          })
+        );
+
+        return networkProvider.request(`/auth/idp/solana-wallet/sign-up`, {
+          method: "POST",
+          data: {
+            base64Signature,
+          },
+        });
+      })
+      .catch(async () => {
+        /**
+         * @dev Sign in to Hamster server with signature
+         * once user have registered yet
+         */
+        const base64Signature = btoa(
+          JSON.stringify({
+            desiredWallet: identityId,
+            signature: bs.encode(signedData),
+          })
+        );
+
+        return networkProvider.request(`/auth/idp/solana-wallet/sign-in`, {
+          method: "POST",
+          data: {
+            base64Signature,
+          },
+        });
+      });
+
+    /**
+     * @dev Save @var {hAccessToken} into local storage.
+     */
+    this.storageProvider.setItem(
+      "hAccessToken",
+      (userCredentials as any).accessToken
+    );
   }
 
   /**
