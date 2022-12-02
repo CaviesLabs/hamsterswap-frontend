@@ -1,10 +1,10 @@
 /**
  * @dev Define list nft dto
  */
-export class ListNftDto {
+export class GetListNftDto {
   address: string;
 }
 
-export class NftDto extends ListNftDto {
+export class NftDto extends GetListNftDto {
   id: string;
 }

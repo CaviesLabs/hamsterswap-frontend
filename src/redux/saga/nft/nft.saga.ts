@@ -10,7 +10,7 @@ import { setNfts } from "@/src/redux/actions/nft/nft.action";
  * @description
  * Fetch nft list
  */
-export function* listNft({
+export function* getListNft({
   payload,
   callback,
 }: SagaPayload<ListNftDto, NftDto[]>) {

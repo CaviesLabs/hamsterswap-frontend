@@ -2,8 +2,9 @@ import { FC, useEffect } from "react";
 import { Col, Modal, Row } from "antd";
 import { AddItemModalProps } from "./types";
 import SearchInput from "../../search";
+import { useDispatch } from "react-redux";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
-import { listNft } from "@/src/redux/saga/nft/nft.saga";
+import { getListNft } from "@/src/redux/actions/nft/nft.action";
 import { useConnectedWallet } from "@saberhq/use-solana";
 
 const mockNftItems = [
@@ -38,15 +39,21 @@ const mockNftItems = [
 ];
 
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
+  const dispatch = useDispatch();
   const wallet = useConnectedWallet();
 
   useEffect(() => {
     if (!wallet) return;
-    listNft({
-      payload: {
-        address: wallet.publicKey.toString(),
-      },
-    });
+    dispatch(
+      getListNft(
+        {
+          address: wallet.publicKey.toString(),
+        },
+        (nfts) => {
+          console.log(nfts);
+        }
+      )
+    );
   }, [wallet]);
 
   return (
