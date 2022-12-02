@@ -50,7 +50,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
   /** @dev Initilize when wallet changed. */
   useEffect(() => {
     if (solanaWallet?.publicKey?.toString()) {
-      getSwapProgramProvider(solanaWallet);
+      getSwapProgramProvider(solanaWallet, { reInit: true });
     }
   }, [solanaWallet]);
 

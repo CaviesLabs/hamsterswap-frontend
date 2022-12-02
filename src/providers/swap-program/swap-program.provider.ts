@@ -1,8 +1,8 @@
-import { Connection, PublicKey } from "@solana/web3.js";
+import { Connection, Keypair, PublicKey, Signer } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
 import { Wallet } from "@project-serum/anchor/dist/esm/provider";
-
+import { CreateProposalDto } from "@/src/entities/proposal.entity";
 import { SwapIdl, IDL } from "./swap.idl";
 
 export const SOLANA_DEVNET_RPC_ENDPOINT = "https://api.devnet.solana.com";
@@ -17,12 +17,15 @@ export class SwapProgramProvider {
   private readonly rpcEndpoint: string;
   private readonly programId: string;
   private readonly walletProvider: Wallet;
+  private readonly signer: Signer;
 
   /**
    * @dev This is to indicate whether the program is initialized or not.
    * @private
    */
   private program: Program<SwapIdl>;
+  private swapRegistry: PublicKey;
+  private swapRegistryBump: number;
   private isProgramInitialize = false;
 
   /**
@@ -52,6 +55,11 @@ export class SwapProgramProvider {
      * @dev Binding program id
      */
     this.programId = process.env.SWAP_PROGRAM_ADDRESS;
+
+    /**
+     * @dev Create new signer.
+     */
+    this.signer = Keypair.generate();
 
     /**
      * @dev Initialize program
@@ -93,6 +101,20 @@ export class SwapProgramProvider {
     this.program = new Program<SwapIdl>(this.idl, this.programId, provider);
 
     /**
+     * @dev Now find swap account.
+     */
+    const [swapRegistry, swapRegistryBump] = await PublicKey.findProgramAddress(
+      [anchor.utils.bytes.utf8.encode("SEED::SWAP::PLATFORM")],
+      this.program.programId
+    );
+
+    /**
+     * @dev assign to instance.
+     */
+    this.swapRegistry = swapRegistry;
+    this.swapRegistryBump = swapRegistryBump;
+
+    /**
      * @dev Return the program again.
      */
     return this.program;
@@ -128,5 +150,37 @@ export class SwapProgramProvider {
     );
 
     return program.account.swapPlatformRegistry.fetch(swapAccountPublicKey);
+  }
+
+  /**
+   * @dev The function to interact with blockchain to create new on-chain proposal.
+   * @param {CreateProposalDto} createProposalDto.
+   * @returns {any}.
+   */
+  public async createProposal(createProposalDto: CreateProposalDto) {
+    try {
+      const [swapProposal] = await PublicKey.findProgramAddress(
+        [
+          anchor.utils.bytes.utf8.encode("SEED::SWAP::PROPOSAL_SEED"),
+          anchor.utils.bytes.utf8.encode(this.programId),
+        ],
+        this.program.programId
+      );
+
+      await this.program.methods
+        .createProposal({
+          id: createProposalDto.id,
+          swapOptions: createProposalDto.swapOptions,
+          offeredItems: createProposalDto.offeredOptions,
+          expiredAt: createProposalDto.expiredAt,
+        })
+        .accounts({
+          proposalOwner: this.walletProvider.publicKey,
+          swapRegistry: this.swapRegistry,
+          swapProposal,
+        })
+        .signers([this.signer])
+        .rpc({ commitment: "confirmed" });
+    } catch {}
   }
 }

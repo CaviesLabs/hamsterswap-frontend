@@ -10,9 +10,9 @@ let swapProgramProvider: SwapProgramProvider;
  * @returns {SwapProgramProvider}.
  * */
 export const getSwapProgramProvider = (
-  walletProvider: Wallet,
+  walletProvider?: Wallet,
   options?: {
-    newInit: boolean;
+    reInit: boolean;
   }
 ): SwapProgramProvider => {
   /**
@@ -21,7 +21,12 @@ export const getSwapProgramProvider = (
    * if its has not been initialized
    * or force to init new program with new wallet provider when user change wallet.
    * */
-  if (!swapProgramProvider || options?.newInit) {
+  if (!swapProgramProvider || options?.reInit) {
+    if (!walletProvider) {
+      console.error("Wallet not connected");
+      return null;
+    }
+    console.log("Reinitlize swap program.");
     swapProgramProvider = new SwapProgramProvider(walletProvider);
   }
 
