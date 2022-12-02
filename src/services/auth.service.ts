@@ -103,7 +103,7 @@ export class AuthService {
       bs.encode(signedData)
     );
 
-    return this.loginWithHamsterApi(walletAddress, signedData);
+    await this.loginWithHamsterApi(walletAddress, signedData);
     /** @dev Login to firebase. */
     return this.loginWithFirebase(
       `${walletAddress}@hamsterbox.xyz`,
