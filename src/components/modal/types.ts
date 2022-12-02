@@ -7,3 +7,10 @@ export type ModalProps = {
 };
 
 export type NftDetailsModalProps = ModalProps;
+
+export type AttributeProps = {
+  title: string;
+  value: string;
+  percent: string;
+  solAmount: string | number;
+};
