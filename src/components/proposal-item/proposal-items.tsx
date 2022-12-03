@@ -25,7 +25,7 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
               {userLookingFor.map((_, index) => (
                 <div className="ml-3" key={`ml3dix-${index}`}>
                   <Button
-                    className="!rounded-[100px] after:!rounded-[100px] !px-[10px]"
+                    className="!rounded-[100px] after:!rounded-[100px] !px-5"
                     size="small"
                     shape={optionSelected === index ? "primary" : "secondary"}
                     text={`Option ${index + 1}`}

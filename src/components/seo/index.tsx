@@ -1,9 +1,19 @@
 import { FC } from "react";
 
 export const SeoComponent: FC = () => {
+  const url = "https://p2p.hamsterbox.xyz/";
+  const title =
+    "Hamsterswap | Trustless P2P Swaps for Digital Collectibles and Assets";
+  const description =
+    "Hamsterswap provides a trustless peer-to-peer platform for trading digital collectibles and assets, supports both on-chain and off-chain";
+  const banner = "/main-banner.png";
+
   return (
     <>
       {/* Primary meta tags*/}
+      <title>{title}</title>
+      <meta property="og:title" content={title} key="title" />
+      <meta name="description" content={description} />
       <meta
         httpEquiv="Cache-Control"
         content="no-cache, no-store, must-revalidate"
@@ -14,23 +24,17 @@ export const SeoComponent: FC = () => {
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta
         name="keywords"
-        content="cavies,hamsterbox,web3,gaming,game,gamer,gamefi,crypto,nft,metaverse,unorthodox,infrastructure,multichain,btc,eth,solana,polygon,unorthodox infrastructure,blockchain,web3 gaming"
+        content="cavies,hamsterbox,hamsterswap,p2p,web3,gaming,game,gamer,gamefi,crypto,nft,metaverse,unorthodox,infrastructure,multichain,btc,eth,solana,polygon,unorthodox,infrastructure,blockchain"
       />
 
       {/**  */}
       <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://cavies.xyz" />
-      <meta
-        property="og:image"
-        content="https://cavies.xyz/assets/images/org-banner.jpg"
-      />
-      <meta
-        property="og:image:alt"
-        content="Cavies Labs | Building towards the future of Web3 Gaming"
-      />
+      <meta property="og:url" content={url} />
+      <meta property="og:image" content={banner} />
+      <meta property="og:image:alt" content={title} />
       <meta property="og:image:type" content="image/jpg" />
-      <meta property="og:image:height" content="1080" />
-      <meta property="og:image:width" content="1920" />
+      <meta property="og:image:height" content="1024" />
+      <meta property="og:image:width" content="512" />
       {/* <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" /> */}
 
@@ -38,15 +42,9 @@ export const SeoComponent: FC = () => {
       <meta property="og:locale:alternate" content="en_GB" />
 
       <meta name="twitter:card" content="summary" />
-      <meta property="twitter:url" content="https://cavies.xyz/" />
-      <meta
-        name="twitter:image"
-        content="https://cavies.xyz/assets/images/twitter-banner.jpg"
-      />
-      <meta
-        name="twitter:image:alt"
-        content="Cavies Labs | Building towards the future of Web3 Gaming"
-      />
+      <meta property="twitter:url" content={url} />
+      <meta name="twitter:image" content={banner} />
+      <meta name="twitter:image:alt" content={title} />
 
       {/* TODO: remove this metatag once we go live */}
       {/* <meta name="robots" content="noindex" /> */}
