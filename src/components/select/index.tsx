@@ -38,7 +38,7 @@ function Select(props: SelectProps) {
         style={{ backgroundColor: "white", color: "#20242D" }}
         onClick={() => setIsOpenDropdown(!isOpenDropdown)}
       >
-        {props.mode === "multiple"
+        {props.mode === "multiple" || !values
           ? props.placeholder
           : renderItemInfo(props.options.find((_) => _.value === values[0]))}
         <ChevronDownIcon className="h-5 w-5" />
