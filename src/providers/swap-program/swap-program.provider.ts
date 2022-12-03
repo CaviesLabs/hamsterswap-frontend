@@ -195,8 +195,6 @@ export class SwapProgramProvider {
         console.error("Error when get swap proposal", err.message);
       }
 
-      console.log("setup instructions");
-
       /**
        * @dev Define @var {TransactionInstruction} @arrays instructions to process.
        */
@@ -216,6 +214,9 @@ export class SwapProgramProvider {
               item.mintAccount
             );
 
+            /**
+             * @dev Add to instructions if valid.
+             */
             if (ins) {
               instructions.push(ins);
             }
@@ -224,23 +225,55 @@ export class SwapProgramProvider {
           }
         });
 
-      console.log("create proposal instructions");
-      /**
-       * @dev Call function to create proposal instruction.
-       */
-      const createProposalInstruction =
-        await this.instructionProvider.createProposal(
-          createProposalDto,
-          walletProvider.publicKey,
-          swapProposal
-        );
+      try {
+        /**
+         * @dev Call function to create proposal instruction.
+         */
+        const createProposalInstruction =
+          await this.instructionProvider.createProposal(
+            createProposalDto,
+            walletProvider.publicKey,
+            swapProposal
+          );
+
+        /**
+         * @dev Add instruction to arrays to process if valid.
+         */
+        if (createProposalInstruction) {
+          instructions.push(createProposalInstruction);
+        }
+      } catch (err: any) {
+        console.log("error when create proposal instruction", err.message);
+      }
 
       /**
-       * @dev Add instruction to arrays to process if valid.
+       * @dev Now deposit all tokens which user want to wrap in proposal.
        */
-      if (createProposalInstruction) {
-        instructions.push(createProposalInstruction);
-      }
+      createProposalDto.offeredOptions.map(async (item) => {
+        try {
+          /**
+           * @dev Try to create a instruction to deposit token.
+           */
+          const ins = await this.instructionProvider.depositToken(
+            createProposalDto.id,
+            swapProposal,
+            walletProvider.publicKey,
+            item.mintAccount,
+            item.id
+          );
+
+          /**
+           * @dev Add to instructions if valid.
+           */
+          if (ins) {
+            instructions.push(ins);
+          }
+        } catch (err: any) {
+          console.error("Error when deposit tokens", err.message);
+        }
+      });
+
+      console.log("Wallet provider", walletProvider);
 
       /**
        * @dev Sign and confirm instructions.

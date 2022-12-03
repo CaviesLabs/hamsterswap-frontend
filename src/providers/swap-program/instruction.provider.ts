@@ -2,6 +2,8 @@ import { Program } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { Connection, PublicKey, TransactionInstruction } from "@solana/web3.js";
 import { CreateProposalDto } from "@/src/entities/proposal.entity";
+import { Account, getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
+import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
 import { SwapIdl } from "./swap.idl";
 
 export class InstructionProvider {
@@ -34,6 +36,22 @@ export class InstructionProvider {
   }
 
   /**
+   * @dev Find token vault if exists in chain.
+   * @param {PublicKey} pub.
+   */
+  private async findTokenVaultAccount(
+    pub: PublicKey
+  ): Promise<[PublicKey, number]> {
+    return PublicKey.findProgramAddress(
+      [
+        anchor.utils.bytes.utf8.encode("SEED::SWAP::TOKEN_VAULT_SEED"),
+        pub.toBytes(),
+      ],
+      this.program.programId
+    );
+  }
+
+  /**
    * @dev The function to find and create token vault.
    * @param {PublicKey} pub.
    * @returns {TransactionInstruction}
@@ -44,13 +62,7 @@ export class InstructionProvider {
     /**
      * @dev Find token vault if exists in chain.
      */
-    const [swapTokenVault] = await PublicKey.findProgramAddress(
-      [
-        anchor.utils.bytes.utf8.encode("SEED::SWAP::TOKEN_VAULT_SEED"),
-        pub.toBytes(),
-      ],
-      this.program.programId
-    );
+    const [swapTokenVault] = await this.findTokenVaultAccount(pub);
 
     /**
      * @dev If does not find account info of token vault then create new instruction for one.
@@ -67,6 +79,47 @@ export class InstructionProvider {
     }
 
     return null;
+  }
+
+  /**
+   * @dev The function to deposit token to token vault account.
+   * @param {PublicKey} proposalOwner
+   * @param {PublicKey} mintAccount
+   * @param {string} proposalId
+   * @param {PublicKey} swapItemId
+   * @returns
+   */
+  public async depositToken(
+    // walletProvider: WalletProvider,
+    proposalId: string,
+    swapProposal: PublicKey,
+    proposalOwner: PublicKey,
+    mintAccount: PublicKey,
+    swapItemId: string
+  ): Promise<TransactionInstruction> {
+    /**
+     * @dev Find token vault if exists in chain.
+     */
+    const [swapTokenVault, swapTokenVaultBump] =
+      await this.findTokenVaultAccount(mintAccount);
+
+    const params: any = {
+      proposalId: proposalId.slice(0, 10),
+      swapItemId,
+      swapTokenVaultBump,
+      actionType: { depositing: {} },
+      optionId: "",
+    };
+
+    return await this.program.methods
+      .transferAssetsToVault(params)
+      .accounts({
+        signer: proposalOwner,
+        swapTokenVault,
+        mintAccount,
+        swapProposal,
+      })
+      .instruction();
   }
 
   /**
@@ -87,6 +140,27 @@ export class InstructionProvider {
     );
 
     return swapProposal;
+  }
+
+  /**
+   * 
+   * @param {WalletProvider} walletProvider
+   * @param {PublicKey} proposalOwner
+   * @param {PublicKey} mintAccount
+   * @returns {PublicKey}
+   */
+  private async getOrCreateProposalTokenAccount(
+    walletProvider: WalletProvider,
+    proposalOwner: PublicKey,
+    mintAccount: PublicKey
+  ): Promise<Account> {
+    return getOrCreateAssociatedTokenAccount(
+      this.connection,
+      proposalOwner as any,
+      mintAccount,
+      proposalOwner,
+      walletProvider.signTransaction
+    );
   }
 
   /**
