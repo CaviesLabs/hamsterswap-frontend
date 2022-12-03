@@ -14,7 +14,6 @@ export function* getHProfile({
 }: SagaPayload<unknown, hProfileDto | undefined>) {
   try {
     const profile: hProfileDto = yield call(hProfileService.getUser);
-    console.log("resp", profile);
     yield put(setProfile(profile));
     callback && callback(profile);
   } catch (err) {
