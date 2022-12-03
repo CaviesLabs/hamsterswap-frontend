@@ -163,6 +163,7 @@ const Layout: FC = () => {
                 <Row className="my-4" gutter={20}>
                   <Col span={8}>
                     <Select
+                      mode="multiple"
                       className="text-center rounded-3xl text-sm"
                       placeholder={
                         <div className="w-full regular-text text-center">
@@ -182,6 +183,7 @@ const Layout: FC = () => {
                   </Col>
                   <Col span={8}>
                     <Select
+                      mode="multiple"
                       className="text-center rounded-3xl text-sm"
                       placeholder={
                         <div className="w-full regular-text text-center">
@@ -204,13 +206,14 @@ const Layout: FC = () => {
                   </Col>
                   <Col span={8}>
                     <Select
+                      mode="multiple"
                       className="text-center rounded-3xl text-sm"
                       placeholder={
                         <div className="w-full regular-text text-center">
                           Include Guaranted payment
                         </div>
                       }
-                      values={["No Guaranted payment"]}
+                      values={["Include Guaranted payment"]}
                       options={[
                         {
                           value: "Include Guaranted payment",

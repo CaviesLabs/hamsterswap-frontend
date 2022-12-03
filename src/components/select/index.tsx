@@ -32,9 +32,9 @@ function Select(props: SelectProps) {
         style={{ backgroundColor: "white", color: "#20242D" }}
         onClick={() => setIsOpenDropdown(!isOpenDropdown)}
       >
-        {values?.filter((_) => _).length === 1
-          ? renderItemInfo(props.options.find((_) => _.value === values[0]))
-          : props.placeholder}
+        {props.mode === "multiple"
+          ? props.placeholder
+          : renderItemInfo(props.options.find((_) => _.value === values[0]))}
         <ChevronDownIcon className="h-5 w-5" />
       </div>
       {isOpenDropdown ? (
