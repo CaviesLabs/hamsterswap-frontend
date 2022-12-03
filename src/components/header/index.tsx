@@ -1,11 +1,12 @@
 import { FC, useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useWalletKit } from "@gokiprotocol/walletkit";
-import { useConnectedWallet, useSolana } from "@saberhq/use-solana";
+import { useConnectedWallet } from "@saberhq/use-solana";
 import { Button } from "@hamsterbox/ui-kit";
-import { utilsProvider, PURPLE_HEADER_PAGES } from "@/src/utils";
+import { PURPLE_HEADER_PAGES } from "@/src/utils";
 import classnames from "classnames";
 import styles from "./index.module.scss";
+import UserProfile from "@/src/components/header/user-profile";
 interface MenuItem {
   title: string;
   href: string;
@@ -20,7 +21,6 @@ const Header: FC = () => {
    * @dev Import GoGi providers.
    */
   const { connect: connectWallet } = useWalletKit();
-  const {} = useSolana();
   const wallet = useConnectedWallet();
 
   /**
@@ -171,19 +171,7 @@ const Header: FC = () => {
                 />{" "}
               </div>
             ) : (
-              <div
-                className="relative flex items-center h-full py-[3px] px-[10px] border-solid border-[0px] border-purple rounded-[5px] cursor-pointer"
-                onClick={() => router.push("/profile")}
-              >
-                <img
-                  className="w-[20px] md:w-[40px] h-[auto] mr-[10px]"
-                  src="https://source.boringavatars.com/beam"
-                  alt="Boring avatar"
-                />
-                <span className="text-[7px] md:text-[14px]">
-                  {utilsProvider.makeShort(wallet?.publicKey?.toString(), 3)}
-                </span>
-              </div>
+              <UserProfile />
             )}
           </div>
           <div className="flex items-center float-right">

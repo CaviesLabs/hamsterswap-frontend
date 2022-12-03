@@ -13,3 +13,9 @@ export const SET_PROPOSALS = "SET_PROPOSALS";
  */
 export const GET_LIST_NFT = "GET_LIST_NFT";
 export const SET_NFT = "SET_NFT";
+
+/**
+ * Actions for hamster-profile service
+ */
+export const GET_H_PROFILE = "GET_H_PROFILE";
+export const SET_H_PROFILE = "SET_H_PROFILE";

@@ -77,7 +77,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
    * */
   useEffect(() => {
     if (solanaWallet?.publicKey?.toString()) {
-      getSwapProgramProvider(solanaWallet, { reInit: true });
+      // getSwapProgramProvider(solanaWallet, { reInit: true });
     }
   }, [solanaWallet]);
 
