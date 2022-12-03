@@ -12,7 +12,6 @@ import {
   WalletContextState as SolanaWalletContextState,
 } from "@solana/wallet-adapter-react";
 import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
-import { getSwapProgramProvider } from "@/src/providers/swap-program";
 import { getWalletName } from "./utils";
 
 /** @dev Define state for context. */
