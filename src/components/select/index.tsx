@@ -2,9 +2,11 @@ import { SelectProps, OptionProps } from "@/src/components/select/types";
 import classnames from "classnames";
 import { CheckIcon, ChevronDownIcon } from "@/src/components/icons";
 import SearchInput from "@/src/components/search";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 
 function Select(props: SelectProps) {
+  const ref = useRef(null);
   const { showSearch, values, onChange } = props;
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
 
@@ -22,6 +24,10 @@ function Select(props: SelectProps) {
     );
   };
 
+  useOnClickOutside(ref, () => {
+    setIsOpenDropdown(false);
+  });
+
   return (
     <div className="relative">
       <div
@@ -37,8 +43,11 @@ function Select(props: SelectProps) {
           : renderItemInfo(props.options.find((_) => _.value === values[0]))}
         <ChevronDownIcon className="h-5 w-5" />
       </div>
-      {isOpenDropdown ? (
-        <div className="bg-white rounded-2xl mt-2 border absolute w-full z-10">
+      {isOpenDropdown && (
+        <div
+          ref={ref}
+          className="bg-white rounded-2xl mt-2 border absolute w-full z-10"
+        >
           {showSearch && (
             <div className="p-4">
               <SearchInput
@@ -65,7 +74,7 @@ function Select(props: SelectProps) {
             ))}
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }
