@@ -3,6 +3,7 @@ import {
   useContext,
   useCallback,
   useEffect,
+  useState,
   ReactNode,
   FC,
 } from "react";
@@ -11,8 +12,10 @@ import {
   useWallet as useSolana,
   WalletContextState as SolanaWalletContextState,
 } from "@solana/wallet-adapter-react";
+import { useConnectedWallet } from "@saberhq/use-solana";
 import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
 import { getSwapProgramProvider } from "@/src/providers/swap-program";
+import { SwapProgramService } from "@/src/services/swap-program.service";
 import { getWalletName } from "./utils";
 
 /** @dev Define state for context. */
@@ -26,6 +29,11 @@ export interface WalletContextState {
    * @dev Expose context frrom solana-adapter.
    */
   solanaWallet: SolanaWalletContextState;
+
+  /**
+   * @dev Define Program service.
+   */
+  programService: SwapProgramService;
 }
 
 /** @dev Initiize context. */
@@ -38,6 +46,12 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
 
   /** @dev Import providers to use from solana. */
   const solanaWallet = useSolana();
+
+  /** @dev Import wallet from Gokki library. */
+  const wallet = useConnectedWallet();
+
+  /** @dev Program service */
+  const [programService, initProgram] = useState<SwapProgramService>(null);
 
   /**
    * @dev The function to sign message in Solana network.
@@ -70,19 +84,45 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
   useEffect(() => {
     if (!walletProviderInfo) return;
     solanaWallet.select(getWalletName(walletProviderInfo.name));
-  }, [walletProviderInfo]);
+  }, [walletProviderInfo, wallet, solanaWallet]);
+
+  useEffect(() => {
+    if (!wallet) return;
+    /**
+     * @dev Force to connect first.
+     */
+    solanaWallet.wallet.adapter.connect();
+  }, [wallet, solanaWallet]);
 
   /**
    * @dev Initilize when wallet changed.
    * */
   useEffect(() => {
-    if (solanaWallet?.publicKey?.toString()) {
-      getSwapProgramProvider(solanaWallet, { reInit: true });
+    if (wallet?.publicKey?.toString()) {
+      try {
+        /**
+         * @dev Initlize program provider.
+         */
+        const swapProgramProvider = getSwapProgramProvider(solanaWallet, {
+          reInit: true,
+        });
+
+        console.log("Initlize program service");
+
+        /**
+         * @dev Initlize swap program service with initlized programProvider.
+         */
+        initProgram(new SwapProgramService(swapProgramProvider));
+      } catch (err: any) {
+        console.log(err.message);
+      }
     }
-  }, [solanaWallet]);
+  }, [wallet, solanaWallet]);
 
   return (
-    <WalletContext.Provider value={{ signMessage, solanaWallet }}>
+    <WalletContext.Provider
+      value={{ signMessage, solanaWallet, programService }}
+    >
       {props.children}
     </WalletContext.Provider>
   );

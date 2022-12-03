@@ -1,6 +1,5 @@
 export { SwapProgramProvider } from "./swap-program.provider";
 import { SwapProgramProvider } from "./swap-program.provider";
-import { Wallet } from "@project-serum/anchor/dist/esm/provider";
 
 /** @dev Declare global @var {SwapProgramProvider}. */
 let swapProgramProvider: SwapProgramProvider;
@@ -11,7 +10,7 @@ let swapProgramProvider: SwapProgramProvider;
  * @returns {SwapProgramProvider}.
  * */
 export const getSwapProgramProvider = (
-  walletProvider?: Wallet,
+  walletProvider?: any,
   options?: {
     reInit: boolean;
   }
@@ -23,11 +22,14 @@ export const getSwapProgramProvider = (
    * or force to init new program with new wallet provider when user change wallet.
    * */
   if (!swapProgramProvider || options?.reInit) {
-    if (!walletProvider) {
-      console.error("Wallet not connected");
-      return null;
-    }
-    console.log("Reinitlize swap program.");
+    /**
+     * @dev Return if context is null.
+     */
+    if (!walletProvider) return swapProgramProvider;
+
+    /**
+     * @dev Initilize new provider with context.
+     */
     swapProgramProvider = new SwapProgramProvider(walletProvider);
   }
 

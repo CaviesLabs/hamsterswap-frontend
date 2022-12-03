@@ -1,10 +1,11 @@
-import { Connection, Keypair, PublicKey, Signer } from "@solana/web3.js";
+import { Connection, PublicKey, TransactionInstruction } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
-import { Wallet } from "@project-serum/anchor/dist/esm/provider";
+import { WalletContextState as SolanaWalletContextState } from "@solana/wallet-adapter-react";
 import { CreateProposalDto } from "@/src/entities/proposal.entity";
-import type { SignerWalletAdapter } from "@solana/wallet-adapter-base";
 import { SwapIdl, IDL } from "./swap.idl";
+import { InstructionProvider } from "./instruction.provider";
+import { TransactionProvider } from "./transaction.provider";
 
 export const SOLANA_DEVNET_RPC_ENDPOINT = "https://api.devnet.solana.com";
 export const SOLANA_MAINNET_RPC_RPC_ENDPOINT =
@@ -17,8 +18,8 @@ export class SwapProgramProvider {
   private readonly idl: SwapIdl = IDL;
   private readonly rpcEndpoint: string;
   private readonly programId: string;
-  private readonly walletProvider: Wallet;
-  private readonly signer: Signer;
+  private readonly walletProvider: SolanaWalletContextState;
+  private connection: Connection;
 
   /**
    * @dev This is to indicate whether the program is initialized or not.
@@ -26,13 +27,24 @@ export class SwapProgramProvider {
    */
   private program: Program<SwapIdl>;
   private swapRegistry: PublicKey;
-  private swapRegistryBump: number;
   private isProgramInitialize = false;
+
+  /**
+   * @dev Provider to create instructions.
+   * @private
+   */
+  private instructionProvider: InstructionProvider;
+
+  /**
+   * @dev Provider to process transactions.
+   * @private
+   */
+  private transactionProvider: TransactionProvider;
 
   /**
    * @dev Initialize swap program provider.
    */
-  constructor(walletProvider: Wallet) {
+  constructor(walletProvider: SolanaWalletContextState) {
     /**
      * @dev Initilize wallet provider context.
      */
@@ -58,16 +70,25 @@ export class SwapProgramProvider {
     this.programId = process.env.SWAP_PROGRAM_ADDRESS;
 
     /**
-     * @dev Create new signer.
-     */
-    this.signer = Keypair.generate();
-
-    /**
      * @dev Initialize program
      */
     this.getSwapProgram().then((program) => {
       this.program = program;
       this.isProgramInitialize = true;
+
+      /**
+       * @dev Initialize instruction provider.
+       */
+      this.instructionProvider = new InstructionProvider(
+        this.connection,
+        this.program,
+        this.swapRegistry
+      );
+
+      /**
+       * @dev Initlize transaction provider.
+       */
+      this.transactionProvider = new TransactionProvider(this.connection);
     });
   }
 
@@ -86,9 +107,9 @@ export class SwapProgramProvider {
     /**
      * @dev Prepares for some infra config
      */
-    const connection = new Connection(this.rpcEndpoint, "processed");
+    this.connection = new Connection(this.rpcEndpoint, "processed");
     const provider = new anchor.AnchorProvider(
-      connection,
+      this.connection,
       this.walletProvider,
       {
         preflightCommitment: "processed",
@@ -104,7 +125,7 @@ export class SwapProgramProvider {
     /**
      * @dev Now find swap account.
      */
-    const [swapRegistry, swapRegistryBump] = await PublicKey.findProgramAddress(
+    const [swapRegistry] = await PublicKey.findProgramAddress(
       [anchor.utils.bytes.utf8.encode("SEED::SWAP::PLATFORM")],
       this.program.programId
     );
@@ -113,7 +134,6 @@ export class SwapProgramProvider {
      * @dev assign to instance.
      */
     this.swapRegistry = swapRegistry;
-    this.swapRegistryBump = swapRegistryBump;
 
     /**
      * @dev Return the program again.
@@ -159,32 +179,91 @@ export class SwapProgramProvider {
    * @returns {any}.
    */
   public async createProposal(
-    signer: SignerWalletAdapter,
+    walletProvider: SolanaWalletContextState,
     createProposalDto: CreateProposalDto
   ) {
     try {
-      const [swapProposal] = await PublicKey.findProgramAddress(
-        [
-          anchor.utils.bytes.utf8.encode("SEED::SWAP::PROPOSAL_SEED"),
-          anchor.utils.bytes.utf8.encode(this.programId),
-        ],
-        this.program.programId
+      let swapProposal: PublicKey;
+      try {
+        /**
+         * @dev Find swap program.
+         */
+        swapProposal = await this.instructionProvider.findSwapProposal(
+          createProposalDto.id
+        );
+      } catch (err: any) {
+        console.error("Error when get swap proposal", err.message);
+      }
+
+      console.log("setup instructions");
+
+      /**
+       * @dev Define @var {TransactionInstruction} @arrays instructions to process.
+       */
+      const instructions: TransactionInstruction[] = [];
+
+      /**
+       * @dev Create token vaults
+       */
+      createProposalDto.offeredOptions
+        .concat(createProposalDto.offeredOptions)
+        .map(async (item) => {
+          try {
+            /**
+             * @dev Create token vaults for each swap items.
+             */
+            const ins = await this.instructionProvider.createSwapTokenVault(
+              item.mintAccount
+            );
+
+            if (ins) {
+              instructions.push(ins);
+            }
+          } catch (err: any) {
+            console.error("error when crate token vault", err.message);
+          }
+        });
+
+      console.log("create proposal instructions");
+      /**
+       * @dev Call function to create proposal instruction.
+       */
+      const createProposalInstruction =
+        await this.instructionProvider.createProposal(
+          createProposalDto,
+          walletProvider.publicKey,
+          swapProposal
+        );
+
+      /**
+       * @dev Add instruction to arrays to process if valid.
+       */
+      if (createProposalInstruction) {
+        instructions.push(createProposalInstruction);
+      }
+
+      /**
+       * @dev Sign and confirm instructions.
+       */
+      const txId = await this.transactionProvider.signAndSendTransaction(
+        walletProvider,
+        instructions
       );
 
-      await this.program.methods
-        .createProposal({
-          id: createProposalDto.id,
-          swapOptions: createProposalDto.swapOptions,
-          offeredItems: createProposalDto.offeredOptions,
-          expiredAt: createProposalDto.expiredAt,
-        })
-        .accounts({
-          proposalOwner: this.walletProvider.publicKey,
-          swapRegistry: this.swapRegistry,
-          swapProposal,
-        })
-        .signers([signer as any])
-        .rpc({ commitment: "confirmed" });
-    } catch {}
+      console.log({ txId });
+
+      setTimeout(async () => {
+        try {
+          const state = await this.program.account.swapProposal.fetch(
+            swapProposal
+          );
+          console.log(state);
+        } catch (err: any) {
+          console.error("Error when get proposal state", err.message);
+        }
+      }, 2000);
+    } catch (err: any) {
+      console.error("Error", err.message);
+    }
   }
 }

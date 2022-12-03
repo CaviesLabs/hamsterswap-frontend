@@ -1,10 +1,12 @@
+import { BN } from "@project-serum/anchor";
 import { networkProvider } from "@/src/providers/network.provider";
 import { SwapProgramProvider } from "@/src/providers/swap-program";
 import {
   CreateProposalToServerDto,
   CreateProposalServerResponse,
 } from "@/src/entities/proposal.entity";
-import type { SignerWalletAdapter } from "@solana/wallet-adapter-base";
+import { WalletContextState as SolanaWalletContextState } from "@solana/wallet-adapter-react";
+// import type { SignerWalletAdapter } from "@solana/wallet-adapter-base";
 
 export class SwapProgramService {
   /**
@@ -21,27 +23,30 @@ export class SwapProgramService {
 
   /**
    * @dev Call this function to create new proposal.
-   * @param {SignerWalletAdapter} signer.
    * @param {CreateProposalToServerDto} createProposalDto.
    */
   public async createProposal(
-    signer: SignerWalletAdapter,
+    walletProvider: SolanaWalletContextState,
     createProposalDto: CreateProposalToServerDto
   ) {
     /**
      * @dev Call to HamsterBox server to initialize the proposal.
      */
     const response =
-      await networkProvider.request<CreateProposalServerResponse>("/proposal", {
-        method: "POST",
-        data: createProposalDto,
-      });
+      await networkProvider.requestWithCredentials<CreateProposalServerResponse>(
+        "/proposal",
+        {
+          method: "POST",
+          data: createProposalDto,
+        }
+      );
 
     /**
      * @dev Now create proposal to on-chain.
      */
-    await this.swapProgramProvider.createProposal(signer, {
+    await this.swapProgramProvider.createProposal(walletProvider, {
       id: response.id,
+      expiredAt: new BN(createProposalDto.expiredAt.getTime()),
       ...createProposalDto,
     });
   }

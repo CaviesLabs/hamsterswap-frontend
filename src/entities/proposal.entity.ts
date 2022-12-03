@@ -1,4 +1,5 @@
 import { BN } from "@project-serum/anchor";
+import { PublicKey } from "@solana/web3.js";
 
 /**
  * @dev Expose enum of proposal status.
@@ -13,8 +14,9 @@ export enum SwapItemStatus {
 /** @dev Expose stuff item. */
 export class StuffItemEntity {
   id: string;
-  mintAccount: string;
+  mintAccount: PublicKey;
   amount: BN;
+  itemType: any;
 }
 
 /** @dev Expose dto to create proposal on-chain. */
@@ -37,13 +39,16 @@ export class CreateProposalDto {
   /**
    * @dev This proposal will be expired in this time.
    * */
-  expiredAt: BN;
+  expiredAt: any;
 }
 
 /**
  * @dev Expose dto to create proposal backend.
  * */
-export type CreateProposalToServerDto = Omit<CreateProposalDto, "id"> & {
+export type CreateProposalToServerDto = Omit<
+  CreateProposalDto,
+  "id" | "expiredAt"
+> & {
   /**
    * @dev Wallet address of owner proposal.
    */
@@ -53,6 +58,11 @@ export type CreateProposalToServerDto = Omit<CreateProposalDto, "id"> & {
    * @dev Proposal description.
    */
   note: string;
+
+  /**
+   * @dev Expired date in date type.
+   */
+  expiredAt: Date;
 };
 
 /**
