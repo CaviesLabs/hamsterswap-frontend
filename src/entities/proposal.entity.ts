@@ -1,6 +1,12 @@
 import { BN } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 
+/** @dev Expose enum for item type. */
+export enum SwapItemType {
+  NFT = "SWAP_ITEM_TYPE::NFT",
+  CURRENCY = "SWAP_ITEM_TYPE::CURRENCY",
+}
+
 /**
  * @dev Expose enum of proposal status.
  */
@@ -65,19 +71,76 @@ export type CreateProposalToServerDto = Omit<
   expiredAt: Date;
 };
 
+export enum SwapProposalStatus {
+  CREATED = "SWAP_PROPOSAL_STATUS::CREATED",
+  DEPOSITED = "SWAP_PROPOSAL_STATUS::DEPOSITED",
+  FULFILLED = "SWAP_PROPOSAL_STATUS::FULFILLED",
+  CANCELED = "SWAP_PROPOSAL_STATUS::CANCELED",
+}
+
+/**
+ * @dev Expose interface for swap item.
+ * */
+export class SwapItemEntity {
+  ownerAddress?: string;
+
+  type: SwapItemType;
+
+  contractAddress: string;
+
+  depositedAddress?: string;
+
+  amount: number;
+
+  status: SwapItemStatus;
+
+  nftMetadata?: any;
+}
+
+/**
+ * @dev Expose interface swap option.
+ */
+export class SwapOptionEntity {
+  items: SwapItemEntity[];
+}
+
 /**
  * @dev Response dto when create new proposal from hamsterbox server.
+ * @dev Expose interface for swap proposal entity.
  */
-export class CreateProposalServerResponse {
+export class SwapProposalEntity {
   id: string;
+
   ownerId: string;
+
   ownerAddress: string;
-  offerItems: any[];
-  swapOptions: any[];
-  fulfillBy: string;
-  fulfilledWithOptionId: string;
-  expireAt: string;
-  status: SwapItemStatus;
-  searchText: string;
-  note: string;
+
+  offerItems: SwapItemEntity[] = [];
+
+  swapOptions: SwapOptionEntity[] = [];
+
+  fulfillBy?: string;
+
+  fulfilledWithOptionId?: string;
+
+  expireAt: Date;
+
+  status: SwapProposalStatus;
+
+  searchText?: string;
+
+  note?: string;
+}
+
+/**
+ * @dev Dto to get proposals by walletOwner.
+ */
+export class GetProposalsDto {
+  walletAddress: string;
+  options?: {
+    statuses: SwapProposalStatus;
+    limit: number;
+    offset: number;
+    search: string;
+  };
 }

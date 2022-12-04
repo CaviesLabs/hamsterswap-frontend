@@ -9,6 +9,14 @@ export const SIGNUP_EMAIL = "SIGNUP_EMAIL";
 export const SET_PROPOSALS = "SET_PROPOSALS";
 
 /**
+ * Actions for modify user proposals state.
+ */
+export const SET_PROPSAL = "SET_PROPOSAL";
+export const GET_PROPSAL = "GET_PROPSAL";
+export const SET_PROPSALS = "SET_PROPOSALS";
+export const GET_PROPSALS = "GET_PROPSALS";
+
+/**
  * Actions for nft service
  */
 export const GET_LIST_NFT = "GET_LIST_NFT";

@@ -247,6 +247,16 @@ export class SwapProgramProvider {
       }
 
       /**
+       * @dev Sign and confirm instructions.
+       */
+      const txId = await this.transactionProvider.signAndSendTransaction(
+        walletProvider,
+        instructions
+      );
+
+      console.log({ txId });
+
+      /**
        * @dev Now deposit all tokens which user want to wrap in proposal.
        */
       createProposalDto.offeredOptions.map(async (item) => {
@@ -254,6 +264,13 @@ export class SwapProgramProvider {
           /**
            * @dev Try to create a instruction to deposit token.
            */
+          console.log({
+            proposalId: createProposalDto.id,
+            swapProposal: swapProposal.toBase58().toString(),
+            owner: walletProvider.publicKey.toBase58().toString(),
+            mintAccount: item.mintAccount.toBase58().toString(),
+            itemId: item.id,
+          });
           const ins = await this.instructionProvider.depositToken(
             createProposalDto.id,
             swapProposal,
@@ -267,23 +284,16 @@ export class SwapProgramProvider {
            */
           if (ins) {
             instructions.push(ins);
+            const tx = await this.transactionProvider.signAndSendTransaction(
+              walletProvider,
+              [ins]
+            );
+            console.log(tx);
           }
         } catch (err: any) {
-          console.error("Error when deposit tokens", err.message);
+          console.error("Error when deposit tokens", err);
         }
       });
-
-      console.log("Wallet provider", walletProvider);
-
-      /**
-       * @dev Sign and confirm instructions.
-       */
-      const txId = await this.transactionProvider.signAndSendTransaction(
-        walletProvider,
-        instructions
-      );
-
-      console.log({ txId });
 
       setTimeout(async () => {
         try {

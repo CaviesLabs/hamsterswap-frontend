@@ -3,7 +3,6 @@ import * as anchor from "@project-serum/anchor";
 import { Connection, PublicKey, TransactionInstruction } from "@solana/web3.js";
 import { CreateProposalDto } from "@/src/entities/proposal.entity";
 import { Account, getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
-import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
 import { SwapIdl } from "./swap.idl";
 
 export class InstructionProvider {
@@ -90,7 +89,6 @@ export class InstructionProvider {
    * @returns
    */
   public async depositToken(
-    // walletProvider: WalletProvider,
     proposalId: string,
     swapProposal: PublicKey,
     proposalOwner: PublicKey,
@@ -103,6 +101,17 @@ export class InstructionProvider {
     const [swapTokenVault, swapTokenVaultBump] =
       await this.findTokenVaultAccount(mintAccount);
 
+    /**
+     * @dev Get @var {asociatedTokenAccount} to hold mintAccount.
+     */
+    const asociatedTokenAccount = await this.getOrCreateProposalTokenAccount(
+      proposalOwner,
+      mintAccount
+    );
+
+    /**
+     * @dev Initilize params for program.
+     */
     const params: any = {
       proposalId: proposalId.slice(0, 10),
       swapItemId,
@@ -111,14 +120,36 @@ export class InstructionProvider {
       optionId: "",
     };
 
+    /**
+     * @dev Initilize account to process program.
+     */
+    const account = {
+      signer: proposalOwner,
+      signerTokenAccount: asociatedTokenAccount.address,
+      swapTokenVault,
+      mintAccount,
+      swapProposal,
+    };
+
+    console.log({
+      params: {
+        proposalId: proposalId.slice(0, 10),
+        swapItemId,
+        swapTokenVaultBump,
+        actionType: { depositing: {} },
+        optionId: "",
+        signerTokenAccount: asociatedTokenAccount.address.toBase58().toString(),
+        mintAccount: mintAccount.toBase58().toString(),
+        swapProposal: swapProposal.toBase58().toString(),
+      },
+    });
+
+    /**
+     * @dev Call to program to create an instruction.
+     */
     return await this.program.methods
       .transferAssetsToVault(params)
-      .accounts({
-        signer: proposalOwner,
-        swapTokenVault,
-        mintAccount,
-        swapProposal,
-      })
+      .accounts(account)
       .instruction();
   }
 
@@ -143,23 +174,20 @@ export class InstructionProvider {
   }
 
   /**
-   * 
-   * @param {WalletProvider} walletProvider
+   * @dev The function to get or create a account to hold token.
    * @param {PublicKey} proposalOwner
    * @param {PublicKey} mintAccount
    * @returns {PublicKey}
    */
   private async getOrCreateProposalTokenAccount(
-    walletProvider: WalletProvider,
     proposalOwner: PublicKey,
     mintAccount: PublicKey
   ): Promise<Account> {
     return getOrCreateAssociatedTokenAccount(
       this.connection,
-      proposalOwner as any,
+      { publicKey: proposalOwner } as any,
       mintAccount,
-      proposalOwner,
-      walletProvider.signTransaction
+      proposalOwner
     );
   }
 

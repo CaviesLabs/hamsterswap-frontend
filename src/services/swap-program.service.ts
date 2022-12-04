@@ -3,10 +3,9 @@ import { networkProvider } from "@/src/providers/network.provider";
 import { SwapProgramProvider } from "@/src/providers/swap-program";
 import {
   CreateProposalToServerDto,
-  CreateProposalServerResponse,
+  SwapProposalEntity,
 } from "@/src/entities/proposal.entity";
 import { WalletContextState as SolanaWalletContextState } from "@solana/wallet-adapter-react";
-// import type { SignerWalletAdapter } from "@solana/wallet-adapter-base";
 
 export class SwapProgramService {
   /**
@@ -33,7 +32,7 @@ export class SwapProgramService {
      * @dev Call to HamsterBox server to initialize the proposal.
      */
     const response =
-      await networkProvider.requestWithCredentials<CreateProposalServerResponse>(
+      await networkProvider.requestWithCredentials<SwapProposalEntity>(
         "/proposal",
         {
           method: "POST",

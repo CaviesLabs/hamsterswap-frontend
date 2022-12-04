@@ -1,9 +1,16 @@
 import { put, call } from "redux-saga/effects";
 import { SagaPayload } from "@/src/redux/entities";
-import { proposalService } from "@/src/redux/saga/proposal/proposal.service";
+import { proposalService } from "@/src/services/proposal.service";
 import { ProposalItem } from "@/src/components/user/types";
-import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
+import {
+  setProposal,
+  setProposals,
+} from "@/src/redux/actions/proposal/proposal.action";
 import { DetailDto } from "@/src/dto/detail.dto";
+import {
+  GetProposalsDto,
+  SwapProposalEntity,
+} from "@/src/entities/proposal.entity";
 
 /**
  * @param callback
@@ -29,8 +36,8 @@ export function* listProposal({
  * Fetch proposal data
  */
 export function* getProposal({
-  callback,
   payload,
+  callback,
 }: SagaPayload<DetailDto, ProposalItem>) {
   try {
     const proposal: ProposalItem = yield call(
@@ -39,6 +46,35 @@ export function* getProposal({
     );
     yield put(setProposal(proposal));
     callback && callback(proposal);
+  } catch (err) {
+    console.error(err);
+    callback && callback(null);
+  }
+}
+
+/**
+ * @dev Saga watcher for get proposal list.
+ * @param {SagaPayload<GetProposalsDto, SwapProposalEntity[]>} saga payload
+ */
+export function* getListProposalByOwnerAddress({
+  payload,
+  callback,
+}: SagaPayload<GetProposalsDto, SwapProposalEntity[]>) {
+  try {
+    /**
+     * @dev Fetch proposal data from Hamster server.
+     */
+    const swapProposals: SwapProposalEntity[] = yield call(
+      proposalService.getProposals,
+      payload
+    );
+
+    /**
+     * @dev Modify state in redux managment.
+     */
+    yield put(setProposals(swapProposals));
+
+    callback && callback(swapProposals);
   } catch (err) {
     console.error(err);
     callback && callback(null);
