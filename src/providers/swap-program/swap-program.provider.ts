@@ -1,7 +1,7 @@
 import { Connection, PublicKey, TransactionInstruction } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
-import { WalletContextState as SolanaWalletContextState } from "@solana/wallet-adapter-react";
+import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
 import { CreateProposalDto } from "@/src/entities/proposal.entity";
 import { SwapIdl, IDL } from "./swap.idl";
 import { InstructionProvider } from "./instruction.provider";
@@ -18,7 +18,7 @@ export class SwapProgramProvider {
   private readonly idl: SwapIdl = IDL;
   private readonly rpcEndpoint: string;
   private readonly programId: string;
-  private readonly walletProvider: SolanaWalletContextState;
+  private readonly walletProvider: WalletProvider;
   private connection: Connection;
 
   /**
@@ -44,7 +44,7 @@ export class SwapProgramProvider {
   /**
    * @dev Initialize swap program provider.
    */
-  constructor(walletProvider: SolanaWalletContextState) {
+  constructor(walletProvider: WalletProvider) {
     /**
      * @dev Initilize wallet provider context.
      */
@@ -179,7 +179,7 @@ export class SwapProgramProvider {
    * @returns {any}.
    */
   public async createProposal(
-    walletProvider: SolanaWalletContextState,
+    walletProvider: WalletProvider,
     createProposalDto: CreateProposalDto
   ) {
     try {
@@ -247,16 +247,6 @@ export class SwapProgramProvider {
       }
 
       /**
-       * @dev Sign and confirm instructions.
-       */
-      const txId = await this.transactionProvider.signAndSendTransaction(
-        walletProvider,
-        instructions
-      );
-
-      console.log({ txId });
-
-      /**
        * @dev Now deposit all tokens which user want to wrap in proposal.
        */
       createProposalDto.offeredOptions.map(async (item) => {
@@ -284,16 +274,26 @@ export class SwapProgramProvider {
            */
           if (ins) {
             instructions.push(ins);
-            const tx = await this.transactionProvider.signAndSendTransaction(
-              walletProvider,
-              [ins]
-            );
-            console.log(tx);
+            // const tx = await this.transactionProvider.signAndSendTransaction(
+            //   walletProvider,
+            //   [ins]
+            // );
+            // console.log(tx);
           }
         } catch (err: any) {
           console.error("Error when deposit tokens", err);
         }
       });
+
+      /**
+       * @dev Sign and confirm instructions.
+       */
+      const txId = await this.transactionProvider.signAndSendTransaction(
+        walletProvider,
+        instructions
+      );
+
+      console.log({ txId });
 
       setTimeout(async () => {
         try {
@@ -308,5 +308,50 @@ export class SwapProgramProvider {
     } catch (err: any) {
       console.error("Error", err.message);
     }
+  }
+
+  /**
+   * @dev The function to cancle proposal on-chain.
+   * @param {string} proposalId
+   */
+  public async cancleProposal(
+    walletProvider: WalletProvider,
+    proposalId: string
+  ) {
+    try {
+      let swapProposal: PublicKey;
+      try {
+        /**
+         * @dev Find swap program.
+         */
+        swapProposal = await this.instructionProvider.findSwapProposal(
+          proposalId
+        );
+      } catch (err: any) {
+        console.error("Error when get swap proposal", err.message);
+      }
+
+      /**
+       * @dev Define @var {TransactionInstruction} @arrays instructions to process.
+       */
+      const instructions: TransactionInstruction[] = [];
+      instructions.push(
+        await this.instructionProvider.cancelProposal(
+          proposalId,
+          swapProposal,
+          walletProvider.publicKey
+        )
+      );
+
+      /**
+       * @dev Sign and confirm instructions.
+       */
+      const txId = await this.transactionProvider.signAndSendTransaction(
+        walletProvider,
+        instructions
+      );
+
+      console.log("Cancel proposal", proposalId.slice(0, 10), { txId });
+    } catch {}
   }
 }

@@ -2,10 +2,6 @@ import type { NextPage } from "next";
 import { useCallback, useEffect } from "react";
 import { useWallet } from "@/src/hooks/useWallet";
 import { useConnectedWallet } from "@saberhq/use-solana";
-import {
-  // getSwapProgramProvider,
-  SwapProgramProvider,
-} from "@/src/providers/swap-program";
 import { useDispatch } from "react-redux";
 import { useMain } from "@/src/hooks/pages/main";
 import { Button } from "@hamsterbox/ui-kit";
@@ -23,17 +19,17 @@ const TestPage: NextPage = () => {
    */
   const wallet = useConnectedWallet();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let swapProgramProvider: SwapProgramProvider;
-
   /**
    * @dev Handle to submit propoosal to server and on-chain.
    */
-  const handleCreateProposal = useCallback(() => {
+  const handleCreateProposal = useCallback(async () => {
     try {
       if (!wallet && !programService && !solanaWallet.publicKey) return;
 
-      programService.createProposal(solanaWallet, {
+      /**
+       * @dev Initilize swap program item.
+       */
+      const createdData = {
         note: "Proposal #1",
         ownerAddress: wallet?.publicKey?.toString(),
         swapOptions: [
@@ -57,7 +53,19 @@ const TestPage: NextPage = () => {
           },
         ],
         expiredAt: new Date(),
-      });
+      };
+
+      /**
+       * @dev Call create service.
+       */
+      await programService.createProposal(solanaWallet, createdData);
+
+      /**
+       * @dev Reload to get new proposals.
+       */
+      dispatch(
+        getPropsals({ walletAddress: wallet.publicKey.toBase58().toString() })
+      );
     } catch (err: any) {
       console.error(err.message);
     }

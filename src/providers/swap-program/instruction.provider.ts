@@ -219,4 +219,25 @@ export class InstructionProvider {
       })
       .instruction();
   }
+
+  /**
+   * @dev the functioon to cancel proposal instruction.
+   * @param {string} proposalId
+   * @param {PublicKey} swapProposal
+   * @param {PublicKey} proposalOwner
+   * @returns {TransactionInstruction}
+   */
+  public async cancelProposal(
+    proposalId: string,
+    swapProposal: PublicKey,
+    proposalOwner: PublicKey
+  ): Promise<TransactionInstruction> {
+    return await this.program.methods
+      .cancelProposal({ id: proposalId.slice(0, 10) })
+      .accounts({
+        swapProposal,
+        signer: proposalOwner,
+      })
+      .instruction();
+  }
 }

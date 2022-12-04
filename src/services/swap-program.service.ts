@@ -5,7 +5,7 @@ import {
   CreateProposalToServerDto,
   SwapProposalEntity,
 } from "@/src/entities/proposal.entity";
-import { WalletContextState as SolanaWalletContextState } from "@solana/wallet-adapter-react";
+import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
 
 export class SwapProgramService {
   /**
@@ -25,7 +25,7 @@ export class SwapProgramService {
    * @param {CreateProposalToServerDto} createProposalDto.
    */
   public async createProposal(
-    walletProvider: SolanaWalletContextState,
+    walletProvider: WalletProvider,
     createProposalDto: CreateProposalToServerDto
   ) {
     /**
@@ -48,5 +48,18 @@ export class SwapProgramService {
       expiredAt: new BN(createProposalDto.expiredAt.getTime()),
       ...createProposalDto,
     });
+  }
+
+  /**
+   * @dev The function to cancel proposal on-chain.
+   * @param {WalletProvider} walletProvider
+   * @param {string} proposalId.
+   * @returns
+   */
+  public async cancelProposal(
+    walletProvider: WalletProvider,
+    proposalId: string
+  ) {
+    return this.swapProgramProvider.cancleProposal(walletProvider, proposalId);
   }
 }
