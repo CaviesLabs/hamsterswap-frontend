@@ -22,13 +22,13 @@ export const Step3: FC<any> = (props: any) => {
             placeholder="Additional Info"
           />
         </Form.Item>
-        {/*<p className="text-[16px] regular-text">*/}
-        {/*  */}
-        {/*  <sup className="text-red300">*</sup>*/}
-        {/*</p>*/}
         <Form.Item
           name="expiredAt"
-          label={<p className="text-lg">Expired time</p>}
+          label={
+            <p className="text-lg">
+              Expired time <sup className="text-red300">*</sup>
+            </p>
+          }
           rules={[{ required: true, message: "Expired Time is required!" }]}
         >
           <DatetimePicker />

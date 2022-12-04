@@ -6,7 +6,12 @@ import { useRef, useState } from "react";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 
 function Select(props: SelectProps) {
+  /**
+   * @dev reference to the button
+   * close the dropdown when user click outside
+   */
   const ref = useRef(null);
+
   const { showSearch, values, onChange } = props;
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
 
@@ -36,7 +41,6 @@ function Select(props: SelectProps) {
           "p-3 text-lg font-regular border rounded-2xl cursor-pointer flex justify-between items-center"
         )}
         style={{ backgroundColor: "white", color: "#20242D" }}
-        onClick={() => setIsOpenDropdown(!isOpenDropdown)}
       >
         {props.mode === "multiple" || !values
           ? props.placeholder

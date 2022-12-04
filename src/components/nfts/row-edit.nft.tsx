@@ -1,12 +1,26 @@
-import React, { FC, useState } from "react";
+import React, { FC, useRef, useState } from "react";
 import { RowNftEditItemProps } from "./types";
 import { DeleteIcon, DetailIcon, VerticalDots } from "@/src/components/icons";
 import { GameItemModal, NFTDetailsModal } from "@/src/components/modal";
 import classnames from "classnames";
+import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 
 export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
+  /**
+   * @dev reference to the button
+   * close the dropdown when user click outside
+   */
+  const ref = useRef(null);
+  useOnClickOutside(ref, () => {
+    setCollapse(false);
+  });
+
   const { assetType } = props;
+  /**
+   * @dev handle open option list
+   */
   const [collapse, setCollapse] = useState(false);
+
   /**
    * @dev handle open modal by asset type
    */
@@ -46,7 +60,7 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
               </p>
             </div>
           </div>
-          <div className="ml-auto left mr-[20px] relative">
+          <div className="ml-auto left mr-[20px] relative" ref={ref}>
             <button
               className="relative right-[-20px]"
               onClick={() => setCollapse(!collapse)}
