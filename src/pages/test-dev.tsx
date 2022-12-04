@@ -71,6 +71,18 @@ const TestPage: NextPage = () => {
     }
   }, [wallet, programService, solanaWallet]);
 
+  const handleCancelProposal = useCallback(
+    async (propsalId: string) => {
+      if (!wallet && !programService && !solanaWallet.publicKey) return;
+
+      /**
+       * @dev Call function to cancel.
+       */
+      await programService.cancelProposal(solanaWallet, propsalId);
+    },
+    [wallet, programService, solanaWallet]
+  );
+
   /**
    * @dev Get proposal owned by user.
    */
@@ -89,6 +101,19 @@ const TestPage: NextPage = () => {
     <div>
       <h2>TestPage</h2>
       <Button onClick={handleCreateProposal} text="Test create a proposal" />
+      {proposals.map((item, key) => (
+        <div key={`proposal-item-${key}`} className="py-[10px] px-[10px]">
+          <div className="flex">
+            <div className="float-left">ID: ${item.id}</div>
+            <div className="float-left pl-[20px]">
+              <Button
+                onClick={() => handleCancelProposal(item.id)}
+                text="Cancel this proposal"
+              />
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
