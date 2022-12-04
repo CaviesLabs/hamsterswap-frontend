@@ -6,7 +6,7 @@ export const SeoComponent: FC = () => {
     "Hamsterswap | Trustless P2P Swaps for Digital Collectibles and Assets";
   const description =
     "Hamsterswap provides a trustless peer-to-peer platform for trading digital collectibles and assets, supports both on-chain and off-chain";
-  const banner = "/main-banner.png";
+  const banner = `${url}main-banner.png`;
 
   return (
     <>
@@ -30,6 +30,7 @@ export const SeoComponent: FC = () => {
       {/**  */}
       <meta property="og:type" content="website" />
       <meta property="og:url" content={url} />
+      <meta name="og:description" content={description} />
       <meta property="og:image" content={banner} />
       <meta property="og:image:alt" content={title} />
       <meta property="og:image:type" content="image/jpg" />
