@@ -2,6 +2,7 @@ import React, { FC, useState } from "react";
 import { RowNftEditItemProps } from "./types";
 import { DeleteIcon, DetailIcon, VerticalDots } from "@/src/components/icons";
 import { GameItemModal, NFTDetailsModal } from "@/src/components/modal";
+import classnames from "classnames";
 
 export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
   const { assetType } = props;
@@ -29,7 +30,10 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
             <img
               src={props.image}
               alt="NFT image"
-              className="!h-full !w-[72px] !object-cover !rounded-[8px]"
+              className={classnames(
+                "!h-full !w-[72px] !object-cover !rounded-[8px]",
+                (assetType === "nft" || assetType === "game") && "bg-dark10"
+              )}
             />
           </div>
           <div className="px-4 w-72 left">

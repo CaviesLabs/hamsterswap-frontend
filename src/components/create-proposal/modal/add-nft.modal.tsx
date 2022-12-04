@@ -8,44 +8,10 @@ import { getListNft } from "@/src/redux/actions/nft/nft.action";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
 
-const x: any = [
-  {
-    nft_name: "CyBall Chicken #124",
-    nft_image_uri:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    nft_symbol: "CyBall",
-  },
-  {
-    nft_name: "CyBall Chicken #125",
-    nft_image_uri:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    nft_symbol: "CyBall",
-  },
-  {
-    nft_name: "CyBall Chicken #126",
-    nft_image_uri:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    nft_symbol: "CyBall",
-  },
-  {
-    nft_name: "CyBall Chicken #127",
-    nft_image_uri:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    nft_symbol: "CyBall",
-  },
-  {
-    nft_name: "CyBall Chicken #128",
-    nft_image_uri:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    nft_symbol: "CyBall",
-  },
-];
-
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
   const dispatch = useDispatch();
   const wallet = useConnectedWallet();
-  // const nfts = useSelector((state: any) => state.nft?.list_nfts);
-  const nfts = x;
+  const nfts = useSelector((state: any) => state.nft?.list_nfts);
   const proposal = useSelector((state: any) => state.proposal);
   const swapItems = useSelector((state: any) => state.proposal?.swapItems);
 
