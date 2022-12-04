@@ -26,9 +26,9 @@ export const Step1: FC = () => {
   const proposal = useSelector((state: any) => state.proposal);
   const swapItems = useSelector((state: any) => state.proposal?.swapItems);
 
-  const handleUnSelectNft = (nftItem: any) => {
+  const handleUnSelectNft = (idx: number) => {
     const newSwapItems = swapItems.filter(
-      (item: any) => item.name !== nftItem.name
+      (_: any, index: number) => idx !== index
     );
     dispatch(
       setProposal({
@@ -127,7 +127,7 @@ export const Step1: FC = () => {
                 <RowEditNftItem
                   {...item}
                   onDelete={() => {
-                    handleUnSelectNft(item);
+                    handleUnSelectNft(index);
                   }}
                 />
               </div>

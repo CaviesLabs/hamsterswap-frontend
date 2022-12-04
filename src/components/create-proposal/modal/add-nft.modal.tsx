@@ -40,6 +40,7 @@ const x: any = [
     nft_symbol: "CyBall",
   },
 ];
+
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
   const dispatch = useDispatch();
   const wallet = useConnectedWallet();
@@ -76,9 +77,11 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
   const handleAddNft = (nftItem: any) => {
     const item = {
       assetType: "nft",
-      name: nftItem.nft_name,
-      image: nftItem.nft_image_uri,
-      collection: nftItem.nft_symbol,
+      name: nftItem?.nft_name,
+      nftId: nftItem?.nft_id,
+      collectionId: nftItem?.collection_id,
+      image: nftItem?.nft_image_uri,
+      collection: nftItem?.nft_symbol,
     };
     const swapItems = proposal.swapItems;
     swapItems.push(item);
@@ -120,6 +123,7 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
                     <img
                       className="rounded bg-dark10"
                       src={nftItem.nft_image_uri}
+                      alt=""
                     />
                   </Col>
                   <Col span={18} className="pl-6">
