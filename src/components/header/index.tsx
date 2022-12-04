@@ -18,6 +18,12 @@ const Header: FC = () => {
   const router = useRouter();
 
   /**
+   * Check homepage and display logo on dark theme
+   * beside, set text color is white
+   */
+  const isHomepage = router.pathname === "/";
+
+  /**
    * @dev Import GoGi providers.
    */
   const { connect: connectWallet } = useWalletKit();
@@ -139,127 +145,136 @@ const Header: FC = () => {
         /**
          * @dev Restrict fill purple background & clear border for specific pages.
          */
-        "bg-purpleBg border-b-[0px]": PURPLE_HEADER_PAGES.filter((item) =>
-          router.asPath.includes(item)
+        "bg-purpleBg border-b-[0px] relative": PURPLE_HEADER_PAGES.filter(
+          (item) => router.asPath.includes(item)
         ).length,
+        "text-white": isHomepage,
       })}
       id="app-header"
     >
-      <div className="py-[18px] md:py-[25px] pl-[20px] pr-0  lg:max-w-[1180px] lg:mx-auto flow-root">
-        <div className="float-left logo-wrapper md:mt-0 mt-[0px]">
-          <a href="/">
-            <img
-              src="/assets/images/logo.png"
-              className="w-[170px] md:w-[250px] dark:hidden mt-[2px] md:mt-0"
-            />
-            <img
-              src="/assets/images/logo-dark.png"
-              className="w-[95px] md:w-[149px] hidden dark:block"
-            />
-          </a>
-        </div>
-        <div className="relative flex items-center float-right right-[16px]">
-          <div className="float-right relative">
-            {!wallet ? (
-              <div className="relative">
-                {" "}
-                <Button
-                  className="!px-4"
-                  size="small"
-                  text="Connect"
-                  onClick={connectWallet}
-                />{" "}
-              </div>
-            ) : (
-              <UserProfile />
-            )}
+      <div className="absolute top-0 left-0 w-full py-[18px] md:py-[25px] pl-[20px] pr-0 flow-root">
+        <div className="lg:max-w-[1180px] lg:mx-auto">
+          <div className="float-left logo-wrapper md:mt-0 mt-[0px]">
+            <a href="/">
+              <img
+                src="/assets/images/logo.png"
+                className={classnames(
+                  "w-[170px] md:w-[250px] dark:hidden mt-[2px] md:mt-0",
+                  isHomepage ? "hidden" : "block"
+                )}
+              />
+              <img
+                src="/assets/images/logo-dark.png"
+                className={classnames(
+                  "w-[95px] md:w-[149px] dark:block",
+                  isHomepage ? "block" : "hidden"
+                )}
+              />
+            </a>
           </div>
-          <div className="flex items-center float-right">
-            <div
-              className={classnames(
-                styles["toggle-button"],
-                "block md:hidden ml-[20px]"
+          <div className="relative flex items-center float-right right-[16px]">
+            <div className="float-right relative">
+              {!wallet ? (
+                <div className="relative">
+                  {" "}
+                  <Button
+                    className="!px-4"
+                    size="small"
+                    text="Connect"
+                    onClick={connectWallet}
+                  />{" "}
+                </div>
+              ) : (
+                <UserProfile />
               )}
-              id="mobile-toggle"
-              onClick={handleToggleMobileMenu.bind(this)}
-            >
-              <span
+            </div>
+            <div className="flex items-center float-right">
+              <div
                 className={classnames(
-                  styles.bar,
-                  styles.top,
-                  "bg-strongTitle dark:bg-strongTitleDark"
+                  styles["toggle-button"],
+                  "block md:hidden ml-[20px]"
                 )}
-              ></span>
-              <span
-                className={classnames(
-                  styles.bar,
-                  styles.middle,
-                  "bg-strongTitle dark:bg-strongTitleDark"
-                )}
-              ></span>
-              <span
-                className={classnames(
-                  styles.bar,
-                  styles.bottom,
-                  "bg-strongTitle dark:bg-strongTitleDark"
-                )}
-              ></span>
+                id="mobile-toggle"
+                onClick={handleToggleMobileMenu.bind(this)}
+              >
+                <span
+                  className={classnames(
+                    styles.bar,
+                    styles.top,
+                    "bg-strongTitle dark:bg-strongTitleDark"
+                  )}
+                ></span>
+                <span
+                  className={classnames(
+                    styles.bar,
+                    styles.middle,
+                    "bg-strongTitle dark:bg-strongTitleDark"
+                  )}
+                ></span>
+                <span
+                  className={classnames(
+                    styles.bar,
+                    styles.bottom,
+                    "bg-strongTitle dark:bg-strongTitleDark"
+                  )}
+                ></span>
+              </div>
             </div>
           </div>
-        </div>
-        <div
-          className="hidden md:flex float-right memu-wrapper flex items-center md:pr-[40px]"
-          style={{ height: "44px" }}
-        >
-          {
-            <ul className="menu-container float-left">
-              {wallet && (
-                <Button
-                  className="!rounded-[100px] after:!rounded-[100px] !px-[20px]"
-                  text="Create a Proposal"
-                  size="small"
-                  onClick={() => router.push("/create-proposal")}
-                />
-              )}
-            </ul>
-          }
-        </div>
-        <div className={classnames(styles["mobile-nav"])}>
           <div
-            className={classnames(styles["menu-container"], "pt-[20%]")}
-            id="mobile-menu"
+            className="hidden md:flex float-right memu-wrapper flex items-center md:pr-[40px]"
+            style={{ height: "44px" }}
           >
-            <ul className={styles["mobile-menu"]}>
-              {menuData.map((item: any, index: number) => (
-                <li key={`mobile-menu-${index}`}>
-                  {item.button ? (
-                    <Button
-                      className="!rounded-[100px] after:!rounded-[100px] !px-[20px] mx-auto"
-                      text="Create a Proposal"
-                      size="small"
-                      onClick={() => router.push(item.href)}
-                    />
-                  ) : (
-                    <a
-                      className={classnames("mt-[30px] md:mt-[60px]", {
-                        active: item.slug === curSlug,
-                      })}
-                      onClick={() => {
-                        handleOnClickMenu(item.slug, 200);
-                        handleToggleMobileMenu();
-                      }}
-                    >
-                      <div className="hidden-layer"></div>
-                      <button className="shown-layer">
-                        <p className="uppercase text-[16px] md:text-[32px] bold-text">
-                          {item.title}
-                        </p>
-                      </button>
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
+            {
+              <ul className="menu-container float-left">
+                {wallet && (
+                  <Button
+                    className="!rounded-[100px] after:!rounded-[100px] !px-[20px]"
+                    text="Create a Proposal"
+                    size="small"
+                    onClick={() => router.push("/create-proposal")}
+                  />
+                )}
+              </ul>
+            }
+          </div>
+          <div className={classnames(styles["mobile-nav"])}>
+            <div
+              className={classnames(styles["menu-container"], "pt-[20%]")}
+              id="mobile-menu"
+            >
+              <ul className={styles["mobile-menu"]}>
+                {menuData.map((item: any, index: number) => (
+                  <li key={`mobile-menu-${index}`}>
+                    {item.button ? (
+                      <Button
+                        className="!rounded-[100px] after:!rounded-[100px] !px-[20px] mx-auto"
+                        text="Create a Proposal"
+                        size="small"
+                        onClick={() => router.push(item.href)}
+                      />
+                    ) : (
+                      <a
+                        className={classnames("mt-[30px] md:mt-[60px]", {
+                          active: item.slug === curSlug,
+                        })}
+                        onClick={() => {
+                          handleOnClickMenu(item.slug, 200);
+                          handleToggleMobileMenu();
+                        }}
+                      >
+                        <div className="hidden-layer"></div>
+                        <button className="shown-layer">
+                          <p className="uppercase text-[16px] md:text-[32px] bold-text">
+                            {item.title}
+                          </p>
+                        </button>
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </div>

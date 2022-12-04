@@ -1,14 +1,17 @@
 
 .bannerWrap {
-  height: calc(100vh - 300px);
+  aspect-ratio: 1920 / 1083;
+  background-image: url("/assets/images/background-banner.jpeg");
+  background-size: contain;
+  background-repeat: no-repeat;
 
   .heading {
     position: absolute;
     padding: 0 0 50px;
-    left: 0;
+    //left: -90px;
     bottom: 0;
 
-    animation: MoveUpDown 7s linear infinite;
+    animation: MoveUpDown 5.6s linear infinite;
     transform: perspective(3000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1);
   }
 }
@@ -18,6 +21,6 @@
     top: 0;
   }
   50% {
-    top: 100px;
+    top: 70px;
   }
 }
