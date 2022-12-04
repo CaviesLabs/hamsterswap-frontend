@@ -2,7 +2,7 @@
  * @dev Define list nft dto
  */
 export class GetListNftDto {
-  address: string;
+  walletAddress: string;
 }
 
 export class NftDto {

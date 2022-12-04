@@ -16,7 +16,7 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
     if (!wallet) return;
     dispatch(
       getListNft({
-        address: wallet.publicKey.toString(),
+        walletAddress: wallet.publicKey.toString(),
       })
     );
   }, [wallet]);
