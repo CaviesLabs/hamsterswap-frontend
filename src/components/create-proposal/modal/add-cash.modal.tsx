@@ -1,11 +1,13 @@
-import { FC, useState } from "react";
-import { Checkbox, Col, Input, Modal, Row } from "antd";
+import { ChangeEventHandler, FC, SetStateAction, useState } from "react";
+import { Col, Input, Modal, Row, Radio } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
 import { AddItemModalProps } from "./types";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
-import type { CheckboxValueType } from "antd/es/checkbox/Group";
+// import type { CheckboxValueType } from "antd/es/checkbox/Group";
 import { DollarIcon, PlusIcon } from "@/src/components/icons";
 
-const CheckboxGroup = Checkbox.Group;
+const RadioGroup = Radio.Group;
 
 const mockNftItems = [
   {
@@ -22,8 +24,64 @@ const mockNftItems = [
   },
 ];
 
+const decimalCount = (num: any) => {
+  // Convert to String
+  const numStr = `${num}`;
+  // String Contains Decimal
+  if (numStr.includes(".")) {
+    return numStr.split(".")[1].length;
+  }
+  // String Does Not Contain Decimal
+  return 0;
+};
+
 export const AddCashModal: FC<AddItemModalProps> = (props) => {
-  const [checkedList, setCheckedList] = useState<CheckboxValueType[]>([]);
+  // const [checkedList, setCheckedList] = useState<CheckboxValueType[]>([]);
+  const [value, setValue] = useState("");
+  const [checkedData, setCheckedData] = useState<any>(null);
+
+  const dispatch = useDispatch();
+  const proposal = useSelector((state: any) => state.proposal);
+  const swapItems = useSelector((state: any) => state.proposal?.swapItems);
+
+  const handleChangeCashValue: ChangeEventHandler<HTMLInputElement> = (e: {
+    target: { value: string | SetStateAction<string> };
+  }) => {
+    if (!isNaN(+e.target.value)) {
+      if (decimalCount(+e.target.value) > 8) {
+        const val = `${Math.round(+e.target.value * 100000000) / 100000000}`;
+        setValue(val);
+      } else {
+        setValue(`${e.target.value}`);
+      }
+    } else {
+      setValue(`${e.target.value}`);
+    }
+  };
+
+  const handleAddCash = (e: any) => {
+    if (!value) return;
+    if (value === "") return;
+    if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
+    if (+value !== parseFloat(value)) return;
+
+    const newSwapItems: any = swapItems;
+    newSwapItems.push({
+      assetType: "usd",
+      name: `${value} USD`,
+      collection: `${checkedData.toUpperCase()}`,
+      image: "/assets/images/asset-cash.png",
+      value,
+    });
+    dispatch(
+      setProposal({
+        ...proposal,
+        swapItems: newSwapItems,
+      })
+    );
+    setValue("");
+    props.handleCancel(e);
+  };
 
   return (
     <Modal
@@ -43,6 +101,9 @@ export const AddCashModal: FC<AddItemModalProps> = (props) => {
               placeholder="Enter USD amount"
               prefix={<DollarIcon />}
               suffix="USD"
+              value={value}
+              // onChange={(e) => setValue(e.target.value)}
+              onChange={handleChangeCashValue}
             />
             <div className="flex justify-between items-center mt-6">
               <p className="text-lg font-bold">Payment Method</p>
@@ -51,9 +112,9 @@ export const AddCashModal: FC<AddItemModalProps> = (props) => {
                 <p className="text-lg ml-4">Add more</p>
               </div>
             </div>
-            <CheckboxGroup
+            <RadioGroup
               className="w-full"
-              onChange={(list) => setCheckedList(list)}
+              onChange={(e) => setCheckedData(e.target.value)}
             >
               <div className="w-full max-h-96 overflow-scroll">
                 {mockNftItems.map((nftItem, i) => (
@@ -73,20 +134,27 @@ export const AddCashModal: FC<AddItemModalProps> = (props) => {
                     </Col>
                     <Col span={1}>
                       <div className="h-[56px] flex justify-end items-center">
-                        <Checkbox value={i} />
+                        <Radio value={nftItem.name.toLowerCase()} />
                       </div>
                     </Col>
                   </Row>
                 ))}
               </div>
-            </CheckboxGroup>
+            </RadioGroup>
 
             <button
-              disabled={checkedList.length === 0}
+              //disabled={checkedList.length === 0}
+              disabled={
+                !checkedData ||
+                !value ||
+                parseFloat(value) === 0 ||
+                isNaN(parseFloat(value)) ||
+                +value !== parseFloat(value)
+              }
               type="button"
-              onClick={props.handleCancel}
+              onClick={handleAddCash}
             >
-              Add
+              Add {checkedData}
             </button>
           </div>
         </div>

@@ -38,7 +38,6 @@ export const AddSolModal: FC<AddItemModalProps> = (props) => {
         }
       });
     }
-    console.log("result: ", result);
     return `${Math.round(+result * 100000000) / 100000000}`;
   }, [mySolBalance, proposal, swapItems]);
 
