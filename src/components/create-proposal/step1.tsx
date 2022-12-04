@@ -6,10 +6,12 @@ import {
   AddNftModal,
   AddSolModal,
 } from "@/src/components/create-proposal";
-import { swapOptions } from "@/src/utils";
+// import { swapOptions } from "@/src/utils";
 import { RowEditNftItem } from "@/src/components/nfts";
 import { FC, useState } from "react";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
+import { useDispatch, useSelector } from "react-redux";
+import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
 
 export const Step1: FC = () => {
   /**
@@ -19,6 +21,22 @@ export const Step1: FC = () => {
   const [isAddSol, setIsAddSol] = useState(false);
   const [isAddGameItem, setIsAddGameItem] = useState(false);
   const [isAddCash, setIsAddCash] = useState(false);
+
+  const dispatch = useDispatch();
+  const proposal = useSelector((state: any) => state.proposal);
+  const swapItems = useSelector((state: any) => state.proposal?.swapItems);
+
+  const handleUnSelectNft = (nftItem: any) => {
+    const newSwapItems = swapItems.filter(
+      (item: any) => item.name !== nftItem.name
+    );
+    dispatch(
+      setProposal({
+        ...proposal,
+        swapItems: newSwapItems,
+      })
+    );
+  };
 
   return (
     <div>
@@ -92,7 +110,7 @@ export const Step1: FC = () => {
       </div>
       <div className="block mt-[20px]">
         <div className="md:flex pt-[40px] flex-wrap">
-          {swapOptions.map((item, index) => (
+          {swapItems.map((item: any, index: number) => (
             <div
               className="block md:left w-full md:w-[50%] md:pl-[20px]"
               key={`swapoptions-${index}`}
@@ -106,11 +124,16 @@ export const Step1: FC = () => {
                 </p>
               </div>
               <div className="pt-[20px]">
-                <RowEditNftItem {...item} onDelete={() => {}} />
+                <RowEditNftItem
+                  {...item}
+                  onDelete={() => {
+                    handleUnSelectNft(item);
+                  }}
+                />
               </div>
             </div>
           ))}
-          <EmptyBox />
+          {swapItems.length < 4 && <EmptyBox />}
         </div>
       </div>
     </div>

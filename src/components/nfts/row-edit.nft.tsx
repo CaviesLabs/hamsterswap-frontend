@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import React, { FC, useState } from "react";
 import { RowNftEditItemProps } from "./types";
 import { DeleteIcon, DetailIcon, VerticalDots } from "@/src/components/icons";
 import { GameItemModal, NFTDetailsModal } from "@/src/components/modal";
@@ -10,6 +10,16 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
    * @dev handle open modal by asset type
    */
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  const handleShowViewDetail = () => {
+    setCollapse(!collapse);
+    setIsDetailOpen(true);
+  };
+
+  const handleDelete = () => {
+    setCollapse(!collapse);
+    props.onDelete();
+  };
 
   return (
     <>
@@ -49,25 +59,25 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
               >
                 <div className="py-1" role="none">
                   {(assetType === "nft" || assetType === "game") && (
-                    <li
+                    <div
                       className="cursor-pointer regular-text hover:text-gray-400 text-gray-900 block px-4 py-2 text-sm flex items-center"
                       role="menuitem"
                       tabIndex={-1}
-                      onClick={() => setIsDetailOpen(true)}
+                      onClick={handleShowViewDetail}
                     >
                       <DetailIcon className="mr-1" />
                       View Detail
-                    </li>
+                    </div>
                   )}
-                  <li
+                  <div
                     className="cursor-pointer regular-text text-red300 hover:text-red-400 block px-4 py-2 text-sm flex items-center"
                     role="menuitem"
                     tabIndex={-1}
-                    onClick={props.onDelete}
+                    onClick={handleDelete}
                   >
                     <DeleteIcon className="mr-1 fill-red300 group-hover:fill-red-400" />
                     Delete this item
-                  </li>
+                  </div>
                 </div>
               </div>
             )}
