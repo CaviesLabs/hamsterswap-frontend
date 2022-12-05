@@ -8,7 +8,7 @@ import { Button } from "@hamsterbox/ui-kit";
 import * as anchor from "@project-serum/anchor";
 import { getPropsals } from "@/src/redux/actions/proposal/proposal.action";
 import { SwapProgramService } from "@/src/services/swap-program.service";
-import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 
 const TestPage: NextPage = () => {
   const { solanaWallet, programService } = useWallet();
@@ -42,7 +42,7 @@ const TestPage: NextPage = () => {
                   "AaPymjMSALgb7ymPwND8C43mkMwTSoV8Jbxg3w2kkPg3"
                 ),
                 id: SwapProgramService.generateUID(),
-                amount: new anchor.BN(LAMPORTS_PER_SOL * 1),
+                amount: new anchor.BN(1 * 10),
                 itemType: { currency: {} },
               },
             ],
@@ -54,7 +54,7 @@ const TestPage: NextPage = () => {
               "AaPymjMSALgb7ymPwND8C43mkMwTSoV8Jbxg3w2kkPg3"
             ),
             id: SwapProgramService.generateUID(),
-            amount: new anchor.BN(LAMPORTS_PER_SOL * 1),
+            amount: new anchor.BN(1 * 10),
             itemType: { currency: {} },
           },
         ],

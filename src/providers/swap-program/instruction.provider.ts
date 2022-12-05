@@ -1,7 +1,10 @@
 import { Program } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { Connection, PublicKey, TransactionInstruction } from "@solana/web3.js";
-import { CreateProposalDto } from "@/src/entities/proposal.entity";
+import {
+  CreateProposalDto,
+  SwapItemActionType,
+} from "@/src/entities/proposal.entity";
 import { Account, getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
 import { SwapIdl } from "./swap.idl";
 
@@ -23,15 +26,18 @@ export class InstructionProvider {
    * @private
    */
   private readonly swapRegistry: PublicKey;
+  private readonly swapRegistryBump: number;
 
   constructor(
     connection: Connection,
     program: Program<SwapIdl>,
-    swapRegistry: PublicKey
+    swapRegistry: PublicKey,
+    swapRegistryBump: number
   ) {
     this.connection = connection;
     this.program = program;
     this.swapRegistry = swapRegistry;
+    this.swapRegistryBump = swapRegistryBump;
   }
 
   /**
@@ -78,79 +84,6 @@ export class InstructionProvider {
     }
 
     return null;
-  }
-
-  /**
-   * @dev The function to deposit token to token vault account.
-   * @param {PublicKey} proposalOwner
-   * @param {PublicKey} mintAccount
-   * @param {string} proposalId
-   * @param {PublicKey} swapItemId
-   * @returns
-   */
-  public async depositToken(
-    proposalId: string,
-    swapProposal: PublicKey,
-    proposalOwner: PublicKey,
-    mintAccount: PublicKey,
-    swapItemId: string
-  ): Promise<TransactionInstruction> {
-    /**
-     * @dev Find token vault if exists in chain.
-     */
-    const [swapTokenVault, swapTokenVaultBump] =
-      await this.findTokenVaultAccount(mintAccount);
-
-    /**
-     * @dev Get @var {asociatedTokenAccount} to hold mintAccount.
-     */
-    const asociatedTokenAccount = await this.getOrCreateProposalTokenAccount(
-      proposalOwner,
-      mintAccount
-    );
-
-    /**
-     * @dev Initilize params for program.
-     */
-    const params: any = {
-      proposalId: proposalId.slice(0, 10),
-      swapItemId,
-      swapTokenVaultBump,
-      actionType: { depositing: {} },
-      optionId: "",
-    };
-
-    /**
-     * @dev Initilize account to process program.
-     */
-    const account = {
-      signer: proposalOwner,
-      signerTokenAccount: asociatedTokenAccount.address,
-      swapTokenVault,
-      mintAccount,
-      swapProposal,
-    };
-
-    console.log({
-      params: {
-        proposalId: proposalId.slice(0, 10),
-        swapItemId,
-        swapTokenVaultBump,
-        actionType: { depositing: {} },
-        optionId: "",
-        signerTokenAccount: asociatedTokenAccount.address.toBase58().toString(),
-        mintAccount: mintAccount.toBase58().toString(),
-        swapProposal: swapProposal.toBase58().toString(),
-      },
-    });
-
-    /**
-     * @dev Call to program to create an instruction.
-     */
-    return await this.program.methods
-      .transferAssetsToVault(params)
-      .accounts(account)
-      .instruction();
   }
 
   /**
@@ -237,6 +170,120 @@ export class InstructionProvider {
       .accounts({
         swapProposal,
         signer: proposalOwner,
+      })
+      .instruction();
+  }
+
+  /**
+   * @dev The function to deposit token to token vault account.
+   * @param {PublicKey} proposalOwner
+   * @param {PublicKey} mintAccount
+   * @param {string} proposalId
+   * @param {PublicKey} swapItemId
+   * @returns
+   */
+  public async transferTokenToVault(
+    proposalId: string,
+    swapProposal: PublicKey,
+    proposalOwner: PublicKey,
+    mintAccount: PublicKey,
+    swapItemId: string,
+    actionType: SwapItemActionType
+  ): Promise<TransactionInstruction> {
+    /**
+     * @dev Find token vault if exists in chain.
+     */
+    const [swapTokenVault, swapTokenVaultBump] =
+      await this.findTokenVaultAccount(mintAccount);
+
+    /**
+     * @dev Get @var {asociatedTokenAccount} to hold mintAccount.
+     */
+    const asociatedTokenAccount = await this.getOrCreateProposalTokenAccount(
+      proposalOwner,
+      mintAccount
+    );
+
+    /**
+     * @dev Initilize params for program.
+     */
+    const params: any = {
+      proposalId: proposalId.slice(0, 10),
+      swapItemId,
+      swapTokenVaultBump,
+      actionType: { [actionType]: {} },
+      optionId: "",
+    };
+
+    /**
+     * @dev Call to program to create an instruction.
+     */
+    return await this.program.methods
+      .transferAssetsToVault(params)
+      .accounts({
+        signer: proposalOwner,
+        signerTokenAccount: asociatedTokenAccount.address,
+        swapTokenVault,
+        mintAccount,
+        swapProposal,
+      })
+      .instruction();
+  }
+
+  /**
+   * @dev The function to transfer token from vault to target account.
+   * @param targetAccount
+   * @param mintAccount
+   * @param swapProposal
+   * @param proposalId
+   * @param swapItemId
+   * @returns {TransactionInstruction}
+   */
+  public async transferTokenFromVault(
+    targetAccount: PublicKey,
+    mintAccount: PublicKey,
+    swapProposal: PublicKey,
+    proposalId: string,
+    swapItemId: string,
+    actionType: SwapItemActionType
+  ): Promise<TransactionInstruction> {
+    /**
+     * @dev Find token vault if exists in chain.
+     */
+    const [swapTokenVault, swapTokenVaultBump] =
+      await this.findTokenVaultAccount(mintAccount);
+
+    /**
+     * @dev Get @var {asociatedTokenAccount} to hold mintAccount.
+     */
+    const asociatedTokenAccount = await this.getOrCreateProposalTokenAccount(
+      targetAccount,
+      mintAccount
+    );
+
+    /**
+     * @dev Initilize params for program.
+     */
+    const params: any = {
+      proposalId: proposalId.slice(0, 10),
+      swapItemId,
+      swapRegistryBump: this.swapRegistryBump,
+      swapTokenVaultBump,
+      actionType: { [actionType]: {} },
+    };
+
+    /**
+     * @dev Call to program to create an instruction.
+     */
+    return this.program.methods
+      .transferAssetsFromVault(params)
+      .accounts({
+        signer: targetAccount,
+        signerTokenAccount: asociatedTokenAccount.address,
+        swapProposal,
+        swapTokenVault,
+        swapRegistry: this.swapRegistry,
+        mintAccount: mintAccount,
       })
       .instruction();
   }

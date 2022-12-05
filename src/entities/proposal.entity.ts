@@ -1,6 +1,16 @@
 import { BN } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 
+/**
+ * @dev Exporse item action type.
+ */
+export enum SwapItemActionType {
+  depositing = "depositing",
+  withdrawing = "withdrawing",
+  fulfilling = "fulfilling",
+  redeeming = "redeeming",
+}
+
 /** @dev Expose enum for item type. */
 export enum SwapItemType {
   NFT = "SWAP_ITEM_TYPE::NFT",

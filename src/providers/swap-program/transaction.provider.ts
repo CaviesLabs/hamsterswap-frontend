@@ -2,9 +2,11 @@ import {
   Connection,
   Transaction,
   TransactionInstruction,
+  TransactionSignature,
 } from "@solana/web3.js";
-import { BorshCoder, EventParser } from "@project-serum/anchor";
+import { BorshCoder, EventParser, Program } from "@project-serum/anchor";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
+import { SwapIdl } from "./swap.idl";
 
 export class TransactionProvider {
   /**
@@ -13,8 +15,15 @@ export class TransactionProvider {
    */
   private readonly connection: Connection;
 
-  constructor(connection: Connection) {
+  /**
+   * @dev This is to indicate whether the program is initialized or not.
+   * @private
+   */
+  private readonly program: Program<SwapIdl>;
+
+  constructor(connection: Connection, program: Program<SwapIdl>) {
     this.connection = connection;
+    this.program = program;
   }
 
   /**
@@ -46,16 +55,21 @@ export class TransactionProvider {
     return txid;
   }
 
-  public async getTransaction(program: any, tx: any) {
+  /**
+   * @dev Get transaction.
+   * @param {TransactionSignature} tx
+   * @returns
+   */
+  public async getTransaction(tx: TransactionSignature) {
     const transaction = await this.connection.getParsedTransaction(tx, {
       commitment: "confirmed",
     });
     const eventParser = new EventParser(
-      program.programId,
-      new BorshCoder(program.idl)
+      this.program.programId,
+      new BorshCoder(this.program.idl)
     );
-    console.log(transaction);
+
     const [event] = eventParser.parseLogs(transaction.meta.logMessages);
-    console.log({ event });
+    return JSON.stringify(event);
   }
 }

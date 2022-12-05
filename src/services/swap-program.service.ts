@@ -61,7 +61,7 @@ export class SwapProgramService {
     walletProvider: WalletProvider,
     proposalId: string
   ) {
-    return this.swapProgramProvider.cancleProposal(walletProvider, proposalId);
+    return this.swapProgramProvider.cancelProposal(walletProvider, proposalId);
   }
 
   public static generateUID() {
