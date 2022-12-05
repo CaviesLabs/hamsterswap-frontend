@@ -17,8 +17,13 @@ import {
   Step5,
 } from "@/src/components/create-proposal";
 import { Form } from "antd";
+import { useSelector } from "react-redux";
+import classnames from "classnames";
 
 const Layout: FC = () => {
+  const proposal = useSelector((state: any) => state.proposal);
+  const isButtonNextDisabled = !proposal || proposal?.swapItems.length === 0;
+
   /**
    * @dev Define proposal form, that include:
    * @field note
@@ -142,8 +147,18 @@ const Layout: FC = () => {
               {currentStep < 4 ? (
                 <Button
                   text="Next"
-                  className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right"
+                  className={classnames(
+                    "!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right",
+                    isButtonNextDisabled && "hover:!text-black"
+                  )}
                   onClick={handleNextStep}
+                  theme={
+                    isButtonNextDisabled && {
+                      color: "black",
+                      backgroundColor: "#cccccc",
+                    }
+                  }
+                  disabled={isButtonNextDisabled}
                 />
               ) : (
                 <Button
