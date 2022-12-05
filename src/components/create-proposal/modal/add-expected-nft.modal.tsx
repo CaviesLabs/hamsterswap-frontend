@@ -3,7 +3,8 @@ import { Col, Input, Modal, Row } from "antd";
 import { AddItemModalProps } from "./types";
 import SearchInput from "../../search";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
-import { AttributeCard, AttributeProps } from "@/src/components/modal";
+import { AttributeCard } from "@/src/components/modal";
+import { AttributeDto } from "@/src/dto/nft.dto";
 
 const Form = () => {
   return (
@@ -96,53 +97,37 @@ export const AddExpectedNftModal: FC<AddItemModalProps> = (props) => {
   );
 };
 
-const mockAttributes: AttributeProps[] = [
+const mockAttributes: AttributeDto[] = [
   {
-    title: "MOVE",
+    trait_type: "MOVE",
     value: "Aquastock",
-    percent: "10%",
-    solAmount: 9.99,
   },
   {
-    title: "MOVE",
+    trait_type: "MOVE",
     value: "Carrot Hammer",
-    percent: "10%",
-    solAmount: 9.99,
   },
   {
-    title: "Background",
+    trait_type: "Background",
     value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
   },
   {
-    title: "Background",
+    trait_type: "Background",
     value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
   },
   {
-    title: "Background",
+    trait_type: "Background",
     value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
   },
   {
-    title: "Background",
+    trait_type: "Background",
     value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
   },
   {
-    title: "Background",
+    trait_type: "Background",
     value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
   },
   {
-    title: "Background",
+    trait_type: "Background",
     value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
   },
 ];
