@@ -12,9 +12,12 @@ import {
 import classnames from "classnames";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 import { ExpectedItemProps } from "@/src/components/create-proposal/step2/types";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
 
 export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
+  const dispatch = useDispatch();
+
   const { optionName, defaultCollapsed } = props;
   /**
    * @dev Condition to collapse component.
@@ -33,7 +36,19 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
    * Get expected items from redux-store to display
    */
   const proposal = useSelector((state: any) => state.proposal);
-  console.log("proposal.receiveItems", proposal.receiveItems);
+
+  const handleUnSelectNft = (idx: number) => {
+    const newReceiveItems = proposal.receiveItems;
+    newReceiveItems[props.index] = newReceiveItems[props.index].filter(
+      (_: any, index: number) => idx !== index
+    );
+    dispatch(
+      setProposal({
+        ...proposal,
+        receiveItems: newReceiveItems,
+      })
+    );
+  };
 
   return (
     <div
@@ -139,7 +154,10 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                       </p>
                     </div>
                     <div className="pt-[20px]">
-                      <RowEditNftItem {...option} onDelete={() => {}} />
+                      <RowEditNftItem
+                        {...option}
+                        onDelete={() => handleUnSelectNft(index)}
+                      />
                     </div>
                   </div>
                 )
