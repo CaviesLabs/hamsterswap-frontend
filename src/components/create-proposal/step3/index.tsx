@@ -1,13 +1,27 @@
 import { FC } from "react";
 import { Form } from "antd";
 import DatetimePicker from "@/src/components/create-proposal/step3/datetime-picker";
+import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
+import { useDispatch, useSelector } from "react-redux";
 
 export const Step3: FC<any> = (props: any) => {
+  const dispatch = useDispatch();
   const { form } = props;
+
+  const proposal = useSelector((state: any) => state.proposal);
+
+  const handleFormChange = () => {
+    dispatch(
+      setProposal({
+        ...proposal,
+        additionalInfo: form.getFieldsValue(),
+      })
+    );
+  };
 
   return (
     <Form
-      onChange={() => console.log("values", form.getFieldsValue())}
+      onChange={handleFormChange}
       form={form}
       layout="vertical"
       requiredMark={false}

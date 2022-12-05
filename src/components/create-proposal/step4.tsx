@@ -1,6 +1,20 @@
 import { FC } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
 
 export const Step4: FC = () => {
+  const dispatch = useDispatch();
+  const proposal = useSelector((state: any) => state.proposal);
+
+  const handleChange = (value: string) => {
+    dispatch(
+      setProposal({
+        ...proposal,
+        guarantee: value,
+      })
+    );
+  };
+
   return (
     <div>
       <h3 className="text-3xl font-bold tracking-tight text-gray-900">
@@ -26,6 +40,7 @@ export const Step4: FC = () => {
                 type="text"
                 className="border-[1px] border-solid border-dark30 rounded-[16px] w-full  px-[64px] py-[16px] focus:ring-0 focus:outline-0 regular-text"
                 placeholder="Enter SOL amount"
+                onChange={(e) => handleChange(e.target.value)}
               />
               <img
                 src="/assets/images/solana-icon.svg"
