@@ -1,7 +1,17 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { ExpectedItem } from "@/src/components/create-proposal/step2/expected-item";
+import { useDispatch } from "react-redux";
+import { getPlatformConfig } from "@/src/redux/actions/platform-config/platform.action";
 
 export const Step2: FC = () => {
+  /**
+   * Initialize platform config
+   */
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getPlatformConfig());
+  }, []);
+
   return (
     <div>
       <h3 className="text-3xl font-bold tracking-tight text-gray-900">

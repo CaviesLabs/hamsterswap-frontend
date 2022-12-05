@@ -16,13 +16,14 @@ function Select(props: SelectProps) {
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
 
   const renderItemInfo = (option: OptionProps) => {
+    if (!option) return;
     return (
       <>
         <div className="w-1/6 max-w-[60px]">
           <img className="rounded-[50%]" src={option.image} />
         </div>
         <div className="pl-6 w-5/6 h-18 flex flex-col justify-between">
-          <p className="text-lg">{option.value}</p>
+          <p className="text-lg">{option.label || option.value}</p>
           <p className="text-lg text-gray-400">{option.description}</p>
         </div>
       </>
@@ -41,8 +42,9 @@ function Select(props: SelectProps) {
           "p-3 text-lg font-regular border rounded-2xl cursor-pointer flex justify-between items-center"
         )}
         style={{ backgroundColor: "white", color: "#20242D" }}
+        onClick={() => setIsOpenDropdown(!isOpenDropdown)}
       >
-        {props.mode === "multiple" || !values
+        {props.mode === "multiple" || !values || !values[0]
           ? props.placeholder
           : renderItemInfo(props.options.find((_) => _.value === values[0]))}
         <ChevronDownIcon className="h-5 w-5" />

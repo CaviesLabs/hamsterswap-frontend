@@ -7,12 +7,16 @@ import {
   AddSolModal,
 } from "@/src/components/create-proposal";
 import { RowEditNftItem } from "@/src/components/nfts";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 import { useDispatch, useSelector } from "react-redux";
 import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
+import { getListNft } from "@/src/redux/actions/nft/nft.action";
+import { useConnectedWallet } from "@saberhq/use-solana";
 
 export const Step1: FC = () => {
+  const wallet = useConnectedWallet();
+
   /**
    * @dev handle open modal by type
    */
@@ -36,6 +40,15 @@ export const Step1: FC = () => {
       })
     );
   };
+
+  useEffect(() => {
+    if (!wallet) return;
+    dispatch(
+      getListNft({
+        walletAddress: wallet.publicKey.toString(),
+      })
+    );
+  }, [wallet]);
 
   return (
     <div>

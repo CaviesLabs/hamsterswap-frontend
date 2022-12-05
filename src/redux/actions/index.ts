@@ -19,3 +19,9 @@ export const SET_NFT = "SET_NFT";
  */
 export const GET_H_PROFILE = "GET_H_PROFILE";
 export const SET_H_PROFILE = "SET_H_PROFILE";
+
+/**
+ * Actions for platform config service
+ */
+export const GET_PLATFORM_CONFIG = "GET_PLATFORM_CONFIG";
+export const SET_PLATFORM_CONFIG = "SET_PLATFORM_CONFIG";

@@ -1,23 +1,21 @@
-import { FC, useEffect, useMemo } from "react";
+import { FC, useMemo } from "react";
 import { Col, Modal, Row } from "antd";
 import { AddItemModalProps } from "./types";
 import SearchInput from "../../search";
 import { useDispatch, useSelector } from "react-redux";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
-import { getListNft } from "@/src/redux/actions/nft/nft.action";
-import { useConnectedWallet } from "@saberhq/use-solana";
 import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
 
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
   const dispatch = useDispatch();
-  const wallet = useConnectedWallet();
+
   const nfts = useSelector((state: any) => state.nft?.list_nfts);
   const proposal = useSelector((state: any) => state.proposal);
   const swapItems = useSelector((state: any) => state.proposal?.swapItems);
 
   const nftsMemo = useMemo(() => {
     const data: any = [];
-    nfts.forEach((i: any) => {
+    nfts?.forEach((i: any) => {
       const nftName = i?.nft_name ?? null;
       if (nftName) {
         const nft = swapItems.find((obj: any) => {
@@ -30,15 +28,6 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
     });
     return data;
   }, [nfts, swapItems]);
-
-  useEffect(() => {
-    if (!wallet) return;
-    dispatch(
-      getListNft({
-        walletAddress: wallet.publicKey.toString(),
-      })
-    );
-  }, [wallet]);
 
   const handleAddNft = (nftItem: any) => {
     const item = {
