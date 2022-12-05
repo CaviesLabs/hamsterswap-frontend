@@ -35,7 +35,7 @@ export class CreateProposalDto {
   /**
    * @dev Nfts which user want to wrap to revice.
    * */
-  swapOptions: StuffItemEntity[];
+  swapOptions: { id: string; askingItems: StuffItemEntity[] }[];
 
   /**
    * @dev Nfts whose user want to wrap.

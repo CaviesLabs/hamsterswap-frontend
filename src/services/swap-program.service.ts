@@ -6,6 +6,7 @@ import {
   SwapProposalEntity,
 } from "@/src/entities/proposal.entity";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
+import { uuid } from "uuidv4";
 
 export class SwapProgramService {
   /**
@@ -61,5 +62,9 @@ export class SwapProgramService {
     proposalId: string
   ) {
     return this.swapProgramProvider.cancleProposal(walletProvider, proposalId);
+  }
+
+  public static generateUID() {
+    return uuid().slice(0, 10);
   }
 }

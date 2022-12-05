@@ -7,7 +7,8 @@ import { useMain } from "@/src/hooks/pages/main";
 import { Button } from "@hamsterbox/ui-kit";
 import * as anchor from "@project-serum/anchor";
 import { getPropsals } from "@/src/redux/actions/proposal/proposal.action";
-import { PublicKey, LAMPORTS_PER_SOL, Keypair } from "@solana/web3.js";
+import { SwapProgramService } from "@/src/services/swap-program.service";
+import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 const TestPage: NextPage = () => {
   const { solanaWallet, programService } = useWallet();
@@ -34,12 +35,17 @@ const TestPage: NextPage = () => {
         ownerAddress: wallet?.publicKey?.toString(),
         swapOptions: [
           {
-            mintAccount: new PublicKey(
-              "AaPymjMSALgb7ymPwND8C43mkMwTSoV8Jbxg3w2kkPg3"
-            ),
-            id: Keypair.generate().publicKey.toBase58().slice(0, 10),
-            amount: new anchor.BN(LAMPORTS_PER_SOL * 1),
-            itemType: { currency: {} },
+            id: SwapProgramService.generateUID(),
+            askingItems: [
+              {
+                mintAccount: new PublicKey(
+                  "AaPymjMSALgb7ymPwND8C43mkMwTSoV8Jbxg3w2kkPg3"
+                ),
+                id: SwapProgramService.generateUID(),
+                amount: new anchor.BN(LAMPORTS_PER_SOL * 1),
+                itemType: { currency: {} },
+              },
+            ],
           },
         ],
         offeredOptions: [
@@ -47,7 +53,7 @@ const TestPage: NextPage = () => {
             mintAccount: new PublicKey(
               "AaPymjMSALgb7ymPwND8C43mkMwTSoV8Jbxg3w2kkPg3"
             ),
-            id: Keypair.generate().publicKey.toBase58().slice(0, 10),
+            id: SwapProgramService.generateUID(),
             amount: new anchor.BN(LAMPORTS_PER_SOL * 1),
             itemType: { currency: {} },
           },

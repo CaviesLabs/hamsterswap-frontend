@@ -3,6 +3,7 @@ import {
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
+import { BorshCoder, EventParser } from "@project-serum/anchor";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
 
 export class TransactionProvider {
@@ -43,5 +44,18 @@ export class TransactionProvider {
      */
     const txid = await this.connection.sendRawTransaction(rawTx.serialize());
     return txid;
+  }
+
+  public async getTransaction(program: any, tx: any) {
+    const transaction = await this.connection.getParsedTransaction(tx, {
+      commitment: "confirmed",
+    });
+    const eventParser = new EventParser(
+      program.programId,
+      new BorshCoder(program.idl)
+    );
+    console.log(transaction);
+    const [event] = eventParser.parseLogs(transaction.meta.logMessages);
+    console.log({ event });
   }
 }

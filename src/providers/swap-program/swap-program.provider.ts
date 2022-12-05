@@ -204,7 +204,9 @@ export class SwapProgramProvider {
        * @dev Create token vaults
        */
       createProposalDto.offeredOptions
-        .concat(createProposalDto.offeredOptions)
+        .concat(
+          createProposalDto.swapOptions.map((item) => item.askingItems).flat(1)
+        )
         .map(async (item) => {
           try {
             /**
@@ -236,6 +238,11 @@ export class SwapProgramProvider {
             swapProposal
           );
 
+        console.log(
+          "create proposal successfully",
+          swapProposal.toBase58().toString()
+        );
+
         /**
          * @dev Add instruction to arrays to process if valid.
          */
@@ -245,45 +252,6 @@ export class SwapProgramProvider {
       } catch (err: any) {
         console.log("error when create proposal instruction", err.message);
       }
-
-      /**
-       * @dev Now deposit all tokens which user want to wrap in proposal.
-       */
-      createProposalDto.offeredOptions.map(async (item) => {
-        try {
-          /**
-           * @dev Try to create a instruction to deposit token.
-           */
-          console.log({
-            proposalId: createProposalDto.id,
-            swapProposal: swapProposal.toBase58().toString(),
-            owner: walletProvider.publicKey.toBase58().toString(),
-            mintAccount: item.mintAccount.toBase58().toString(),
-            itemId: item.id,
-          });
-          const ins = await this.instructionProvider.depositToken(
-            createProposalDto.id,
-            swapProposal,
-            walletProvider.publicKey,
-            item.mintAccount,
-            item.id
-          );
-
-          /**
-           * @dev Add to instructions if valid.
-           */
-          if (ins) {
-            instructions.push(ins);
-            // const tx = await this.transactionProvider.signAndSendTransaction(
-            //   walletProvider,
-            //   [ins]
-            // );
-            // console.log(tx);
-          }
-        } catch (err: any) {
-          console.error("Error when deposit tokens", err);
-        }
-      });
 
       /**
        * @dev Sign and confirm instructions.
@@ -300,11 +268,56 @@ export class SwapProgramProvider {
           const state = await this.program.account.swapProposal.fetch(
             swapProposal
           );
-          console.log(state);
+          console.log({ state });
+
+          await this.transactionProvider.getTransaction(
+            this.program,
+            "3XtZvpZUMKNTvcdP9gbR4cGcaxqioD8xgZwK668FkomiypJYz39XjZqPLS6Fqk3JMpdv1fiVKstGcgEqRVHvLCvo"
+          );
         } catch (err: any) {
           console.error("Error when get proposal state", err.message);
         }
       }, 2000);
+
+      /**
+       * @dev Now deposit all tokens which user want to wrap in proposal.
+       */
+      createProposalDto.offeredOptions.map(async (item) => {
+        try {
+          /**
+           * @dev Try to create a instruction to deposit token.
+           */
+          console.log({
+            proposalId: createProposalDto.id,
+            swapProposal: swapProposal,
+            owner: walletProvider.publicKey.toBase58().toString(),
+            mintAccount: item.mintAccount.toBase58().toString(),
+            itemId: item.id,
+          });
+          const ins = await this.instructionProvider.depositToken(
+            createProposalDto.id,
+            swapProposal,
+            walletProvider.publicKey,
+            item.mintAccount,
+            item.id
+          );
+
+          /**
+           * @dev Add to instructions if valid.
+           */
+          console.log("instruction", ins);
+          if (ins) {
+            // instructions.push(ins);
+            const tx = await this.transactionProvider.signAndSendTransaction(
+              walletProvider,
+              [ins]
+            );
+            console.log(tx);
+          }
+        } catch (err: any) {
+          console.error("Error when deposit tokens", err);
+        }
+      });
     } catch (err: any) {
       console.error("Error", err.message);
     }

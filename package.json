@@ -69,7 +69,8 @@
     "tiny-invariant": "^1.2.0",
     "tw-elements": "^1.0.0-alpha12",
     "tweetnacl": "^1.0.3",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",
