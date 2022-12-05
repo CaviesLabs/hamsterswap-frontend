@@ -14,16 +14,18 @@ export class ProposalService {
    * @returns {SwapProposalEntity} data.
    */
   public async getProposals(
-    getProposalsDto: GetProposalsDto
+    getProposalsDto?: GetProposalsDto
   ): Promise<SwapProposalEntity> {
     return networkProvider.requestWithCredentials<SwapProposalEntity>(
       "/proposal",
       {
         method: "GET",
-        params: {
-          ownerAddresses: getProposalsDto.walletAddress,
-          ...getProposalsDto.options,
-        },
+        params: getProposalsDto
+          ? {
+              ownerAddresses: getProposalsDto.walletAddress,
+              ...getProposalsDto.options,
+            }
+          : {},
         paramsSerializer: {
           serialize: (params: any) => {
             return qs.stringify(params);

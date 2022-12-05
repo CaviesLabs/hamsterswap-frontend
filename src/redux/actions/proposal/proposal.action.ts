@@ -1,5 +1,11 @@
-import { SET_PROPOSALS, GET_PROPSALS, SET_PROPSALS } from "@/src/redux/actions";
+import {
+  SET_PROPOSALS,
+  GET_PROPSALS,
+  SET_PROPSALS,
+  GET_EXPLORE_PROPOSALS,
+} from "@/src/redux/actions";
 import { ProposalItem } from "@/src/components/user/types";
+import { CallBackSaga } from "@/src/redux/entities";
 import {
   GetProposalsDto,
   SwapProposalEntity,
@@ -32,4 +38,14 @@ export const getPropsals = (data: GetProposalsDto) => ({
 export const setProposals = (data: SwapProposalEntity[]) => ({
   type: SET_PROPSALS,
   payload: data,
+});
+
+/**
+ * @returns reducer.
+ */
+export const getExploreProposals = (
+  callback?: CallBackSaga<SwapProposalEntity[]>
+) => ({
+  type: GET_EXPLORE_PROPOSALS,
+  callback,
 });

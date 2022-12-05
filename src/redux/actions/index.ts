@@ -15,6 +15,7 @@ export const SET_PROPSAL = "SET_PROPOSAL";
 export const GET_PROPSAL = "GET_PROPSAL";
 export const SET_PROPSALS = "SET_PROPOSALS";
 export const GET_PROPSALS = "GET_PROPSALS";
+export const GET_EXPLORE_PROPOSALS = "GET_EXPLORE_PROPOSALS";
 
 /**
  * Actions for nft service

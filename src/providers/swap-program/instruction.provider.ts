@@ -188,7 +188,8 @@ export class InstructionProvider {
     proposalOwner: PublicKey,
     mintAccount: PublicKey,
     swapItemId: string,
-    actionType: SwapItemActionType
+    actionType: SwapItemActionType,
+    optionId?: string
   ): Promise<TransactionInstruction> {
     /**
      * @dev Find token vault if exists in chain.
@@ -209,10 +210,10 @@ export class InstructionProvider {
      */
     const params: any = {
       proposalId: proposalId.slice(0, 10),
-      swapItemId,
+      swapItemId: swapItemId.slice(0, 10),
       swapTokenVaultBump,
       actionType: { [actionType]: {} },
-      optionId: "",
+      optionId: optionId ? optionId.slice(0, 10) : "",
     };
 
     console.log(params);

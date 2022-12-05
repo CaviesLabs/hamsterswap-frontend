@@ -113,6 +113,9 @@ export class SwapItemEntity {
  * @dev Expose interface swap option.
  */
 export class SwapOptionEntity {
+  createdAt: string;
+  deletedAt: string;
+  id: string;
   items: SwapItemEntity[];
 }
 

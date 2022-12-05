@@ -365,4 +365,114 @@ export class SwapProgramProvider {
       console.log("Cancel proposal", proposal.id.slice(0, 10), { txId });
     } catch {}
   }
+
+  /**
+   * @dev Call the function to process transaction to wrap a proposal.
+   * @param {WalletProvider} walletProvider
+   * @param {string} proposalId.
+   * @param {string} optionId.
+   */
+  public async wrapProposal(
+    walletProvider: WalletProvider,
+    proposal: SwapProposalEntity,
+    optionId: string
+  ) {
+    try {
+      /**
+       * @dev Find swap program.
+       */
+      const swapProposal = await this.instructionProvider.findSwapProposal(
+        proposal.id
+      );
+
+      /**
+       * @dev Define @var {TransactionInstruction} @arrays instructions to process.
+       */
+      const instructions: TransactionInstruction[] = [];
+
+      /**
+       * @dev Filter swap items by option id.
+       */
+      const swapOption = proposal.swapOptions.find(
+        (item) => item.id === optionId
+      );
+      console.log(swapOption);
+      console.log(proposal.ownerAddress);
+
+      await Promise.all(
+        swapOption.items.map(async (item) => {
+          /**
+           * @dev Fullfiling deposit token from buyer to token vault.
+           */
+          const instruction =
+            await this.instructionProvider.transferTokenToVault(
+              proposal.id,
+              swapProposal,
+              walletProvider.publicKey,
+              new PublicKey(item.contractAddress),
+              item.id,
+              SwapItemActionType.fulfilling,
+              optionId
+            );
+
+          if (!instruction) return;
+          instructions.push(instruction);
+        })
+      );
+
+      // await Promise.all(
+      //   swapOption.items.map(async (item) => {
+      //     /**
+      //      * @dev Fullfiling deposit token from buyer to token vault.
+      //      */
+      //     const instruction =
+      //       await this.instructionProvider.transferTokenFromVault(
+      //         new PublicKey(proposal.ownerAddress),
+      //         new PublicKey(item.contractAddress),
+      //         swapProposal,
+      //         proposal.id,
+      //         item.id,
+      //         SwapItemActionType.redeeming
+      //       );
+      //     if (!instruction) return;
+      //     instructions.push(instruction);
+      //   })
+      // );
+
+      await Promise.all(
+        proposal.offerItems.map(async (item) => {
+          /**
+           * @dev Fullfiling deposit token from buyer to token vault.
+           */
+          const instruction =
+            await this.instructionProvider.transferTokenFromVault(
+              walletProvider.publicKey,
+              new PublicKey(item.contractAddress),
+              swapProposal,
+              proposal.id,
+              item.id,
+              SwapItemActionType.redeeming
+            );
+          if (!instruction) return;
+          instructions.push(instruction);
+        })
+      );
+
+      console.log(instructions);
+
+      /**
+       * @dev Sign and confirm instructions.
+       */
+      const txId = await this.transactionProvider.signAndSendTransaction(
+        walletProvider,
+        instructions
+      );
+
+      console.log("Wrap proposal successfully", proposal.id.slice(0, 10), {
+        txId,
+      });
+    } catch (err: any) {
+      console.error("Error when wrap proposal", err);
+    }
+  }
 }

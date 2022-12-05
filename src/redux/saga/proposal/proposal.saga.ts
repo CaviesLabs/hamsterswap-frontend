@@ -80,3 +80,25 @@ export function* getListProposalByOwnerAddress({
     callback && callback(null);
   }
 }
+
+/**
+ * @dev Saga watcher to explore proposals.
+ * @param {SagaPayload<unkown, SwapProposalEntity[]>} saga payload
+ */
+export function* getExploreProposals({
+  callback,
+}: SagaPayload<unknown, SwapProposalEntity[]>) {
+  try {
+    /**
+     * @dev Fetch proposal data from Hamster server.
+     */
+    const swapProposals: SwapProposalEntity[] = yield call(
+      proposalService.getProposals
+    );
+
+    callback && callback(swapProposals);
+  } catch (err) {
+    console.error(err);
+    callback && callback(null);
+  }
+}

@@ -64,18 +64,38 @@ export class SwapProgramService {
     proposalId: string
   ) {
     /**
-     * @dev Call to HamsterBox server to initialize the proposal.
-     */
-    const proposal =
-      await networkProvider.requestWithCredentials<SwapProposalEntity>(
-        `/proposal/${proposalId}`,
-        { method: "GET" }
-      );
-
-    /**
      * @dev Call to program.
      */
-    return this.swapProgramProvider.cancelProposal(walletProvider, proposal);
+    return await this.requestAndSyncProposal(proposalId, async () => {
+      return this.swapProgramProvider.cancelProposal(
+        walletProvider,
+        await this.getProposal(proposalId)
+      );
+    });
+  }
+
+  /**
+   * @dev Call this function when user want to wrap proposal.
+   * @param {WalletProvider} walletProvider.
+   * @param {string} proposalId.
+   * @param {string} optionId.
+   * @returns
+   */
+  public async swapProposal(
+    walletProvider: WalletProvider,
+    proposalId: string,
+    optionId: string
+  ) {
+    /**
+     * @dev Now create proposal to on-chain, wrap in sync function to sync data after done processing on-chain.
+     */
+    return await this.requestAndSyncProposal(proposalId, async () => {
+      return this.swapProgramProvider.wrapProposal(
+        walletProvider,
+        await this.getProposal(proposalId),
+        optionId
+      );
+    });
   }
 
   /**
@@ -96,6 +116,18 @@ export class SwapProgramService {
         });
         resolve(data);
       }, 2000)
+    );
+  }
+
+  /**
+   * @dev Find proposal by id.
+   * @param {string} proposalId
+   * @returns {SwapProposalEntity}
+   */
+  public async getProposal(proposalId: string): Promise<SwapProposalEntity> {
+    return networkProvider.requestWithCredentials<SwapProposalEntity>(
+      `/proposal/${proposalId}`,
+      { method: "GET" }
     );
   }
 
