@@ -71,6 +71,8 @@ export const AttributeCard = (attr: AttributeProps) => (
 );
 
 export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
+  const { data } = props;
+
   return (
     <Modal
       open={props.isModalOpen}
@@ -85,9 +87,9 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
             <div className="md:basis-1/3 px-8">
               <div x-data="{ image: 1 }" x-cloak>
                 <img
-                  src="https://i.seadn.io/gae/eWzj-NKrcU_4hRl3kezUR-gZTewLCOZyrK4nsyGzKEAg6zFjnSo-laT5rA3Q-OVwfvBrobWZe5EtVVFuPZYlK_SB9iUAWymCu4Ed?auto=format&w=1000"
+                  src={data?.image}
                   alt="nft image"
-                  className="rounded"
+                  className="bg-dark10 rounded"
                 />
               </div>
               <p className="text-xl mt-4 font-regular text-gray-500">
@@ -101,12 +103,12 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
             <div className="md:basis-2/3 px-8 overflow-auto">
               <div>NFT name</div>
               <h2 className="mb-6 leading-tight tracking-tight font-bold text-gray-800 text-2xl md:text-3xl">
-                Monomyth #6655
+                {data?.name}
               </h2>
               <p className="text-gray-500 text-sm">Collection</p>
-              <a href="#" className="text-indigo-600 hover:underline">
-                Cyball
-              </a>
+              <div className="text-indigo-600 hover:underline">
+                {data?.collection}
+              </div>
               <p className="mt-6 mb-3 text-gray-500 text-sm">Attributes</p>
               <Row gutter={[16, 16]}>
                 {mockAttributes.map((attr, index) => (

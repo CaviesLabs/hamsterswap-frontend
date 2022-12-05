@@ -104,6 +104,7 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
       </div>
       {assetType === "nft" ? (
         <NFTDetailsModal
+          data={props}
           isModalOpen={isDetailOpen}
           handleCancel={() => setIsDetailOpen(false)}
           handleOk={() => setIsDetailOpen(false)}

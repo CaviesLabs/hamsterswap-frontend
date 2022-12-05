@@ -6,7 +6,6 @@ import {
   AddNftModal,
   AddSolModal,
 } from "@/src/components/create-proposal";
-// import { swapOptions } from "@/src/utils";
 import { RowEditNftItem } from "@/src/components/nfts";
 import { FC, useState } from "react";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
