@@ -1,7 +1,6 @@
 import { FC, useState } from "react";
 import { Collapse } from "react-collapse";
 import { RowEditNftItem } from "@/src/components/nfts";
-import { swapOptions } from "@/src/utils/constants";
 import { Button } from "@hamsterbox/ui-kit";
 import { PlusIcon } from "@/src/components/icons";
 import {
@@ -13,6 +12,7 @@ import {
 import classnames from "classnames";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 import { ExpectedItemProps } from "@/src/components/create-proposal/step2/types";
+import { useSelector } from "react-redux";
 
 export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
   const { optionName, defaultCollapsed } = props;
@@ -28,6 +28,12 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
   const [isAddSol, setIsAddSol] = useState(false);
   const [isAddGameItem, setIsAddGameItem] = useState(false);
   const [isAddCash, setIsAddCash] = useState(false);
+
+  /**
+   * Get expected items from redux-store to display
+   */
+  const proposal = useSelector((state: any) => state.proposal);
+  console.log("proposal.receiveItems", proposal.receiveItems);
 
   return (
     <div
@@ -62,6 +68,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
               size="small"
             />
             <AddExpectedNftModal
+              index={props.index}
               isModalOpen={isAddNft}
               handleOk={() => setIsAddNft(false)}
               handleCancel={() => setIsAddNft(false)}
@@ -117,24 +124,26 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
           </div>
           <div className="block">
             <div className="md:flex py-5 flex-wrap">
-              {swapOptions.map((item: any, index: any) => (
-                <div
-                  className="block md:left w-full md:w-[50%] md:pl-[20px]"
-                  key={`swapoptions-${index}`}
-                >
-                  <div className="flow-root items-center h-[50px]">
-                    <p
-                      className="text-[16px] float-left text-gray-400 regular-text"
-                      style={{ transform: "translateY(50%)" }}
-                    >
-                      Item #{index + 1}
-                    </p>
+              {proposal?.receiveItems[props.index].map(
+                (option: any, index: any) => (
+                  <div
+                    className="block md:left w-full md:w-[50%] md:pl-[20px]"
+                    key={`swapoptions-${index}`}
+                  >
+                    <div className="flow-root items-center h-[50px]">
+                      <p
+                        className="text-[16px] float-left text-gray-400 regular-text"
+                        style={{ transform: "translateY(50%)" }}
+                      >
+                        Item #{index + 1}
+                      </p>
+                    </div>
+                    <div className="pt-[20px]">
+                      <RowEditNftItem {...option} onDelete={() => {}} />
+                    </div>
                   </div>
-                  <div className="pt-[20px]">
-                    <RowEditNftItem {...item} onDelete={() => {}} />
-                  </div>
-                </div>
-              ))}
+                )
+              )}
               <EmptyBox />
             </div>
           </div>

@@ -22,7 +22,7 @@ export const initState: State = {
   nft: { num_nfts: 0, page: 0, list_nfts: [] },
   proposal: {
     swapItems: [],
-    receiveItems: [],
+    receiveItems: [[], [], []],
   },
   hProfile: null,
   platformConfig: {

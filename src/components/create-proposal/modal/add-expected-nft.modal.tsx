@@ -1,15 +1,18 @@
 import { FC, useState } from "react";
 import { Modal } from "antd";
-import { AddItemModalProps } from "./types";
+import { AddExpectedItemModalProps } from "./types";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { allowNTFCollection } from "@/src/dto/platform-config";
 import { AddExpectedNftForm } from "@/src/components/create-proposal/modal/add-expected-nft-form";
 import { AddExpectedNftDetail } from "@/src/components/create-proposal/modal/add-expected-nft-detail";
 import { nftService } from "@/src/redux/saga/nft/nft.service";
 import { NftDetailDto } from "@/src/dto/nft.dto";
+import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
 
-export const AddExpectedNftModal: FC<AddItemModalProps> = (props) => {
+export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
+  const dispatch = useDispatch();
+
   /**
    * @dev initialize states for collection id and nft id from form
    */
@@ -36,6 +39,34 @@ export const AddExpectedNftModal: FC<AddItemModalProps> = (props) => {
         setNft(resp);
         setStep(2);
       });
+  };
+
+  /**
+   * Handle save expected nfts to redux-store
+   * @param nftItem
+   */
+  const proposal = useSelector((state: any) => state.proposal);
+  const handleAddNft = (nftItem: any) => {
+    const item = {
+      assetType: "nft",
+      name: nftItem?.nft_name,
+      nftAddress: nftItem?.nft_address,
+      collectionId: nftItem?.nft_collection_id,
+      image: nftItem?.nft_image,
+      collection: nftItem?.nft_collection_name,
+    };
+    const receiveItems = proposal.receiveItems;
+    receiveItems[props.index].push(item);
+    dispatch(
+      setProposal({
+        ...proposal,
+        receiveItems,
+      })
+    );
+    if (receiveItems[props.index].length >= 4) {
+      props.handleOk(nftItem);
+    }
+    setStep(0);
   };
 
   return (
@@ -71,13 +102,7 @@ export const AddExpectedNftModal: FC<AddItemModalProps> = (props) => {
                 </button>
               )}
               {step === 2 && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    setStep(0);
-                    props.handleOk(e);
-                  }}
-                >
+                <button type="button" onClick={() => handleAddNft(nft)}>
                   Add
                 </button>
               )}

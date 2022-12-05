@@ -21,9 +21,9 @@ export const Step2: FC = () => {
         Max 3 options per swap.
       </p>
       <div className="block mt-[20px]">
-        <ExpectedItem optionName="Option 1" defaultCollapsed />
-        <ExpectedItem optionName="Option 2" />
-        <ExpectedItem optionName="Option 3" />
+        <ExpectedItem index={0} optionName="Option 1" defaultCollapsed />
+        <ExpectedItem index={1} optionName="Option 2" />
+        <ExpectedItem index={2} optionName="Option 3" />
       </div>
     </div>
   );

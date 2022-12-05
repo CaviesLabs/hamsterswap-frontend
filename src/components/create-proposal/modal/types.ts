@@ -8,3 +8,7 @@ export type ModalProps = {
 };
 
 export type AddItemModalProps = ModalProps;
+
+export type AddExpectedItemModalProps = ModalProps & {
+  index: number;
+};
