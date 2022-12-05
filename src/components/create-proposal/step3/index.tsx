@@ -21,7 +21,7 @@ export const Step3: FC<any> = (props: any) => {
 
   return (
     <Form
-      onChange={handleFormChange}
+      onValuesChange={handleFormChange}
       form={form}
       layout="vertical"
       requiredMark={false}

@@ -10,7 +10,7 @@ export const Step4: FC = () => {
     dispatch(
       setProposal({
         ...proposal,
-        guarantee: value,
+        guarantee: parseFloat(value),
       })
     );
   };
