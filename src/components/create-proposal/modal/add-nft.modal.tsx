@@ -45,7 +45,8 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
       assetType: "nft",
       name: nftItem?.nft_name,
       nftId: nftItem?.nft_id,
-      collectionId: nftItem?.collection_id,
+      nftAddress: nftItem?.nft_address,
+      collectionId: nftItem?.nft_collection_id,
       image: nftItem?.nft_image_uri,
       collection: nftItem?.nft_symbol,
     };

@@ -1,70 +1,21 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Modal } from "antd";
-import { AttributeProps, NftDetailsModalProps } from "./types";
+import { NftDetailsModalProps } from "./types";
 import { Row, Col } from "antd";
+import { nftService } from "@/src/redux/saga/nft/nft.service";
+import { AttributeDto } from "@/src/dto/nft.dto";
 
-const mockAttributes: AttributeProps[] = [
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-];
-
-export const AttributeCard = (attr: AttributeProps) => (
+export const AttributeCard = (attr: AttributeDto) => (
   <div className="bg-gray-100 py-4 px-6 rounded-2xl	w-full">
-    <p className="uppercase">{attr.title}</p>
+    <p className="uppercase">{attr.trait_type}</p>
     <p className="font-bold text-gray-800 text-xl py-3">{attr.value}</p>
     <div className="flex flex-row justify-between">
       <div className="bg-gray-300 rounded-3xl px-4 flex justify-center items-center">
-        {attr.percent}
+        10%
       </div>
       <div className="flex">
         <img src="/assets/images/solana.svg" />
-        <p className="font-bold text-lg ml-1">{attr.solAmount}</p>
+        <p className="font-bold text-lg ml-1">9.99</p>
       </div>
     </div>
   </div>
@@ -72,6 +23,20 @@ export const AttributeCard = (attr: AttributeProps) => (
 
 export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
   const { data } = props;
+
+  /**
+   * Handle fetch metadata of NFT and set to attributes
+   */
+  const [attributes, setAttributes] = useState([]);
+  console.log("attributes", attributes);
+  useEffect(() => {
+    if (!data?.nftAddress) return;
+    nftService
+      .getNftDetail({
+        mintAddress: data.nftAddress,
+      })
+      .then((resp) => setAttributes(resp?.nft_attributes.attributes));
+  }, [data?.nftAddress]);
 
   return (
     <Modal
@@ -111,7 +76,7 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
               </div>
               <p className="mt-6 mb-3 text-gray-500 text-sm">Attributes</p>
               <Row gutter={[16, 16]}>
-                {mockAttributes.map((attr, index) => (
+                {attributes.map((attr, index) => (
                   <Col span={12} key={`attr-item-${index}`}>
                     <AttributeCard {...attr} />
                   </Col>

@@ -1,5 +1,10 @@
 import { networkProvider } from "@/src/providers/network.provider";
-import { GetListNftDto, NftDto } from "@/src/dto/nft.dto";
+import {
+  GetListNftDto,
+  GetNftDto,
+  NftDetailDto,
+  NftDto,
+} from "@/src/dto/nft.dto";
 
 export class NftService {
   async listNft(payload: GetListNftDto): Promise<NftDto> {
@@ -9,6 +14,13 @@ export class NftService {
       },
     });
     return (resp as any).data;
+  }
+  async getNftDetail(payload: GetNftDto): Promise<NftDetailDto> {
+    const resp = await networkProvider.request(
+      `/metadata/nft/detail/${payload.mintAddress}`,
+      {}
+    );
+    return (resp as any).data?.[0];
   }
 }
 
