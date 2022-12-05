@@ -50,6 +50,31 @@ export const Step1: FC = () => {
     );
   }, [wallet]);
 
+  /**
+   * Handle save sol value into swapItems array of redux-store
+   * @param value [string]
+   */
+  const handleAddSol = (value: string) => {
+    if (!value) return;
+    if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
+
+    const newSwapItems: any = swapItems;
+    newSwapItems.push({
+      assetType: "token",
+      name: `${value} SOL`,
+      collection: "SOL",
+      image: "/assets/images/solana-icon.svg",
+      value,
+    });
+    dispatch(
+      setProposal({
+        ...proposal,
+        swapItems: newSwapItems,
+      })
+    );
+    setIsAddSol(false);
+  };
+
   return (
     <div>
       <h3 className="text-3xl font-bold tracking-tight text-gray-900">
@@ -84,7 +109,7 @@ export const Step1: FC = () => {
         />
         <AddSolModal
           isModalOpen={isAddSol}
-          handleOk={() => setIsAddSol(false)}
+          handleOk={(value: string) => handleAddSol(value)}
           handleCancel={() => setIsAddSol(false)}
         />
         <Button

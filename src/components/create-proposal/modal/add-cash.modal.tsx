@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
 import { AddItemModalProps } from "./types";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
-// import type { CheckboxValueType } from "antd/es/checkbox/Group";
 import { DollarIcon, PlusIcon } from "@/src/components/icons";
 
 const RadioGroup = Radio.Group;
@@ -36,7 +35,6 @@ const decimalCount = (num: any) => {
 };
 
 export const AddCashModal: FC<AddItemModalProps> = (props) => {
-  // const [checkedList, setCheckedList] = useState<CheckboxValueType[]>([]);
   const [value, setValue] = useState("");
   const [checkedData, setCheckedData] = useState<any>(null);
 

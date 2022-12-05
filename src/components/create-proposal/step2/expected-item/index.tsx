@@ -50,6 +50,33 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
     );
   };
 
+  /**
+   * Handle save sol value into swapItems array of redux-store
+   * @param value [string]
+   */
+  const handleAddSol = (value: string) => {
+    if (!value) return;
+    if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
+
+    const newReceiveItems: any = proposal.receiveItems;
+    const newChildReceiveItems: any = newReceiveItems[props.index];
+    newChildReceiveItems.push({
+      assetType: "token",
+      name: `${value} SOL`,
+      collection: "SOL",
+      image: "/assets/images/solana-icon.svg",
+      value,
+    });
+    newReceiveItems[props.index] = newChildReceiveItems;
+    dispatch(
+      setProposal({
+        ...proposal,
+        receiveItems: newReceiveItems,
+      })
+    );
+    setIsAddSol(false);
+  };
+
   return (
     <div
       className={classnames(
@@ -101,7 +128,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
             />
             <AddSolModal
               isModalOpen={isAddSol}
-              handleOk={() => setIsAddSol(false)}
+              handleOk={(value: string) => handleAddSol(value)}
               handleCancel={() => setIsAddSol(false)}
             />
             <Button

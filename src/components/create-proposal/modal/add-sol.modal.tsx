@@ -6,8 +6,7 @@ import {
   useState,
 } from "react";
 import { Input, Modal } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
+import { useSelector } from "react-redux";
 import { AddItemModalProps } from "./types";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
 import { SolanaIcon } from "@/src/components/icons";
@@ -24,7 +23,6 @@ const decimalCount = (num: any) => {
 };
 
 export const AddSolModal: FC<AddItemModalProps> = (props) => {
-  const dispatch = useDispatch();
   const proposal = useSelector((state: any) => state.proposal);
   const swapItems = useSelector((state: any) => state.proposal?.swapItems);
   const [value, setValue] = useState("");
@@ -56,29 +54,8 @@ export const AddSolModal: FC<AddItemModalProps> = (props) => {
     }
   };
 
-  const handleAddSol = (e: any) => {
-    if (!value) return;
-    if (value === "") return;
-    if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
-    if (+value !== parseFloat(value)) return;
-    if (+value > +myRemainSolBalance) return;
-
-    const newSwapItems: any = swapItems;
-    newSwapItems.push({
-      assetType: "token",
-      name: `${value} SOL`,
-      collection: "SOL",
-      image: "/assets/images/solana-icon.svg",
-      value,
-    });
-    dispatch(
-      setProposal({
-        ...proposal,
-        swapItems: newSwapItems,
-      })
-    );
-    setValue("");
-    props.handleCancel(e);
+  const handleAddSol = () => {
+    props.handleOk(value);
   };
 
   return (
@@ -100,7 +77,6 @@ export const AddSolModal: FC<AddItemModalProps> = (props) => {
               prefix={<SolanaIcon />}
               suffix="SOL"
               value={value}
-              // onChange={(e) => setValue(e.target.value)}
               onChange={handleChangeSolValue}
             />
 
