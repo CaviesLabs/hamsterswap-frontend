@@ -1,7 +1,5 @@
 import { ChangeEventHandler, FC, SetStateAction, useState } from "react";
 import { Col, Input, Modal, Row, Radio } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
 import { AddItemModalProps } from "./types";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
 import { DollarIcon, PlusIcon } from "@/src/components/icons";
@@ -38,10 +36,6 @@ export const AddCashModal: FC<AddItemModalProps> = (props) => {
   const [value, setValue] = useState("");
   const [checkedData, setCheckedData] = useState<any>(null);
 
-  const dispatch = useDispatch();
-  const proposal = useSelector((state: any) => state.proposal);
-  const swapItems = useSelector((state: any) => state.proposal?.swapItems);
-
   const handleChangeCashValue: ChangeEventHandler<HTMLInputElement> = (e: {
     target: { value: string | SetStateAction<string> };
   }) => {
@@ -57,28 +51,8 @@ export const AddCashModal: FC<AddItemModalProps> = (props) => {
     }
   };
 
-  const handleAddCash = (e: any) => {
-    if (!value) return;
-    if (value === "") return;
-    if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
-    if (+value !== parseFloat(value)) return;
-
-    const newSwapItems: any = swapItems;
-    newSwapItems.push({
-      assetType: "usd",
-      name: `${value} USD`,
-      collection: `${checkedData.toUpperCase()}`,
-      image: "/assets/images/asset-cash.png",
-      value,
-    });
-    dispatch(
-      setProposal({
-        ...proposal,
-        swapItems: newSwapItems,
-      })
-    );
-    setValue("");
-    props.handleCancel(e);
+  const handleAddCash = () => {
+    props.handleOk(value, checkedData);
   };
 
   return (

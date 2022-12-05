@@ -51,7 +51,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
   };
 
   /**
-   * Handle save sol value into swapItems array of redux-store
+   * Handle save sol value into receiveItems array of redux-store
    * @param value [string]
    */
   const handleAddSol = (value: string) => {
@@ -75,6 +75,34 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
       })
     );
     setIsAddSol(false);
+  };
+
+  /**
+   * Handle save cash value into receiveItems array of redux-store
+   * @param value [string]
+   * @param method [string]
+   */
+  const handleAddCash = (value: string, method: string) => {
+    if (!value) return;
+    if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
+
+    const newReceiveItems: any = proposal.receiveItems;
+    const newChildReceiveItems: any = newReceiveItems[props.index];
+    newChildReceiveItems.push({
+      assetType: "usd",
+      name: `${value} USD`,
+      collection: method.toUpperCase(),
+      image: "/assets/images/asset-cash.png",
+      value,
+    });
+    newReceiveItems[props.index] = newChildReceiveItems;
+    dispatch(
+      setProposal({
+        ...proposal,
+        receiveItems: newReceiveItems,
+      })
+    );
+    setIsAddCash(false);
   };
 
   return (
@@ -160,7 +188,9 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
             />
             <AddCashModal
               isModalOpen={isAddCash}
-              handleOk={() => setIsAddCash(false)}
+              handleOk={(value: string, method: string) =>
+                handleAddCash(value, method)
+              }
               handleCancel={() => setIsAddCash(false)}
             />
           </div>

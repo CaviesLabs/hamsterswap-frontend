@@ -75,6 +75,32 @@ export const Step1: FC = () => {
     setIsAddSol(false);
   };
 
+  /**
+   * Handle save cash value into swapItems array of redux-store
+   * @param value [string]
+   * @param method [string]
+   */
+  const handleAddCash = (value: string, method: string) => {
+    if (!value) return;
+    if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
+
+    const newSwapItems: any = swapItems;
+    newSwapItems.push({
+      assetType: "usd",
+      name: `${value} USD`,
+      collection: method.toUpperCase(),
+      image: "/assets/images/asset-cash.png",
+      value,
+    });
+    dispatch(
+      setProposal({
+        ...proposal,
+        swapItems: newSwapItems,
+      })
+    );
+    setIsAddCash(false);
+  };
+
   return (
     <div>
       <h3 className="text-3xl font-bold tracking-tight text-gray-900">
@@ -141,7 +167,9 @@ export const Step1: FC = () => {
         />
         <AddCashModal
           isModalOpen={isAddCash}
-          handleOk={() => setIsAddCash(false)}
+          handleOk={(value: string, method: string) =>
+            handleAddCash(value, method)
+          }
           handleCancel={() => setIsAddCash(false)}
         />
       </div>
