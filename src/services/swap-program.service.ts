@@ -1,6 +1,7 @@
 import { BN } from "@project-serum/anchor";
 import { networkProvider } from "@/src/providers/network.provider";
 import { SwapProgramProvider } from "@/src/providers/swap-program";
+import UtilsProvider from "@/src/utils/utils.provider";
 import {
   CreateProposalToServerDto,
   SwapProposalEntity,
@@ -13,12 +14,14 @@ export class SwapProgramService {
    * @dev Program provider injected.
    */
   private readonly swapProgramProvider: SwapProgramProvider;
+  private readonly utilsProvider: UtilsProvider;
 
   constructor(swapProgramProvider: SwapProgramProvider) {
     /**
      * @dev Import providers.
      */
     this.swapProgramProvider = swapProgramProvider;
+    this.utilsProvider = new UtilsProvider();
   }
 
   /**
@@ -35,19 +38,18 @@ export class SwapProgramService {
     const response =
       await networkProvider.requestWithCredentials<SwapProposalEntity>(
         "/proposal",
-        {
-          method: "POST",
-          data: createProposalDto,
-        }
+        { method: "POST", data: createProposalDto }
       );
 
     /**
-     * @dev Now create proposal to on-chain.
+     * @dev Now create proposal to on-chain, wrap in sync function to sync data after done processing on-chain.
      */
-    await this.swapProgramProvider.createProposal(walletProvider, {
-      id: response.id,
-      expiredAt: new BN(createProposalDto.expiredAt.getTime()),
-      ...createProposalDto,
+    return await this.requestAndSyncProposal(response.id, async () => {
+      return this.swapProgramProvider.createProposal(walletProvider, {
+        id: response.id,
+        expiredAt: new BN(createProposalDto.expiredAt.getTime()),
+        ...createProposalDto,
+      });
     });
   }
 
@@ -61,9 +63,47 @@ export class SwapProgramService {
     walletProvider: WalletProvider,
     proposalId: string
   ) {
-    return this.swapProgramProvider.cancelProposal(walletProvider, proposalId);
+    /**
+     * @dev Call to HamsterBox server to initialize the proposal.
+     */
+    const proposal =
+      await networkProvider.requestWithCredentials<SwapProposalEntity>(
+        `/proposal/${proposalId}`,
+        { method: "GET" }
+      );
+
+    /**
+     * @dev Call to program.
+     */
+    return this.swapProgramProvider.cancelProposal(walletProvider, proposal);
   }
 
+  /**
+   * @dev Sync proposal by id.
+   */
+  public async requestAndSyncProposal(
+    proposalId: string,
+    fn: () => Promise<any>
+  ): Promise<any> {
+    /**
+     * @dev {Network}
+     */
+    const data = await fn();
+    return new Promise(async (resolve) =>
+      setTimeout(async () => {
+        await networkProvider.request(`/proposal/${proposalId}/sync`, {
+          method: "PATCH",
+        });
+        resolve(data);
+      }, 2000)
+    );
+  }
+
+  /**
+   * @dev Generate id following uuid types.
+   * @static
+   * @returns {string}
+   */
   public static generateUID() {
     return uuid().slice(0, 10);
   }

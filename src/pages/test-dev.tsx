@@ -4,7 +4,7 @@ import { useWallet } from "@/src/hooks/useWallet";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useDispatch } from "react-redux";
 import { useMain } from "@/src/hooks/pages/main";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import * as anchor from "@project-serum/anchor";
 import { getPropsals } from "@/src/redux/actions/proposal/proposal.action";
 import { SwapProgramService } from "@/src/services/swap-program.service";
@@ -81,10 +81,16 @@ const TestPage: NextPage = () => {
     async (propsalId: string) => {
       if (!wallet && !programService && !solanaWallet.publicKey) return;
 
-      /**
-       * @dev Call function to cancel.
-       */
-      await programService.cancelProposal(solanaWallet, propsalId);
+      try {
+        /**
+         * @dev Call function to cancel.
+         */
+        await programService.cancelProposal(solanaWallet, propsalId);
+        toast.success("Cancel proposal successfully");
+      } catch (err: any) {
+        console.log("error", err);
+        toast.error("Cancel proposal failed: ", err.message);
+      }
     },
     [wallet, programService, solanaWallet]
   );

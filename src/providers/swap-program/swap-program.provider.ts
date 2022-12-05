@@ -200,6 +200,8 @@ export class SwapProgramProvider {
         createProposalDto.id
       );
 
+      console.log(swapProposal);
+
       /**
        * @dev Define @var {TransactionInstruction} @arrays instructions to process.
        */
@@ -241,7 +243,7 @@ export class SwapProgramProvider {
       /**
        * @dev Add instruction to arrays to process if valid.
        */
-      if (!createProposalInstruction) {
+      if (createProposalInstruction) {
         instructions.push(createProposalInstruction);
       }
 
@@ -250,27 +252,23 @@ export class SwapProgramProvider {
        */
       await Promise.all(
         createProposalDto.offeredOptions.map(async (item) => {
-          try {
-            /**
-             * @dev Try to create a instruction to deposit token.
-             */
-            const ins = await this.instructionProvider.transferTokenToVault(
-              createProposalDto.id,
-              swapProposal,
-              walletProvider.publicKey,
-              item.mintAccount,
-              item.id,
-              SwapItemActionType.depositing
-            );
+          /**
+           * @dev Try to create a instruction to deposit token.
+           */
+          const ins = await this.instructionProvider.transferTokenToVault(
+            createProposalDto.id,
+            swapProposal,
+            walletProvider.publicKey,
+            item.mintAccount,
+            item.id,
+            SwapItemActionType.depositing
+          );
 
-            /**
-             * @dev Add to instructions if valid.
-             */
-            if (ins) {
-              instructions.push(ins);
-            }
-          } catch (err: any) {
-            console.error("Error when deposit tokens", err);
+          /**
+           * @dev Add to instructions if valid.
+           */
+          if (ins) {
+            instructions.push(ins);
           }
         })
       );
@@ -343,7 +341,7 @@ export class SwapProgramProvider {
               new PublicKey(item.contractAddress),
               swapProposal,
               proposal.id,
-              item.status,
+              item.id,
               SwapItemActionType.withdrawing
             );
 

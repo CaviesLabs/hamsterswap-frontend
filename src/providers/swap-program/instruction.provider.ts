@@ -215,6 +215,8 @@ export class InstructionProvider {
       optionId: "",
     };
 
+    console.log(params);
+
     /**
      * @dev Call to program to create an instruction.
      */
@@ -266,7 +268,7 @@ export class InstructionProvider {
      */
     const params: any = {
       proposalId: proposalId.slice(0, 10),
-      swapItemId,
+      swapItemId: swapItemId.slice(0, 10),
       swapRegistryBump: this.swapRegistryBump,
       swapTokenVaultBump,
       actionType: { [actionType]: {} },
