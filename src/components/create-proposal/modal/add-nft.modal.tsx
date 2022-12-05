@@ -29,7 +29,7 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
       }
     });
     return data;
-  }, [proposal, swapItems]);
+  }, [nfts, swapItems]);
 
   useEffect(() => {
     if (!wallet) return;

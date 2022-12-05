@@ -6,7 +6,7 @@ import { BreadcrumbProps } from "@/src/components/user/types";
 const Breadcrumb: FC<BreadcrumbProps> = (props) => {
   const { title } = props;
   return (
-    <div className="cover-container bg-purpleBg">
+    <div className="pt-20 cover-container bg-purpleBg">
       <LayoutSection className="!min-h-[350px]">
         <BreadCrumb data={["Home", title]} />
         <div className="mt-[20px] block md:flex">
