@@ -30,6 +30,8 @@ module.exports = withTM(
       APP_ID: process.env.APP_ID,
       MEASUREMENT_ID: process.env.MEASUREMENT_ID,
       HOST_NAME: process.env.HOST_NAME,
+      SWAP_PROGRAM_ADDRESS: process.env.SWAP_PROGRAM_ADDRESS,
+      SOLANA_CLUSTER: process.env.SOLANA_CLUSTER,
     },
     async rewrites() {
       return [

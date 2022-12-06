@@ -9,6 +9,7 @@ import SubMenu from "@/src/components/user/sub-menu";
 import Title from "@/src/components/user/history/title";
 import Proposal from "@/src/components/user/history/proposal";
 import { ProposalItem } from "@/src/components/user/types";
+import { useRouter } from "next/router";
 
 const mockList: ProposalItem[] = [
   {
@@ -197,13 +198,17 @@ const mockList: ProposalItem[] = [
   },
 ];
 const Layout: FC = () => {
+  const router = useRouter();
+
   return (
     <MainLayout>
       <Breadcrumb title="History" />
       <LayoutSection className="relative top-[-180px]">
         <div className="mb-[20px]">
           <div className="block mt-[20px]">
-            <UserInfoCard userId="sda" />
+            {router.query.id && (
+              <UserInfoCard userId={router.query.id as string} />
+            )}
           </div>
         </div>
         <SubMenu curTab={1} />

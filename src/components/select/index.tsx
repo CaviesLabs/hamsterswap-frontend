@@ -2,25 +2,37 @@ import { SelectProps, OptionProps } from "@/src/components/select/types";
 import classnames from "classnames";
 import { CheckIcon, ChevronDownIcon } from "@/src/components/icons";
 import SearchInput from "@/src/components/search";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 
 function Select(props: SelectProps) {
+  /**
+   * @dev reference to the button
+   * close the dropdown when user click outside
+   */
+  const ref = useRef(null);
+
   const { showSearch, values, onChange } = props;
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
 
   const renderItemInfo = (option: OptionProps) => {
+    if (!option) return;
     return (
       <>
         <div className="w-1/6 max-w-[60px]">
           <img className="rounded-[50%]" src={option.image} />
         </div>
         <div className="pl-6 w-5/6 h-18 flex flex-col justify-between">
-          <p className="text-lg">{option.value}</p>
+          <p className="text-lg">{option.label || option.value}</p>
           <p className="text-lg text-gray-400">{option.description}</p>
         </div>
       </>
     );
   };
+
+  useOnClickOutside(ref, () => {
+    setIsOpenDropdown(false);
+  });
 
   return (
     <div className="relative">
@@ -32,13 +44,16 @@ function Select(props: SelectProps) {
         style={{ backgroundColor: "white", color: "#20242D" }}
         onClick={() => setIsOpenDropdown(!isOpenDropdown)}
       >
-        {values?.filter((_) => _).length === 1
-          ? renderItemInfo(props.options.find((_) => _.value === values[0]))
-          : props.placeholder}
+        {props.mode === "multiple" || !values || !values[0]
+          ? props.placeholder
+          : renderItemInfo(props.options.find((_) => _.value === values[0]))}
         <ChevronDownIcon className="h-5 w-5" />
       </div>
-      {isOpenDropdown ? (
-        <div className="bg-white rounded-2xl mt-2 border absolute w-full z-10">
+      {isOpenDropdown && (
+        <div
+          ref={ref}
+          className="bg-white rounded-2xl mt-2 border absolute w-full z-10"
+        >
           {showSearch && (
             <div className="p-4">
               <SearchInput
@@ -65,7 +80,7 @@ function Select(props: SelectProps) {
             ))}
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

@@ -3,9 +3,14 @@ import { ProposalItem } from "@/src/components/proposal-item";
 import { Col, Row } from "antd";
 import { ConfirmedTransactionModal } from "@/src/components/create-proposal/step5/confirmed-transaction.modal";
 import { SummaryProps } from "@/src/components/create-proposal/step5/types";
+import { useSelector } from "react-redux";
+import { DATE_TIME_FORMAT } from "@/src/utils";
 
 export const Step5: FC<SummaryProps> = (props) => {
   const { modalOpened, setModalOpened } = props;
+  const proposal = useSelector((state: any) => state.proposal);
+
+  const isGuaranteedPayment = !!proposal.guarantee;
 
   return (
     <div>
@@ -13,25 +18,30 @@ export const Step5: FC<SummaryProps> = (props) => {
         Confirm
       </h3>
       <div className="block mt-[60px] flex">
-        <ProposalItem />
+        <ProposalItem
+          swapItems={proposal.swapItems}
+          receiveItems={proposal.receiveItems}
+          isGuaranteedPayment={isGuaranteedPayment}
+        />
       </div>
       <Row gutter={24}>
         <Col
-          span={12}
+          span={isGuaranteedPayment ? 12 : 24}
           className="block float-left w-full pr-[20px] md:pr-[60px]"
         >
           <p className="text-3xl">Note</p>
           <p className="text-[16px] regular-text mt-[12px]">
-            Lorem ipsum dolor sit amet consectetur. Dignissim elementum
-            pellentesque tristique purus felis eget non nunc. Vitae nisl amet
-            sed non in scelerisque. Platea ac ut donec cras non nisl. Nec arcu
-            gravida tellus mattis.
+            {proposal.additionalInfo?.note}
           </p>
           <p className="regular-text text-[14px] text-red300 mt-12">
-            Expiration date: Nov, 2022 11:06
+            Expiration date:{" "}
+            {proposal.additionalInfo?.expiredAt?.format(DATE_TIME_FORMAT)}
           </p>
         </Col>
-        <Col span={12} className="float-left w-full pl=[20px]">
+        <Col
+          span={isGuaranteedPayment ? 12 : 0}
+          className="float-left w-full pl=[20px]"
+        >
           <p className="text-3xl">Warranty</p>
           <div className="mt-[12px] flex items-center">
             <p className="regular-text text-[16px] float-left">
@@ -43,7 +53,7 @@ export const Step5: FC<SummaryProps> = (props) => {
               className="!w-[16px] h-[16px] ml-[12px] float-left"
             />
             <p className="ml-[12px] text-[16px] ml-[12px] float-left">
-              2,043.54 SOL
+              {proposal.guarantee} SOL
             </p>
           </div>
         </Col>

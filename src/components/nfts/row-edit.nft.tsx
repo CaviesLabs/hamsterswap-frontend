@@ -1,15 +1,40 @@
-import { FC, useState } from "react";
+import React, { FC, useRef, useState } from "react";
 import { RowNftEditItemProps } from "./types";
 import { DeleteIcon, DetailIcon, VerticalDots } from "@/src/components/icons";
 import { GameItemModal, NFTDetailsModal } from "@/src/components/modal";
+import classnames from "classnames";
+import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 
 export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
+  /**
+   * @dev reference to the button
+   * close the dropdown when user click outside
+   */
+  const ref = useRef(null);
+  useOnClickOutside(ref, () => {
+    setCollapse(false);
+  });
+
   const { assetType } = props;
+  /**
+   * @dev handle open option list
+   */
   const [collapse, setCollapse] = useState(false);
+
   /**
    * @dev handle open modal by asset type
    */
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  const handleShowViewDetail = () => {
+    setCollapse(!collapse);
+    setIsDetailOpen(true);
+  };
+
+  const handleDelete = () => {
+    setCollapse(!collapse);
+    props.onDelete();
+  };
 
   return (
     <>
@@ -19,7 +44,10 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
             <img
               src={props.image}
               alt="NFT image"
-              className="!h-full !w-[72px] !object-cover !rounded-[8px]"
+              className={classnames(
+                "!h-full !w-[72px] !object-cover !rounded-[8px]",
+                (assetType === "nft" || assetType === "game") && "bg-dark10"
+              )}
             />
           </div>
           <div className="px-4 w-72 left">
@@ -32,7 +60,7 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
               </p>
             </div>
           </div>
-          <div className="ml-auto left mr-[20px] relative">
+          <div className="ml-auto left mr-[20px] relative" ref={ref}>
             <button
               className="relative right-[-20px]"
               onClick={() => setCollapse(!collapse)}
@@ -49,25 +77,25 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
               >
                 <div className="py-1" role="none">
                   {(assetType === "nft" || assetType === "game") && (
-                    <li
+                    <div
                       className="cursor-pointer regular-text hover:text-gray-400 text-gray-900 block px-4 py-2 text-sm flex items-center"
                       role="menuitem"
                       tabIndex={-1}
-                      onClick={() => setIsDetailOpen(true)}
+                      onClick={handleShowViewDetail}
                     >
                       <DetailIcon className="mr-1" />
                       View Detail
-                    </li>
+                    </div>
                   )}
-                  <li
+                  <div
                     className="cursor-pointer regular-text text-red300 hover:text-red-400 block px-4 py-2 text-sm flex items-center"
                     role="menuitem"
                     tabIndex={-1}
-                    onClick={props.onDelete}
+                    onClick={handleDelete}
                   >
                     <DeleteIcon className="mr-1 fill-red300 group-hover:fill-red-400" />
                     Delete this item
-                  </li>
+                  </div>
                 </div>
               </div>
             )}
@@ -76,6 +104,7 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
       </div>
       {assetType === "nft" ? (
         <NFTDetailsModal
+          data={props}
           isModalOpen={isDetailOpen}
           handleCancel={() => setIsDetailOpen(false)}
           handleOk={() => setIsDetailOpen(false)}

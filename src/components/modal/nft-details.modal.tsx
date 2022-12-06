@@ -1,60 +1,33 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Modal } from "antd";
 import { NftDetailsModalProps } from "./types";
 import { Row, Col } from "antd";
+import { nftService } from "@/src/redux/saga/nft/nft.service";
+import { AttributeDto } from "@/src/dto/nft.dto";
 
-const mockAttributes = [
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-  {
-    title: "Background",
-    value: "Purple",
-    percent: "10%",
-    solAmount: 9.99,
-  },
-];
+export const AttributeCard = (attr: AttributeDto) => (
+  <div className="bg-gray-100 py-4 px-6 rounded-2xl	w-full">
+    <p className="uppercase">{attr.trait_type}</p>
+    <p className="font-bold text-gray-800 text-xl py-3">{attr.value}</p>
+  </div>
+);
 
 export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
+  const { data } = props;
+
+  /**
+   * Handle fetch metadata of NFT and set to attributes
+   */
+  const [attributes, setAttributes] = useState([]);
+  useEffect(() => {
+    if (!data?.nftAddress) return;
+    nftService
+      .getNftDetail({
+        mintAddress: data.nftAddress,
+      })
+      .then((resp) => setAttributes(resp?.nft_attributes.attributes));
+  }, [data?.nftAddress]);
+
   return (
     <Modal
       open={props.isModalOpen}
@@ -69,49 +42,24 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
             <div className="md:basis-1/3 px-8">
               <div x-data="{ image: 1 }" x-cloak>
                 <img
-                  src="https://i.seadn.io/gae/eWzj-NKrcU_4hRl3kezUR-gZTewLCOZyrK4nsyGzKEAg6zFjnSo-laT5rA3Q-OVwfvBrobWZe5EtVVFuPZYlK_SB9iUAWymCu4Ed?auto=format&w=1000"
+                  src={data?.image}
                   alt="nft image"
-                  className="rounded"
+                  className="bg-dark10 rounded"
                 />
-              </div>
-              <p className="text-xl mt-4 font-regular text-gray-500">
-                Floor Price
-              </p>
-              <div className="flex items-center mt-2">
-                <img src="/assets/images/solana.svg" />
-                <p className="font-bold text-2xl ml-2">20.001 SOL</p>
               </div>
             </div>
             <div className="md:basis-2/3 px-8 overflow-auto">
               <div>NFT name</div>
               <h2 className="mb-6 leading-tight tracking-tight font-bold text-gray-800 text-2xl md:text-3xl">
-                Monomyth #6655
+                {data?.name}
               </h2>
               <p className="text-gray-500 text-sm">Collection</p>
-              <a href="#" className="text-indigo-600 hover:underline">
-                Cyball
-              </a>
+              <div className="text-indigo-600">{data?.collection}</div>
               <p className="mt-6 mb-3 text-gray-500 text-sm">Attributes</p>
               <Row gutter={[16, 16]}>
-                {mockAttributes.map((attr, index) => (
+                {attributes.map((attr, index) => (
                   <Col span={12} key={`attr-item-${index}`}>
-                    <div className="bg-gray-100 py-4 px-6 rounded-2xl	w-full">
-                      <p className="uppercase">{attr.title}</p>
-                      <p className="font-bold text-gray-800 text-xl py-3">
-                        {attr.value}
-                      </p>
-                      <div className="flex flex-row justify-between">
-                        <div className="bg-gray-300 rounded-3xl px-4 flex justify-center items-center">
-                          {attr.percent}
-                        </div>
-                        <div className="flex">
-                          <img src="/assets/images/solana.svg" />
-                          <p className="font-bold text-lg ml-1">
-                            {attr.solAmount}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                    <AttributeCard {...attr} />
                   </Col>
                 ))}
               </Row>

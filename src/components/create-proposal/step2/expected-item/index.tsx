@@ -1,20 +1,23 @@
 import { FC, useState } from "react";
 import { Collapse } from "react-collapse";
 import { RowEditNftItem } from "@/src/components/nfts";
-import { swapOptions } from "@/src/utils/constants";
 import { Button } from "@hamsterbox/ui-kit";
 import { PlusIcon } from "@/src/components/icons";
 import {
   AddCashModal,
   AddGameItemModal,
-  AddNftModal,
+  AddExpectedNftModal,
   AddSolModal,
-} from "@/src/components/modal";
+} from "@/src/components/create-proposal";
 import classnames from "classnames";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 import { ExpectedItemProps } from "@/src/components/create-proposal/step2/types";
+import { useDispatch, useSelector } from "react-redux";
+import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
 
 export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
+  const dispatch = useDispatch();
+
   const { optionName, defaultCollapsed } = props;
   /**
    * @dev Condition to collapse component.
@@ -28,6 +31,79 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
   const [isAddSol, setIsAddSol] = useState(false);
   const [isAddGameItem, setIsAddGameItem] = useState(false);
   const [isAddCash, setIsAddCash] = useState(false);
+
+  /**
+   * Get expected items from redux-store to display
+   */
+  const proposal = useSelector((state: any) => state.proposal);
+
+  const handleUnSelectNft = (idx: number) => {
+    const newReceiveItems = proposal.receiveItems;
+    newReceiveItems[props.index] = newReceiveItems[props.index].filter(
+      (_: any, index: number) => idx !== index
+    );
+    dispatch(
+      setProposal({
+        ...proposal,
+        receiveItems: newReceiveItems,
+      })
+    );
+  };
+
+  /**
+   * Handle save sol value into receiveItems array of redux-store
+   * @param value [string]
+   */
+  const handleAddSol = (value: string) => {
+    if (!value) return;
+    if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
+
+    const newReceiveItems: any = proposal.receiveItems;
+    const newChildReceiveItems: any = newReceiveItems[props.index];
+    newChildReceiveItems.push({
+      assetType: "token",
+      name: `${value} SOL`,
+      collection: "SOL",
+      image: "/assets/images/solana-icon.svg",
+      value,
+    });
+    newReceiveItems[props.index] = newChildReceiveItems;
+    dispatch(
+      setProposal({
+        ...proposal,
+        receiveItems: newReceiveItems,
+      })
+    );
+    setIsAddSol(false);
+  };
+
+  /**
+   * Handle save cash value into receiveItems array of redux-store
+   * @param value [string]
+   * @param method [string]
+   */
+  const handleAddCash = (value: string, method: string) => {
+    if (!value) return;
+    if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
+
+    const newReceiveItems: any = proposal.receiveItems;
+    const newChildReceiveItems: any = newReceiveItems[props.index];
+    newChildReceiveItems.push({
+      assetType: "usd",
+      name: `${value} USD`,
+      collection: method.toUpperCase(),
+      image: "/assets/images/asset-cash.png",
+      value,
+    });
+    newReceiveItems[props.index] = newChildReceiveItems;
+    dispatch(
+      setProposal({
+        ...proposal,
+        receiveItems: newReceiveItems,
+      })
+    );
+    setIsAddCash(false);
+  };
 
   return (
     <div
@@ -61,7 +137,8 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
               onClick={() => setIsAddNft(true)}
               size="small"
             />
-            <AddNftModal
+            <AddExpectedNftModal
+              index={props.index}
               isModalOpen={isAddNft}
               handleOk={() => setIsAddNft(false)}
               handleCancel={() => setIsAddNft(false)}
@@ -79,7 +156,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
             />
             <AddSolModal
               isModalOpen={isAddSol}
-              handleOk={() => setIsAddSol(false)}
+              handleOk={(value: string) => handleAddSol(value)}
               handleCancel={() => setIsAddSol(false)}
             />
             <Button
@@ -111,30 +188,37 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
             />
             <AddCashModal
               isModalOpen={isAddCash}
-              handleOk={() => setIsAddCash(false)}
+              handleOk={(value: string, method: string) =>
+                handleAddCash(value, method)
+              }
               handleCancel={() => setIsAddCash(false)}
             />
           </div>
           <div className="block">
             <div className="md:flex py-5 flex-wrap">
-              {swapOptions.map((item: any, index: any) => (
-                <div
-                  className="block md:left w-full md:w-[50%] md:pl-[20px]"
-                  key={`swapoptions-${index}`}
-                >
-                  <div className="flow-root items-center h-[50px]">
-                    <p
-                      className="text-[16px] float-left text-gray-400 regular-text"
-                      style={{ transform: "translateY(50%)" }}
-                    >
-                      Item #{index + 1}
-                    </p>
+              {proposal?.receiveItems[props.index].map(
+                (option: any, index: any) => (
+                  <div
+                    className="block md:left w-full md:w-[50%] md:pl-[20px]"
+                    key={`swapoptions-${index}`}
+                  >
+                    <div className="flow-root items-center h-[50px]">
+                      <p
+                        className="text-[16px] float-left text-gray-400 regular-text"
+                        style={{ transform: "translateY(50%)" }}
+                      >
+                        Item #{index + 1}
+                      </p>
+                    </div>
+                    <div className="pt-[20px]">
+                      <RowEditNftItem
+                        {...option}
+                        onDelete={() => handleUnSelectNft(index)}
+                      />
+                    </div>
                   </div>
-                  <div className="pt-[20px]">
-                    <RowEditNftItem {...item} onDelete={() => {}} />
-                  </div>
-                </div>
-              ))}
+                )
+              )}
               <EmptyBox />
             </div>
           </div>

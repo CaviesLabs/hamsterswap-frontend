@@ -5,7 +5,7 @@ export type UserAvatarCardItemProps = {
   className?: string;
   walletAddress: string;
   orders: number;
-  completion: number;
+  completion: number | string;
   avatar: string;
   reputation?: boolean | false;
 };

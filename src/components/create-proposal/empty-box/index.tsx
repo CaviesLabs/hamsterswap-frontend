@@ -1,11 +1,12 @@
-import { swapOptions } from "@/src/utils";
+import { useSelector } from "react-redux";
 
 export const EmptyBox = () => {
-  const existItems = swapOptions.length;
+  const swapItems = useSelector((state: any) => state.proposal?.swapItems);
+  const existItems = swapItems.length;
 
   return (
     <>
-      {Array.from(Array(4 - existItems)).map((_, i) => {
+      {Array.from(Array(4 - existItems).keys()).map((i) => {
         return (
           <div
             className="block md:left w-full md:w-[50%] md:pl-[20px]"
@@ -16,7 +17,7 @@ export const EmptyBox = () => {
                 className="text-[16px] float-left text-gray-400 regular-text"
                 style={{ transform: "translateY(50%)" }}
               >
-                Item #{existItems + 1}
+                Item #{existItems + i + 1}
               </p>
             </div>
             <div className="pt-[20px]">

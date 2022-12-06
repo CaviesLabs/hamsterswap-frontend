@@ -10,16 +10,22 @@ import { Button as HButton } from "@hamsterbox/ui-kit";
 import { PlusIcon } from "@/src/components/icons";
 import PaymentCard from "@/src/components/user/payment-card";
 import { AddPaymentModal } from "@/src/components/user/modal/add-payment.modal";
+import { useRouter } from "next/router";
 
 const Layout: FC = () => {
+  const router = useRouter();
+
   const [addPaymentVisible, setAddPaymentVisible] = useState(false);
+
   return (
     <MainLayout>
       <Breadcrumb title="Payment" />
       <LayoutSection className="relative top-[-180px]">
         <div className="mb-[20px]">
           <div className="block mt-[20px]">
-            <UserInfoCard userId="sda" />
+            {router.query.id && (
+              <UserInfoCard userId={router.query.id as string} />
+            )}
           </div>
         </div>
         <SubMenu curTab={3} />

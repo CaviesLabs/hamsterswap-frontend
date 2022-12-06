@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import { ProposalDetailPageProvider } from "@/src/hooks/pages/proposal-detail";
@@ -10,8 +10,31 @@ import { UserInfoCard } from "@/src/components/user-card";
 import { BreadCrumb } from "@/src/components/bread-crumb";
 import { Button } from "@hamsterbox/ui-kit";
 import { Col, Row } from "antd";
+import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { getProposal } from "@/src/redux/actions/proposal/proposal.action";
+import {
+  SwapOptionEntity,
+  SwapProposalEntity,
+} from "@/src/entities/proposal.entity";
+import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
+import dayjs from "dayjs";
 
 const Layout: FC = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const [proposal, setProposal] = useState<SwapProposalEntity>();
+
+  useEffect(() => {
+    if (!router.query.id) return;
+    dispatch(
+      getProposal({ id: router.query.id as string }, (data) =>
+        setProposal(data)
+      )
+    );
+  }, [router.query.id]);
+
   return (
     <MainLayout>
       <StyledProposalDetailPage>
@@ -30,7 +53,7 @@ const Layout: FC = () => {
               Advertiser
             </h3>
             <div className="block mt-[20px]">
-              <UserInfoCard userId="sda" />
+              {proposal?.ownerId && <UserInfoCard userId={proposal.ownerId} />}
             </div>
           </div>
           <div className="mb-[20px]">
@@ -38,7 +61,18 @@ const Layout: FC = () => {
               Active Swaps
             </h3>
             <div className="block mt-[20px]">
-              <ProposalItem isGuaranteedPayment />
+              <ProposalItem
+                data={proposal}
+                swapItems={
+                  proposal?.offerItems.map((_) => parseProposal(_)) ?? []
+                }
+                receiveItems={
+                  proposal?.swapOptions.map((swapOption: SwapOptionEntity) => {
+                    return swapOption.items.map((_) => parseProposal(_));
+                  }) ?? []
+                }
+                isGuaranteedPayment
+              />
             </div>
           </div>
           <Row gutter={20} className="mb-[20px]">
@@ -47,13 +81,10 @@ const Layout: FC = () => {
                 Note
               </h3>
               <div className="block mt-[20px]">
-                <p className="regular-text text-[16px]">
-                  Lorem ipsum dolor sit amet consectetur. Faucibus volutpat
-                  velit aliquam praesent donec habitant morbi id quis. Quis ut
-                  nunc nulla adipiscing duis.
-                </p>
+                <p className="regular-text text-[16px]">{proposal?.note}</p>
                 <p className="regular-text text-[14px] text-red300 mt-10">
-                  Expiration date: Nov, 2022 11:06
+                  Expiration date:{" "}
+                  {dayjs(proposal?.expiredAt).format(DATE_TIME_FORMAT)}
                 </p>
               </div>
             </Col>

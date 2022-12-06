@@ -3,19 +3,37 @@ import {
   useContext,
   useCallback,
   useEffect,
+  useState,
   ReactNode,
   FC,
 } from "react";
 import { useSolana as useSaberhq } from "@saberhq/use-solana";
-import { useWallet as useSolana } from "@solana/wallet-adapter-react";
+import {
+  useWallet as useSolana,
+  WalletContextState as SolanaWalletContextState,
+} from "@solana/wallet-adapter-react";
+import { useConnectedWallet } from "@saberhq/use-solana";
 import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
-// import { Base64 } from "js-base64";
+import { getSwapProgramProvider } from "@/src/providers/swap-program";
+import { SwapProgramService } from "@/src/services/swap-program.service";
 import { getWalletName } from "./utils";
 
 /** @dev Define state for context. */
 export interface WalletContextState {
-  /** @dev The function to sign message in Solana network. */
+  /**
+   * @dev The function to sign message in Solana network.
+   * */
   signMessage(message: string): Promise<Uint8Array>;
+
+  /**
+   * @dev Expose context frrom solana-adapter.
+   */
+  solanaWallet: SolanaWalletContextState;
+
+  /**
+   * @dev Define Program service.
+   */
+  programService: SwapProgramService;
 }
 
 /** @dev Initiize context. */
@@ -27,28 +45,84 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
   const { walletProviderInfo } = useSaberhq();
 
   /** @dev Import providers to use from solana. */
-  const { select, wallet } = useSolana();
+  const solanaWallet = useSolana();
 
-  /** @dev The function to sign message in Solana network. */
+  /** @dev Import wallet from Gokki library. */
+  const wallet = useConnectedWallet();
+
+  /** @dev Program service */
+  const [programService, initProgram] = useState<SwapProgramService>(null);
+
+  /**
+   * @dev The function to sign message in Solana network.
+   * */
   const signMessage = useCallback(
     async (message: string) => {
-      await wallet.adapter.connect();
+      /**
+       * @dev Force to connect first.
+       */
+      await solanaWallet.wallet.adapter.connect();
+
+      /**
+       * @dev Encode message to @var {Uint8Array}.
+       */
       const data = new TextEncoder().encode(message);
-      return await (wallet.adapter as MessageSignerWalletAdapter).signMessage(
-        data
-      );
+
+      /**
+       * @dev Call function to sign message from solana adapter.
+       */
+      return await (
+        solanaWallet.wallet.adapter as MessageSignerWalletAdapter
+      ).signMessage(data);
     },
-    [walletProviderInfo, wallet]
+    [walletProviderInfo, solanaWallet.wallet]
   );
 
-  /** @dev Watch changes in wallet adpater and update. */
+  /**
+   * @dev Watch changes in wallet adpater and update.
+   * */
   useEffect(() => {
     if (!walletProviderInfo) return;
-    select(getWalletName(walletProviderInfo.name));
-  }, [walletProviderInfo]);
+    solanaWallet.select(getWalletName(walletProviderInfo.name));
+  }, [walletProviderInfo, wallet, solanaWallet]);
+
+  useEffect(() => {
+    if (!wallet) return;
+    /**
+     * @dev Force to connect first.
+     */
+    solanaWallet.wallet.adapter.connect();
+  }, [wallet, solanaWallet]);
+
+  /**
+   * @dev Initilize when wallet changed.
+   * */
+  useEffect(() => {
+    if (wallet?.publicKey?.toString()) {
+      try {
+        /**
+         * @dev Initlize program provider.
+         */
+        const swapProgramProvider = getSwapProgramProvider(solanaWallet, {
+          reInit: true,
+        });
+
+        console.log("Initlize program service");
+
+        /**
+         * @dev Initlize swap program service with initlized programProvider.
+         */
+        initProgram(new SwapProgramService(swapProgramProvider));
+      } catch (err: any) {
+        console.log(err.message);
+      }
+    }
+  }, [wallet, solanaWallet]);
 
   return (
-    <WalletContext.Provider value={{ signMessage }}>
+    <WalletContext.Provider
+      value={{ signMessage, solanaWallet, programService }}
+    >
       {props.children}
     </WalletContext.Provider>
   );

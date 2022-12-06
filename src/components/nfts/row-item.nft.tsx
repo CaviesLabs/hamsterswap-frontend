@@ -2,6 +2,7 @@ import { FC, useState } from "react";
 import { RowNftItemProps } from "./types";
 import { GameItemModal, NFTDetailsModal } from "../modal";
 import { DetailIcon, VerticalDots } from "@/src/components/icons";
+import { SwapItemType } from "@/src/entities/proposal.entity";
 
 export const RowNftItem: FC<RowNftItemProps> = (props) => {
   const { assetType } = props;
@@ -33,7 +34,8 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
             </p>
           </div>
         </div>
-        {(assetType === "nft" || assetType === "game") && (
+        {(assetType === SwapItemType.NFT ||
+          assetType === SwapItemType.GAME) && (
           <div className="ml-auto left mr-[20px] relative">
             <button
               className="relative right-[-20px]"
@@ -65,14 +67,14 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
           </div>
         )}
       </div>
-      {assetType === "nft" ? (
+      {assetType === SwapItemType.NFT ? (
         <NFTDetailsModal
           isModalOpen={isDetailOpen}
           handleCancel={() => setIsDetailOpen(false)}
           handleOk={() => setIsDetailOpen(false)}
         />
       ) : (
-        assetType === "game" && (
+        assetType === SwapItemType.GAME && (
           <GameItemModal
             isModalOpen={isDetailOpen}
             handleCancel={() => setIsDetailOpen(false)}

@@ -7,15 +7,20 @@ import { UserInfoCard } from "@/src/components/user-card";
 import Breadcrumb from "@/src/components/user/breadcrumb";
 import SubMenu from "@/src/components/user/sub-menu";
 import { ContactForm } from "@/src/components/user/contact";
+import { useRouter } from "next/router";
 
 const Layout: FC = () => {
+  const router = useRouter();
+
   return (
     <MainLayout>
       <Breadcrumb title="Contacts" />
       <LayoutSection className="relative top-[-180px]">
         <div className="mb-[20px]">
           <div className="block mt-[20px]">
-            <UserInfoCard userId="sda" />
+            {router.query.id && (
+              <UserInfoCard userId={router.query.id as string} />
+            )}
           </div>
         </div>
         <SubMenu curTab={4} />

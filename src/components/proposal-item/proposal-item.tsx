@@ -1,68 +1,20 @@
-import { FC, useState, useMemo } from "react";
+import { FC, useState } from "react";
 import { ProposalItemProps } from "./types";
 import { UserAvatarCardItem } from "@/src/components/user-card";
-import { RowNftItem, RowNftItemProps } from "@/src/components/nfts";
+import { RowNftItem } from "@/src/components/nfts";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "./proposal-item.style";
 import { Button } from "@hamsterbox/ui-kit";
 import { Col, Row } from "antd";
+import { useSelector } from "react-redux";
+import State from "@/src/redux/entities/state";
 
 export const ProposalItem: FC<ProposalItemProps> = (props) => {
   /**
    * @dev Define value to display option.
    */
   const [optionSelected, setOptionSelected] = useState(0);
-
-  /**
-   * @dev Swap options.
-   */
-  const swapOptions: RowNftItemProps[][] = useMemo(
-    () => [
-      [
-        {
-          name: "#911",
-          collection: "Maya Spirits",
-          image:
-            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          assetType: "game",
-        },
-      ],
-      [
-        {
-          name: "#911",
-          collection: "Maya Spirits",
-          image:
-            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          assetType: "game",
-        },
-        {
-          name: "#911",
-          collection: "Maya Spirits",
-          image:
-            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          assetType: "nft",
-        },
-      ],
-      [
-        {
-          name: "#911",
-          collection: "Maya Spirits",
-          image:
-            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          assetType: "game",
-        },
-      ],
-    ],
-    []
-  );
+  const profile = useSelector((state: State) => state.hPublicProfile);
 
   return (
     <StyledProposalItem
@@ -93,12 +45,12 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
           {props.isGuaranteedPayment && (
             <div className="pt-[120px] md:pt-[32px]">
               <UserAvatarCardItem
-                avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
-                orders={917}
-                completion={99.9}
+                avatar={profile?.avatar || "/assets/images/sample-avatar.png"}
+                orders={profile?.ordersStat.orders}
+                completion={profile?.ordersStat.completedOrders}
                 reputation={true}
                 walletAddress={utilsProvider.makeShort(
-                  "F8qedeJsnrFnLfKpT4QN3GeAQqQMtq4izNLR1dKb5eRS",
+                  profile?.walletAddress,
                   4
                 )}
               />
@@ -116,10 +68,10 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
                   Looking For
                 </div>
                 <div className="flex">
-                  {swapOptions.map((_, index) => (
+                  {props.swapItems.map((_, index) => (
                     <div className="ml-3" key={`ml3dix-${index}`}>
                       <Button
-                        className="!rounded-[100px] after:!rounded-[100px] !px-[10px]"
+                        className="!rounded-3xl !px-4"
                         size="small"
                         shape={
                           optionSelected === index ? "primary" : "secondary"
@@ -135,18 +87,20 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
           </Row>
           <Row className="mt-4 md:px-10" gutter={20}>
             <Col span={12}>
-              {swapOptions[1].map((item, index) => (
+              {props.swapItems.map((item, index) => (
                 <div className="mb-4" key={`proposal-item-${index}`}>
                   <RowNftItem {...item} />
                 </div>
               ))}
             </Col>
             <Col span={12}>
-              {swapOptions[optionSelected].map((item, index) => (
-                <div className="mb-4" key={`swapoptions-${index}`}>
-                  <RowNftItem {...item} />
-                </div>
-              ))}
+              {props.receiveItems[optionSelected]?.map(
+                (item: any, index: number) => (
+                  <div className="mb-4" key={`swapoptions-${index}`}>
+                    <RowNftItem {...item} />
+                  </div>
+                )
+              )}
             </Col>
           </Row>
         </div>

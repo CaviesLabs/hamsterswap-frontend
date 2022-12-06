@@ -5,13 +5,18 @@ import {
   AddGameItemModal,
   AddNftModal,
   AddSolModal,
-} from "@/src/components/modal";
-import { swapOptions } from "@/src/utils";
+} from "@/src/components/create-proposal";
 import { RowEditNftItem } from "@/src/components/nfts";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
+import { useDispatch, useSelector } from "react-redux";
+import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
+import { getListNft } from "@/src/redux/actions/nft/nft.action";
+import { useConnectedWallet } from "@saberhq/use-solana";
 
 export const Step1: FC = () => {
+  const wallet = useConnectedWallet();
+
   /**
    * @dev handle open modal by type
    */
@@ -19,6 +24,82 @@ export const Step1: FC = () => {
   const [isAddSol, setIsAddSol] = useState(false);
   const [isAddGameItem, setIsAddGameItem] = useState(false);
   const [isAddCash, setIsAddCash] = useState(false);
+
+  const dispatch = useDispatch();
+  const proposal = useSelector((state: any) => state.proposal);
+  const swapItems = useSelector((state: any) => state.proposal?.swapItems);
+
+  const handleUnSelectNft = (idx: number) => {
+    const newSwapItems = swapItems.filter(
+      (_: any, index: number) => idx !== index
+    );
+    dispatch(
+      setProposal({
+        ...proposal,
+        swapItems: newSwapItems,
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (!wallet) return;
+    dispatch(
+      getListNft({
+        walletAddress: wallet.publicKey.toString(),
+      })
+    );
+  }, [wallet]);
+
+  /**
+   * Handle save sol value into swapItems array of redux-store
+   * @param value [string]
+   */
+  const handleAddSol = (value: string) => {
+    if (!value) return;
+    if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
+
+    const newSwapItems: any = swapItems;
+    newSwapItems.push({
+      assetType: "token",
+      name: `${value} SOL`,
+      collection: "SOL",
+      image: "/assets/images/solana-icon.svg",
+      value,
+    });
+    dispatch(
+      setProposal({
+        ...proposal,
+        swapItems: newSwapItems,
+      })
+    );
+    setIsAddSol(false);
+  };
+
+  /**
+   * Handle save cash value into swapItems array of redux-store
+   * @param value [string]
+   * @param method [string]
+   */
+  const handleAddCash = (value: string, method: string) => {
+    if (!value) return;
+    if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
+
+    const newSwapItems: any = swapItems;
+    newSwapItems.push({
+      assetType: "usd",
+      name: `${value} USD`,
+      collection: method.toUpperCase(),
+      image: "/assets/images/asset-cash.png",
+      value,
+    });
+    dispatch(
+      setProposal({
+        ...proposal,
+        swapItems: newSwapItems,
+      })
+    );
+    setIsAddCash(false);
+  };
 
   return (
     <div>
@@ -54,7 +135,7 @@ export const Step1: FC = () => {
         />
         <AddSolModal
           isModalOpen={isAddSol}
-          handleOk={() => setIsAddSol(false)}
+          handleOk={(value: string) => handleAddSol(value)}
           handleCancel={() => setIsAddSol(false)}
         />
         <Button
@@ -86,13 +167,15 @@ export const Step1: FC = () => {
         />
         <AddCashModal
           isModalOpen={isAddCash}
-          handleOk={() => setIsAddCash(false)}
+          handleOk={(value: string, method: string) =>
+            handleAddCash(value, method)
+          }
           handleCancel={() => setIsAddCash(false)}
         />
       </div>
       <div className="block mt-[20px]">
         <div className="md:flex pt-[40px] flex-wrap">
-          {swapOptions.map((item, index) => (
+          {swapItems.map((item: any, index: number) => (
             <div
               className="block md:left w-full md:w-[50%] md:pl-[20px]"
               key={`swapoptions-${index}`}
@@ -106,11 +189,16 @@ export const Step1: FC = () => {
                 </p>
               </div>
               <div className="pt-[20px]">
-                <RowEditNftItem {...item} onDelete={() => {}} />
+                <RowEditNftItem
+                  {...item}
+                  onDelete={() => {
+                    handleUnSelectNft(index);
+                  }}
+                />
               </div>
             </div>
           ))}
-          <EmptyBox />
+          {swapItems.length < 4 && <EmptyBox />}
         </div>
       </div>
     </div>

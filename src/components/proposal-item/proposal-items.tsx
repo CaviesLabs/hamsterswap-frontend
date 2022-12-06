@@ -3,6 +3,7 @@ import { ProposalItemsProps } from "@/src/components/proposal-item/types";
 import { Col, Row } from "antd";
 import { Button } from "@hamsterbox/ui-kit";
 import { RowNftItem } from "@/src/components/nfts";
+import { SwapItemType } from "@/src/entities/proposal.entity";
 
 const ProposalItems: FC<ProposalItemsProps> = (props) => {
   const { userAssets, userLookingFor } = props;
@@ -25,7 +26,7 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
               {userLookingFor.map((_, index) => (
                 <div className="ml-3" key={`ml3dix-${index}`}>
                   <Button
-                    className="!rounded-[100px] after:!rounded-[100px] !px-[10px]"
+                    className="!rounded-[100px] after:!rounded-[100px] !px-5"
                     size="small"
                     shape={optionSelected === index ? "primary" : "secondary"}
                     text={`Option ${index + 1}`}
@@ -41,12 +42,12 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
         <Col span={12}>
           {userAssets.map((item, index) => (
             <div className="mb-4" key={`proposal-item-${index}`}>
-              <RowNftItem {...item} />
+              <RowNftItem {...item} assetType={item.type} />
             </div>
           ))}
         </Col>
         <Col span={12}>
-          {userLookingFor[optionSelected].map((item: any, index: number) => (
+          {userLookingFor[optionSelected]?.map((item: any, index: number) => (
             <div className="mb-4" key={`swapoptions-${index}`}>
               <RowNftItem {...item} />
             </div>

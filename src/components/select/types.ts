@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 
 export type OptionProps = {
   value: string;
+  label?: string;
   image?: string;
   description?: string;
 };
