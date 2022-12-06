@@ -38,7 +38,11 @@ const Layout: FC = () => {
               Active Swaps
             </h3>
             <div className="block mt-[20px]">
-              <ProposalItem isGuaranteedPayment />
+              <ProposalItem
+                receiveItems={[]}
+                swapItems={[]}
+                isGuaranteedPayment
+              />
             </div>
           </div>
           <Row gutter={20} className="mb-[20px]">
