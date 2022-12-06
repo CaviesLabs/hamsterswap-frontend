@@ -4,6 +4,7 @@ import userChatReducer from "./user-chat";
 import nftReducer from "./nft";
 import proposalReducer from "./proposal";
 import hProfileReducer from "./hamster-profile";
+import hPublicProfileReducer from "./hamster-profile/public-profile";
 import platformConfigReducer from "./platform-config";
 import State from "@/src/redux/entities/state";
 
@@ -14,6 +15,7 @@ const reducer = combineReducers<State>({
   proposal: proposalReducer,
   platformConfig: platformConfigReducer,
   hProfile: hProfileReducer,
+  hPublicProfile: hPublicProfileReducer,
 });
 
 export const initState: State = {
@@ -25,6 +27,7 @@ export const initState: State = {
     receiveItems: [[], [], []],
   },
   hProfile: null,
+  hPublicProfile: null,
   platformConfig: {
     maxAllowedOptions: 0,
     maxAllowedItems: 0,

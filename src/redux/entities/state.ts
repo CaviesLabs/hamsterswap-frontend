@@ -11,5 +11,6 @@ export default interface State {
   nft: NftDto;
   proposal: ProposalDto;
   hProfile: hProfileDto;
+  hPublicProfile: hProfileDto;
   platformConfig: PlatformConfigDto;
 }
