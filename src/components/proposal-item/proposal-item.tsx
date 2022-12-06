@@ -91,7 +91,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
               ))}
             </Col>
             <Col span={12}>
-              {props.receiveItems[optionSelected].map(
+              {props.receiveItems[optionSelected]?.map(
                 (item: any, index: number) => (
                   <div className="mb-4" key={`swapoptions-${index}`}>
                     <RowNftItem {...item} />
