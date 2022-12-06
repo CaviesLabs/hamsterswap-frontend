@@ -52,10 +52,10 @@ const Layout: FC = () => {
               </div>
             </div>
           </div>
-          <ProposalDetail status="pending" />
-          <ProposalDetail status="success" />
-          <ProposalDetail status="canceled" />
-          <ProposalDetail status="expired" />
+          <ProposalDetail receiveItems={[]} swapItems={[]} status="pending" />
+          <ProposalDetail receiveItems={[]} swapItems={[]} status="success" />
+          <ProposalDetail receiveItems={[]} swapItems={[]} status="canceled" />
+          <ProposalDetail receiveItems={[]} swapItems={[]} status="expired" />
         </div>
       </LayoutSection>
     </MainLayout>
