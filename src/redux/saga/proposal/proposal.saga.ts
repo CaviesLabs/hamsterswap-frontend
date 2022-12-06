@@ -10,6 +10,7 @@ import { DetailDto } from "@/src/dto/detail.dto";
 import {
   GetProposalsDto,
   SwapProposalEntity,
+  SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
 
 /**
@@ -96,7 +97,16 @@ export function* getExploreProposals({
       proposalService.getProposals
     );
 
-    callback && callback(swapProposals);
+    if (!callback) return;
+
+    /**
+     * @dev Call back after filter which only display deposited proposal.
+     */
+    callback(
+      swapProposals.filter(
+        (item) => item.status === SwapProposalStatus.DEPOSITED
+      )
+    );
   } catch (err) {
     console.error(err);
     callback && callback(null);

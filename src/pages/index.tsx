@@ -1,4 +1,4 @@
-import { useState, FC } from "react";
+import { useState, useEffect, FC } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import styles from "@/styles/Home.module.css";
@@ -10,9 +10,40 @@ import { SearchIcon } from "@/src/components/icons";
 import { Col, Input, Row } from "antd";
 import { Button } from "@hamsterbox/ui-kit";
 import Select from "@/src/components/select";
+import { useDispatch } from "react-redux";
+import { SwapProposalEntity } from "@/src/entities/proposal.entity";
+import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
 
 const Layout: FC = () => {
+  /**
+   * @dev Dispatch hook.
+   */
+  const dispatch = useDispatch();
+
+  /**
+   * @dev The condition to display filter in mobile.
+   */
   const [mobileFilterDisplayed, setMobileFilterDisplayed] = useState(false);
+
+  /**
+   * @dev Define proposal list to show.
+   */
+  const [exploreProposals, setExploreProposals] = useState<
+    SwapProposalEntity[]
+  >([]);
+
+  /** @dev Get explore proposal list */
+  useEffect(() => {
+    (async () => {
+      dispatch(
+        getExploreProposals((proposals) => {
+          setExploreProposals(proposals);
+        })
+      );
+    })();
+  }, []);
+
+  console.log(exploreProposals);
 
   return (
     <MainLayout>
