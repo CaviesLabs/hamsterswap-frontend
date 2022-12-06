@@ -1,8 +1,9 @@
-import { FC, useState } from "react";
+import { FC, useRef, useState } from "react";
 import { RowNftItemProps } from "./types";
 import { GameItemModal, NFTDetailsModal } from "../modal";
 import { DetailIcon, VerticalDots } from "@/src/components/icons";
 import { SwapItemType } from "@/src/entities/proposal.entity";
+import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 
 export const RowNftItem: FC<RowNftItemProps> = (props) => {
   const { assetType } = props;
@@ -13,6 +14,15 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
    * @dev handle open modal by asset type
    */
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  /**
+   * @dev reference to the button
+   * close the dropdown when user click outside
+   */
+  const ref = useRef(null);
+  useOnClickOutside(ref, () => {
+    setCollapse(false);
+  });
 
   return (
     <>
@@ -36,7 +46,7 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
         </div>
         {(assetType === SwapItemType.NFT ||
           assetType === SwapItemType.GAME) && (
-          <div className="ml-auto left mr-[20px] relative">
+          <div className="ml-auto left mr-[20px] relative" ref={ref}>
             <button
               className="relative right-[-20px]"
               onClick={() => setCollapse(!collapse)}
@@ -69,6 +79,7 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
       </div>
       {assetType === SwapItemType.NFT ? (
         <NFTDetailsModal
+          data={props}
           isModalOpen={isDetailOpen}
           handleCancel={() => setIsDetailOpen(false)}
           handleOk={() => setIsDetailOpen(false)}
@@ -76,6 +87,7 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
       ) : (
         assetType === SwapItemType.GAME && (
           <GameItemModal
+            data={props}
             isModalOpen={isDetailOpen}
             handleCancel={() => setIsDetailOpen(false)}
             handleOk={() => setIsDetailOpen(false)}
