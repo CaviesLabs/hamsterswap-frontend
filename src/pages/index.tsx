@@ -128,7 +128,7 @@ const Layout: FC = () => {
                         </h3>
                         <div className="pt-6" id="filter-section-mobile-1">
                           <div className="space-y-6">
-                            {categoryOptions.map((item, index) => (
+                            {categoryOptions?.map((item, index) => (
                               <div
                                 className="flex items-center"
                                 key={`catogo-mobile-${index}`}
@@ -260,12 +260,18 @@ const Layout: FC = () => {
                 <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                   <div className="lg:col-span-8">
                     <div className="rounded-lg  lg:h-full px-[10px] py-[20px]">
-                      <ProposalExploreItem receiveItems={[]} swapItems={[]} />
+                      {/* <ProposalExploreItem receiveItems={[]} swapItems={[]} />
                       <ProposalExploreItem
                         receiveItems={[]}
                         swapItems={[]}
                         isGuaranteedPayment
-                      />
+                      /> */}
+                      {exploreProposals?.map((item, index) => (
+                        <ProposalExploreItem
+                          key={`explored-proposal-item-${index}`}
+                          proposal={item}
+                        />
+                      ))}
                     </div>
                   </div>
                 </div>

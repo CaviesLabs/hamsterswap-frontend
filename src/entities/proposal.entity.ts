@@ -9,7 +9,7 @@ export enum AssetTypes {
   nft = "nft",
   game = "game",
   usd = "usd",
-  token = "token",
+  token = "currency",
 }
 
 /**
@@ -157,7 +157,7 @@ export class SwapItemEntity {
 
   status: SwapItemStatus;
 
-  nftMetadata?: any;
+  nftMetadata?: NftEntity[];
 
   id: string;
 }
@@ -191,7 +191,7 @@ export class SwapProposalEntity {
 
   fulfilledWithOptionId?: string;
 
-  expireAt: Date;
+  expiredAt: Date;
 
   status: SwapProposalStatus;
 

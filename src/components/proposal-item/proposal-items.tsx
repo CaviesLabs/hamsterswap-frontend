@@ -39,16 +39,32 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
       </Row>
       <Row className="mt-4 md:px-10" gutter={20}>
         <Col span={12}>
-          {userAssets.map((item, index) => (
-            <div className="mb-4" key={`proposal-item-${index}`}>
-              <RowNftItem {...item} />
-            </div>
-          ))}
+          {userAssets.map((item, index) => {
+            return (
+              <div className="mb-4" key={`proposal-item-${index}`}>
+                <RowNftItem
+                  image={item.nftMetadata[0]?.nft_image}
+                  name={item.nftMetadata[0]?.nft_name}
+                  collection={item.nftMetadata[0]?.nft_symbol}
+                  collectionId={item.nftMetadata[0]?.nft_collection_id}
+                  nftId={item.id}
+                  assetType={item.type as any}
+                />
+              </div>
+            );
+          })}
         </Col>
         <Col span={12}>
-          {userLookingFor[optionSelected].map((item: any, index: number) => (
+          {userLookingFor[optionSelected].items.map((item, index: number) => (
             <div className="mb-4" key={`swapoptions-${index}`}>
-              <RowNftItem {...item} />
+              <RowNftItem
+                image={item.nftMetadata[0]?.nft_image}
+                name={item.nftMetadata[0]?.nft_name}
+                collection={item.nftMetadata[0]?.nft_symbol}
+                collectionId={item.nftMetadata[0]?.nft_collection_id}
+                nftId={item.id}
+                assetType={item.type as any}
+              />
             </div>
           ))}
         </Col>

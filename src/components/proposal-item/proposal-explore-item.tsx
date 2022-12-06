@@ -1,103 +1,20 @@
-import { FC, useMemo } from "react";
+import { FC } from "react";
 import { useRouter } from "next/router";
 import { ProposalItemProps } from "./types";
 import { UserAvatarCardItem } from "@/src/components/user-card";
-import { RowNftItemProps } from "@/src/components/nfts";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "./proposal-item.style";
 import { Button } from "@hamsterbox/ui-kit";
 import classnames from "classnames";
 import { Col, Row } from "antd";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
+import { SwapProposalEntity } from "@/src/entities/proposal.entity";
 
-const mockHaves: RowNftItemProps[] = [
-  {
-    name: "#911",
-    collection: "Maya Spirits",
-    image:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    assetType: "nft",
-  },
-  {
-    name: "1,000.00 SOL",
-    collection: "",
-    image: "https://cryptologos.cc/logos/solana-sol-logo.png",
-    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    assetType: "token",
-  },
-  {
-    name: "#911",
-    collection: "Maya Spirits",
-    image:
-      "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-    nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-    assetType: "game",
-  },
-  {
-    name: "2000 USD",
-    collection: "Paypal, Stripe",
-    image: "/assets/images/asset-cash.png",
-    assetType: "usd",
-  },
-];
-export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
+export const ProposalExploreItem: FC<
+  ProposalItemProps & { proposal: SwapProposalEntity }
+> = (props) => {
   const router = useRouter();
-
-  /**
-   * @dev Swap options.
-   */
-  const swapOptions: RowNftItemProps[][] = useMemo(
-    () => [
-      [
-        {
-          name: "#911",
-          collection: "Maya Spirits",
-          image:
-            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          assetType: "game",
-        },
-      ],
-      [
-        {
-          name: "#911",
-          collection: "Maya Spirits",
-          image:
-            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          assetType: "game",
-        },
-        {
-          name: "#911",
-          collection: "Maya Spirits",
-          image:
-            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          assetType: "game",
-        },
-      ],
-      [
-        {
-          name: "#911",
-          collection: "Maya Spirits",
-          image:
-            "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-          nftId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          collectionId: "0xbf69783fa630ed65d396dca51216a391a4bb1fd0",
-          assetType: "nft",
-        },
-      ],
-    ],
-    []
-  );
-
+  console.log(props.proposal.expiredAt);
   return (
     <StyledProposalItem
       className="w-full bg-dark10 min-h-[200px] rounded-[32px] rounded-[32px] mb-[46px]"
@@ -126,27 +43,30 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
         <div className="pl-[20px] pr-[20px] md:pl-[77px]">
           <div className="pt-[120px] md:pt-[32px]">
             <UserAvatarCardItem
-              avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
+              avatar="https://source.boringavatars.com/beam"
               orders={917}
               completion={99.9}
               reputation={true}
               walletAddress={utilsProvider.makeShort(
-                "F8qedeJsnrFnLfKpT4QN3GeAQqQMtq4izNLR1dKb5eRS",
+                props.proposal.ownerAddress,
                 4
               )}
             />
           </div>
-          <ProposalItems userAssets={mockHaves} userLookingFor={swapOptions} />
+          <ProposalItems
+            userAssets={props.proposal.offerItems}
+            userLookingFor={props.proposal.swapOptions}
+          />
           <Row className="pt-10 md:px-10" gutter={20}>
             <Col span={12}>
               <div className="md:left">
                 <p className="semi-bold text-[16px] h-[36px] leading-9">Note</p>
                 <p className="mt-[12px] text-[16px] regular-text">
-                  If you have the items which are the same with my proposal
-                  items, you can text me to discuss and swap them
+                  {props.proposal.note}
                 </p>
                 <p className="mt-[12px] text-[16px] regular-text text-dark60">
-                  Expiration date: 12 Dec, 2022 11:06
+                  Expiration date:{" "}
+                  {new Date(props.proposal.expiredAt).toLocaleString()}
                 </p>
               </div>
             </Col>
