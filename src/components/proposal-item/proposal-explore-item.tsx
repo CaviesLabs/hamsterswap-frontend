@@ -9,7 +9,7 @@ import classnames from "classnames";
 import { Col, Row } from "antd";
 import dayjs from "dayjs";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
-import { DATE_TIME_FORMAT } from "@/src/utils";
+import { completedOrderPercent, DATE_TIME_FORMAT } from "@/src/utils";
 import { getHamsterPublicProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { useDispatch } from "react-redux";
 import { hProfileDto } from "@/src/dto/hProfile.dto";
@@ -58,10 +58,10 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
             <UserAvatarCardItem
               avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
               orders={profile?.ordersStat.orders || 0}
-              completion={(
-                (profile?.ordersStat.completedOrders || 0) /
-                (profile?.ordersStat.orders || 1)
-              ).toFixed(2)}
+              completion={completedOrderPercent(
+                profile?.ordersStat.completedOrders,
+                profile?.ordersStat.orders
+              )}
               reputation={true}
               walletAddress={utilsProvider.makeShort(data.ownerAddress, 4)}
             />

@@ -11,6 +11,9 @@ export class hProfileDto {
 
     orders: number;
   };
+
+  telegram: string;
+  twitter: string;
 }
 
 /**

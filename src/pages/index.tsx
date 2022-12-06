@@ -11,7 +11,7 @@ import {
   SwapOptionEntity,
   SwapProposalEntity,
 } from "@/src/entities/proposal.entity";
-import { parseProposal } from "@/src/utils/proposal-item";
+import { parseProposal } from "@/src/utils";
 import Filter from "@/src/components/homepage/filter";
 
 const Layout: FC = () => {

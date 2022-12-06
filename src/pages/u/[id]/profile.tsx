@@ -11,15 +11,20 @@ import SubMenu from "@/src/components/user/sub-menu";
 import Select from "@/src/components/select";
 import Search from "@/src/components/search";
 import { ProposalDetail } from "@/src/components/user/proposal-detail";
+import { useRouter } from "next/router";
 
 const Layout: FC = () => {
+  const router = useRouter();
+
   return (
     <MainLayout>
       <Breadcrumb title="Profile" />
       <LayoutSection className="relative top-[-180px]">
         <div className="mb-[20px]">
           <div className="block mt-[20px]">
-            <UserInfoCard userId="sda" />
+            {router.query.id && (
+              <UserInfoCard userId={router.query.id as string} />
+            )}
           </div>
         </div>
         <SubMenu curTab={0} />
