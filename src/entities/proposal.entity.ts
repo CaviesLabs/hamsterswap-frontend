@@ -14,6 +14,7 @@ export enum SwapItemActionType {
 /** @dev Expose enum for item type. */
 export enum SwapItemType {
   NFT = "SWAP_ITEM_TYPE::NFT",
+  GAME = "SWAP_ITEM_TYPE::GAME",
   CURRENCY = "SWAP_ITEM_TYPE::CURRENCY",
 }
 
@@ -138,7 +139,7 @@ export class SwapProposalEntity {
 
   fulfilledWithOptionId?: string;
 
-  expireAt: Date;
+  expiredAt: Date;
 
   status: SwapProposalStatus;
 

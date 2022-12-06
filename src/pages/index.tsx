@@ -1,4 +1,4 @@
-import { useState, FC } from "react";
+import { useState, FC, useEffect } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import styles from "@/styles/Home.module.css";
@@ -10,9 +10,24 @@ import { SearchIcon } from "@/src/components/icons";
 import { Col, Input, Row } from "antd";
 import { Button } from "@hamsterbox/ui-kit";
 import Select from "@/src/components/select";
+import { useDispatch, useSelector } from "react-redux";
+import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
+import {
+  SwapItemEntity,
+  SwapOptionEntity,
+  SwapProposalEntity,
+} from "@/src/entities/proposal.entity";
+import { parseProposal } from "@/src/utils/proposal-item";
 
 const Layout: FC = () => {
+  const dispatch = useDispatch();
   const [mobileFilterDisplayed, setMobileFilterDisplayed] = useState(false);
+
+  const proposals = useSelector((state: any) => state.proposals);
+
+  useEffect(() => {
+    dispatch(getExploreProposals());
+  }, []);
 
   return (
     <MainLayout>
@@ -229,12 +244,30 @@ const Layout: FC = () => {
                 <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                   <div className="lg:col-span-8">
                     <div className="rounded-lg  lg:h-full px-[10px] py-[20px]">
-                      <ProposalExploreItem receiveItems={[]} swapItems={[]} />
-                      <ProposalExploreItem
-                        receiveItems={[]}
-                        swapItems={[]}
-                        isGuaranteedPayment
-                      />
+                      {proposals.map((proposal: SwapProposalEntity) => {
+                        const p: any = { ...proposal };
+                        const newOfferItems = p.offerItems.map(
+                          (offerItem: SwapItemEntity) =>
+                            parseProposal(offerItem)
+                        );
+                        const newSwapOptions = p.swapOptions.map(
+                          (swapOption: SwapOptionEntity) => {
+                            return swapOption.items.map((_) =>
+                              parseProposal(_)
+                            );
+                          }
+                        );
+                        p.offerItems = newOfferItems;
+                        p.swapOptions = newSwapOptions;
+                        return (
+                          <ProposalExploreItem
+                            key={p.id}
+                            data={p}
+                            receiveItems={p.offerItems}
+                            swapItems={p.swapOptions}
+                          />
+                        );
+                      })}
                     </div>
                   </div>
                 </div>

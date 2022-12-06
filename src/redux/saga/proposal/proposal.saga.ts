@@ -15,24 +15,6 @@ import {
 /**
  * @param callback
  * @description
- * Fetch proposals data
- */
-export function* listProposal({
-  callback,
-}: SagaPayload<unknown, ProposalItem>) {
-  try {
-    const proposals: ProposalItem = yield call(proposalService.listProposal);
-    yield put(setProposal(proposals));
-    callback && callback(proposals);
-  } catch (err) {
-    console.error(err);
-    callback && callback(null);
-  }
-}
-
-/**
- * @param callback
- * @description
  * Fetch proposal data
  */
 export function* getProposal({
@@ -95,7 +77,7 @@ export function* getExploreProposals({
     const swapProposals: SwapProposalEntity[] = yield call(
       proposalService.getProposals
     );
-
+    yield put(setProposals(swapProposals));
     callback && callback(swapProposals);
   } catch (err) {
     console.error(err);

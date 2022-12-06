@@ -6,6 +6,7 @@ export const SIGNUP_EMAIL = "SIGNUP_EMAIL";
 /**
  * Actions for proposal service
  */
+export const GET_PROPOSALS = "GET_PROPOSALS";
 export const SET_PROPOSALS = "SET_PROPOSALS";
 
 /**
