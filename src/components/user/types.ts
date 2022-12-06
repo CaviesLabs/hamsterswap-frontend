@@ -22,6 +22,11 @@ export type ProposalItem = {
   status: ProposalStatus;
 };
 
+export type ProposalReducer = {
+  swapItems: any[];
+  receiveItems: any[];
+};
+
 export type ProposalHistoryProps = {
   data: ProposalItem;
 };

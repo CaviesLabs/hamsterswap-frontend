@@ -1,4 +1,4 @@
-export { SwapProgramProvider } from "./swap-program.provider";
+export * from "./swap-program.provider";
 import { SwapProgramProvider } from "./swap-program.provider";
 
 /** @dev Declare global @var {SwapProgramProvider}. */

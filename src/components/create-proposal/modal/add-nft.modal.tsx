@@ -1,25 +1,56 @@
-import { FC, useEffect } from "react";
+import { FC, useMemo } from "react";
 import { Col, Modal, Row } from "antd";
 import { AddItemModalProps } from "./types";
 import SearchInput from "../../search";
 import { useDispatch, useSelector } from "react-redux";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
-import { getListNft } from "@/src/redux/actions/nft/nft.action";
-import { useConnectedWallet } from "@saberhq/use-solana";
+import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
 
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
   const dispatch = useDispatch();
-  const wallet = useConnectedWallet();
-  const nfts = useSelector((state: any) => state.nft?.list_nfts);
 
-  useEffect(() => {
-    if (!wallet) return;
+  const nfts = useSelector((state: any) => state.nft?.list_nfts);
+  const proposal = useSelector((state: any) => state.proposal);
+  const swapItems = useSelector((state: any) => state.proposal?.swapItems);
+
+  const nftsMemo = useMemo(() => {
+    const data: any = [];
+    nfts?.forEach((i: any) => {
+      const nftName = i?.nft_name ?? null;
+      if (nftName) {
+        const nft = swapItems.find((obj: any) => {
+          return obj?.name === nftName;
+        });
+        if (!nft) {
+          data.push(i);
+        }
+      }
+    });
+    return data;
+  }, [nfts, swapItems]);
+
+  const handleAddNft = (nftItem: any) => {
+    const item = {
+      assetType: "nft",
+      name: nftItem?.nft_name,
+      nftId: nftItem?.nft_id,
+      nftAddress: nftItem?.nft_address,
+      collectionId: nftItem?.nft_collection_id,
+      image: nftItem?.nft_image_uri,
+      collection: nftItem?.nft_symbol,
+    };
+    const swapItems = proposal.swapItems;
+    swapItems.push(item);
     dispatch(
-      getListNft({
-        address: wallet.publicKey.toString(),
+      setProposal({
+        ...proposal,
+        swapItems,
       })
     );
-  }, [wallet]);
+    if (swapItems.length >= 4) {
+      props.handleOk(nftItem);
+    }
+  };
 
   return (
     <Modal
@@ -38,24 +69,25 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
               placeholder="Search for NFT, collection "
             />
             <div className="mt-10 max-h-96 overflow-scroll">
-              {nfts?.map((nftItem: any, i: number) => (
+              {nftsMemo?.map((nftItem: any, i: number) => (
                 <Row
                   className="bg-white rounded-lg p-4 w-full mb-4 cursor-pointer hover:bg-dark30"
                   key={`add-nft-item-pr-${i}`}
-                  onClick={() => props.handleOk(nftItem)}
+                  onClick={() => handleAddNft(nftItem)}
                 >
                   <Col span={5}>
                     <img
                       className="rounded bg-dark10"
                       src={nftItem.nft_image_uri}
+                      alt=""
                     />
                   </Col>
                   <Col span={18} className="pl-6">
                     <p className="font-bold text-lg">{nftItem.nft_name}</p>
                     <p className="text-lg">
-                      <div className="text-indigo-600">
+                      <span className="text-indigo-600">
                         {nftItem.nft_symbol}
-                      </div>
+                      </span>
                     </p>
                   </Col>
                 </Row>

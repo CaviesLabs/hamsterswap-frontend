@@ -16,8 +16,22 @@ import {
   Step4,
   Step5,
 } from "@/src/components/create-proposal";
+import { Form } from "antd";
+import { useSelector } from "react-redux";
+import classnames from "classnames";
 
 const Layout: FC = () => {
+  const proposal = useSelector((state: any) => state.proposal);
+  const isButtonNextDisabled = !proposal || proposal?.swapItems.length === 0;
+
+  /**
+   * @dev Define proposal form, that include:
+   * @field note
+   * @field expiredAt
+   * Have to check form data before going to step 4
+   */
+  const [formProposal] = Form.useForm();
+
   /**
    * @dev Define step state.
    */
@@ -35,7 +49,14 @@ const Layout: FC = () => {
    * @dev The function to process when click next.
    * @returns {Function}
    */
-  const handleNextStep = useCallback(() => {
+  const handleNextStep = useCallback(async () => {
+    if (currentStep === 2) {
+      /**
+       * @dev validate user has entered expire time
+       * before going to next step
+       */
+      await formProposal.validateFields();
+    }
     setCurrentStep((prev) => prev + 1);
     stepperRef.current.nextHandler();
   }, [currentStep]);
@@ -103,7 +124,7 @@ const Layout: FC = () => {
                 >
                   <Step1 />
                   <Step2 />
-                  <Step3 />
+                  <Step3 form={formProposal} />
                   <Step4 />
                   <Step5
                     modalOpened={modalOpened}
@@ -126,8 +147,18 @@ const Layout: FC = () => {
               {currentStep < 4 ? (
                 <Button
                   text="Next"
-                  className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right"
+                  className={classnames(
+                    "!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right",
+                    isButtonNextDisabled && "hover:!text-black"
+                  )}
                   onClick={handleNextStep}
+                  theme={
+                    isButtonNextDisabled && {
+                      color: "black",
+                      backgroundColor: "#cccccc",
+                    }
+                  }
+                  disabled={isButtonNextDisabled}
                 />
               ) : (
                 <Button

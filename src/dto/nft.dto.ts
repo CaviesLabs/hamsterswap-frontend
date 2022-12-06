@@ -2,11 +2,35 @@
  * @dev Define list nft dto
  */
 export class GetListNftDto {
-  address: string;
+  walletAddress: string;
+}
+
+export class GetNftDto {
+  mintAddress: string;
 }
 
 export class NftDto {
   list_nfts: any[];
   num_nfts: number;
   page: number;
+}
+
+export type AttributeDto = {
+  trait_type: string;
+  value: string;
+};
+
+export class NftDetailDto {
+  nft_address: string;
+  nft_name: string;
+  nft_symbol: string;
+  nft_image: string;
+  nft_collection_name: string;
+  nft_collection_id: string;
+  nft_solscan_collection_id: string;
+  nft_attributes: {
+    attributes: AttributeDto[];
+    properties: any[];
+    category: string;
+  };
 }

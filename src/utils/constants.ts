@@ -149,3 +149,5 @@ export const SIGN_MESSAGE =
   "This request will not trigger a blockchain transaction or cost any gas fees.\n" +
   "\n" +
   "Your authentication status will reset after 24 hours.";
+
+export const DATE_TIME_FORMAT = "MM/DD/YYYY HH:mm";

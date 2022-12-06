@@ -1,9 +1,12 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { UserInfoCardProps } from "./types";
 import { utilsProvider } from "@/src/utils";
 import { ReputationCard } from "./repuation.card";
 import styled from "@emotion/styled";
 import CopyText from "@/src/components/copy-text";
+// import { useDispatch, useSelector } from "react-redux";
+// import { getHamsterPublicProfile } from "@/src/redux/actions/hamster-profile/profile.action";
+import { useRouter } from "next/router";
 
 /** @dev Define styled component. */
 export const StyledUserInfoCard = styled.div`
@@ -15,6 +18,14 @@ export const StyledUserInfoCard = styled.div`
 `;
 
 export const UserInfoCard: FC<UserInfoCardProps> = () => {
+  // const dispatch = useDispatch();
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log("router", router);
+    // dispatch(getHamsterPublicProfile())
+  }, []);
+
   return (
     <StyledUserInfoCard>
       <div className="md:flex items-center ">

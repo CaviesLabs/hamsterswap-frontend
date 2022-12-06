@@ -6,7 +6,9 @@ export type ModalProps = {
   handleCancel(e: MouseEvent<HTMLElement>): void;
 };
 
-export type NftDetailsModalProps = ModalProps;
+export type NftDetailsModalProps = ModalProps & {
+  data?: any;
+};
 
 export type AttributeProps = {
   title: string;
