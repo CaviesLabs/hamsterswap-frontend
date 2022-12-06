@@ -16,6 +16,7 @@ import { useConnectedWallet } from "@saberhq/use-solana";
 import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
 import { getSwapProgramProvider } from "@/src/providers/swap-program";
 import { SwapProgramService } from "@/src/services/swap-program.service";
+import { getAuthService } from "@/src/actions/firebase.action";
 import { getWalletName } from "./utils";
 
 /** @dev Define state for context. */
@@ -24,6 +25,8 @@ export interface WalletContextState {
    * @dev The function to sign message in Solana network.
    * */
   signMessage(message: string): Promise<Uint8Array>;
+
+  disconnect(): Promise<void>;
 
   /**
    * @dev Expose context frrom solana-adapter.
@@ -53,6 +56,9 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
   /** @dev Program service */
   const [programService, initProgram] = useState<SwapProgramService>(null);
 
+  /** @dev Import auth service. */
+  const authService = getAuthService();
+
   /**
    * @dev The function to sign message in Solana network.
    * */
@@ -77,6 +83,13 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
     },
     [walletProviderInfo, solanaWallet.wallet]
   );
+
+  const disconnect = useCallback(async () => {
+    if (!wallet) return;
+    await wallet.disconnect();
+    await solanaWallet.disconnect();
+    await authService.logout();
+  }, [solanaWallet, wallet]);
 
   /**
    * @dev Watch changes in wallet adpater and update.
@@ -121,7 +134,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
 
   return (
     <WalletContext.Provider
-      value={{ signMessage, solanaWallet, programService }}
+      value={{ signMessage, disconnect, solanaWallet, programService }}
     >
       {props.children}
     </WalletContext.Provider>

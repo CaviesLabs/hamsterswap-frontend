@@ -23,11 +23,15 @@ export class StorageProvider {
 
   /**
    * @param key
+   * @param {boolean} wPrefix true mean user wanna remove a storage data which saved without hamster prefix.
    * @returns
    * @description
    * The function to remove value with an associated key
    */
-  public removeItem(key: string): void {
-    return localStorage.removeItem(`${this.PREFIX}_${key}`);
+  public removeItem(key: string, wPrefix?: boolean): void {
+    if (wPrefix) {
+      return localStorage.removeItem(key);
+    }
+    return localStorage.removeItem(`${wPrefix ? "" : this.PREFIX}_${key}`);
   }
 }
