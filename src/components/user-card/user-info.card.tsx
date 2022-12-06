@@ -4,8 +4,8 @@ import { utilsProvider } from "@/src/utils";
 import { ReputationCard } from "./repuation.card";
 import styled from "@emotion/styled";
 import CopyText from "@/src/components/copy-text";
-import { useDispatch, useSelector } from "react-redux";
-import { getHamsterPublicProfile } from "@/src/redux/actions/hamster-profile/profile.action";
+// import { useDispatch, useSelector } from "react-redux";
+// import { getHamsterPublicProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { useRouter } from "next/router";
 
 /** @dev Define styled component. */
@@ -18,7 +18,7 @@ export const StyledUserInfoCard = styled.div`
 `;
 
 export const UserInfoCard: FC<UserInfoCardProps> = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const router = useRouter();
 
   useEffect(() => {

@@ -69,6 +69,8 @@ export class TransactionProvider {
       new BorshCoder(this.program.idl)
     );
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const [event] = eventParser.parseLogs(transaction.meta.logMessages);
     return JSON.stringify(event);
   }
