@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useRouter } from "next/router";
 import { ProposalItemProps } from "./types";
 import { UserAvatarCardItem } from "@/src/components/user-card";
@@ -14,6 +14,10 @@ import { DATE_TIME_FORMAT } from "@/src/utils";
 export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
   const router = useRouter();
   const { data } = props;
+
+  useEffect(() => {
+    console.log("ProposalExploreItem");
+  }, []);
 
   return (
     <StyledProposalItem

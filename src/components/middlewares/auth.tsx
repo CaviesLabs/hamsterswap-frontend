@@ -1,8 +1,6 @@
 import { FC, ReactNode, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { getUser } from "@/src/redux/actions/user/user.action";
 
 interface Props {
   children: ReactNode;
