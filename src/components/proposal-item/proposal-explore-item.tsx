@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ProposalItemProps } from "./types";
 import { UserAvatarCardItem } from "@/src/components/user-card";
@@ -10,13 +10,22 @@ import { Col, Row } from "antd";
 import dayjs from "dayjs";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import { DATE_TIME_FORMAT } from "@/src/utils";
+import { getHamsterPublicProfile } from "@/src/redux/actions/hamster-profile/profile.action";
+import { useDispatch } from "react-redux";
+import { hProfileDto } from "@/src/dto/hProfile.dto";
 
 export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
+  const dispatch = useDispatch();
+  const [profile, setProfile] = useState<hProfileDto>();
   const router = useRouter();
   const { data } = props;
 
   useEffect(() => {
-    console.log("ProposalExploreItem");
+    dispatch(
+      getHamsterPublicProfile({ id: data.ownerId }, (_profile) =>
+        setProfile(_profile)
+      )
+    );
   }, []);
 
   return (
@@ -48,8 +57,11 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
           <div className="pt-[120px] md:pt-[32px]">
             <UserAvatarCardItem
               avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
-              orders={917}
-              completion={99.9}
+              orders={profile?.ordersStat.orders || 0}
+              completion={(
+                (profile?.ordersStat.completedOrders || 0) /
+                (profile?.ordersStat.orders || 1)
+              ).toFixed(2)}
               reputation={true}
               walletAddress={utilsProvider.makeShort(data.ownerAddress, 4)}
             />

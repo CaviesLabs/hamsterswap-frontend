@@ -6,6 +6,7 @@ import {
 } from "@/src/redux/actions";
 import { hProfileDto } from "@/src/dto/hProfile.dto";
 import { CallBackSaga } from "@/src/redux/entities";
+import { DetailDto } from "@/src/dto/detail.dto";
 
 /**
  * @param {hProfileDto} payload
@@ -42,7 +43,7 @@ export const setProfile = (data: hProfileDto) => ({
  * Get hamster public profile with user id
  */
 export const getHamsterPublicProfile = (
-  payload?: hProfileDto,
+  payload?: DetailDto,
   callback?: CallBackSaga<hProfileDto>
 ) => ({
   type: GET_H_PUBLIC_PROFILE,
