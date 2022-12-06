@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Col, Input, Row } from "antd";
 import Select from "@/src/components/select";
 import { categoryOptions } from "@/src/utils";
@@ -13,7 +13,7 @@ const Filter: FC = () => {
   const [mobileFilterDisplayed, setMobileFilterDisplayed] = useState(true);
 
   const dispatch = useDispatch();
-  const handleSearch = (_search: string) => {
+  const handleSearch = (_search?: string) => {
     dispatch(
       getExploreProposals({
         options: {
@@ -23,6 +23,10 @@ const Filter: FC = () => {
       })
     );
   };
+
+  useEffect(() => {
+    handleSearch();
+  }, []);
 
   return (
     <>
