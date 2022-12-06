@@ -40,7 +40,7 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
           <div className="flex flex-col md:flex-row -mx-4 mb-10 max-h-[460px]">
             <div className="md:basis-1/3 px-8">
-              <div x-data="{ image: 1 }" x-cloak>
+              <div x-data="{ image: 1 }" x-cloak="true">
                 <img
                   src={data?.image}
                   alt="nft image"

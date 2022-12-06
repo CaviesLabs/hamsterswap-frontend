@@ -9,10 +9,24 @@ export class GetNftDto {
   mintAddress: string;
 }
 
+export class NftEntity {
+  nft_address: string;
+  nft_name: string;
+  nft_symbol: string;
+  nft_status: string;
+  nft_collection_id: string;
+  start_holding_time: number;
+  stop_hodling_time: number;
+  nft_last_traded_price: number;
+  nft_listing_price: number;
+  nft_image_uri: string;
+}
+
 export class NftDto {
-  list_nfts: any[];
+  list_nfts: NftEntity[];
   num_nfts: number;
   page: number;
+  wallet_address: string;
 }
 
 export type AttributeDto = {

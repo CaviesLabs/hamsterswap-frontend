@@ -1,4 +1,4 @@
-export type AssetTypes = "nft" | "game" | "usd" | "token";
+import { AssetTypes } from "@/src/entities/proposal.entity";
 
 /** @dev Define common props. */
 export type RowNftItemProps = {

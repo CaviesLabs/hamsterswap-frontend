@@ -10,8 +10,11 @@ import {
 import { useSolana as useSaberhq } from "@saberhq/use-solana";
 import {
   useWallet as useSolana,
+  useConnection,
   WalletContextState as SolanaWalletContextState,
+  ConnectionContextState,
 } from "@solana/wallet-adapter-react";
+import web3 from "@solana/web3.js";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
 import { getSwapProgramProvider } from "@/src/providers/swap-program";
@@ -26,12 +29,18 @@ export interface WalletContextState {
    * */
   signMessage(message: string): Promise<Uint8Array>;
 
+  /**
+   * @dev The function to disconnect wallet & logout to Hamster server and Firebase.
+   */
   disconnect(): Promise<void>;
+
+  getSolBalance(pub: web3.PublicKey): Promise<number>;
 
   /**
    * @dev Expose context frrom solana-adapter.
    */
   solanaWallet: SolanaWalletContextState;
+  walletConnection: ConnectionContextState;
 
   /**
    * @dev Define Program service.
@@ -49,6 +58,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
 
   /** @dev Import providers to use from solana. */
   const solanaWallet = useSolana();
+  const walletConnection = useConnection();
 
   /** @dev Import wallet from Gokki library. */
   const wallet = useConnectedWallet();
@@ -84,12 +94,26 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
     [walletProviderInfo, solanaWallet.wallet]
   );
 
+  /**
+   * @dev Encode message to @var {Uint8Array}.
+   *      Step 1. Disconnect wallet.
+   *      Step 2. Logout user.
+   */
   const disconnect = useCallback(async () => {
     if (!wallet) return;
     await wallet.disconnect();
     await solanaWallet.disconnect();
     await authService.logout();
   }, [solanaWallet, wallet]);
+
+  /**
+   * @dev Get sol balance of a wallet.
+   * @param address
+   * @returns
+   */
+  const getSolBalance = async (address: web3.PublicKey) => {
+    return await walletConnection.connection.getBalance(address);
+  };
 
   /**
    * @dev Watch changes in wallet adpater and update.
@@ -134,7 +158,14 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
 
   return (
     <WalletContext.Provider
-      value={{ signMessage, disconnect, solanaWallet, programService }}
+      value={{
+        signMessage,
+        disconnect,
+        getSolBalance,
+        solanaWallet,
+        walletConnection,
+        programService,
+      }}
     >
       {props.children}
     </WalletContext.Provider>

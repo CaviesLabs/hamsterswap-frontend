@@ -1,5 +1,16 @@
 import { BN } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
+import { NftEntity } from "@/src/dto/nft.dto";
+
+/**
+ * @dev Expose asset types enum for UI handling.
+ */
+export enum AssetTypes {
+  nft = "nft",
+  game = "game",
+  usd = "usd",
+  token = "token",
+}
 
 /**
  * @dev Exporse item action type.
@@ -13,8 +24,8 @@ export enum SwapItemActionType {
 
 /** @dev Expose enum for item type. */
 export enum SwapItemType {
-  NFT = "SWAP_ITEM_TYPE::NFT",
-  CURRENCY = "SWAP_ITEM_TYPE::CURRENCY",
+  NFT = "nft",
+  CURRENCY = "currency",
 }
 
 /**
@@ -32,7 +43,49 @@ export class StuffItemEntity {
   id: string;
   mintAccount: PublicKey;
   amount: BN;
-  itemType: any;
+  itemType: {
+    [key: string]: any;
+  };
+}
+
+/**
+ * @dev Use this entity to show in UI
+ * */
+export type OfferedItemEntity = Omit<NftEntity, `id`> &
+  StuffItemEntity & {
+    /**
+     * @dev On-chain id of token in SolScan.
+     */
+    nftId: string;
+
+    /**
+     * @dev AssetTypes in SolScan.
+     */
+    assetType: AssetTypes;
+  };
+
+export type ExpectedItemEntity = Omit<NftEntity, `id`> &
+  StuffItemEntity & {
+    /**
+     * @dev On-chain id of token in SolScan.
+     */
+    nftId: string;
+
+    /**
+     * @dev AssetTypes in SolScan.
+     */
+    assetType: AssetTypes;
+  };
+
+/**
+ * @dev Use this for expected opinions in UI
+ */
+export interface ExpectedOpitionEntity {
+  /**
+   * @dev Must generate first.
+   */
+  id: string;
+  askingItems: ExpectedItemEntity[];
 }
 
 /** @dev Expose dto to create proposal on-chain. */

@@ -4,7 +4,8 @@ import { createContext, useContext } from "react";
 export interface ProposalPageContextState {}
 
 /** @dev Create context */
-export const ProposalPageContext = createContext<ProposalPageContextState>({});
+export const ProposalPageContext =
+  createContext<ProposalPageContextState>(null);
 
 /** @dev Export use context function */
 export const useDashboardPage = () => {

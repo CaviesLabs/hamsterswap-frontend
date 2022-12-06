@@ -12,7 +12,10 @@ import {
 } from "@/src/redux/actions/proposal/proposal.action";
 import { SwapProgramService } from "@/src/services/swap-program.service";
 import { PublicKey } from "@solana/web3.js";
-import { SwapProposalEntity } from "@/src/entities/proposal.entity";
+import {
+  SwapProposalEntity,
+  SwapItemType,
+} from "@/src/entities/proposal.entity";
 
 const TestPage: NextPage = () => {
   const dispatch = useDispatch();
@@ -50,7 +53,7 @@ const TestPage: NextPage = () => {
                 ),
                 id: SwapProgramService.generateUID(),
                 amount: new anchor.BN(1 * 10),
-                itemType: { currency: {} },
+                itemType: { [SwapItemType.CURRENCY]: {} },
               },
             ],
           },
@@ -62,7 +65,7 @@ const TestPage: NextPage = () => {
             ),
             id: SwapProgramService.generateUID(),
             amount: new anchor.BN(1 * 10),
-            itemType: { currency: {} },
+            itemType: { [SwapItemType.CURRENCY]: {} },
           },
         ],
         expiredAt: new Date(),

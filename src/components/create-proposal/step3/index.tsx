@@ -2,11 +2,17 @@ import { FC } from "react";
 import { Form } from "antd";
 import DatetimePicker from "@/src/components/create-proposal/step3/datetime-picker";
 import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
+import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { useDispatch, useSelector } from "react-redux";
 
 export const Step3: FC<any> = (props: any) => {
   const dispatch = useDispatch();
   const { form } = props;
+
+  /**
+   * @dev Get functions from screen context.
+   */
+  const { note, setNote, setExpiredTime } = useCreateProposal();
 
   const proposal = useSelector((state: any) => state.proposal);
 
@@ -34,6 +40,8 @@ export const Step3: FC<any> = (props: any) => {
           <textarea
             className="bg-[#F8F9FE] w-full min-h-[212px] p-[24px] rounded-[16px] mt-[12px] outline-0 focus:outline-0 focus:ring-0 regular-text focus:border-0"
             placeholder="Additional Info"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
           />
         </Form.Item>
         <Form.Item
@@ -45,7 +53,11 @@ export const Step3: FC<any> = (props: any) => {
           }
           rules={[{ required: true, message: "Expired Time is required!" }]}
         >
-          <DatetimePicker />
+          <DatetimePicker
+            onChange={(value) => {
+              setExpiredTime(value);
+            }}
+          />
         </Form.Item>
       </div>
     </Form>
