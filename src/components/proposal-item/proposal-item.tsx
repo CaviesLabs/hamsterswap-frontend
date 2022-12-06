@@ -18,7 +18,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
 
   return (
     <StyledProposalItem
-      className="w-full bg-dark10 min-h-[200px] rounded-[32px] rounded-[32px] mb-[46px]"
+      className="w-full bg-[#F8F9FE] min-h-[200px] rounded-[32px] rounded-[32px] mb-[46px]"
       data-label={props.isGuaranteedPayment && "Guaranteed payment"}
       {...props}
     >
@@ -30,7 +30,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           style={{ zIndex: 3 }}
-          className="absolute right-0 left-[20px] md:left-[initial] md:right-[143px] w-[37px] top-[42px]"
+          className="absolute right-0 left-[20px] md:left-[initial] md:right-[86px] w-[37px] top-[40px]"
         >
           <path
             fillRule="evenodd"
@@ -41,9 +41,9 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
         </svg>
       )}
       <div className="relative bg-dark10 w-full h-full min-h-[200px]  rounded-[32px] pb-[50px]">
-        <div className="pl-[20px] pr-[20px] md:pl-[77px]">
+        <div className="px-24">
           {props.isGuaranteedPayment && (
-            <div className="pt-[120px] md:pt-[32px]">
+            <div className="pt-12">
               <UserAvatarCardItem
                 avatar={profile?.avatar || "/assets/images/sample-avatar.png"}
                 orders={profile?.ordersStat.orders}
@@ -56,44 +56,45 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
               />
             </div>
           )}
-          <Row className="pt-[40px] md:px-10" gutter={20}>
-            <Col span={12}>
+          <Row className="pt-[40px]">
+            <Col span={11}>
               <div className="semi-bold text-[16px] h-[36px] leading-9">
-                I Have
+                I have
               </div>
             </Col>
-            <Col span={12}>
+            <Col offset={2} span={11}>
               <div className="flex justify-between">
                 <div className="semi-bold text-[16px] leading-9">
-                  Looking For
+                  looking for
                 </div>
                 <div className="flex">
-                  {props.swapItems.map((_, index) => (
-                    <div className="ml-3" key={`ml3dix-${index}`}>
-                      <Button
-                        className="!rounded-3xl !px-4"
-                        size="small"
-                        shape={
-                          optionSelected === index ? "primary" : "secondary"
-                        }
-                        text={`Option ${index + 1}`}
-                        onClick={() => setOptionSelected(index)}
-                      />
-                    </div>
-                  ))}
+                  {props.receiveItems.length > 1 &&
+                    props.receiveItems.map((_, index) => (
+                      <div className="ml-3" key={`ml3dix-${index}`}>
+                        <Button
+                          className="!rounded-3xl !px-4"
+                          size="small"
+                          shape={
+                            optionSelected === index ? "primary" : "secondary"
+                          }
+                          text={`Option ${index + 1}`}
+                          onClick={() => setOptionSelected(index)}
+                        />
+                      </div>
+                    ))}
                 </div>
               </div>
             </Col>
           </Row>
-          <Row className="mt-4 md:px-10" gutter={20}>
-            <Col span={12}>
+          <Row className="mt-4">
+            <Col span={11}>
               {props.swapItems.map((item, index) => (
                 <div className="mb-4" key={`proposal-item-${index}`}>
                   <RowNftItem {...item} />
                 </div>
               ))}
             </Col>
-            <Col span={12}>
+            <Col offset={2} span={11}>
               {props.receiveItems[optionSelected]?.map(
                 (item: any, index: number) => (
                   <div className="mb-4" key={`swapoptions-${index}`}>

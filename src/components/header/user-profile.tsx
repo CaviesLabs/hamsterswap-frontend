@@ -26,7 +26,7 @@ const UserProfile: FC = () => {
   return (
     <div
       className="relative flex items-center h-full py-[3px] px-[10px] border-solid border-[0px] border-purple rounded-[5px] cursor-pointer"
-      onClick={() => router.push(`/u/${profile.id}/profile`)}
+      onClick={() => router.push(`/u/${profile?.id}/profile`)}
     >
       <img
         className="w-[20px] md:w-[40px] h-[auto] mr-[10px]"

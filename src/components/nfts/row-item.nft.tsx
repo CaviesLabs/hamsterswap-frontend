@@ -16,12 +16,12 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
 
   return (
     <>
-      <div className="bg-white shadow-md hover:scale-105 hover:shadow-xl duration-500 flex rounded-[16px] p-[16px]">
+      <div className="bg-white duration-500 flex rounded-[16px] p-[16px]">
         <div className="left pl-[2px]">
           <img
             src={props.image}
             alt="NFT image"
-            className="h-full !w-[72px] object-cover rounded-[8px]"
+            className="h-full !w-[80px] object-cover rounded-[8px]"
           />
         </div>
         <div className="px-4 w-72 left">

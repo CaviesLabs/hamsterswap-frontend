@@ -37,11 +37,11 @@ const Footer: FC = () => {
   );
 
   return (
-    <div className="footer pt-[50px] pb-[30px]">
+    <div className="footer pb-6">
       <div className="md:px-[40px] px-[20px] lg:max-w-[1180px] lg:mx-auto">
-        <div className="flex items-center pt-[20px] md:flex-col">
-          <div className="w-[100%]">
-            <div className="mt-[15px] relative md:bottom-[-34px]">
+        <div className="flex items-center md:flex-col">
+          <div className="w-full">
+            <div className="relative md:bottom-[-34px]">
               <img
                 src="/assets/images/logo.png"
                 className="w-[155px] h-auto  mx-auto"

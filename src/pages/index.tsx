@@ -21,7 +21,7 @@ const Layout: FC = () => {
     <MainLayout>
       <Banner />
       <div className={styles.container}>
-        <div className="bg-white">
+        <div className="bg-white mb-10">
           <div>
             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <section aria-labelledby="products-heading" className="pt-6">
@@ -50,6 +50,7 @@ const Layout: FC = () => {
                             data={p}
                             receiveItems={p.offerItems}
                             swapItems={p.swapOptions}
+                            isGuaranteedPayment
                           />
                         );
                       })}

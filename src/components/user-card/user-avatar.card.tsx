@@ -14,15 +14,13 @@ export const UserAvatarCardItem: FC<UserAvatarCardItemProps> = (props) => {
       </div>
       <div className="left pl-[20px]">
         <div className="flex items-center">
-          <p className="left text-[18px] text-bold semi-bold">
-            {props.walletAddress}
-          </p>
+          <p className="left text-[18px] semi-bold">{props.walletAddress}</p>
           <div className="left ml-[10px]">
             <ReputationCard />
           </div>
         </div>
-        <div className="">
-          <div className="flex items-center">
+        <div className="mt-1">
+          <div className="flex items-center text-[14px]">
             <span className="regular-text text-dark60 left">
               {props.orders} orders
             </span>

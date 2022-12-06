@@ -9,11 +9,11 @@ export const StyledReputationCard = styled.div`
 
 export const ReputationCard: FC = () => {
   return (
-    <StyledReputationCard className="flex items-center px-[10px] py-[8px] rounded-[100px]">
+    <StyledReputationCard className="flex items-center px-[10px] py-[3px] rounded-[100px]">
       <img
         src="/assets/images/verify-icon.svg"
         alt="repuation icon"
-        className="w-[14px] h-[14px] mr-[7px]"
+        className="w-[14px] h-[14px] mr-[4px]"
       />
       <span className="text-white text-[12px] semi-bold">Reputation</span>
     </StyledReputationCard>

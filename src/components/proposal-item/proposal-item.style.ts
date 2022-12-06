@@ -8,7 +8,7 @@ export const StyledProposalItem = styled.div<ProposalItemProps>`
     return `
       &::before {
         position: absolute;
-        top: 81px;
+        top: 57px;
         right: -1px;
         content: "";
         background: linear-gradient(90deg, #1eb130 0%, #1ea866 100%);
@@ -18,24 +18,25 @@ export const StyledProposalItem = styled.div<ProposalItemProps>`
       }
     
       &::after {
-        border-top-left-radius: 20px;
-        border-top-right-radius: 20px;
-        border-bottom-left-radius: 20px;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        border-bottom-left-radius: 12px;
         position: absolute;
         content: attr(data-label);
         top: 31px;
         right: -7px;
-        padding: 0.5rem 80px;
-        width: 13rem;
+        padding: 8px 0px 8px 40px;
+        width: 132px;
         background: linear-gradient(90deg, #1eb130 0%, #1ea866 100%);
         color: white;
         text-align: center;
+        font-size: 11px;
         font-family: "Roboto", sans-serif;
-        box-shadow: 4px 4px 15px rgb(26 35 126 / 20%);
         border-bottom-right-radius: -9px;
         text-align: start;
         font-weight: bold;
-        padding-right: 120px;
+        line-height: 12px;
+        text-transform: uppercase;
       }
     
       @media screen and (max-width: 768px) {
