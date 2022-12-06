@@ -3,6 +3,7 @@ import {
   GET_PROPSALS,
   SET_PROPSALS,
   GET_EXPLORE_PROPOSALS,
+  GET_PROPOSAL,
 } from "@/src/redux/actions";
 import { ProposalItem } from "@/src/components/user/types";
 import { CallBackSaga } from "@/src/redux/entities";
@@ -10,6 +11,7 @@ import {
   GetProposalsDto,
   SwapProposalEntity,
 } from "@/src/entities/proposal.entity";
+import { DetailDto } from "@/src/dto/detail.dto";
 
 /**
  * @param proposals
@@ -49,5 +51,18 @@ export const getExploreProposals = (
 ) => ({
   type: GET_EXPLORE_PROPOSALS,
   payload: getListProposalDto,
+  callback,
+});
+
+/**
+ * GET proposal detail
+ * @returns.
+ */
+export const getProposal = (
+  payload?: DetailDto,
+  callback?: CallBackSaga<SwapProposalEntity>
+) => ({
+  type: GET_PROPOSAL,
+  payload,
   callback,
 });

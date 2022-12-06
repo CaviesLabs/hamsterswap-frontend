@@ -1,5 +1,4 @@
 import { useSelector } from "react-redux";
-// import { swapOptions } from "@/src/utils";
 
 export const EmptyBox = () => {
   const swapItems = useSelector((state: any) => state.proposal?.swapItems);

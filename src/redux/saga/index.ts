@@ -5,6 +5,7 @@ import { getPlatformConfig } from "./platform-config/platform-config.saga";
 import {
   getListProposalByOwnerAddress,
   getExploreProposals,
+  getProposal,
 } from "./proposal/proposal.saga";
 import {
   GET_LIST_NFT,
@@ -13,6 +14,7 @@ import {
   GET_H_PUBLIC_PROFILE,
   GET_PROPSALS,
   GET_EXPLORE_PROPOSALS,
+  GET_PROPOSAL,
 } from "@/src/redux/actions";
 
 export default function* root() {
@@ -22,4 +24,5 @@ export default function* root() {
   yield takeLatest<any>(GET_PLATFORM_CONFIG, getPlatformConfig);
   yield takeLatest<any>(GET_PROPSALS, getListProposalByOwnerAddress);
   yield takeLatest<any>(GET_EXPLORE_PROPOSALS, getExploreProposals);
+  yield takeLatest<any>(GET_PROPOSAL, getProposal);
 }

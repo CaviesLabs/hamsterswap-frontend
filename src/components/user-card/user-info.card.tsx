@@ -20,7 +20,6 @@ export const StyledUserInfoCard = styled.div`
 export const UserInfoCard: FC<UserInfoCardProps> = (props) => {
   const dispatch = useDispatch();
   const [profile, setProfile] = useState<hProfileDto>();
-  console.log("profile", profile);
 
   useEffect(() => {
     dispatch(
@@ -34,7 +33,7 @@ export const UserInfoCard: FC<UserInfoCardProps> = (props) => {
     <StyledUserInfoCard>
       <div className="md:flex items-center ">
         <img
-          src={profile?.avatar}
+          src={profile?.avatar || "/assets/images/sample-avatar.png"}
           alt="User avatar"
           className="w-[120px] h-[120px] md:float-right mx-auto md:mx-initial"
         />
@@ -52,7 +51,7 @@ export const UserInfoCard: FC<UserInfoCardProps> = (props) => {
           <div className="md:flex items-center justify-center">
             <div className="md:float-left px-[70px] border-r-solid md:border-r-[1px] border-r-dark30 mt-[12px] md:mt-0">
               <p className="text-[24px] semi-bold text-center">
-                {profile?.ordersStat.orders}
+                {profile?.ordersStat.orders || 0}
               </p>
               <p className="text-[16px] regular-text text-center">Orders</p>
             </div>

@@ -40,7 +40,6 @@ export function* getHPublicProfile({
       hProfileService.getPublicProfile,
       payload
     );
-    console.log("profile", profile);
     yield put(setPublicProfile(profile));
     callback && callback(profile);
   } catch (err) {

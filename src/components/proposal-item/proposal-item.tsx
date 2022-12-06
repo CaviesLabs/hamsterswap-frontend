@@ -6,12 +6,15 @@ import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "./proposal-item.style";
 import { Button } from "@hamsterbox/ui-kit";
 import { Col, Row } from "antd";
+import { useSelector } from "react-redux";
+import State from "@/src/redux/entities/state";
 
 export const ProposalItem: FC<ProposalItemProps> = (props) => {
   /**
    * @dev Define value to display option.
    */
   const [optionSelected, setOptionSelected] = useState(0);
+  const profile = useSelector((state: State) => state.hPublicProfile);
 
   return (
     <StyledProposalItem
@@ -42,12 +45,12 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
           {props.isGuaranteedPayment && (
             <div className="pt-[120px] md:pt-[32px]">
               <UserAvatarCardItem
-                avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
-                orders={917}
-                completion={99.9}
+                avatar={profile?.avatar || "/assets/images/sample-avatar.png"}
+                orders={profile?.ordersStat.orders}
+                completion={profile?.ordersStat.completedOrders}
                 reputation={true}
                 walletAddress={utilsProvider.makeShort(
-                  "F8qedeJsnrFnLfKpT4QN3GeAQqQMtq4izNLR1dKb5eRS",
+                  profile?.walletAddress,
                   4
                 )}
               />
