@@ -28,6 +28,10 @@ const Filter: FC = () => {
     handleSearch();
   }, []);
 
+  const handleReset = () => {
+    setSearch("");
+  };
+
   return (
     <>
       {mobileFilterDisplayed && (
@@ -143,6 +147,7 @@ const Filter: FC = () => {
             className="!rounded-3xl"
             placeholder="Search by NFT name, collection, game, seller"
             prefix={<SearchIcon />}
+            value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
           <div className="ml-4">
@@ -159,7 +164,12 @@ const Filter: FC = () => {
 
       <div className="flex">
         <span className="font-bold mr-4">Filter</span>
-        <span className="regular-text text-indigo-600">Reset</span>
+        <span
+          className="regular-text text-indigo-600 cursor-pointer"
+          onClick={() => handleReset()}
+        >
+          Reset
+        </span>
       </div>
 
       <Row className="my-4" gutter={20}>
@@ -172,7 +182,7 @@ const Filter: FC = () => {
                 Reputation advertisers
               </div>
             }
-            values={["No Reputation"]}
+            values={[]}
             options={[
               {
                 value: "Reputation",
@@ -181,7 +191,10 @@ const Filter: FC = () => {
                 value: "No Reputation",
               },
             ]}
-          ></Select>
+            onChange={(value) => {
+              console.log("choose", value);
+            }}
+          />
         </Col>
         <Col span={8}>
           <Select
