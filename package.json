@@ -29,6 +29,7 @@
     "@saberhq/solana-contrib": "^1.13.19",
     "@saberhq/token-utils": "^1.13.19",
     "@saberhq/use-solana": "^1.13.19",
+    "@solana/spl-token": "^0.3.6",
     "@solana/wallet-adapter-react": "^0.15.25",
     "@solana/wallet-adapter-wallets": "^0.19.6",
     "@solana/web3.js": "^1.43.2",
@@ -53,6 +54,7 @@
     "next-themes": "^0.2.1",
     "next-transpile-modules": "^9.1.0",
     "polished": "^4.2.2",
+    "qs": "^6.11.0",
     "react": "^18.2.0",
     "react-collapse": "^5.1.1",
     "react-copy-to-clipboard": "^5.1.0",
@@ -67,7 +69,8 @@
     "tiny-invariant": "^1.2.0",
     "tw-elements": "^1.0.0-alpha12",
     "tweetnacl": "^1.0.3",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",

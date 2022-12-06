@@ -12,6 +12,7 @@ import { UserService } from "./user.service";
 import * as bs from "bs58";
 import { SIGN_MESSAGE } from "@/src/utils";
 import { networkProvider } from "@/src/providers/network.provider";
+import { TokenSetEntity } from "@/src/entities/token-set.entity";
 
 /**
  * @dev Declare service serve for firebase authentication.
@@ -235,12 +236,18 @@ export class AuthService {
           })
         );
 
-        return networkProvider.request(`/auth/idp/solana-wallet/sign-up`, {
-          method: "POST",
-          data: {
-            base64Signature,
-          },
-        });
+        /**
+         * @dev Post sign up to Hamster server and save accessToken.
+         */
+        return await networkProvider.request<TokenSetEntity>(
+          `/auth/idp/solana-wallet/sign-up`,
+          {
+            method: "POST",
+            data: {
+              base64Signature,
+            },
+          }
+        );
       })
       .catch(async () => {
         /**
@@ -254,12 +261,18 @@ export class AuthService {
           })
         );
 
-        return networkProvider.request(`/auth/idp/solana-wallet/sign-in`, {
-          method: "POST",
-          data: {
-            base64Signature,
-          },
-        });
+        /**
+         * @dev Post sign in to Hamster server and save accessToken.
+         */
+        return await networkProvider.request<TokenSetEntity>(
+          `/auth/idp/solana-wallet/sign-in`,
+          {
+            method: "POST",
+            data: {
+              base64Signature,
+            },
+          }
+        );
       });
 
     /**
