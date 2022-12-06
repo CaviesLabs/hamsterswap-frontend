@@ -68,14 +68,16 @@ export function* getListProposalByOwnerAddress({
  * @param {SagaPayload<unkown, SwapProposalEntity[]>} saga payload
  */
 export function* getExploreProposals({
+  payload,
   callback,
-}: SagaPayload<unknown, SwapProposalEntity[]>) {
+}: SagaPayload<GetProposalsDto, SwapProposalEntity[]>) {
   try {
     /**
      * @dev Fetch proposal data from Hamster server.
      */
     const swapProposals: SwapProposalEntity[] = yield call(
-      proposalService.getProposals
+      proposalService.getProposals,
+      payload
     );
     yield put(setProposals(swapProposals));
     callback && callback(swapProposals);

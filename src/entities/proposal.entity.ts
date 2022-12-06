@@ -152,11 +152,11 @@ export class SwapProposalEntity {
  * @dev Dto to get proposals by walletOwner.
  */
 export class GetProposalsDto {
-  walletAddress: string;
+  walletAddress?: string;
   options?: {
-    statuses: SwapProposalStatus;
-    limit: number;
-    offset: number;
-    search: string;
+    statuses?: SwapProposalStatus[];
+    limit?: number;
+    offset?: number;
+    search?: string;
   };
 }

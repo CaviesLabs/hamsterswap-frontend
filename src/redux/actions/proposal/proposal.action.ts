@@ -10,7 +10,6 @@ import {
   GetProposalsDto,
   SwapProposalEntity,
 } from "@/src/entities/proposal.entity";
-import { GetListProposalDto } from "@/src/dto/proposal.dto";
 
 /**
  * @param proposals
@@ -45,7 +44,7 @@ export const setProposals = (data: SwapProposalEntity[]) => ({
  * @returns reducer.
  */
 export const getExploreProposals = (
-  getListProposalDto?: GetListProposalDto,
+  getListProposalDto?: GetProposalsDto,
   callback?: CallBackSaga<SwapProposalEntity[]>
 ) => ({
   type: GET_EXPLORE_PROPOSALS,
