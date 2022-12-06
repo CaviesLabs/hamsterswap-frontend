@@ -1,32 +1,21 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
-import { FC, useCallback } from "react";
+import { FC } from "react";
 import { ProposalItem } from "@/src/components/proposal-item";
 import { Col, Row } from "antd";
 import { ConfirmedTransactionModal } from "@/src/components/create-proposal/step5/confirmed-transaction.modal";
 import { SummaryProps } from "@/src/components/create-proposal/step5/types";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import { useWallet } from "@/src/hooks/useWallet";
-import { Button } from "@hamsterbox/ui-kit";
 
 export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
   /**
    * @dev Import functions from context screen.
    */
-  const {
-    expectedItems,
-    offferedItems,
-    note,
-    expiredTime,
-    guaranteeSol,
-  } = useCreateProposal();
+  const { expectedItems, offferedItems, note, expiredTime, guaranteeSol } =
+    useCreateProposal();
 
   /**
    * @dev Use this condition to show guarantee badge.
    */
   const isGuaranteedPayment = !!guaranteeSol;
-
-  const { programService, solanaWallet } = useWallet();
 
   return (
     <div>
@@ -46,12 +35,9 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
           className="block float-left w-full pr-[20px] md:pr-[60px]"
         >
           <p className="text-3xl">Note</p>
-          <p className="text-[16px] regular-text mt-[12px]">
-            {note}
-          </p>
+          <p className="text-[16px] regular-text mt-[12px]">{note}</p>
           <p className="regular-text text-[14px] text-red300 mt-12">
-            Expiration date:{" "}
-            {expiredTime && expiredTime.toLocaleString()}
+            Expiration date: {expiredTime && expiredTime.toLocaleString()}
           </p>
         </Col>
         <Col
