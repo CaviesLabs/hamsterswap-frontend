@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import { ProposalDetailPageProvider } from "@/src/hooks/pages/proposal-detail";
-import { ProposalItem } from "@/src/components/proposal-item";
+// import { ProposalItem } from "@/src/components/proposal-item";
 import { StyledProposalDetailPage } from "@/src/styled/proposal-detail-page.style";
 import { LayoutSection } from "@/src/components/layout-section";
 import { GuaranteedCard } from "@/src/components/guaranteed.card";

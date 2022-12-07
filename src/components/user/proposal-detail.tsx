@@ -6,7 +6,6 @@ import { StyledProposalItem } from "@/src/components/proposal-item/proposal-item
 import { Button } from "@hamsterbox/ui-kit";
 import classnames from "classnames";
 import { Col, Row } from "antd";
-import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import { CancelProposalModal } from "@/src/components/user/modal/cancel-proposal.modal";
 import { ProposalDetailProps } from "./types";
 import { CanceledProposalModal } from "@/src/components/user/modal/canceled-proposal.modal";

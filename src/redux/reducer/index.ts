@@ -28,7 +28,7 @@ const reducer = combineReducers<State>({
 export const initState: State = {
   user: null,
   userChats: [],
-  nft: { num_nfts: 0, page: 0, list_nfts: [] },
+  nft: { num_nfts: 0, page: 0, list_nfts: [], wallet_address: "" },
   proposals: [],
   proposal: {
     swapItems: [],
