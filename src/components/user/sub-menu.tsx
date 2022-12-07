@@ -2,25 +2,29 @@ import { FC } from "react";
 import { useRouter } from "next/router";
 import classnames from "classnames";
 import { SubMenuProps } from "@/src/components/user/types";
+import { useSelector } from "react-redux";
 
 const SubMenu: FC<SubMenuProps> = (props) => {
   const router = useRouter();
+  const profile = useSelector((state: any) => state.hProfile);
   const { id: userId } = router.query;
   const { curTab } = props;
-  /**
-   * TODO filter sub-menu items for public and personal view
-   * only show Proposal and History for public sight
-   */
+
+  const menus = [
+    ["Proposal", "profile"],
+    ["History", "history"],
+  ];
+  if (userId && userId === profile?.id) {
+    menus.push(
+      ["Game ID", "#"],
+      ["Payment", "payment"],
+      ["Contacts", "contact"]
+    );
+  }
   return (
     <div className="py-[40px]">
       <div className="flex justify-center items-center">
-        {[
-          ["Proposal", "profile"],
-          ["History", "history"],
-          ["Game ID", "#"],
-          ["Payment", "payment"],
-          ["Contacts", "contact"],
-        ].map((item, index) => (
+        {menus.map((item, index) => (
           <div
             onClick={() => router.push(`/u/${userId}/${item[1]}`)}
             key={`tabt-title-${index}`}
