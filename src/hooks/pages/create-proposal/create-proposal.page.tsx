@@ -8,7 +8,6 @@ import {
 } from "@/src/entities/proposal.entity";
 import { SwapProgramService } from "@/src/services/swap-program.service";
 import { BN } from "@project-serum/anchor";
-import { AssetTypes } from "@/src/entities/proposal.entity";
 import { PublicKey } from "@solana/web3.js";
 import { useWallet } from "@/src/hooks/useWallet";
 import * as anchor from "@project-serum/anchor";
@@ -53,7 +52,7 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
    * @param {number} opinionIndex;
    */
   const addExpectedItem = async (
-    item: NftEntity & { nftId: string; assetType: AssetTypes },
+    item: NftEntity & { nftId: string; assetType: SwapItemType },
     type: SwapItemType,
     opinionIndex: number
   ) => {
@@ -102,7 +101,7 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
    * @param {SwapItemType} type
    */
   const addOfferItem = async (
-    item: NftEntity & { nftId: string; assetType: AssetTypes },
+    item: NftEntity & { nftId: string; assetType: SwapItemType },
     type: SwapItemType
   ) => {
     setOfferItems((prev) => {

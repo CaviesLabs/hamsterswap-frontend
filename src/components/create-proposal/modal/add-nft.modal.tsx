@@ -6,7 +6,7 @@ import SearchInput from "../../search";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
 import { useMain } from "@/src/hooks/pages/main";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import { SwapItemType, AssetTypes } from "@/src/entities/proposal.entity";
+import { SwapItemType } from "@/src/entities/proposal.entity";
 import { NftEntity } from "@/src/dto/nft.dto";
 
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
@@ -44,7 +44,7 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
       {
         ...nftItem,
         nftId: nftItem.nft_address,
-        assetType: AssetTypes.token,
+        assetType: SwapItemType.NFT,
       },
       SwapItemType.NFT
     );

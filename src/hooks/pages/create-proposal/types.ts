@@ -3,7 +3,6 @@ import {
   OfferedItemEntity,
   ExpectedOpitionEntity,
   SwapItemType,
-  AssetTypes,
 } from "@/src/entities/proposal.entity";
 import { NftEntity } from "@/src/dto/nft.dto";
 
@@ -24,7 +23,7 @@ export interface CreateProposalPageContextState {
    * @param type
    */
   addOfferItem(
-    item: NftEntity & { nftId: string; assetType: AssetTypes },
+    item: NftEntity & { nftId: string; assetType: SwapItemType },
     type: SwapItemType
   ): void;
 
@@ -35,7 +34,7 @@ export interface CreateProposalPageContextState {
    * @param opinionIndex
    */
   addExpectedItem(
-    item: NftEntity & { nftId: string; assetType: AssetTypes },
+    item: NftEntity & { nftId: string; assetType: SwapItemType },
     type: SwapItemType,
     opinionIndex: number
   ): void;

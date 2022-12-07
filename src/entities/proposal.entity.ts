@@ -3,16 +3,6 @@ import { PublicKey } from "@solana/web3.js";
 import { NftEntity } from "@/src/dto/nft.dto";
 
 /**
- * @dev Expose asset types enum for UI handling.
- */
-export enum AssetTypes {
-  nft = "nft",
-  game = "game",
-  usd = "usd",
-  token = "currency",
-}
-
-/**
  * @dev Exporse item action type.
  */
 export enum SwapItemActionType {
@@ -62,7 +52,7 @@ export type OfferedItemEntity = Omit<NftEntity, `id`> &
     /**
      * @dev AssetTypes in SolScan.
      */
-    assetType: AssetTypes;
+    assetType: SwapItemType;
   };
 
 export type ExpectedItemEntity = Omit<NftEntity, `id`> &
@@ -75,7 +65,7 @@ export type ExpectedItemEntity = Omit<NftEntity, `id`> &
     /**
      * @dev AssetTypes in SolScan.
      */
-    assetType: AssetTypes;
+    assetType: SwapItemType;
   };
 
 /**

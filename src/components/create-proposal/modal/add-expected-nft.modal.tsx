@@ -9,7 +9,7 @@ import { AddExpectedNftDetail } from "@/src/components/create-proposal/modal/add
 import { nftService } from "@/src/redux/saga/nft/nft.service";
 import { NftDetailDto } from "@/src/dto/nft.dto";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import { SwapItemType, AssetTypes } from "@/src/entities/proposal.entity";
+import { SwapItemType } from "@/src/entities/proposal.entity";
 
 export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   /**
@@ -66,7 +66,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
         nft_listing_price: 0,
         nft_image_uri: nftItem.nft_image,
         nftId: nftItem.nft_address,
-        assetType: AssetTypes.nft,
+        assetType: SwapItemType.NFT,
       },
       SwapItemType.NFT,
       props.index

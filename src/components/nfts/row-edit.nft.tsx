@@ -4,6 +4,7 @@ import { DeleteIcon, DetailIcon, VerticalDots } from "@/src/components/icons";
 import { GameItemModal, NFTDetailsModal } from "@/src/components/modal";
 import classnames from "classnames";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
+import { SwapItemType } from "@/src/entities/proposal.entity";
 
 export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
   /**
@@ -46,7 +47,9 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
               alt="NFT image"
               className={classnames(
                 "!h-full !w-[72px] !object-cover !rounded-[8px]",
-                (assetType === "nft" || assetType === "game") && "bg-dark10"
+                (assetType === SwapItemType.NFT ||
+                  assetType === SwapItemType.GAME) &&
+                  "bg-dark10"
               )}
             />
           </div>
@@ -76,7 +79,8 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
                 tabIndex={-1}
               >
                 <div className="py-1" role="none">
-                  {(assetType === "nft" || assetType === "game") && (
+                  {(assetType === SwapItemType.NFT ||
+                    assetType === SwapItemType.GAME) && (
                     <div
                       className="cursor-pointer regular-text hover:text-gray-400 text-gray-900 block px-4 py-2 text-sm flex items-center"
                       role="menuitem"
@@ -102,7 +106,7 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
           </div>
         </div>
       </div>
-      {assetType === "nft" ? (
+      {assetType === SwapItemType.NFT ? (
         <NFTDetailsModal
           data={props}
           isModalOpen={isDetailOpen}
@@ -110,7 +114,7 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
           handleOk={() => setIsDetailOpen(false)}
         />
       ) : (
-        assetType === "game" && (
+        assetType === SwapItemType.GAME && (
           <GameItemModal
             isModalOpen={isDetailOpen}
             handleCancel={() => setIsDetailOpen(false)}

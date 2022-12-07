@@ -11,7 +11,7 @@ export class GetNftDto {
 
 export class NftEntity {
   nft_address: string;
-  nft_collection_name: string;
+  nft_collection_name?: string;
   nft_name: string;
   nft_symbol: string;
   nft_status: string;
@@ -28,7 +28,7 @@ export class NftDto {
   list_nfts: NftEntity[];
   num_nfts: number;
   page: number;
-  wallet_address: string;
+  wallet_address?: string;
 }
 
 export type AttributeDto = {

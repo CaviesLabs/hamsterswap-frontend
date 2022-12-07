@@ -130,6 +130,8 @@ const TestPage: NextPage = () => {
    */
   const handleGetExploreProposals = () => {
     dispatch(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       getExploreProposals((proposals) => {
         setExploreProposals(proposals);
       })
