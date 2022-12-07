@@ -98,7 +98,19 @@ export class SwapProgramProvider {
         this.connection,
         this.program
       );
+
+      this.test();
     });
+  }
+
+  async test() {
+    console.log(
+      (
+        await this.instructionProvider?.findSwapProposal(
+          "394ef0b2-f25b-4dcd-a576-4368d82fb1db"
+        )
+      ).toBase58()
+    );
   }
 
   /**

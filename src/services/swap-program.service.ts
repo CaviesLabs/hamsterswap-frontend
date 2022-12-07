@@ -12,6 +12,7 @@ import { uuid } from "uuidv4";
 export class SwapProgramService {
   /**
    * @dev Program provider injected.
+   * @private
    */
   private readonly swapProgramProvider: SwapProgramProvider;
   private readonly utilsProvider: UtilsProvider;

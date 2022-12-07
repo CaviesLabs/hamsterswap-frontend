@@ -149,7 +149,8 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
         /**
          * @dev Initlize swap program service with initlized programProvider.
          */
-        initProgram(new SwapProgramService(swapProgramProvider));
+        const program = new SwapProgramService(swapProgramProvider);
+        initProgram(program);
       } catch (err: any) {
         console.log(err.message);
       }
