@@ -160,3 +160,37 @@ $cubic: cubic-bezier(0.4, 0.01, 0.165, 0.99);
     color: #B998FB;
   }
 }
+
+.avatar-profile {
+  position: relative;
+  .toggle-container {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: -77px;
+    left: 13px;
+    display: none;
+    padding-top: 20px;
+    background: white;
+    padding: 5px 10px;
+    border-radius: 8px;
+    color: #20242D;
+    z-index: 200;
+    .container {
+      ul {
+        li {
+          padding: 5px 0;
+        }
+      }
+    }
+  }
+  &:hover {
+    .toggle-container {
+      display: block;
+    }
+  }
+
+  .toggle-container:hover {
+    display: block;
+  }
+}

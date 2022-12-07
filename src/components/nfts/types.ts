@@ -1,4 +1,4 @@
-import { SwapItemType } from "@/src/entities/proposal.entity";
+import { AssetTypes } from "@/src/entities/proposal.entity";
 
 /** @dev Define common props. */
 export type RowNftItemProps = {
@@ -7,7 +7,7 @@ export type RowNftItemProps = {
   collection: string;
   collectionId?: string;
   nftId?: string;
-  assetType: SwapItemType;
+  assetType: AssetTypes;
 };
 
 /** @dev Define props for specific nft item which is editable. */

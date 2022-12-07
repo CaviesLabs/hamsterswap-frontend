@@ -1,55 +1,58 @@
 import { FC, useMemo } from "react";
 import { Col, Modal, Row } from "antd";
+import { toast } from "@hamsterbox/ui-kit";
 import { AddItemModalProps } from "./types";
 import SearchInput from "../../search";
-import { useDispatch, useSelector } from "react-redux";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
-import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
+import { useMain } from "@/src/hooks/pages/main";
+import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
+import { SwapItemType, AssetTypes } from "@/src/entities/proposal.entity";
+import { NftEntity } from "@/src/dto/nft.dto";
 
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
-  const dispatch = useDispatch();
+  /**
+   * @dev Get user list nfts.
+   */
+  const {
+    nft: { list_nfts: ownerNftList },
+  } = useMain();
 
-  const nfts = useSelector((state: any) => state.nft?.list_nfts);
-  const proposal = useSelector((state: any) => state.proposal);
-  const swapItems = useSelector((state: any) => state.proposal?.swapItems);
+  /**
+   * @dev Import functions in screen context.
+   */
+  const { addOfferItem, offferedItems } = useCreateProposal();
 
-  const nftsMemo = useMemo(() => {
-    const data: any = [];
-    nfts?.forEach((i: any) => {
-      const nftName = i?.nft_name ?? null;
-      if (nftName) {
-        const nft = swapItems.find((obj: any) => {
-          return obj?.name === nftName;
-        });
-        if (!nft) {
-          data.push(i);
-        }
-      }
-    });
-    return data;
-  }, [nfts, swapItems]);
-
-  const handleAddNft = (nftItem: any) => {
-    const item = {
-      assetType: "nft",
-      name: nftItem?.nft_name,
-      nftId: nftItem?.nft_id,
-      nftAddress: nftItem?.nft_address,
-      collectionId: nftItem?.nft_collection_id,
-      image: nftItem?.nft_image_uri,
-      collection: nftItem?.nft_symbol,
-    };
-    const swapItems = proposal.swapItems;
-    swapItems.push(item);
-    dispatch(
-      setProposal({
-        ...proposal,
-        swapItems,
-      })
+  const nftsMemo = useMemo<NftEntity[]>(() => {
+    return ownerNftList.filter(
+      (item) => !offferedItems.find((s) => s.nft_address === item.nft_address)
     );
-    if (swapItems.length >= 4) {
-      props.handleOk(nftItem);
+  }, [ownerNftList, offferedItems]);
+
+  /**
+   * @dev The function to handle adding nft to offered field for proposal.
+   * @param {NftItem} nftItem
+   */
+  const handleAddNft = (nftItem: NftEntity) => {
+    if (offferedItems.length === 4) {
+      return toast.warn("Only a maximum of 4 items are allowed");
     }
+
+    /**
+     * @dev Add to @arrays in context.
+     */
+    addOfferItem(
+      {
+        ...nftItem,
+        nftId: nftItem.nft_address,
+        assetType: AssetTypes.token,
+      },
+      SwapItemType.NFT
+    );
+
+    /**
+     * @dev Call to close modal.
+     */
+    props.handleOk();
   };
 
   return (
@@ -69,7 +72,7 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
               placeholder="Search for NFT, collection "
             />
             <div className="mt-10 max-h-96 overflow-scroll">
-              {nftsMemo?.map((nftItem: any, i: number) => (
+              {nftsMemo?.map((nftItem, i) => (
                 <Row
                   className="bg-white rounded-lg p-4 w-full mb-4 cursor-pointer hover:bg-dark30"
                   key={`add-nft-item-pr-${i}`}

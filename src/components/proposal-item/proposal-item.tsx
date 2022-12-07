@@ -69,7 +69,9 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
                 </div>
                 <div className="flex">
                   {props.receiveItems.length > 1 &&
-                    props.receiveItems.map((_, index) => (
+                    props.receiveItems
+                      .filter((item) => item.askingItems.length)
+                      .map((_, index) => (
                       <div className="ml-3" key={`ml3dix-${index}`}>
                         <Button
                           className="!rounded-3xl !px-4"
@@ -90,7 +92,14 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
             <Col span={11}>
               {props.swapItems.map((item, index) => (
                 <div className="mb-4" key={`proposal-item-${index}`}>
-                  <RowNftItem {...item} />
+                  <RowNftItem
+                    image={item.nft_image_uri}
+                    name={item.nft_name}
+                    collection={item.nft_symbol}
+                    collectionId={item.nft_collection_id}
+                    nftId={item.nftId}
+                    assetType={item.assetType}
+                  />
                 </div>
               ))}
             </Col>
@@ -98,7 +107,14 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
               {props.receiveItems[optionSelected]?.map(
                 (item: any, index: number) => (
                   <div className="mb-4" key={`swapoptions-${index}`}>
-                    <RowNftItem {...item} />
+                    <RowNftItem
+                      image={item.nft_image_uri}
+                      name={item.nft_name}
+                      collection={item.nft_symbol}
+                      collectionId={item.nft_collection_id}
+                      nftId={item.nftId}
+                      assetType={item.assetType}
+                    />
                   </div>
                 )
               )}

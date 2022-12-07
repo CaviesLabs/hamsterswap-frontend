@@ -17,6 +17,26 @@ import Filter from "@/src/components/homepage/filter";
 const Layout: FC = () => {
   const proposals = useSelector((state: any) => state.proposals);
 
+  /**
+   * @dev Define proposal list to show.
+   */
+  const [exploreProposals, setExploreProposals] = useState<
+    SwapProposalEntity[]
+  >([]);
+
+  /** @dev Get explore proposal list */
+  useEffect(() => {
+    (async () => {
+      dispatch(
+        getExploreProposals((proposals) => {
+          setExploreProposals(proposals);
+        })
+      );
+    })();
+  }, []);
+
+  console.log(exploreProposals);
+
   return (
     <MainLayout>
       <Banner />

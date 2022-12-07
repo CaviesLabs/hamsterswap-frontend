@@ -10,6 +10,7 @@ import { DetailDto } from "@/src/dto/detail.dto";
 import {
   GetProposalsDto,
   SwapProposalEntity,
+  SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
 
 /**

@@ -7,6 +7,7 @@ import { PURPLE_HEADER_PAGES } from "@/src/utils";
 import classnames from "classnames";
 import styles from "./index.module.scss";
 import UserProfile from "@/src/components/header/user-profile";
+
 interface MenuItem {
   title: string;
   href: string;

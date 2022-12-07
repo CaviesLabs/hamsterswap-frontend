@@ -13,9 +13,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
 import { getListNft } from "@/src/redux/actions/nft/nft.action";
 import { useConnectedWallet } from "@saberhq/use-solana";
+import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
+import {
+  OfferedItemEntity,
+  // SwapItemType,
+} from "@/src/entities/proposal.entity";
 
 export const Step1: FC = () => {
   const wallet = useConnectedWallet();
+
+  /**
+   * @dev Import functions in screen context.
+   */
+  const { offferedItems, removeOfferItem } = useCreateProposal();
 
   /**
    * @dev handle open modal by type
@@ -28,18 +38,6 @@ export const Step1: FC = () => {
   const dispatch = useDispatch();
   const proposal = useSelector((state: any) => state.proposal);
   const swapItems = useSelector((state: any) => state.proposal?.swapItems);
-
-  const handleUnSelectNft = (idx: number) => {
-    const newSwapItems = swapItems.filter(
-      (_: any, index: number) => idx !== index
-    );
-    dispatch(
-      setProposal({
-        ...proposal,
-        swapItems: newSwapItems,
-      })
-    );
-  };
 
   useEffect(() => {
     if (!wallet) return;
@@ -175,7 +173,7 @@ export const Step1: FC = () => {
       </div>
       <div className="block mt-[20px]">
         <div className="md:flex pt-[40px] flex-wrap">
-          {swapItems.map((item: any, index: number) => (
+          {offferedItems.map((item: OfferedItemEntity, index) => (
             <div
               className="block md:left w-full md:w-[50%] md:pl-[20px]"
               key={`swapoptions-${index}`}
@@ -190,15 +188,20 @@ export const Step1: FC = () => {
               </div>
               <div className="pt-[20px]">
                 <RowEditNftItem
-                  {...item}
+                  collection={item.nft_symbol}
+                  image={item.nft_image_uri}
+                  name={item.nft_name}
+                  collectionId={item.nft_collection_id}
+                  nftId={item.id}
+                  assetType={item.assetType}
                   onDelete={() => {
-                    handleUnSelectNft(index);
+                    removeOfferItem(item.id);
                   }}
                 />
               </div>
             </div>
           ))}
-          {swapItems.length < 4 && <EmptyBox />}
+          {offferedItems.length < 4 && <EmptyBox />}
         </div>
       </div>
     </div>

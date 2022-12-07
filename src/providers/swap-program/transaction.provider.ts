@@ -2,9 +2,9 @@ import {
   Connection,
   Transaction,
   TransactionInstruction,
-  TransactionSignature,
+  // TransactionSignature,
 } from "@solana/web3.js";
-import { BorshCoder, EventParser, Program } from "@project-serum/anchor";
+import { Program } from "@project-serum/anchor";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
 import { SwapIdl } from "./swap.idl";
 
@@ -60,18 +60,16 @@ export class TransactionProvider {
    * @param {TransactionSignature} tx
    * @returns
    */
-  public async getTransaction(tx: TransactionSignature) {
-    const transaction = await this.connection.getParsedTransaction(tx, {
-      commitment: "confirmed",
-    });
-    const eventParser = new EventParser(
-      this.program.programId,
-      new BorshCoder(this.program.idl)
-    );
+  // public async getTransaction(tx: TransactionSignature) {
+  //   const transaction = await this.connection.getParsedTransaction(tx, {
+  //     commitment: "confirmed",
+  //   });
+  //   const eventParser = new EventParser(
+  //     this.program.programId,
+  //     new BorshCoder(this.program.idl)
+  //   );
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const [event] = eventParser.parseLogs(transaction.meta.logMessages);
-    return JSON.stringify(event);
-  }
+  //   const [event] = eventParser.parseLogs(transaction.meta.logMessages);
+  //   return JSON.stringify(event);
+  // }
 }

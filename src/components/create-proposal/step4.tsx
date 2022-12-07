@@ -1,19 +1,29 @@
-import { FC } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
+import { FC, useEffect } from "react";
+import { useWallet } from "@/src/hooks/useWallet";
+import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 
 export const Step4: FC = () => {
-  const dispatch = useDispatch();
-  const proposal = useSelector((state: any) => state.proposal);
+  const { getSolBalance, solanaWallet } = useWallet();
 
-  const handleChange = (value: string) => {
-    dispatch(
-      setProposal({
-        ...proposal,
-        guarantee: parseFloat(value),
-      })
-    );
+  /**
+   * @dev Import functions from context screen.
+   */
+  const { setGuaranteeSol, guaranteeSol } = useCreateProposal();
+
+  const handleGetSolBalance = async () => {
+    if (!solanaWallet.publicKey) return;
+    try {
+      console.log("Balance :", {
+        balance: await getSolBalance(solanaWallet.publicKey),
+      });
+    } catch (err) {
+      console.log("err when get sol balance", err);
+    }
   };
+
+  useEffect(() => {
+    handleGetSolBalance();
+  }, [solanaWallet]);
 
   return (
     <div>
@@ -37,10 +47,11 @@ export const Step4: FC = () => {
           <div className="mt-[12px]">
             <div className="relative">
               <input
-                type="text"
+                type="number"
                 className="border-[1px] border-solid border-dark30 rounded-[16px] w-full  px-[64px] py-[16px] focus:ring-0 focus:outline-0 regular-text"
                 placeholder="Enter SOL amount"
-                onChange={(e) => handleChange(e.target.value)}
+                value={guaranteeSol}
+                onChange={(e) => setGuaranteeSol(parseFloat(e.target.value))}
               />
               <img
                 src="/assets/images/solana-icon.svg"

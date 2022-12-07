@@ -71,3 +71,12 @@ a {
 .ReactCollapse--collapse {
   transition: height 500ms;
 }
+
+::-webkit-scrollbar {
+  width: 1px;
+  /* height: 2em */
+}
+
+div {
+  /* overflow-x: hidden !important; */
+}

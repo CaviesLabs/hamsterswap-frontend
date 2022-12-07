@@ -34,7 +34,10 @@ export const useAuth = () => {
     );
 
     /** @dev Update user in state. */
-    dispatch(setUser(user?.user));
+    if (user) {
+      console.log("user credential", user?.user);
+      dispatch(setUser(user?.user));
+    }
   };
 
   /** @dev The function to handle authentication. */

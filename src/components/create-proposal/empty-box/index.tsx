@@ -1,8 +1,8 @@
-import { useSelector } from "react-redux";
+import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 
 export const EmptyBox = () => {
-  const swapItems = useSelector((state: any) => state.proposal?.swapItems);
-  const existItems = swapItems.length;
+  const { offferedItems } = useCreateProposal();
+  const existItems = offferedItems.length;
 
   return (
     <>

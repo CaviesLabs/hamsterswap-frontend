@@ -38,10 +38,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   const network = useMemo(() => {
     if ((process.env.ENV as string) === "prod") {
       return WalletAdapterNetwork.Mainnet;
-    } else {
-      return WalletAdapterNetwork.Devnet;
     }
-  }, [process.env.NODE_ENV]);
+    return WalletAdapterNetwork.Devnet;
+  }, [process.env.ENV]);
 
   /** @dev Initilize needed wallet adapters. */
   const walletAdapters = useMemo(() => {
@@ -68,7 +67,13 @@ function MyApp({ Component, pageProps }: AppProps) {
           crossOrigin="anonymous"
         />
         <Script src="../path/to/flowbite/dist/flowbite.js" />
-        <ConnectionProvider endpoint={clusterApiUrl(network)}>
+        <ConnectionProvider
+          endpoint={
+            network === WalletAdapterNetwork.Mainnet
+              ? "https://boldest-few-field.solana-mainnet.quiknode.pro/0ffa9f9f5e9141aa33a030081b78fdfe40bfbae6/"
+              : clusterApiUrl(network)
+          }
+        >
           <SolanaWalletAdapterProvider wallets={walletAdapters}>
             {/**
              * @dev

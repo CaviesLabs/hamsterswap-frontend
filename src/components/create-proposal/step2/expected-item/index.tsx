@@ -14,9 +14,12 @@ import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 import { ExpectedItemProps } from "@/src/components/create-proposal/step2/types";
 import { useDispatch, useSelector } from "react-redux";
 import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
+import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 
 export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
   const dispatch = useDispatch();
+
+  const { expectedItems, removeExpectedItem } = useCreateProposal();
 
   const { optionName, defaultCollapsed } = props;
   /**
@@ -36,19 +39,6 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
    * Get expected items from redux-store to display
    */
   const proposal = useSelector((state: any) => state.proposal);
-
-  const handleUnSelectNft = (idx: number) => {
-    const newReceiveItems = proposal.receiveItems;
-    newReceiveItems[props.index] = newReceiveItems[props.index].filter(
-      (_: any, index: number) => idx !== index
-    );
-    dispatch(
-      setProposal({
-        ...proposal,
-        receiveItems: newReceiveItems,
-      })
-    );
-  };
 
   /**
    * Handle save sol value into receiveItems array of redux-store
@@ -196,29 +186,34 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
           </div>
           <div className="block">
             <div className="md:flex py-5 flex-wrap">
-              {proposal?.receiveItems[props.index].map(
-                (option: any, index: any) => (
-                  <div
-                    className="block md:left w-full md:w-[50%] md:pl-[20px]"
-                    key={`swapoptions-${index}`}
-                  >
-                    <div className="flow-root items-center h-[50px]">
-                      <p
-                        className="text-[16px] float-left text-gray-400 regular-text"
-                        style={{ transform: "translateY(50%)" }}
-                      >
-                        Item #{index + 1}
-                      </p>
-                    </div>
-                    <div className="pt-[20px]">
-                      <RowEditNftItem
-                        {...option}
-                        onDelete={() => handleUnSelectNft(index)}
-                      />
-                    </div>
+              {expectedItems[props.index]?.askingItems.map((item, index) => (
+                <div
+                  className="block md:left w-full md:w-[50%] md:pl-[20px]"
+                  key={`swapoptions-${index}`}
+                >
+                  <div className="flow-root items-center h-[50px]">
+                    <p
+                      className="text-[16px] float-left text-gray-400 regular-text"
+                      style={{ transform: "translateY(50%)" }}
+                    >
+                      Item #{index + 1}
+                    </p>
                   </div>
-                )
-              )}
+                  <div className="pt-[20px]">
+                    <RowEditNftItem
+                      collection={item.nft_symbol}
+                      image={item.nft_image_uri}
+                      name={item.nft_name}
+                      collectionId={item.nft_collection_id}
+                      nftId={item.id}
+                      assetType={item.assetType}
+                      onDelete={() => {
+                        removeExpectedItem(item.id);
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
               <EmptyBox />
             </div>
           </div>

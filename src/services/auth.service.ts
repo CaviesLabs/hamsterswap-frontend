@@ -289,11 +289,27 @@ export class AuthService {
    * @return {Function}
    */
   public async logout() {
-    /**
-     * @dev Logout from Firebase server.
-     */
     try {
+      /**
+       * @dev Logout from Firebase server.
+       */
       await signOut(this.authProvider);
+
+      /**
+       * @dev Logout from hamster server.
+       */
+      await networkProvider.requestWithCredentials(`/auth/logout`, {
+        method: "POST",
+      });
+
+      /**
+       * @dev Remove stroaged session.
+       */
+      this.storageProvider.removeItem("hAccessToken");
+      this.storageProvider.removeItem("userCredential");
+      this.storageProvider.removeItem("accessToken");
+      this.storageProvider.removeItem("use-solana/wallet-config", true);
+      this.storageProvider.removeItem("walletName", true);
     } catch {}
   }
 }
