@@ -4,6 +4,7 @@ import { NftEntity } from "@/src/dto/nft.dto";
 import {
   OfferedItemEntity,
   ExpectedOpitionEntity,
+  AssetTypes,
   SwapItemType,
 } from "@/src/entities/proposal.entity";
 import { SwapProgramService } from "@/src/services/swap-program.service";
@@ -53,7 +54,7 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
    */
   const addExpectedItem = async (
     item: NftEntity & { nftId: string; assetType: SwapItemType },
-    type: SwapItemType,
+    type: AssetTypes,
     opinionIndex: number
   ) => {
     setExpectedItems((prev) => {
@@ -102,9 +103,21 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
    */
   const addOfferItem = async (
     item: NftEntity & { nftId: string; assetType: SwapItemType },
-    type: SwapItemType
+    type: AssetTypes
   ) => {
     setOfferItems((prev) => {
+      console.log("add offer", [
+        ...prev,
+        {
+          nftId: item.nftId,
+          assetType: item.assetType,
+          id: SwapProgramService.generateUID(),
+          amount: new BN(1 * 10),
+          mintAccount: new PublicKey(item.nft_address),
+          itemType: { [type]: {} },
+          ...item,
+        },
+      ]);
       return [
         ...prev,
         {
@@ -160,6 +173,7 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
       })),
       expiredAt: expiredTime,
     };
+    console.log("createdData", createdData);
 
     /**
      * @dev Create proposal

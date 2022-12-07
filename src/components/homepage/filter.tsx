@@ -17,7 +17,7 @@ const Filter: FC = () => {
     dispatch(
       getExploreProposals({
         options: {
-          // statuses: SwapProposalStatus.DEPOSITED,
+          statuses: [SwapProposalStatus.DEPOSITED, SwapProposalStatus.CANCELED],
           search: _search,
         },
       })

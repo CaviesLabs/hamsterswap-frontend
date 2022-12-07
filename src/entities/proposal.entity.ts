@@ -3,6 +3,16 @@ import { PublicKey } from "@solana/web3.js";
 import { NftEntity } from "@/src/dto/nft.dto";
 
 /**
+ * @dev Expose asset types enum for UI handling.
+ */
+export enum AssetTypes {
+  nft = "nft",
+  game = "game",
+  usd = "usd",
+  token = "currency",
+}
+
+/**
  * @dev Exporse item action type.
  */
 export enum SwapItemActionType {

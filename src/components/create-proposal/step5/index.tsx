@@ -13,6 +13,9 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
   const { expectedItems, offferedItems, note, expiredTime, guaranteeSol } =
     useCreateProposal();
 
+  const clonedExpectedItems = [...expectedItems];
+  const clonedOfferedItems = [...offferedItems];
+
   /**
    * @dev Use this condition to show guarantee badge.
    */
@@ -25,8 +28,8 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
       </h3>
       <div className="block mt-[60px] flex">
         <ProposalItem
-          swapItems={offferedItems.map((_) => parseOfferCreateProposal(_))}
-          receiveItems={expectedItems.map((_) =>
+          swapItems={clonedOfferedItems.map((_) => parseOfferCreateProposal(_))}
+          receiveItems={clonedExpectedItems.map((_) =>
             _.askingItems.map((p) => parseOfferCreateProposal(p))
           )}
           isGuaranteedPayment={isGuaranteedPayment}
