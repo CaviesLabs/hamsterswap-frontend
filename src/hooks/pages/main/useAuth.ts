@@ -47,7 +47,7 @@ export const useAuth = () => {
       const user = await userService.getProfile();
 
       /** Force to logout. */
-      await authService.logout();
+      // await authService.logout();
 
       if (
         user.email
