@@ -10,22 +10,18 @@ import { Col, Row } from "antd";
 import dayjs from "dayjs";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import { completedOrderPercent, DATE_TIME_FORMAT } from "@/src/utils";
-import { getHamsterPublicProfile } from "@/src/redux/actions/hamster-profile/profile.action";
-import { useDispatch } from "react-redux";
 import { hProfileDto } from "@/src/dto/hProfile.dto";
+import { hProfileService } from "@/src/redux/saga/hamster-profile/profile.service";
 
 export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
-  const dispatch = useDispatch();
   const [profile, setProfile] = useState<hProfileDto>();
   const router = useRouter();
   const { data } = props;
 
   useEffect(() => {
-    dispatch(
-      getHamsterPublicProfile({ id: data.ownerId }, (_profile) =>
-        setProfile(_profile)
-      )
-    );
+    hProfileService
+      .getPublicProfile({ id: data.ownerId })
+      .then((resp) => setProfile(resp));
   }, []);
 
   return (
