@@ -19,6 +19,7 @@ import {
   SwapItemEntity,
   SwapOptionEntity,
   SwapProposalEntity,
+  SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
 
 const Layout: FC = () => {
@@ -35,6 +36,11 @@ const Layout: FC = () => {
       getExploreProposals({
         walletAddress: profile.walletAddress,
         options: {
+          statuses: [
+            SwapProposalStatus.DEPOSITED,
+            SwapProposalStatus.FULFILLED,
+            SwapProposalStatus.CANCELED,
+          ],
           search: _search,
         },
       })
