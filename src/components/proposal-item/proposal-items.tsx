@@ -43,9 +43,7 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
           {userAssets.map((item, index) => (
             <div className="mb-4" key={`proposal-item-${index}`}>
               <RowNftItem
-                image={item.nftMetadata[0]?.nft_image}
-                name={item.nftMetadata[0]?.nft_name}
-                collection={item.nftMetadata[0]?.nft_symbol}
+                {...item}
                 collectionId={item.nftMetadata[0]?.nft_collection_id}
                 nftId={item.id}
                 assetType={item.type}
@@ -57,9 +55,7 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
           {userLookingFor[optionSelected]?.map((item: any, index: number) => (
             <div className="mb-4" key={`swapoptions-${index}`}>
               <RowNftItem
-                image={item.nftMetadata[0]?.nft_image}
-                name={item.nftMetadata[0]?.nft_name}
-                collection={item.nftMetadata[0]?.nft_symbol}
+                {...item}
                 collectionId={item.nftMetadata[0]?.nft_collection_id}
                 nftId={item.id}
                 assetType={item.type as any}
