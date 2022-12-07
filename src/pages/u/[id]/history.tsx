@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import { ProfilePageProvider } from "@/src/hooks/pages/profile";
@@ -8,197 +8,37 @@ import Breadcrumb from "@/src/components/user/breadcrumb";
 import SubMenu from "@/src/components/user/sub-menu";
 import Title from "@/src/components/user/history/title";
 import Proposal from "@/src/components/user/history/proposal";
-import { ProposalItem } from "@/src/components/user/types";
 import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
+import State from "@/src/redux/entities/state";
+import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 
-const mockList: ProposalItem[] = [
-  {
-    id: "1",
-    createdAt: "28/11/2022 20:30 UTC",
-    swapItems: [
-      {
-        name: "CyBall Chicken #124",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "Nhac vuong kiem",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "1,000.00 SOL",
-        image: "/assets/images/solana.svg",
-      },
-      {
-        name: "2,000 USD",
-        image: "/assets/images/solana.svg",
-      },
-    ],
-    receiveItems: [
-      {
-        name: "CyBall Chicken #124",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "Nhac vuong kiem",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "1,000.00 SOL",
-        image: "/assets/images/solana.svg",
-      },
-      {
-        name: "2,000 USD",
-        image: "/assets/images/solana.svg",
-      },
-    ],
-    swapper: "EdeRcNsVGU1s1NXZZo8FhLD8iePxvoUCdbvwVGnj778f",
-    status: "canceled",
-  },
-  {
-    id: "2",
-    createdAt: "30/11/2022 20:30 UTC",
-    swapItems: [
-      {
-        name: "CyBall Chicken #124",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "Nhac vuong kiem",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "1,000.00 SOL",
-        image: "/assets/images/solana.svg",
-      },
-      {
-        name: "2,000 USD",
-        image: "/assets/images/solana.svg",
-      },
-    ],
-    receiveItems: [
-      {
-        name: "CyBall Chicken #124",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "Nhac vuong kiem",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "1,000.00 SOL",
-        image: "/assets/images/solana.svg",
-      },
-      {
-        name: "2,000 USD",
-        image: "/assets/images/solana.svg",
-      },
-    ],
-    swapper: "EdeRcNsVGU1s1NXZZo8FhLD8iePxvoUCdbvwVGnj778f",
-    status: "expired",
-  },
-  {
-    id: "3",
-    createdAt: "29/11/2022 20:30 UTC",
-    swapItems: [
-      {
-        name: "CyBall Chicken #124",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "Nhac vuong kiem",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "1,000.00 SOL",
-        image: "/assets/images/solana.svg",
-      },
-      {
-        name: "2,000 USD",
-        image: "/assets/images/solana.svg",
-      },
-    ],
-    receiveItems: [
-      {
-        name: "CyBall Chicken #124",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "Nhac vuong kiem",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "1,000.00 SOL",
-        image: "/assets/images/solana.svg",
-      },
-      {
-        name: "2,000 USD",
-        image: "/assets/images/solana.svg",
-      },
-    ],
-    swapper: "EdeRcNsVGU1s1NXZZo8FhLD8iePxvoUCdbvwVGnj778f",
-    status: "success",
-  },
-  {
-    id: "4",
-    createdAt: "02/12/2022 20:30 UTC",
-    swapItems: [
-      {
-        name: "CyBall Chicken #124",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "Nhac vuong kiem",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "1,000.00 SOL",
-        image: "/assets/images/solana.svg",
-      },
-      {
-        name: "2,000 USD",
-        image: "/assets/images/solana.svg",
-      },
-    ],
-    receiveItems: [
-      {
-        name: "CyBall Chicken #124",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "Nhac vuong kiem",
-        image:
-          "https://i.seadn.io/gae/mqP23OTG3rd4tCulkyTQcKpQyGfS2EYytpi8fPoJdD0HzGfzJ3DG4LJBl4uAcjEP7HalODFFNdMH-yVxaU8qkcLDsl0-imqNFf0Slw?auto=format&w=750",
-      },
-      {
-        name: "1,000.00 SOL",
-        image: "/assets/images/solana.svg",
-      },
-      {
-        name: "2,000 USD",
-        image: "/assets/images/solana.svg",
-      },
-    ],
-    swapper: "EdeRcNsVGU1s1NXZZo8FhLD8iePxvoUCdbvwVGnj778f",
-    status: "success",
-  },
-];
 const Layout: FC = () => {
   const router = useRouter();
+  const profile = useSelector((state: State) => state.hPublicProfile);
+  const proposals = useSelector((state: State) => state.proposals);
+  console.log("proposals", proposals);
+
+  /**
+   * Fetch proposal by user id
+   */
+  const dispatch = useDispatch();
+  const handleSearch = (_search?: string) => {
+    dispatch(
+      getExploreProposals({
+        walletAddress: profile.walletAddress,
+        options: {
+          statuses: SwapProposalStatus.FULFILLED,
+          search: _search,
+        },
+      })
+    );
+  };
+  useEffect(() => {
+    if (!profile || !profile.walletAddress) return;
+    handleSearch();
+  }, [profile]);
 
   return (
     <MainLayout>
@@ -217,7 +57,7 @@ const Layout: FC = () => {
             History
           </h3>
           <Title />
-          {mockList.map((_) => (
+          {proposals.map((_) => (
             <Proposal key={`proposal-${_.id}`} data={_} />
           ))}
         </div>

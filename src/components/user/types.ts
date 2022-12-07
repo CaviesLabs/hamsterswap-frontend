@@ -1,5 +1,8 @@
 import { ProposalItemProps } from "@/src/components/proposal-item";
-import { SwapItemStatus } from "@/src/entities/proposal.entity";
+import {
+  SwapItemStatus,
+  SwapProposalEntity,
+} from "@/src/entities/proposal.entity";
 
 export type BreadcrumbProps = {
   title: string;
@@ -17,19 +20,14 @@ export type ProposalDetailProps = ProposalItemProps & {
 export type ProposalItem = {
   id: string;
   createdAt: string;
-  swapItems: any[];
-  receiveItems: any[];
+  offerItems: any[];
+  swapOptions: any[];
   swapper: string;
   status: ProposalStatus;
 };
 
-export type ProposalReducer = {
-  swapItems: any[];
-  receiveItems: any[];
-};
-
 export type ProposalHistoryProps = {
-  data: ProposalItem;
+  data: SwapProposalEntity;
 };
 
 type PaymentType = "stripe" | "paypal" | "bank";

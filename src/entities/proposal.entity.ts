@@ -199,6 +199,9 @@ export class SwapProposalEntity {
   searchText?: string;
 
   note?: string;
+
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 /**
