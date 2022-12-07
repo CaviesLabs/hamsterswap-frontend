@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useCallback } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import { ProposalDetailPageProvider } from "@/src/hooks/pages/proposal-detail";
@@ -8,7 +8,7 @@ import { LayoutSection } from "@/src/components/layout-section";
 import { GuaranteedCard } from "@/src/components/guaranteed.card";
 import { UserInfoCard } from "@/src/components/user-card";
 import { BreadCrumb } from "@/src/components/bread-crumb";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { Col, Row } from "antd";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
@@ -18,13 +18,35 @@ import {
   SwapProposalEntity,
 } from "@/src/entities/proposal.entity";
 import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
+import { useWallet } from "@/src/hooks/useWallet";
+import { useConnectedWallet } from "@saberhq/use-solana";
 import dayjs from "dayjs";
 
 const Layout: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { programService, solanaWallet } = useWallet();
+  /**
+   * @dev Get user wallet
+   */
+  const wallet = useConnectedWallet();
 
   const [proposal, setProposal] = useState<SwapProposalEntity>();
+
+  const handleSwap = useCallback(async () => {
+    if (!proposal || !solanaWallet.publicKey) return;
+    try {
+      await programService.swapProposal(
+        solanaWallet,
+        proposal.id,
+        proposal.swapOptions[0].id
+      );
+      toast.success("Wrap proposal successfully");
+    } catch (err: any) {
+      console.log("error", err);
+      toast.error("Swap proposal failed!", err);
+    }
+  }, [wallet, programService, solanaWallet, proposal]);
 
   useEffect(() => {
     if (!router.query.id) return;
@@ -112,11 +134,13 @@ const Layout: FC = () => {
               <Button
                 text="Buy"
                 className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
+                onClick={handleSwap}
               />
               <Button
                 text="Order / Bid"
                 shape="secondary"
                 className="!border-[1.5px] ml-[24px] !rounded-[100px] after:!rounded-[100px] float-right !w-[150px] md:!w-[200px]"
+                onClick={handleSwap}
               />
             </Row>
           </div>

@@ -5,7 +5,8 @@ import {
   CreateProposalDto,
   SwapItemActionType,
 } from "@/src/entities/proposal.entity";
-import { Account, getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
+import { getAssociatedTokenAddress } from "@solana/spl-token";
+import { getOrCreateAssociatedTokenAccount } from "./getOrCreateAssociatedTokenAccount";
 import { SwapIdl } from "./swap.idl";
 
 export class InstructionProvider {
@@ -112,15 +113,15 @@ export class InstructionProvider {
    * @param {PublicKey} mintAccount
    * @returns {PublicKey}
    */
-  private async getOrCreateProposalTokenAccount(
-    proposalOwner: PublicKey,
+  public async getOrCreateProposalTokenAccount(
+    publicKey: PublicKey,
     mintAccount: PublicKey
-  ): Promise<Account> {
+  ): Promise<TransactionInstruction> {
     return getOrCreateAssociatedTokenAccount(
       this.connection,
-      { publicKey: proposalOwner } as any,
+      { publicKey } as any,
       mintAccount,
-      proposalOwner
+      publicKey
     );
   }
 
@@ -200,9 +201,9 @@ export class InstructionProvider {
     /**
      * @dev Get @var {asociatedTokenAccount} to hold mintAccount.
      */
-    const asociatedTokenAccount = await this.getOrCreateProposalTokenAccount(
-      proposalOwner,
-      mintAccount
+    const asociatedTokenAccountAddress = await getAssociatedTokenAddress(
+      mintAccount,
+      proposalOwner
     );
 
     /**
@@ -225,7 +226,7 @@ export class InstructionProvider {
       .transferAssetsToVault(params)
       .accounts({
         signer: proposalOwner,
-        signerTokenAccount: asociatedTokenAccount.address,
+        signerTokenAccount: asociatedTokenAccountAddress,
         swapTokenVault,
         mintAccount,
         swapProposal,
@@ -259,9 +260,9 @@ export class InstructionProvider {
     /**
      * @dev Get @var {asociatedTokenAccount} to hold mintAccount.
      */
-    const asociatedTokenAccount = await this.getOrCreateProposalTokenAccount(
-      targetAccount,
-      mintAccount
+    const asociatedTokenAccountAddress = await getAssociatedTokenAddress(
+      mintAccount,
+      targetAccount
     );
 
     /**
@@ -275,6 +276,8 @@ export class InstructionProvider {
       actionType: { [actionType]: {} },
     };
 
+    console.log({ ...params, signer: targetAccount });
+
     /**
      * @dev Call to program to create an instruction.
      */
@@ -282,7 +285,7 @@ export class InstructionProvider {
       .transferAssetsFromVault(params)
       .accounts({
         signer: targetAccount,
-        signerTokenAccount: asociatedTokenAccount.address,
+        signerTokenAccount: asociatedTokenAccountAddress,
         swapProposal,
         swapTokenVault,
         swapRegistry: this.swapRegistry,

@@ -16,6 +16,7 @@ import {
   SwapProposalEntity,
   SwapItemType,
 } from "@/src/entities/proposal.entity";
+import MainLayout from "@/src/layouts/main";
 
 const TestPage: NextPage = () => {
   const dispatch = useDispatch();
@@ -90,8 +91,8 @@ const TestPage: NextPage = () => {
 
   const handleCancelProposal = useCallback(
     async (propsalId: string) => {
+      console.log(wallet, programService);
       if (!wallet && !programService && !solanaWallet.publicKey) return;
-
       try {
         /**
          * @dev Call function to cancel.
@@ -132,7 +133,7 @@ const TestPage: NextPage = () => {
     dispatch(
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      getExploreProposals((proposals) => {
+      getExploreProposals({ options: { limit: 50 } }, (proposals) => {
         setExploreProposals(proposals);
       })
     );
@@ -157,51 +158,57 @@ const TestPage: NextPage = () => {
   }, []);
 
   return (
-    <div>
-      <h2>TestPage</h2>
-      <Button onClick={handleCreateProposal} text="Test create a proposal" />
-      <div className="flex">
-        <div className="float-left w-[50%]">
-          <p>My proposal</p>
-          {proposals.map((item, key) => (
-            <div key={`proposal-item-${key}`} className="py-[10px] px-[10px]">
-              <div className="flex items-center">
-                <div className="float-left">ID: ${item.id.slice(0, 10)}</div>
-                <div className="float-left pl-[20px]">
-                  <Button
-                    onClick={() => handleCancelProposal(item.id)}
-                    size="small"
-                    text="Cancel this proposal"
-                  />
+    <MainLayout>
+      <div>
+        <h2>TestPage</h2>
+        <Button onClick={handleCreateProposal} text="Test create a proposal" />
+        <div className="flex">
+          <div className="float-left w-[50%]">
+            <p>My proposal</p>
+            {proposals?.map((item, key) => (
+              <div key={`proposal-item-${key}`} className="py-[10px] px-[10px]">
+                <div className="flex items-center">
+                  <div className="float-left">ID: ${item.id.slice(0, 10)}</div>
+                  <div className="float-left pl-[20px]">
+                    <Button
+                      onClick={() =>
+                        handleCancelProposal(
+                          "394ef0b2-f25b-4dcd-a576-4368d82fb1db"
+                        )
+                      }
+                      size="small"
+                      text="Cancel this proposal"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-        <div className="float-left w-[50%]">
-          <p>Explore proposals</p>
-          {exploreProposals.map((item, key) => (
-            <div
-              key={`explore-proposal-item-${key}`}
-              className="py-[10px] px-[10px]"
-            >
-              <div className="flex">
-                <div className="float-left">ID: ${item.id}</div>
-                <div className="float-left pl-[20px]">
-                  <Button
-                    onClick={() =>
-                      handleSwap(item.id, item.swapOptions?.[0]?.id)
-                    }
-                    size="small"
-                    text="Swap this proposal"
-                  />
+            ))}
+          </div>
+          <div className="float-left w-[50%]">
+            <p>Explore proposals</p>
+            {exploreProposals?.map((item, key) => (
+              <div
+                key={`explore-proposal-item-${key}`}
+                className="py-[10px] px-[10px]"
+              >
+                <div className="flex">
+                  <div className="float-left">ID: ${item.id}</div>
+                  <div className="float-left pl-[20px]">
+                    <Button
+                      onClick={() =>
+                        handleSwap(item.id, item.swapOptions?.[0]?.id)
+                      }
+                      size="small"
+                      text="Swap this proposal"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </MainLayout>
   );
 };
 
