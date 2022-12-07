@@ -197,7 +197,7 @@ export class SwapProposalEntity {
 export class GetProposalsDto {
   walletAddress?: string;
   options?: {
-    statuses?: SwapProposalStatus[];
+    statuses?: SwapProposalStatus[] | SwapProposalStatus;
     limit?: number;
     offset?: number;
     search?: string;
