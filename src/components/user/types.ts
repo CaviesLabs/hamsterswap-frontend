@@ -1,7 +1,7 @@
 import { ProposalItemProps } from "@/src/components/proposal-item";
 import {
-  SwapItemStatus,
   SwapProposalEntity,
+  SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
 
 export type BreadcrumbProps = {
@@ -14,7 +14,7 @@ export type SubMenuProps = {
 
 type ProposalStatus = "pending" | "success" | "canceled" | "expired";
 export type ProposalDetailProps = ProposalItemProps & {
-  status: SwapItemStatus;
+  status: SwapProposalStatus;
 };
 
 export type ProposalItem = {
