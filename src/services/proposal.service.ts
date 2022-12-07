@@ -28,7 +28,7 @@ export class ProposalService {
           : {},
         paramsSerializer: {
           serialize: (params: any) => {
-            return qs.stringify(params);
+            return qs.stringify(params, { arrayFormat: "repeat" });
           },
         },
       }
