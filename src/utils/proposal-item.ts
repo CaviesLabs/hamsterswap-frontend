@@ -31,14 +31,13 @@ export const parseOfferCreateProposal = (
 ) => {
   const resp: any = {
     ...item,
-    assetType: item.itemType,
   };
 
-  if (resp.itemType?.[SwapItemType.CURRENCY]) {
+  if (resp.assetType === SwapItemType.CURRENCY) {
     resp.name = `${item.amount} USD`;
     resp.collection = "Stripe";
     resp.image = "/assets/images/asset-cash.png";
-  } else if (resp.itemType?.[SwapItemType.NFT]) {
+  } else if (resp.assetType === SwapItemType.NFT) {
     resp.name = item?.nft_name;
     resp.collection = item?.nft_collection_name;
     resp.image = item?.nft_image_uri;

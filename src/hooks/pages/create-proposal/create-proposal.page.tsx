@@ -106,18 +106,6 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
     type: AssetTypes
   ) => {
     setOfferItems((prev) => {
-      console.log("add offer", [
-        ...prev,
-        {
-          nftId: item.nftId,
-          assetType: item.assetType,
-          id: SwapProgramService.generateUID(),
-          amount: new BN(1 * 10),
-          mintAccount: new PublicKey(item.nft_address),
-          itemType: { [type]: {} },
-          ...item,
-        },
-      ]);
       return [
         ...prev,
         {

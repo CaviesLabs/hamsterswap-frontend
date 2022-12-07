@@ -55,9 +55,9 @@ export class NetworkProvider {
 
     if (resp.status >= 400) {
       if (resp.status === 401) {
-        this.storageProvider.removeItem("userCredential");
-        this.storageProvider.removeItem("AccessToken");
-        this.storageProvider.removeItem("hAccessToken");
+        // this.storageProvider.removeItem("userCredential");
+        // this.storageProvider.removeItem("AccessToken");
+        // this.storageProvider.removeItem("hAccessToken");
       }
       throw new Error(`Error when request server, ${resp.statusText}`);
     }
