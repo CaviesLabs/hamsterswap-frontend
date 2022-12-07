@@ -46,9 +46,6 @@ export const useAuth = () => {
       /** Get user profile. */
       const user = await userService.getProfile();
 
-      /** Force to logout. */
-      await authService.logout();
-
       if (
         user.email
           .toLowerCase()
