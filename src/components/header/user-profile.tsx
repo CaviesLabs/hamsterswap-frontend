@@ -25,7 +25,7 @@ const UserProfile: FC = () => {
   const profile = useSelector((state: any) => state.hProfile);
   useEffect(() => {
     dispatch(getHamsterProfile());
-  }, []);
+  }, [wallet]);
 
   return (
     <div

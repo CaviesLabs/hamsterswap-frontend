@@ -83,7 +83,7 @@ export class NetworkProvider {
   ): Promise<RequestResponse> {
     const credential = this.storageProvider.getItem("hAccessToken");
     if (!credential) {
-      throw new Error("Credential not found");
+      return null;
     }
     const options = Object.assign({}, requestConfig);
     options.headers = {

@@ -7,6 +7,7 @@ import { PURPLE_HEADER_PAGES } from "@/src/utils";
 import classnames from "classnames";
 import styles from "./index.module.scss";
 import UserProfile from "@/src/components/header/user-profile";
+import { useMain } from "@/src/hooks/pages/main";
 
 interface MenuItem {
   title: string;
@@ -17,6 +18,7 @@ interface MenuItem {
 const Header: FC = () => {
   const [curSlug, setCurSlug] = useState<string>("#about-us");
   const router = useRouter();
+  const { hProfile } = useMain();
 
   /**
    * Check homepage and display logo on dark theme
@@ -175,7 +177,7 @@ const Header: FC = () => {
           </div>
           <div className="relative flex items-center float-right right-[16px]">
             <div className="float-right relative">
-              {!wallet ? (
+              {!hProfile ? (
                 <div className="relative">
                   {" "}
                   <Button
@@ -228,7 +230,7 @@ const Header: FC = () => {
           >
             {
               <ul className="menu-container float-left">
-                {wallet && (
+                {wallet && hProfile && (
                   <Button
                     className="!rounded-[100px] after:!rounded-[100px] !px-[20px]"
                     text="Create a Proposal"

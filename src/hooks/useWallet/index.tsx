@@ -21,6 +21,8 @@ import { getSwapProgramProvider } from "@/src/providers/swap-program";
 import { SwapProgramService } from "@/src/services/swap-program.service";
 import { getAuthService } from "@/src/actions/firebase.action";
 import { getWalletName } from "./utils";
+import { setProfile } from "@/src/redux/actions/hamster-profile/profile.action";
+import { useDispatch } from "react-redux";
 
 /** @dev Define state for context. */
 export interface WalletContextState {
@@ -59,6 +61,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
   /** @dev Import providers to use from solana. */
   const solanaWallet = useSolana();
   const walletConnection = useConnection();
+  const dispatch = useDispatch();
 
   /** @dev Import wallet from Gokki library. */
   const wallet = useConnectedWallet();
@@ -104,6 +107,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
     await wallet.disconnect();
     await solanaWallet.disconnect();
     await authService.logout();
+    dispatch(setProfile(null));
   }, [solanaWallet, wallet]);
 
   /**
