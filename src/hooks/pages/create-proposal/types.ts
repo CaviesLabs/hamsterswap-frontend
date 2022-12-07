@@ -73,7 +73,7 @@ export interface CreateProposalPageContextState {
   /**
    * @dev Expose function to submit proposal to hamster server and on-chain
    */
-  submitProposal(): Promise<void>;
+  submitProposal(): Promise<string>;
 }
 
 /** @dev Create context */

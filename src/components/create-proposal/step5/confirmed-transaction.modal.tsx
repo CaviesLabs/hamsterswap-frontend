@@ -30,14 +30,14 @@ export const ConfirmedTransactionModal: FC<ModalProps> = (props) => {
           <Button
             shape="primary"
             size="large"
-            onClick={() => props.handleCancel}
+            onClick={() => props.handleCancel()}
             text="View Proposal"
             className="mb-3"
           />
           <Button
             shape="secondary"
             size="large"
-            onClick={() => props.handleCancel}
+            onClick={() => props.handleCancel()}
             text="Go home"
           />
         </div>

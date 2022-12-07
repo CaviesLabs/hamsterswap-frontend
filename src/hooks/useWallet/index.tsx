@@ -77,7 +77,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
       /**
        * @dev Force to connect first.
        */
-      await solanaWallet.wallet.adapter.connect();
+      await solanaWallet?.wallet?.adapter?.connect();
 
       /**
        * @dev Encode message to @var {Uint8Array}.
@@ -128,7 +128,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
     /**
      * @dev Force to connect first.
      */
-    solanaWallet.wallet.adapter.connect();
+    solanaWallet?.wallet?.adapter?.connect();
   }, [wallet, solanaWallet]);
 
   /**

@@ -27,7 +27,7 @@ export const UserInfoCard: FC<UserInfoCardProps> = (props) => {
         setProfile(_profile)
       )
     );
-  }, []);
+  }, [props.userId]);
 
   return (
     <StyledUserInfoCard>

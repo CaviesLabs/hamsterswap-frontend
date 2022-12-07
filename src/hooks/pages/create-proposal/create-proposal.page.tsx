@@ -161,14 +161,13 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
       })),
       expiredAt: expiredTime,
     };
-    console.log("createdData", createdData);
 
     /**
      * @dev Create proposal
      *  - Hamster server
      *  - Solana chain
      */
-    await programService.createProposal(solanaWallet, createdData);
+    return await programService.createProposal(solanaWallet, createdData);
   }, [
     expectedItems,
     offferedItems,

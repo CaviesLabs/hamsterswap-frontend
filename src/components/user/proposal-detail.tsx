@@ -16,6 +16,8 @@ import dayjs from "dayjs";
 import { DATE_TIME_FORMAT } from "@/src/utils";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
+import { useProgram } from "@/src/hooks/useProgram";
+import { useWallet } from "@/src/hooks/useWallet";
 
 export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   const { data, status, isGuaranteedPayment } = props;
@@ -24,15 +26,21 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   const [cancelModal, setCancelModal] = useState(false);
   const [canceledModal, setCanceledModal] = useState(false);
   const [withdrewModal, setWithdrewModal] = useState(false);
+  const { solanaWallet } = useWallet();
 
-  const isPending = status === SwapProposalStatus.DEPOSITED;
+  const isPending = status.valueOf() === SwapProposalStatus.DEPOSITED.valueOf();
   const isExpired = new Date(data?.expiredAt) < new Date();
   const statusText =
-    status === SwapProposalStatus.FULFILLED
+    status.valueOf() === SwapProposalStatus.FULFILLED.valueOf()
       ? "Swap Success"
-      : status === SwapProposalStatus.CANCELED
+      : status.valueOf() === SwapProposalStatus.CANCELED.valueOf()
       ? "Canceled"
       : isExpired && "Expired";
+
+  /**
+   * @dev Import program service to use.
+   */
+  const { redeemProposal, cancelProposal } = useProgram();
 
   return (
     <StyledProposalItem
@@ -87,7 +95,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                 {statusText && (
                   <p className="mt-[12px] text-[16px] regular-text text-dark60">
                     Status:{" "}
-                    {status === SwapProposalStatus.FULFILLED ? (
+                    {status === SwapProposalStatus.FULFILLED.valueOf() ? (
                       <span className="text-green font-bold">{statusText}</span>
                     ) : (
                       <span className="text-red-500 font-bold capitalize">
@@ -124,54 +132,64 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                     alt="Solana Icon"
                     className="h-[24px] w-[24px] mx-[12px]"
                   />
-                  <span className="semi-bold">300.00 SOL</span>
+                  <span className="semi-bold">2.0 SOL</span>
                 </p>
               </div>
             </Col>
           </Row>
           <div className="flex mt-[20px] justify-between">
             <div className="flex justify-center">
-              {status === SwapProposalStatus.FULFILLED && (
-                <button
-                  className="border-purple text-purple !border-2 px-10 rounded-3xl"
-                  onClick={() => {}}
-                >
-                  Redeem
-                </button>
-              )}
-              {status === SwapProposalStatus.CANCELED && (
-                <button
-                  className="border-purple text-purple !border-2 px-10 rounded-3xl"
-                  onClick={() => {}}
-                >
-                  Withdraw
-                </button>
+              {solanaWallet?.publicKey?.toBase58().toString() ===
+                props.proposalOwner && (
+                <div className="h-full">
+                  {status.valueOf() ===
+                    SwapProposalStatus.FULFILLED.valueOf() && (
+                    <button
+                      className="border-purple text-purple !border-2 px-10 rounded-3xl !h-full"
+                      onClick={() => redeemProposal(props.proposalId)}
+                    >
+                      Redeem
+                    </button>
+                  )}
+                  {status.valueOf() ===
+                    SwapProposalStatus.CANCELED.valueOf() && (
+                    <button
+                      className="border-purple text-purple !border-2 px-10 rounded-3xl !h-full"
+                      onClick={() => cancelProposal(props.proposalId)}
+                    >
+                      Withdraw
+                    </button>
+                  )}
+                </div>
               )}
             </div>
             <div className="flex justify-center">
-              {isPending && (
-                <>
-                  <button
-                    className="border-red-500 text-red-500 !border-2 px-10 rounded-3xl"
-                    onClick={() => setCancelModal(true)}
-                  >
-                    Cancel Proposal
-                  </button>
-                  <CancelProposalModal
-                    isModalOpen={cancelModal}
-                    handleCancel={() => setCancelModal(false)}
-                    handleOk={() => {
-                      setCancelModal(false);
-                      setCanceledModal(true);
-                    }}
-                  />
-                  <CanceledProposalModal
-                    isModalOpen={canceledModal}
-                    handleCancel={() => setCanceledModal(false)}
-                    handleOk={() => setCanceledModal(false)}
-                  />
-                </>
-              )}
+              {solanaWallet?.publicKey?.toBase58().toString() ===
+                props.proposalOwner &&
+                isPending && (
+                  <>
+                    <button
+                      className="border-red-500 text-red-500 !border-2 px-10 rounded-3xl"
+                      onClick={() => setCancelModal(true)}
+                    >
+                      Cancel Proposal
+                    </button>
+                    <CancelProposalModal
+                      isModalOpen={cancelModal}
+                      handleCancel={() => setCancelModal(false)}
+                      handleOk={async () => {
+                        await cancelProposal(props.proposalId);
+                        setCancelModal(false);
+                        setCanceledModal(true);
+                      }}
+                    />
+                    <CanceledProposalModal
+                      isModalOpen={canceledModal}
+                      handleCancel={() => setCanceledModal(false)}
+                      handleOk={() => setCanceledModal(false)}
+                    />
+                  </>
+                )}
               <div className="ml-4">
                 <Button
                   className={classnames(

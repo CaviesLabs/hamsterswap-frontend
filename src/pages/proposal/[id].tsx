@@ -131,17 +131,23 @@ const Layout: FC = () => {
 
           <div className="mt-12">
             <Row justify="end">
-              <Button
-                text="Buy"
-                className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
-                onClick={handleSwap}
-              />
-              <Button
-                text="Order / Bid"
-                shape="secondary"
-                className="!border-[1.5px] ml-[24px] !rounded-[100px] after:!rounded-[100px] float-right !w-[150px] md:!w-[200px]"
-                onClick={handleSwap}
-              />
+              {solanaWallet.publicKey &&
+                solanaWallet.publicKey?.toBase58().toString() !==
+                  proposal?.ownerAddress && (
+                  <>
+                    <Button
+                      text="Buy"
+                      className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
+                      onClick={handleSwap}
+                    />
+                    <Button
+                      text="Order / Bid"
+                      shape="secondary"
+                      className="!border-[1.5px] ml-[24px] !rounded-[100px] after:!rounded-[100px] float-right !w-[150px] md:!w-[200px]"
+                      onClick={handleSwap}
+                    />
+                  </>
+                )}
             </Row>
           </div>
         </LayoutSection>

@@ -183,6 +183,7 @@ export class SwapProposalEntity {
   ownerId: string;
 
   ownerAddress: string;
+  owner?: string;
 
   offerItems: SwapItemEntity[] = [];
 

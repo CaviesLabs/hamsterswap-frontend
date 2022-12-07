@@ -46,11 +46,19 @@ export class SwapProgramService {
      * @dev Now create proposal to on-chain, wrap in sync function to sync data after done processing on-chain.
      */
     return await this.requestAndSyncProposal(response.id, async () => {
-      return this.swapProgramProvider.createProposal(walletProvider, {
+      /**
+       * @dev Create on-chain.
+       */
+      await this.swapProgramProvider.createProposal(walletProvider, {
         id: response.id,
         expiredAt: new BN(createProposalDto.expiredAt.getTime()),
         ...createProposalDto,
       });
+
+      /**
+       * @returns propsal id.
+       */
+      return response.id;
     });
   }
 
@@ -95,6 +103,26 @@ export class SwapProgramService {
         walletProvider,
         await this.getProposal(proposalId),
         optionId
+      );
+    });
+  }
+
+  /**
+   * @dev The function to withdraw nfts to proposer owner.
+   * @param {WalletProvider} walletProvider
+   * @param {string} proposalId
+   */
+  public async redeemProposal(
+    walletProvider: WalletProvider,
+    proposalId: string
+  ) {
+    /**
+     * @dev Now create redeem proposal to on-chain, wrap in sync function to sync data after done processing on-chain.
+     */
+    return await this.requestAndSyncProposal(proposalId, async () => {
+      return this.swapProgramProvider.redeemProposal(
+        walletProvider,
+        await this.getProposal(proposalId)
       );
     });
   }

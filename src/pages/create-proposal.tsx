@@ -1,10 +1,11 @@
 import { FC, useMemo, useCallback, useRef, useState } from "react";
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
 import MainLayout from "@/src/layouts/main";
 import { CreateProposalProvider } from "@/src/hooks/pages/create-proposal";
 import { LayoutSection } from "@/src/components/layout-section";
 import { BreadCrumb } from "@/src/components/bread-crumb";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { StepProgressBar } from "@/src/components/stepper";
 import type { StepProgressHandle } from "@/src/components/stepper";
 import { Carousel } from "react-responsive-carousel";
@@ -21,6 +22,11 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import classnames from "classnames";
 
 const Layout: FC = () => {
+  /**
+   * @dev Use next router.
+   */
+  const router = useRouter();
+
   /**
    * @dev Import functions in screen context.
    */
@@ -50,6 +56,7 @@ const Layout: FC = () => {
    * @dev display modal when user confirm transaction successfully
    */
   const [modalOpened, setModalOpened] = useState(false);
+  const [proposalId, setProposalId] = useState("");
 
   /** @dev Initilize ref for stepper component. */
   const stepperRef = useRef<StepProgressHandle>(null);
@@ -110,18 +117,22 @@ const Layout: FC = () => {
     stepperRef.current.prevHandler();
   }, [currentStep]);
 
+  /**
+   * @dev Click submit to create proposal.
+   */
   const hanndleSubmitProposal = async () => {
     try {
-      await submitProposal();
+      const proposalId = await submitProposal();
+      setProposalId(proposalId);
       setModalOpened(true);
-    } catch {}
+    } catch (err: unknown) {
+      toast.error("Create proposal failed", (err as any).message);
+    }
   };
 
   function onFormSubmit() {
     return true;
   }
-
-  console.log({ isButtonNextDisabled });
 
   return (
     <MainLayout>
@@ -178,7 +189,10 @@ const Layout: FC = () => {
                   <Step4 />
                   <Step5
                     modalOpened={modalOpened}
-                    setModalOpened={(v) => setModalOpened(v)}
+                    setModalOpened={(v) => {
+                      setModalOpened(v);
+                      proposalId && router.push(`/proposal/${proposalId}`);
+                    }}
                   />
                 </Carousel>
               </div>

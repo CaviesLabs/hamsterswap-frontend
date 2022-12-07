@@ -14,6 +14,8 @@ export type SubMenuProps = {
 
 type ProposalStatus = "pending" | "success" | "canceled" | "expired";
 export type ProposalDetailProps = ProposalItemProps & {
+  proposalId: string;
+  proposalOwner: string;
   status: SwapProposalStatus;
 };
 
