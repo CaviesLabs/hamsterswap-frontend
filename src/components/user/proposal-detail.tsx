@@ -129,38 +129,58 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
               </div>
             </Col>
           </Row>
-          <div className="flex mt-[20px] justify-end">
-            {isPending && (
-              <>
+          <div className="flex mt-[20px] justify-between">
+            <div className="flex justify-center">
+              {status === SwapProposalStatus.FULFILLED && (
                 <button
-                  className="border-red-500 text-red-500 !border-2 px-10 rounded-3xl"
-                  onClick={() => setCancelModal(true)}
+                  className="border-purple text-purple !border-2 px-10 rounded-3xl"
+                  onClick={() => {}}
                 >
-                  Cancel Proposal
+                  Redeem
                 </button>
-                <CancelProposalModal
-                  isModalOpen={cancelModal}
-                  handleCancel={() => setCancelModal(false)}
-                  handleOk={() => {
-                    setCancelModal(false);
-                    setCanceledModal(true);
-                  }}
+              )}
+              {status === SwapProposalStatus.CANCELED && (
+                <button
+                  className="border-purple text-purple !border-2 px-10 rounded-3xl"
+                  onClick={() => {}}
+                >
+                  Withdraw
+                </button>
+              )}
+            </div>
+            <div className="flex justify-center">
+              {isPending && (
+                <>
+                  <button
+                    className="border-red-500 text-red-500 !border-2 px-10 rounded-3xl"
+                    onClick={() => setCancelModal(true)}
+                  >
+                    Cancel Proposal
+                  </button>
+                  <CancelProposalModal
+                    isModalOpen={cancelModal}
+                    handleCancel={() => setCancelModal(false)}
+                    handleOk={() => {
+                      setCancelModal(false);
+                      setCanceledModal(true);
+                    }}
+                  />
+                  <CanceledProposalModal
+                    isModalOpen={canceledModal}
+                    handleCancel={() => setCanceledModal(false)}
+                    handleOk={() => setCanceledModal(false)}
+                  />
+                </>
+              )}
+              <div className="ml-4">
+                <Button
+                  className={classnames(
+                    "!rounded-[100px] after:!rounded-[100px] !px-10 relative"
+                  )}
+                  text="View on market"
+                  onClick={() => router.push(`/proposal/${data.id}`)}
                 />
-                <CanceledProposalModal
-                  isModalOpen={canceledModal}
-                  handleCancel={() => setCanceledModal(false)}
-                  handleOk={() => setCanceledModal(false)}
-                />
-              </>
-            )}
-            <div className="ml-4">
-              <Button
-                className={classnames(
-                  "!rounded-[100px] after:!rounded-[100px] !px-10 relative"
-                )}
-                text="View on market"
-                onClick={() => router.push(`/proposal/${data.id}`)}
-              />
+              </div>
             </div>
           </div>
         </div>
