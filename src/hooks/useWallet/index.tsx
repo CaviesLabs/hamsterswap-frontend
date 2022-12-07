@@ -32,7 +32,7 @@ export interface WalletContextState {
   signMessage(message: string): Promise<Uint8Array>;
 
   /**
-   * @dev The function to disconnect wallet & logout to Hamster server and Firebase.
+   * @dev The function to disconnect walle & logout to Hamster server and Firebase.
    */
   disconnect(): Promise<void>;
 
