@@ -54,7 +54,7 @@ const UserProfile: FC = () => {
           </ul>
         </div>
       </ul>
-    </li>
+    </div>
   );
 };
 

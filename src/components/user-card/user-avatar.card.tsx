@@ -10,7 +10,7 @@ export const UserAvatarCardItem: FC<UserAvatarCardItemProps> = (props) => {
     <div className="flex items-center">
       <div className="left">
         <img
-          src={props.avatar}
+          src={avatar || "/assets/images/sample-avatar.png"}
           alt="User avatar"
           className="rounded-[50%] w-[44px] h-[44px]"
         />

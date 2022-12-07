@@ -8,25 +8,34 @@ import classnames from "classnames";
 import { Col, Row } from "antd";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import { CancelProposalModal } from "@/src/components/user/modal/cancel-proposal.modal";
-import { mockHaves, mockSwapOptions } from "@/src/utils";
 import { ProposalDetailProps } from "./types";
 import { CanceledProposalModal } from "@/src/components/user/modal/canceled-proposal.modal";
 import { WithdrewProposalModal } from "@/src/components/user/modal/withdrew-proposal.modal";
+import { useSelector } from "react-redux";
+import State from "@/src/redux/entities/state";
+import dayjs from "dayjs";
+import { DATE_TIME_FORMAT } from "@/src/utils";
+import { SwapItemStatus } from "@/src/entities/proposal.entity";
 
 export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
-  const { status } = props;
+  const { data, status, isGuaranteedPayment } = props;
+  const profile = useSelector((state: State) => state.hPublicProfile);
   const router = useRouter();
   const [cancelModal, setCancelModal] = useState(false);
   const [canceledModal, setCanceledModal] = useState(false);
   const [withdrewModal, setWithdrewModal] = useState(false);
 
+  const isPending =
+    status === SwapItemStatus.CREATED || status === SwapItemStatus.DEPOSITED;
+  const isExpired = new Date(data?.expiredAt) < new Date();
+
   return (
     <StyledProposalItem
-      className="w-full bg-dark10 min-h-[200px] rounded-[32px] rounded-[32px] mb-[46px]"
-      data-label={props.isGuaranteedPayment && "Guaranteed payment"}
+      className="w-full bg-[#F8F9FE] min-h-[200px] rounded-[32px] mb-[46px]"
+      data-label={isGuaranteedPayment && "Guaranteed payment"}
       {...props}
     >
-      {props.isGuaranteedPayment && (
+      {isGuaranteedPayment && (
         <svg
           width="24"
           height="24"
@@ -34,7 +43,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           style={{ zIndex: 3 }}
-          className="absolute right-0 left-[20px] md:left-[initial] md:right-[143px] w-[37px] top-[42px]"
+          className="absolute right-0 left-[20px] md:left-[initial] md:right-[86px] w-[37px] top-[40px]"
         >
           <path
             fillRule="evenodd"
@@ -44,46 +53,45 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
           />
         </svg>
       )}
-      <div className="relative bg-dark10 w-full h-full min-h-[200px]  rounded-[32px] pb-[50px]">
+      <div className="relative bg-dark10 w-full h-full min-h-[200px] rounded-[32px] pb-[50px]">
         <div className="pl-[20px] pr-[20px] md:pl-[77px]">
           <div className="pt-[120px] md:pt-[32px]">
             <UserAvatarCardItem
-              avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
-              orders={917}
-              completion={99.9}
+              avatar={profile?.avatar}
+              orders={profile?.ordersStat.orders}
+              completion={profile?.ordersStat.completedOrders}
               reputation={true}
-              walletAddress={utilsProvider.makeShort(
-                "F8qedeJsnrFnLfKpT4QN3GeAQqQMtq4izNLR1dKb5eRS",
-                4
-              )}
+              walletAddress={utilsProvider.makeShort(profile?.walletAddress, 4)}
             />
           </div>
           <ProposalItems
-            userAssets={mockHaves}
-            userLookingFor={mockSwapOptions}
+            userAssets={data.offerItems}
+            userLookingFor={data.swapOptions}
           />
-          <Row className="pt-10 md:px-10" gutter={20}>
-            <Col span={status === "pending" ? 12 : 24}>
+          <Row className="mt-4">
+            <Col span={isPending ? 12 : 24}>
               <div className="md:left">
                 <p className="semi-bold text-[16px] h-[36px] leading-9">Note</p>
                 <p className="mt-[12px] text-[16px] regular-text">
-                  If you have the items which are the same with my proposal
-                  items, you can text me to discuss and swap them
+                  {data?.note}
                 </p>
                 <p className="mt-[12px] text-[16px] regular-text text-dark60">
-                  Expiration date: 12 Dec, 2022 11:06
+                  Expiration date:{" "}
+                  {dayjs(data?.expiredAt).format(DATE_TIME_FORMAT)}
                 </p>
                 <p className="mt-[12px] text-[16px] regular-text text-dark60">
                   Status:{" "}
-                  {status === "success" ? (
+                  {status === SwapItemStatus.FULFILLED ? (
                     <span className="text-green font-bold">Swap Success</span>
                   ) : (
                     <span className="text-red-500 font-bold capitalize">
-                      {status}
+                      {status === SwapItemStatus.CANCELED
+                        ? "Canceled"
+                        : isExpired && "Expired"}
                     </span>
                   )}
                 </p>
-                {status === "expired" && (
+                {isExpired && (
                   <div className="mt-4">
                     <Button
                       onClick={() => setWithdrewModal(true)}
@@ -99,7 +107,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                 )}
               </div>
             </Col>
-            <Col span={status === "pending" ? 12 : 0}>
+            <Col span={isPending ? 12 : 0}>
               <div className="md:left">
                 <p className="semi-bold text-[16px] h-[36px] leading-9">
                   Warranty
@@ -116,7 +124,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
               </div>
             </Col>
           </Row>
-          {status === "pending" && (
+          {isPending && (
             <div className="flex mt-[20px] justify-end px-10">
               <button
                 className="border-red-500 text-red-500 !border-2 px-4 rounded-3xl"

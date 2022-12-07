@@ -11,6 +11,7 @@ export class GetNftDto {
 
 export class NftEntity {
   nft_address: string;
+  nft_collection_name: string;
   nft_name: string;
   nft_symbol: string;
   nft_status: string;

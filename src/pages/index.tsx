@@ -17,26 +17,6 @@ import Filter from "@/src/components/homepage/filter";
 const Layout: FC = () => {
   const proposals = useSelector((state: any) => state.proposals);
 
-  /**
-   * @dev Define proposal list to show.
-   */
-  const [exploreProposals, setExploreProposals] = useState<
-    SwapProposalEntity[]
-  >([]);
-
-  /** @dev Get explore proposal list */
-  useEffect(() => {
-    (async () => {
-      dispatch(
-        getExploreProposals((proposals) => {
-          setExploreProposals(proposals);
-        })
-      );
-    })();
-  }, []);
-
-  console.log(exploreProposals);
-
   return (
     <MainLayout>
       <Banner />
@@ -49,7 +29,7 @@ const Layout: FC = () => {
                 <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                   <div className="lg:col-span-8">
                     <div className="rounded-lg  lg:h-full px-[10px] py-[20px]">
-                      {proposals.map((proposal: SwapProposalEntity) => {
+                      {proposals?.map((proposal: SwapProposalEntity) => {
                         const p: any = { ...proposal };
                         const newOfferItems = p.offerItems.map(
                           (offerItem: SwapItemEntity) =>

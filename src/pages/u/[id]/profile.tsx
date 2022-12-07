@@ -1,10 +1,10 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import { ProfilePageProvider } from "@/src/hooks/pages/profile";
 import { LayoutSection } from "@/src/components/layout-section";
 import { UserInfoCard } from "@/src/components/user-card";
-import { sortOptions } from "@/src/utils";
+import { parseProposal, sortOptions } from "@/src/utils";
 import { Button } from "@hamsterbox/ui-kit";
 import Breadcrumb from "@/src/components/user/breadcrumb";
 import SubMenu from "@/src/components/user/sub-menu";
@@ -12,9 +12,38 @@ import Select from "@/src/components/select";
 import Search from "@/src/components/search";
 import { ProposalDetail } from "@/src/components/user/proposal-detail";
 import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
+import State from "@/src/redux/entities/state";
+import {
+  SwapItemEntity,
+  SwapOptionEntity,
+  SwapProposalEntity,
+} from "@/src/entities/proposal.entity";
 
 const Layout: FC = () => {
   const router = useRouter();
+  const profile = useSelector((state: State) => state.hPublicProfile);
+  const proposals = useSelector((state: State) => state.proposals);
+
+  /**
+   * Fetch proposal by user id
+   */
+  const dispatch = useDispatch();
+  const handleSearch = (_search?: string) => {
+    dispatch(
+      getExploreProposals({
+        walletAddress: profile.walletAddress,
+        options: {
+          search: _search,
+        },
+      })
+    );
+  };
+  useEffect(() => {
+    if (!profile || !profile.walletAddress) return;
+    handleSearch();
+  }, [profile]);
 
   return (
     <MainLayout>
@@ -57,10 +86,20 @@ const Layout: FC = () => {
               </div>
             </div>
           </div>
-          <ProposalDetail receiveItems={[]} swapItems={[]} status="pending" />
-          <ProposalDetail receiveItems={[]} swapItems={[]} status="success" />
-          <ProposalDetail receiveItems={[]} swapItems={[]} status="canceled" />
-          <ProposalDetail receiveItems={[]} swapItems={[]} status="expired" />
+          {proposals.map((proposal: SwapProposalEntity) => {
+            const p: any = { ...proposal };
+            const newOfferItems = p.offerItems.map(
+              (offerItem: SwapItemEntity) => parseProposal(offerItem)
+            );
+            const newSwapOptions = p.swapOptions.map(
+              (swapOption: SwapOptionEntity) => {
+                return swapOption.items.map((_) => parseProposal(_));
+              }
+            );
+            p.offerItems = newOfferItems;
+            p.swapOptions = newSwapOptions;
+            return <ProposalDetail key={p.id} data={p} status={p.status} />;
+          })}
         </div>
       </LayoutSection>
     </MainLayout>

@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { ProposalItemProps } from "./types";
 import { UserAvatarCardItem } from "@/src/components/user-card";
-import { RowNftItem } from "@/src/components/nfts";
+import { RowNftItem, RowNftItemProps } from "@/src/components/nfts";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "./proposal-item.style";
 import { Button } from "@hamsterbox/ui-kit";
@@ -18,7 +18,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
 
   return (
     <StyledProposalItem
-      className="w-full bg-[#F8F9FE] min-h-[200px] rounded-[32px] rounded-[32px] mb-[46px]"
+      className="w-full bg-[#F8F9FE] min-h-[200px] rounded-[32px] mb-[46px]"
       data-label={props.isGuaranteedPayment && "Guaranteed payment"}
       {...props}
     >
@@ -40,12 +40,12 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
           />
         </svg>
       )}
-      <div className="relative bg-dark10 w-full h-full min-h-[200px]  rounded-[32px] pb-[50px]">
+      <div className="relative bg-dark10 w-full h-full min-h-[200px] rounded-[32px] pb-[50px]">
         <div className="px-24">
           {props.isGuaranteedPayment && (
             <div className="pt-12">
               <UserAvatarCardItem
-                avatar={profile?.avatar || "/assets/images/sample-avatar.png"}
+                avatar={profile?.avatar}
                 orders={profile?.ordersStat.orders}
                 completion={profile?.ordersStat.completedOrders}
                 reputation={true}
@@ -69,9 +69,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
                 </div>
                 <div className="flex">
                   {props.receiveItems.length > 1 &&
-                    props.receiveItems
-                      .filter((item) => item.askingItems.length)
-                      .map((_, index) => (
+                    props.receiveItems.map((_, index) => (
                       <div className="ml-3" key={`ml3dix-${index}`}>
                         <Button
                           className="!rounded-3xl !px-4"
@@ -90,31 +88,17 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
           </Row>
           <Row className="mt-4">
             <Col span={11}>
-              {props.swapItems.map((item, index) => (
+              {props.swapItems.map((item: RowNftItemProps, index) => (
                 <div className="mb-4" key={`proposal-item-${index}`}>
-                  <RowNftItem
-                    image={item.nft_image_uri}
-                    name={item.nft_name}
-                    collection={item.nft_symbol}
-                    collectionId={item.nft_collection_id}
-                    nftId={item.nftId}
-                    assetType={item.assetType}
-                  />
+                  <RowNftItem {...item} />
                 </div>
               ))}
             </Col>
             <Col offset={2} span={11}>
               {props.receiveItems[optionSelected]?.map(
-                (item: any, index: number) => (
+                (item: RowNftItemProps, index: number) => (
                   <div className="mb-4" key={`swapoptions-${index}`}>
-                    <RowNftItem
-                      image={item.nft_image_uri}
-                      name={item.nft_name}
-                      collection={item.nft_symbol}
-                      collectionId={item.nft_collection_id}
-                      nftId={item.nftId}
-                      assetType={item.assetType}
-                    />
+                    <RowNftItem {...item} />
                   </div>
                 )
               )}

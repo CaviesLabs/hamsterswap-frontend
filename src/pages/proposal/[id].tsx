@@ -73,7 +73,6 @@ const Layout: FC = () => {
                   return swapOption.items.map((_) => parseProposal(_));
                 }) ?? []
               }
-              isGuaranteedPayment
             />
           </div>
 

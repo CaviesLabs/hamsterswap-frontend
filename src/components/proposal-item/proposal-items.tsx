@@ -23,7 +23,7 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
             <div className="semi-bold text-[16px] leading-9">looking for</div>
             <div className="flex">
               {userLookingFor.length > 1 &&
-                userLookingFor.map((_, index) => (
+                userLookingFor.map((_: any, index: number) => (
                   <div className="ml-3" key={`ml3dix-${index}`}>
                     <Button
                       className="!rounded-[100px] after:!rounded-[100px] !px-5"
@@ -42,7 +42,14 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
         <Col span={11}>
           {userAssets.map((item, index) => (
             <div className="mb-4" key={`proposal-item-${index}`}>
-              <RowNftItem {...item} assetType={item.type} />
+              <RowNftItem
+                image={item.nftMetadata[0]?.nft_image}
+                name={item.nftMetadata[0]?.nft_name}
+                collection={item.nftMetadata[0]?.nft_symbol}
+                collectionId={item.nftMetadata[0]?.nft_collection_id}
+                nftId={item.id}
+                assetType={item.type}
+              />
             </div>
           ))}
         </Col>

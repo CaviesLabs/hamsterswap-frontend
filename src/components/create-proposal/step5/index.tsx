@@ -4,6 +4,7 @@ import { Col, Row } from "antd";
 import { ConfirmedTransactionModal } from "@/src/components/create-proposal/step5/confirmed-transaction.modal";
 import { SummaryProps } from "@/src/components/create-proposal/step5/types";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
+import { parseOfferCreateProposal } from "@/src/utils";
 
 export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
   /**
@@ -24,8 +25,10 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
       </h3>
       <div className="block mt-[60px] flex">
         <ProposalItem
-          swapItems={offferedItems}
-          receiveItems={expectedItems}
+          swapItems={offferedItems.map((_) => parseOfferCreateProposal(_))}
+          receiveItems={expectedItems.map((_) =>
+            _.askingItems.map((p) => parseOfferCreateProposal(p))
+          )}
           isGuaranteedPayment={isGuaranteedPayment}
         />
       </div>
