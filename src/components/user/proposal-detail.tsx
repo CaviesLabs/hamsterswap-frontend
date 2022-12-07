@@ -28,6 +28,12 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   const isPending =
     status === SwapItemStatus.CREATED || status === SwapItemStatus.DEPOSITED;
   const isExpired = new Date(data?.expiredAt) < new Date();
+  const statusText =
+    status === SwapItemStatus.FULFILLED
+      ? "Swap Success"
+      : status === SwapItemStatus.CANCELED
+      ? "Canceled"
+      : isExpired && "Expired";
 
   return (
     <StyledProposalItem
@@ -79,18 +85,18 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                   Expiration date:{" "}
                   {dayjs(data?.expiredAt).format(DATE_TIME_FORMAT)}
                 </p>
-                <p className="mt-[12px] text-[16px] regular-text text-dark60">
-                  Status:{" "}
-                  {status === SwapItemStatus.FULFILLED ? (
-                    <span className="text-green font-bold">Swap Success</span>
-                  ) : (
-                    <span className="text-red-500 font-bold capitalize">
-                      {status === SwapItemStatus.CANCELED
-                        ? "Canceled"
-                        : isExpired && "Expired"}
-                    </span>
-                  )}
-                </p>
+                {statusText && (
+                  <p className="mt-[12px] text-[16px] regular-text text-dark60">
+                    Status:{" "}
+                    {status === SwapItemStatus.FULFILLED ? (
+                      <span className="text-green font-bold">{statusText}</span>
+                    ) : (
+                      <span className="text-red-500 font-bold capitalize">
+                        {statusText}
+                      </span>
+                    )}
+                  </p>
+                )}
                 {isExpired && (
                   <div className="mt-4">
                     <Button

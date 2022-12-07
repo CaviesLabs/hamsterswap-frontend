@@ -8,6 +8,7 @@ export type RowNftItemProps = {
   collectionId?: string;
   nftId?: string;
   assetType: SwapItemType;
+  nftAddress?: string;
 };
 
 /** @dev Define props for specific nft item which is editable. */
