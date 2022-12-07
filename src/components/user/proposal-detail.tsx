@@ -15,6 +15,7 @@ import State from "@/src/redux/entities/state";
 import dayjs from "dayjs";
 import { DATE_TIME_FORMAT } from "@/src/utils";
 import { SwapItemStatus } from "@/src/entities/proposal.entity";
+import ProposalItems from "@/src/components/proposal-item/proposal-items";
 
 export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   const { data, status, isGuaranteedPayment } = props;
