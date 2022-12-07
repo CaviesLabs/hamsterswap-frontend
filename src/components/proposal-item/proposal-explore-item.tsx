@@ -55,7 +55,8 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
       <div className="relative bg-dark10 w-full h-full min-h-[200px]  rounded-[32px] pb-[50px]">
         <div className="px-24 pt-12">
           <UserAvatarCardItem
-            avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
+            id={profile?.id}
+            avatar={profile?.avatar}
             orders={profile?.ordersStat.orders || 0}
             completion={completedOrderPercent(
               profile?.ordersStat.completedOrders,
