@@ -7,7 +7,7 @@ export const ProposalDetailPageProvider = (props: { children: ReactNode }) => {
   /**
    * @dev Add offered item.
    */
-  // const addOfferedItem = async 
+  // const addOfferedItem = async
 
   return (
     <ProposalPageContext.Provider value={{}}>

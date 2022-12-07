@@ -6,9 +6,9 @@ import { StyledProposalItem } from "@/src/components/proposal-item/proposal-item
 import { Button } from "@hamsterbox/ui-kit";
 import classnames from "classnames";
 import { Col, Row } from "antd";
-import ProposalItems from "@/src/components/proposal-item/proposal-items";
+// import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import { CancelProposalModal } from "@/src/components/user/modal/cancel-proposal.modal";
-import { mockHaves, mockSwapOptions } from "@/src/utils";
+// import { mockHaves, mockSwapOptions } from "@/src/utils";
 import { ProposalDetailProps } from "./types";
 import { CanceledProposalModal } from "@/src/components/user/modal/canceled-proposal.modal";
 import { WithdrewProposalModal } from "@/src/components/user/modal/withdrew-proposal.modal";
@@ -58,10 +58,10 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
               )}
             />
           </div>
-          <ProposalItems
+          {/* <ProposalItems
             userAssets={mockHaves}
             userLookingFor={mockSwapOptions}
-          />
+          /> */}
           <Row className="pt-10 md:px-10" gutter={20}>
             <Col span={status === "pending" ? 12 : 24}>
               <div className="md:left">
