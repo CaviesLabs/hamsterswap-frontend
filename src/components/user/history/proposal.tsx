@@ -24,9 +24,9 @@ function Proposal(props: ProposalHistoryProps) {
             <div key={`swapItems-${i}`} className="flex items-center mb-3">
               <img
                 className="w-10 rounded-lg"
-                src={item.nftMetadata[0].nft_image}
+                src={item.nftMetadata.nft_image}
               />
-              <p className="ml-2 text-lg">{item.nftMetadata[0].nft_name}</p>
+              <p className="ml-2 text-lg">{item.nftMetadata.nft_name}</p>
             </div>
           ))}
 
@@ -39,9 +39,9 @@ function Proposal(props: ProposalHistoryProps) {
             <div key={item.id} className="flex items-center mb-3">
               <img
                 className="w-10 rounded-lg"
-                src={item.nftMetadata[0].nft_image}
+                src={item.nftMetadata.nft_image}
               />
-              <p className="ml-2 text-lg">{item.nftMetadata[0].nft_name}</p>
+              <p className="ml-2 text-lg">{item.nftMetadata.nft_name}</p>
             </div>
           ))}
         </Col>

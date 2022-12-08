@@ -55,7 +55,7 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
             <div className="mb-4" key={`proposal-item-${index}`}>
               <RowNftItem
                 {...item}
-                collectionId={item.nftMetadata[0]?.nft_collection_id}
+                collectionId={item.nftMetadata?.nft_collection_id}
                 nftId={item.id}
                 assetType={item.type}
               />
@@ -67,7 +67,7 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
             <div className="mb-4" key={`swapoptions-${index}`}>
               <RowNftItem
                 {...item}
-                collectionId={item.nftMetadata[0]?.nft_collection_id}
+                collectionId={item.nftMetadata?.nft_collection_id}
                 nftId={item.id}
                 assetType={item.type as any}
               />

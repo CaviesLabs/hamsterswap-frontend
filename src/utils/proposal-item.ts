@@ -16,7 +16,7 @@ export const parseProposal = (item: SwapItemEntity) => {
     resp.collection = "Stripe";
     resp.image = "/assets/images/asset-cash.png";
   } else if (resp.type === SwapItemType.NFT) {
-    const meta = item.nftMetadata[0];
+    const meta = item.nftMetadata;
     resp.name = meta?.nft_name;
     resp.collection = meta?.nft_collection_name;
     resp.image = meta?.nft_image;

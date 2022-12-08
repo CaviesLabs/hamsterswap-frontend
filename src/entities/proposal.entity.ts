@@ -158,7 +158,7 @@ export class SwapItemEntity {
 
   status: SwapItemStatus;
 
-  nftMetadata?: NftEntity[];
+  nftMetadata?: NftEntity;
 
   id: string;
 }
