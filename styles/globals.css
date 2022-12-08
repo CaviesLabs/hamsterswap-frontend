@@ -77,6 +77,8 @@ a {
   /* height: 2em */
 }
 
-div {
-  /* overflow-x: hidden !important; */
+.hamster-modal > .ant-modal-content,
+.hamster-modal .ant-modal-header,
+.hamster-modal .ant-modal-footer {
+  background-color: #F8F9FE;
 }
