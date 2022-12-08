@@ -22,6 +22,7 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
    */
   const { addOfferItem, offferedItems } = useCreateProposal();
 
+  // TODO filter NFT in whitelist
   const nftsMemo = useMemo<NftEntity[]>(() => {
     return ownerNftList
       .filter(

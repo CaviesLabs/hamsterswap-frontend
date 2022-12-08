@@ -40,7 +40,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
           />
         </svg>
       )}
-      <div className="relative bg-dark10 w-full h-full min-h-[200px] rounded-[32px] pb-[50px]">
+      <div className="relative bg-[#F8F9FE] w-full h-full min-h-[200px] rounded-[32px] pb-[50px]">
         <div className="px-24">
           {props.isGuaranteedPayment && (
             <div className="pt-12">
