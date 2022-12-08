@@ -16,23 +16,20 @@ export class ProposalService {
   public async getProposals(
     getProposalsDto?: GetProposalsDto
   ): Promise<SwapProposalEntity> {
-    return networkProvider.requestWithCredentials<SwapProposalEntity>(
-      "/proposal",
-      {
-        method: "GET",
-        params: getProposalsDto
-          ? {
-              ownerAddresses: getProposalsDto.walletAddress,
-              ...getProposalsDto.options,
-            }
-          : {},
-        paramsSerializer: {
-          serialize: (params: any) => {
-            return qs.stringify(params, { arrayFormat: "repeat" });
-          },
+    return networkProvider.request<SwapProposalEntity>("/proposal", {
+      method: "GET",
+      params: getProposalsDto
+        ? {
+            ownerAddresses: getProposalsDto.walletAddress,
+            ...getProposalsDto.options,
+          }
+        : {},
+      paramsSerializer: {
+        serialize: (params: any) => {
+          return qs.stringify(params, { arrayFormat: "repeat" });
         },
-      }
-    );
+      },
+    });
   }
 
   /**
