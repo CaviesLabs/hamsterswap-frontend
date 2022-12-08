@@ -104,10 +104,10 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
       </div>
       <Collapse isOpened={collapse}>
         <div className="px-[20px]">
-          <div className="block mt-[20px]">
+          <div className="flex items-center mt-[20px]">
             <Button
               text="Add NFT"
-              className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[120px]"
+              className="!rounded-[100px] after:!rounded-[100px] float-right !px-4"
               icon={<PlusIcon />}
               onClick={() => setIsAddNft(true)}
               size="small"
@@ -118,56 +118,62 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
               handleOk={() => setIsAddNft(false)}
               handleCancel={() => setIsAddNft(false)}
             />
-            <Button
-              text="Add SOL"
-              className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[120px] ml-[12px]"
-              theme={{
-                backgroundColor: "#41ADD1",
-                color: "#FFFFFF",
-              }}
-              icon={<PlusIcon />}
-              onClick={() => setIsAddSol(true)}
-              size="small"
-            />
-            <AddSolModal
-              isModalOpen={isAddSol}
-              handleOk={(value: string) => handleAddSol(value)}
-              handleCancel={() => setIsAddSol(false)}
-            />
-            <Button
-              text="Add in-game item"
-              className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[180px] ml-[12px]"
-              theme={{
-                backgroundColor: "#F47048",
-                color: "#FFFFFF",
-              }}
-              icon={<PlusIcon />}
-              onClick={() => setIsAddGameItem(true)}
-              size="small"
-            />
-            <AddGameItemModal
-              isModalOpen={isAddGameItem}
-              handleOk={() => setIsAddGameItem(false)}
-              handleCancel={() => setIsAddGameItem(false)}
-            />
-            <Button
-              text="Add Cash"
-              className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[120px] ml-[12px]"
-              theme={{
-                backgroundColor: "#97B544",
-                color: "#FFFFFF",
-              }}
-              icon={<PlusIcon />}
-              onClick={() => setIsAddCash(true)}
-              size="small"
-            />
-            <AddCashModal
-              isModalOpen={isAddCash}
-              handleOk={(value: string, method: string) =>
-                handleAddCash(value, method)
-              }
-              handleCancel={() => setIsAddCash(false)}
-            />
+            <div className="ml-[12px]">
+              <Button
+                text="Add SOL"
+                className="!rounded-[100px] after:!rounded-[100px] !px-4"
+                theme={{
+                  backgroundColor: "#41ADD1",
+                  color: "#FFFFFF",
+                }}
+                icon={<PlusIcon />}
+                onClick={() => setIsAddSol(true)}
+                size="small"
+              />
+              <AddSolModal
+                isModalOpen={isAddSol}
+                handleOk={(value: string) => handleAddSol(value)}
+                handleCancel={() => setIsAddSol(false)}
+              />
+            </div>
+            <div className="ml-[12px]">
+              <Button
+                text="Add in-game item"
+                className="!rounded-[100px] after:!rounded-[100px] !px-4"
+                theme={{
+                  backgroundColor: "#F47048",
+                  color: "#FFFFFF",
+                }}
+                icon={<PlusIcon />}
+                onClick={() => setIsAddGameItem(true)}
+                size="small"
+              />
+              <AddGameItemModal
+                isModalOpen={isAddGameItem}
+                handleOk={() => setIsAddGameItem(false)}
+                handleCancel={() => setIsAddGameItem(false)}
+              />
+            </div>
+            <div className="ml-[12px]">
+              <Button
+                text="Add Cash"
+                className="!rounded-[100px] after:!rounded-[100px] !px-4"
+                theme={{
+                  backgroundColor: "#97B544",
+                  color: "#FFFFFF",
+                }}
+                icon={<PlusIcon />}
+                onClick={() => setIsAddCash(true)}
+                size="small"
+              />
+              <AddCashModal
+                isModalOpen={isAddCash}
+                handleOk={(value: string, method: string) =>
+                  handleAddCash(value, method)
+                }
+                handleCancel={() => setIsAddCash(false)}
+              />
+            </div>
           </div>
           <div className="block">
             <div className="md:flex py-5 flex-wrap">

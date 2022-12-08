@@ -158,7 +158,11 @@ export const Ref: ForwardRefRenderFunction<
                 step.state !== StepStates.ERROR && (
                   <span className={styles["step-index"]}>{i + 1}</span>
                 )}
-              <div className={`${styles["step-label"]} ${labelClass || ""}`}>
+              <div
+                className={`${styles["step-label"]} ${labelClass || ""} ${
+                  step.state === StepStates.CURRENT && "semi-bold"
+                }`}
+              >
                 {step.label}
                 {step.subtitle && (
                   <div
@@ -175,7 +179,7 @@ export const Ref: ForwardRefRenderFunction<
         })}
       </ul>
       <div className="relative">
-        <div className="absolute w-full top-16 left-0">
+        <div className="absolute w-full top-14 left-0">
           <div className="flex">
             {state.map((step, i) => (
               <div className="w-1/5" key={`active-marker-${i}`}>
