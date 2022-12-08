@@ -51,10 +51,6 @@ const Layout: FC = () => {
     handleSearch();
   }, [profile]);
 
-  useEffect(() => {
-    console.log(router.query.id);
-  }, [router.query]);
-
   return (
     <MainLayout>
       <Breadcrumb title="Profile" />

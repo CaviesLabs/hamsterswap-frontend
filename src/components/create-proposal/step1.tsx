@@ -10,14 +10,10 @@ import { RowEditNftItem } from "@/src/components/nfts";
 import { FC, useEffect, useState } from "react";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 import { useDispatch, useSelector } from "react-redux";
-import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
 import { getListNft } from "@/src/redux/actions/nft/nft.action";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import {
-  OfferedItemEntity,
-  // SwapItemType,
-} from "@/src/entities/proposal.entity";
+import { OfferedItemEntity } from "@/src/entities/proposal.entity";
 
 export const Step1: FC = () => {
   const wallet = useConnectedWallet();
@@ -36,7 +32,6 @@ export const Step1: FC = () => {
   const [isAddCash, setIsAddCash] = useState(false);
 
   const dispatch = useDispatch();
-  const proposal = useSelector((state: any) => state.proposal);
   const swapItems = useSelector((state: any) => state.proposal?.swapItems);
 
   useEffect(() => {
@@ -64,12 +59,6 @@ export const Step1: FC = () => {
       image: "/assets/images/solana-icon.svg",
       value,
     });
-    dispatch(
-      setProposal({
-        ...proposal,
-        swapItems: newSwapItems,
-      })
-    );
     setIsAddSol(false);
   };
 
@@ -90,12 +79,6 @@ export const Step1: FC = () => {
       image: "/assets/images/asset-cash.png",
       value,
     });
-    dispatch(
-      setProposal({
-        ...proposal,
-        swapItems: newSwapItems,
-      })
-    );
     setIsAddCash(false);
   };
 

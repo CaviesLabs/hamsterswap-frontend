@@ -12,13 +12,10 @@ import {
 import classnames from "classnames";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 import { ExpectedItemProps } from "@/src/components/create-proposal/step2/types";
-import { useDispatch, useSelector } from "react-redux";
-import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
+import { useSelector } from "react-redux";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 
 export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
-  const dispatch = useDispatch();
-
   const { expectedItems, removeExpectedItem } = useCreateProposal();
 
   const { optionName, defaultCollapsed } = props;
@@ -58,12 +55,6 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
       value,
     });
     newReceiveItems[props.index] = newChildReceiveItems;
-    dispatch(
-      setProposal({
-        ...proposal,
-        receiveItems: newReceiveItems,
-      })
-    );
     setIsAddSol(false);
   };
 
@@ -86,12 +77,6 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
       value,
     });
     newReceiveItems[props.index] = newChildReceiveItems;
-    dispatch(
-      setProposal({
-        ...proposal,
-        receiveItems: newReceiveItems,
-      })
-    );
     setIsAddCash(false);
   };
 
