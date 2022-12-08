@@ -1,12 +1,9 @@
 import { FC } from "react";
 import { Form } from "antd";
 import DatetimePicker from "@/src/components/create-proposal/step3/datetime-picker";
-import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import { useDispatch, useSelector } from "react-redux";
 
 export const Step3: FC<any> = (props: any) => {
-  const dispatch = useDispatch();
   const { form } = props;
 
   /**
@@ -14,24 +11,8 @@ export const Step3: FC<any> = (props: any) => {
    */
   const { note, setNote, setExpiredTime } = useCreateProposal();
 
-  const proposal = useSelector((state: any) => state.proposal);
-
-  const handleFormChange = () => {
-    dispatch(
-      setProposal({
-        ...proposal,
-        additionalInfo: form.getFieldsValue(),
-      })
-    );
-  };
-
   return (
-    <Form
-      onValuesChange={handleFormChange}
-      form={form}
-      layout="vertical"
-      requiredMark={false}
-    >
+    <Form form={form} layout="vertical" requiredMark={false}>
       <h3 className="text-3xl font-bold tracking-tight text-gray-900">
         Additional Info
       </h3>
