@@ -143,19 +143,19 @@ const Layout: FC = () => {
             <div className="mt-5 block md:flex">
               <p className="text-[32px]">Create a Proposal</p>
             </div>
-            <div className="mt-8 pb-[20px]">
+            <div className="mt-[75px] pb-10">
               <StepProgressBar
                 ref={stepperRef}
                 startingStep={0}
                 onSubmit={onFormSubmit}
                 steps={[
                   {
-                    label: "Swap Items",
-                    name: "Swap Items",
+                    label: "Your Items",
+                    name: "Your Items",
                   },
                   {
-                    label: "Expect Items",
-                    name: "Expect Items",
+                    label: "Expected Items",
+                    name: "Expected Items",
                   },
                   {
                     label: "Additional info",

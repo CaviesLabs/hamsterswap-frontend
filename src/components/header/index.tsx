@@ -155,14 +155,14 @@ const Header: FC = () => {
       })}
       id="app-header"
     >
-      <div className="absolute top-0 left-0 w-full py-[18px] md:py-[25px] pl-[20px] pr-0 flow-root">
-        <div className="lg:max-w-[1180px] lg:mx-auto">
+      <div className="absolute top-0 left-0 w-full py-[18px] md:py-[25px] flow-root">
+        <div className="lg:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="float-left logo-wrapper md:mt-0 mt-[0px]">
             <a href="/">
               <img
                 src="/assets/images/logo.png"
                 className={classnames(
-                  "w-[170px] md:w-[250px] dark:hidden mt-[2px] md:mt-0",
+                  "w-[170px] md:w-[190px] dark:hidden mt-[2px] md:mt-0",
                   isHomepage ? "hidden" : "block"
                 )}
               />

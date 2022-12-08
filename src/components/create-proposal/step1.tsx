@@ -90,11 +90,11 @@ export const Step1: FC = () => {
       <p className="regular-text text-[16px] text-dark60">
         Max 4 items per swap. Choose an item below to add:
       </p>
-      <div className="block mt-[20px]">
+      <div className="flex items-center mt-[20px]">
         <Button
           size="small"
           text="Add NFT"
-          className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
+          className="!rounded-[100px] after:!rounded-[100px] !px-4"
           icon={<PlusIcon />}
           onClick={() => setIsAddNft(true)}
         />
@@ -103,56 +103,62 @@ export const Step1: FC = () => {
           handleOk={() => setIsAddNft(false)}
           handleCancel={() => setIsAddNft(false)}
         />
-        <Button
-          size="small"
-          text="Add SOL"
-          className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] ml-[12px]"
-          theme={{
-            backgroundColor: "#41ADD1",
-            color: "#FFFFFF",
-          }}
-          icon={<PlusIcon />}
-          onClick={() => setIsAddSol(true)}
-        />
-        <AddSolModal
-          isModalOpen={isAddSol}
-          handleOk={(value: string) => handleAddSol(value)}
-          handleCancel={() => setIsAddSol(false)}
-        />
-        <Button
-          size="small"
-          text="Add in-game item"
-          className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[250px] ml-[12px]"
-          theme={{
-            backgroundColor: "#F47048",
-            color: "#FFFFFF",
-          }}
-          icon={<PlusIcon />}
-          onClick={() => setIsAddGameItem(true)}
-        />
-        <AddGameItemModal
-          isModalOpen={isAddGameItem}
-          handleOk={() => setIsAddGameItem(false)}
-          handleCancel={() => setIsAddGameItem(false)}
-        />
-        <Button
-          size="small"
-          text="Add Cash"
-          className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] ml-[12px]"
-          theme={{
-            backgroundColor: "#97B544",
-            color: "#FFFFFF",
-          }}
-          icon={<PlusIcon />}
-          onClick={() => setIsAddCash(true)}
-        />
-        <AddCashModal
-          isModalOpen={isAddCash}
-          handleOk={(value: string, method: string) =>
-            handleAddCash(value, method)
-          }
-          handleCancel={() => setIsAddCash(false)}
-        />
+        <div className="ml-[12px]">
+          <Button
+            size="small"
+            text="Add SOL"
+            className="!rounded-[100px] after:!rounded-[100px] !px-4"
+            theme={{
+              backgroundColor: "#41ADD1",
+              color: "#FFFFFF",
+            }}
+            icon={<PlusIcon />}
+            onClick={() => setIsAddSol(true)}
+          />
+          <AddSolModal
+            isModalOpen={isAddSol}
+            handleOk={(value: string) => handleAddSol(value)}
+            handleCancel={() => setIsAddSol(false)}
+          />
+        </div>
+        <div className="ml-[12px]">
+          <Button
+            size="small"
+            text="Add in-game item"
+            className="!rounded-[100px] after:!rounded-[100px] !px-4"
+            theme={{
+              backgroundColor: "#F47048",
+              color: "#FFFFFF",
+            }}
+            icon={<PlusIcon />}
+            onClick={() => setIsAddGameItem(true)}
+          />
+          <AddGameItemModal
+            isModalOpen={isAddGameItem}
+            handleOk={() => setIsAddGameItem(false)}
+            handleCancel={() => setIsAddGameItem(false)}
+          />
+        </div>
+        <div className="ml-[12px]">
+          <Button
+            size="small"
+            text="Add Cash"
+            className="!rounded-[100px] after:!rounded-[100px] !px-4"
+            theme={{
+              backgroundColor: "#97B544",
+              color: "#FFFFFF",
+            }}
+            icon={<PlusIcon />}
+            onClick={() => setIsAddCash(true)}
+          />
+          <AddCashModal
+            isModalOpen={isAddCash}
+            handleOk={(value: string, method: string) =>
+              handleAddCash(value, method)
+            }
+            handleCancel={() => setIsAddCash(false)}
+          />
+        </div>
       </div>
       <div className="block mt-[20px]">
         <div className="md:flex pt-[40px] flex-wrap">
