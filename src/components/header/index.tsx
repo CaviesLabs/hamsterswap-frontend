@@ -169,7 +169,7 @@ const Header: FC = () => {
               <img
                 src="/assets/images/logo-dark.png"
                 className={classnames(
-                  "w-[95px] md:w-[149px] dark:block",
+                  "w-[95px] md:w-[180px] dark:block",
                   isHomepage ? "block" : "hidden"
                 )}
               />
