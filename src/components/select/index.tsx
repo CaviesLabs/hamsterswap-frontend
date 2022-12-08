@@ -25,7 +25,7 @@ function Select(props: SelectProps) {
             inList ? "max-w-[36px]" : "max-w-[48px]"
           )}
         >
-          <img className="rounded-[50%]" src={option.image} />
+          <img className="rounded-[50%] aspect-square" src={option.image} />
         </div>
         <div className="pl-3 w-5/6 h-18 flex flex-col justify-between">
           <p className="text-[16px] regular-text">
@@ -76,17 +76,17 @@ function Select(props: SelectProps) {
             </div>
           )}
 
-          <div>
+          <div className="overflow-y-scroll max-h-64">
             {props.options.map((option, i) => (
               <div
-                className="cursor-pointer hover:bg-dark30"
+                className="cursor-pointer hover:bg-dark30 px-6"
                 key={`${option.value}${i}`}
                 onClick={() => {
                   onChange && onChange(option.value);
                   setIsOpenDropdown(false);
                 }}
               >
-                <div className="px-2 flex items-center border-b py-4">
+                <div className="flex items-center border-b py-4">
                   {renderItemInfo(option)}
                   <div className="mr-2">
                     {values?.indexOf(option.value) > -1 && <CheckIcon />}
