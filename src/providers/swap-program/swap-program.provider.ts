@@ -505,6 +505,7 @@ export class SwapProgramProvider {
       });
     } catch (err: any) {
       console.error("Error when wrap proposal", err);
+      throw Error(err);
     }
   }
 

@@ -27,7 +27,7 @@ export const WalletEmptyModal: FC<BuyModalProps> = (props) => {
           </p>
 
           <button
-            onClick={() => props.handleCancel}
+            onClick={props.handleCancel}
             className="w-full bg-purple text-white rounded-3xl text-lg font-bold py-3 hover:bg-blurPurple"
           >
             Got it

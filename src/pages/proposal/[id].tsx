@@ -22,12 +22,14 @@ import { useWallet } from "@/src/hooks/useWallet";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import dayjs from "dayjs";
 import { useWalletKit } from "@gokiprotocol/walletkit";
+import { WalletEmptyModal } from "@/src/components/modal";
 
 const Layout: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { connect } = useWalletKit();
   const { programService, solanaWallet } = useWallet();
+  const [isTransFailed, setIsTransFailed] = useState(false);
   /**
    * @dev Get user wallet
    */
@@ -47,8 +49,7 @@ const Layout: FC = () => {
       );
       toast.success("Wrap proposal successfully");
     } catch (err: any) {
-      console.log("error", err);
-      toast.error("Swap proposal failed!", err);
+      setIsTransFailed(true);
     }
   }, [wallet, programService, solanaWallet, proposal]);
 
@@ -156,6 +157,11 @@ const Layout: FC = () => {
           </div>
         </LayoutSection>
       </StyledProposalDetailPage>
+      <WalletEmptyModal
+        handleOk={() => setIsTransFailed(false)}
+        handleCancel={() => setIsTransFailed(false)}
+        isModalOpen={isTransFailed}
+      />
     </MainLayout>
   );
 };
