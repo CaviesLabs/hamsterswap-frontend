@@ -1,6 +1,6 @@
 import { SET_NFT, GET_LIST_NFT } from "@/src/redux/actions";
 import { CallBackSaga } from "@/src/redux/entities";
-import { NftDto, GetListNftDto } from "@/src/dto/nft.dto";
+import { NftDto, GetListNftDto, NftEntity } from "@/src/dto/nft.dto";
 
 /**
  * @param {GetListNftDto} getListNftDto
@@ -24,7 +24,7 @@ export const getListNft = (
  * @description
  * Update nft list in redux state
  */
-export const setNft = (data: NftDto) => ({
+export const setNft = (data: NftEntity[]) => ({
   type: SET_NFT,
   payload: data,
 });
