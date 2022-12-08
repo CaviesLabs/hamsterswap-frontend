@@ -21,10 +21,12 @@ import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
 import { useWallet } from "@/src/hooks/useWallet";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import dayjs from "dayjs";
+import { useWalletKit } from "@gokiprotocol/walletkit";
 
 const Layout: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { connect } = useWalletKit();
   const { programService, solanaWallet } = useWallet();
   /**
    * @dev Get user wallet
@@ -34,7 +36,9 @@ const Layout: FC = () => {
   const [proposal, setProposal] = useState<SwapProposalEntity>();
 
   const handleSwap = useCallback(async () => {
-    if (!proposal || !solanaWallet.publicKey) return;
+    if (!proposal) return;
+    if (!solanaWallet.publicKey) return connect();
+
     try {
       await programService.swapProposal(
         solanaWallet,
@@ -131,23 +135,23 @@ const Layout: FC = () => {
 
           <div className="mt-12">
             <Row justify="end">
-              {solanaWallet.publicKey &&
+              {(!solanaWallet.publicKey ||
                 solanaWallet.publicKey?.toBase58().toString() !==
-                  proposal?.ownerAddress && (
-                  <>
-                    <Button
-                      text="Buy"
-                      className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
-                      onClick={handleSwap}
-                    />
-                    <Button
-                      text="Order / Bid"
-                      shape="secondary"
-                      className="!border-[1.5px] ml-[24px] !rounded-[100px] after:!rounded-[100px] float-right !w-[150px] md:!w-[200px]"
-                      onClick={handleSwap}
-                    />
-                  </>
-                )}
+                  proposal?.ownerAddress) && (
+                <>
+                  <Button
+                    text="Buy"
+                    className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
+                    onClick={handleSwap}
+                  />
+                  <Button
+                    text="Order / Bid"
+                    shape="secondary"
+                    className="!border-[1.5px] ml-[24px] !rounded-[100px] after:!rounded-[100px] float-right !w-[150px] md:!w-[200px]"
+                    onClick={handleSwap}
+                  />
+                </>
+              )}
             </Row>
           </div>
         </LayoutSection>
