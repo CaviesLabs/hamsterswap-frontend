@@ -90,6 +90,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
       }}
       width={600}
       footer={null}
+      className="hamster-modal"
     >
       <StyledModal>
         <div className="pt-6">

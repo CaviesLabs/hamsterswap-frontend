@@ -10,6 +10,7 @@ export const WalletEmptyModal: FC<BuyModalProps> = (props) => {
       onCancel={props.handleCancel}
       width={650}
       footer={null}
+      className="hamster-modal"
     >
       <div className="py-6">
         <div className="flex flex-col items-center max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">

@@ -19,6 +19,8 @@ export const AddExpectedNftForm = (props: FormProps) => {
         NFT Collection <span className="text-red-500">*</span>
       </p>
       <Select
+        showSearch
+        searchPlaceholder="Search NFT Collection name"
         className="rounded-3xl p-3"
         placeholder="Search for NFT, collection"
         options={allowNTFCollections.map((_) => ({

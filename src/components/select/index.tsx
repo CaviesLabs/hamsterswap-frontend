@@ -15,16 +15,23 @@ function Select(props: SelectProps) {
   const { showSearch, values, onChange } = props;
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
 
-  const renderItemInfo = (option: OptionProps) => {
+  const renderItemInfo = (option: OptionProps, inList?: boolean) => {
     if (!option) return;
     return (
       <>
-        <div className="w-1/6 max-w-[60px]">
+        <div
+          className={classnames(
+            "w-1/6",
+            inList ? "max-w-[36px]" : "max-w-[48px]"
+          )}
+        >
           <img className="rounded-[50%]" src={option.image} />
         </div>
-        <div className="pl-6 w-5/6 h-18 flex flex-col justify-between">
-          <p className="text-lg">{option.label || option.value}</p>
-          <p className="text-lg text-gray-400">{option.description}</p>
+        <div className="pl-3 w-5/6 h-18 flex flex-col justify-between">
+          <p className="text-[16px] regular-text">
+            {option.label || option.value}
+          </p>
+          <p className="text-[16px] text-gray-400">{option.description}</p>
         </div>
       </>
     );
@@ -39,20 +46,26 @@ function Select(props: SelectProps) {
       <div
         className={classnames(
           props.className,
-          "p-3 text-lg font-regular border rounded-2xl cursor-pointer flex justify-between items-center"
+          "py-3 px-4 text-lg font-regular border rounded-2xl cursor-pointer flex justify-between items-center"
         )}
         style={{ backgroundColor: "white", color: "#20242D" }}
         onClick={() => setIsOpenDropdown(!isOpenDropdown)}
       >
         {props.mode === "multiple" || !values || !values[0]
           ? props.placeholder
-          : renderItemInfo(props.options.find((_) => _.value === values[0]))}
+          : renderItemInfo(
+              props.options.find((_) => _.value === values[0]),
+              true
+            )}
         <ChevronDownIcon className="h-5 w-5" />
       </div>
       {isOpenDropdown && (
         <div
           ref={ref}
           className="bg-white rounded-2xl mt-2 border absolute w-full z-10"
+          style={{
+            boxShadow: "0px 25px 40px -10px rgba(28, 39, 49, 0.08)",
+          }}
         >
           {showSearch && (
             <div className="p-4">
@@ -68,7 +81,10 @@ function Select(props: SelectProps) {
               <div
                 className="cursor-pointer hover:bg-dark30"
                 key={`${option.value}${i}`}
-                onClick={() => onChange && onChange(option.value)}
+                onClick={() => {
+                  onChange && onChange(option.value);
+                  setIsOpenDropdown(false);
+                }}
               >
                 <div className="px-2 flex items-center border-b py-4">
                   {renderItemInfo(option)}
