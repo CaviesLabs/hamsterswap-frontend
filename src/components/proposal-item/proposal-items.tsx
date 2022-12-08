@@ -3,6 +3,7 @@ import { ProposalItemsProps } from "@/src/components/proposal-item/types";
 import { Col, Row } from "antd";
 import { Button } from "@hamsterbox/ui-kit";
 import { RowNftItem } from "@/src/components/nfts";
+import classnames from "classnames";
 
 const ProposalItems: FC<ProposalItemsProps> = (props) => {
   const { userAssets, userLookingFor } = props;
@@ -26,10 +27,20 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
                 userLookingFor.map((_: any, index: number) => (
                   <div className="ml-3" key={`ml3dix-${index}`}>
                     <Button
-                      className="!rounded-[100px] after:!rounded-[100px] !px-5"
+                      className={classnames(
+                        "!rounded-[100px] after:!rounded-[100px] !px-5",
+                        optionSelected !== index &&
+                          "!border !border-solid !border-dark60"
+                      )}
                       size="small"
                       shape={optionSelected === index ? "primary" : "secondary"}
                       text={`Option ${index + 1}`}
+                      theme={
+                        optionSelected !== index && {
+                          color: "#7886A0",
+                          backgroundColor: "transparent",
+                        }
+                      }
                       onClick={() => setOptionSelected(index)}
                     />
                   </div>

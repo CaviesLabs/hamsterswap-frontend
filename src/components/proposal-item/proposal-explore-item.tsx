@@ -26,7 +26,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
 
   return (
     <StyledProposalItem
-      className="w-full bg-dark10 min-h-[200px] rounded-[32px] rounded-[32px] mb-[46px]"
+      className="w-full bg-[#F8F9FE] min-h-[200px] rounded-[32px] rounded-[32px] mb-[46px]"
       data-label={props.isGuaranteedPayment && "Guaranteed payment"}
       {...props}
     >
@@ -48,7 +48,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
           />
         </svg>
       )}
-      <div className="relative bg-dark10 w-full h-full min-h-[200px]  rounded-[32px] pb-[50px]">
+      <div className="relative bg-[#F8F9FE] w-full h-full min-h-[200px]  rounded-[32px] pb-[50px]">
         <div className="px-24 pt-12">
           <UserAvatarCardItem
             id={profile?.id}
