@@ -169,7 +169,7 @@ const Header: FC = () => {
               <img
                 src="/assets/images/logo-dark.png"
                 className={classnames(
-                  "w-[95px] md:w-[149px] dark:block",
+                  "w-[95px] md:w-[180px] dark:block",
                   isHomepage ? "block" : "hidden"
                 )}
               />
@@ -181,9 +181,9 @@ const Header: FC = () => {
                 <div className="relative">
                   {" "}
                   <Button
-                    className="!px-4"
+                    className="!px-8"
                     size="small"
-                    text="Connect"
+                    text="Connect Wallet"
                     onClick={connectWallet}
                   />{" "}
                 </div>

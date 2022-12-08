@@ -1,9 +1,9 @@
 import {
-  SET_PROPOSALS,
   GET_PROPSALS,
   SET_PROPSALS,
   GET_EXPLORE_PROPOSALS,
   GET_PROPOSAL,
+  SET_PROPOSAL,
 } from "@/src/redux/actions";
 import { ProposalItem } from "@/src/components/user/types";
 import { CallBackSaga } from "@/src/redux/entities";
@@ -20,7 +20,7 @@ import { DetailDto } from "@/src/dto/detail.dto";
  * Update proposal list in redux state
  */
 export const setProposal = (data: ProposalItem) => ({
-  type: SET_PROPOSALS,
+  type: SET_PROPOSAL,
   payload: data,
 });
 

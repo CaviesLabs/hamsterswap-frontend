@@ -11,7 +11,7 @@ export const SET_PROPOSALS = "SET_PROPOSALS";
 /**
  * Actions for modify user proposals state.
  */
-export const SET_PROPSAL = "SET_PROPOSAL";
+export const SET_PROPOSAL = "SET_PROPOSAL";
 export const GET_PROPOSAL = "GET_PROPOSAL";
 export const SET_PROPSALS = "SET_PROPOSALS";
 export const GET_PROPSALS = "GET_PROPSALS";

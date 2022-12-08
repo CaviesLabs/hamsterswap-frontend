@@ -35,7 +35,7 @@ function Proposal(props: ProposalHistoryProps) {
           </a>
         </Col>
         <Col span={6}>
-          {swapOption.items.map((item) => (
+          {swapOption?.items.map((item) => (
             <div key={item.id} className="flex items-center mb-3">
               <img
                 className="w-10 rounded-lg"

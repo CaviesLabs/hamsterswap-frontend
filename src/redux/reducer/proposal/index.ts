@@ -1,4 +1,4 @@
-import { SET_PROPOSALS, SET_PROPSAL } from "@/src/redux/actions";
+import { SET_PROPOSALS, SET_PROPOSAL } from "@/src/redux/actions";
 import { Action } from "@/src/redux/entities/interfaces/action";
 import { SwapProposalEntity } from "@/src/entities/proposal.entity";
 import { ProposalDto } from "@/src/dto/proposal.dto";
@@ -24,7 +24,7 @@ export const proposalsReducer = (
  * @param {Action} action
  */
 export const proposalReducer = (state: ProposalDto = null, action: Action) => {
-  if (action.type === SET_PROPSAL) {
+  if (action.type === SET_PROPOSAL) {
     return action.payload;
   }
   return state;
