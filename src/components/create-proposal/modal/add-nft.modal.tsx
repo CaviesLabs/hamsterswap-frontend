@@ -7,7 +7,7 @@ import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styl
 import { useMain } from "@/src/hooks/pages/main";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
-import { NftEntity } from "@/src/dto/nft.dto";
+import { NftEntity, NftStatus } from "@/src/dto/nft.dto";
 
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
   /**
@@ -23,9 +23,13 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
   const { addOfferItem, offferedItems } = useCreateProposal();
 
   const nftsMemo = useMemo<NftEntity[]>(() => {
-    return ownerNftList.filter(
-      (item) => !offferedItems.find((s) => s.nft_address === item.nft_address)
-    );
+    return ownerNftList
+      .filter(
+        (item) => !offferedItems.find((s) => s.nft_address === item.nft_address)
+      )
+      .filter(
+        (item) => item.nft_status.valueOf() !== NftStatus.transfer.valueOf()
+      );
   }, [ownerNftList, offferedItems]);
 
   /**
