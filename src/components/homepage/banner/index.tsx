@@ -33,10 +33,10 @@ export function Banner() {
           <div className="w-full flex justify-center">
             <Button
               className={classnames(
-                "!rounded-[100px] after:!rounded-[100px]",
+                "!rounded-[100px] after:!rounded-[100px] semi-bold",
                 "!border !border-solid !border-white",
                 "!p-4 !h-10 !text-[16px] md:!px-4 md:!py-1 md:!text-lg",
-                "lg:!px-6 lg:!py-2 lg:!h-14 lg:!text-2xl"
+                "lg:!px-9 lg:!py-2 lg:!h-14 lg:!text-lg"
               )}
               text="Create a Proposal"
               size="large"
