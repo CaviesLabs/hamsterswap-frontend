@@ -58,7 +58,6 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
         nft_address: nftItem.nft_address,
         nft_name: nftItem.nft_name,
         nft_symbol: nftItem.nft_symbol,
-        nft_status: "",
         nft_collection_id: nftItem.nft_collection_id,
         start_holding_time: 0,
         stop_hodling_time: 0,

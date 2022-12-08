@@ -19,7 +19,7 @@ export class NftEntity {
   nft_collection_name?: string;
   nft_name: string;
   nft_symbol: string;
-  nft_status: NftStatus;
+  nft_status?: NftStatus;
   nft_collection_id: string;
   start_holding_time: number;
   stop_hodling_time: number;
