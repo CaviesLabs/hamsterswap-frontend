@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Connection, PublicKey, TransactionInstruction } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
@@ -8,7 +9,10 @@ import {
   SwapProposalEntity,
   SwapItemStatus,
   SwapProposalStatus,
+  SwapItemType,
+  AssetTypes,
 } from "@/src/entities/proposal.entity";
+import { closeAccount } from "@solana/spl-token";
 import { SwapIdl, IDL } from "./swap.idl";
 import { InstructionProvider } from "./instruction.provider";
 import { TransactionProvider } from "./transaction.provider";
@@ -206,7 +210,7 @@ export class SwapProgramProvider {
       /**
        * @dev Define @var {TransactionInstruction} @arrays instructions to process.
        */
-      const instructions: TransactionInstruction[] = [];
+      let instructions: TransactionInstruction[] = [];
 
       /**
        * @dev Create token vaults
@@ -248,6 +252,8 @@ export class SwapProgramProvider {
         instructions.push(createProposalInstruction);
       }
 
+      console.log(JSON.parse(JSON.stringify(createProposalInstruction)));
+
       /**
        * @dev Now deposit all tokens which user want to wrap in proposal.
        */
@@ -270,6 +276,24 @@ export class SwapProgramProvider {
           }
 
           /**
+           * @dev Handle to wrap sol to wsol if offered item is SOL currency.
+           */
+          const wrapSolInstructions = [];
+          if (Object.keys(item.itemType)[0] === AssetTypes.token) {
+            try {
+              const [ins1, ins2] = await this.instructionProvider.wrapSol(
+                walletProvider.publicKey,
+                item.amount
+              );
+
+              ins1 && wrapSolInstructions.push(ins1);
+              ins2 && wrapSolInstructions.push(ins2);
+            } catch (err) {
+              console.log("Error when wrap sol", err);
+            }
+          }
+
+          /**
            * @dev Try to create a instruction to deposit token.
            */
           const ins = await this.instructionProvider.transferTokenToVault(
@@ -285,7 +309,8 @@ export class SwapProgramProvider {
            * @dev Add to instructions if valid.
            */
           if (!ins) return;
-          instructions.push(ins);
+          instructions = [...instructions, ...wrapSolInstructions, ins];
+          console.log("ins", instructions);
         })
       );
 
@@ -346,7 +371,7 @@ export class SwapProgramProvider {
      * else will withdraw swap option to siger.
      */
     const widthDrawItems =
-      proposal.ownerAddress === walletProvider.publicKey.toBase58().toString()
+      proposal.ownerAddress === walletProvider?.publicKey?.toBase58().toString()
         ? proposal.offerItems
         : proposal.swapOptions.find((item) => item.id === optionId)?.items;
 
@@ -374,6 +399,16 @@ export class SwapProgramProvider {
            */
           if (!instruction) return;
           instructions.push(instruction);
+
+          /** @dev Unwrap sol if item is currency. */
+          if (item.type === SwapItemType.CURRENCY) {
+            const inst = await this.instructionProvider.unwrapSol(
+              walletProvider.publicKey
+            );
+
+            /** @dev Add if valid */
+            !inst && instructions.push(inst);
+          }
         })
       );
     }
@@ -400,6 +435,7 @@ export class SwapProgramProvider {
     proposal: SwapProposalEntity,
     optionId: string
   ) {
+    console.log(proposal);
     try {
       /**
        * @dev Find swap program.
@@ -409,7 +445,7 @@ export class SwapProgramProvider {
       /**
        * @dev Define @var {TransactionInstruction} @arrays instructions to process.
        */
-      const instructions: TransactionInstruction[] = [];
+      let instructions: TransactionInstruction[] = [];
 
       /**
        * @dev Filter swap items by option id.
@@ -437,6 +473,24 @@ export class SwapProgramProvider {
           }
 
           /**
+           * @dev Handle to wrap sol to wsol if offered item is SOL currency.
+           */
+          const wrapSolInstructions = [];
+          if (item.type.valueOf() === SwapItemType.CURRENCY.valueOf()) {
+            try {
+              const [ins1, ins2] = await this.instructionProvider.wrapSol(
+                walletProvider.publicKey,
+                new anchor.BN(item.amount)
+              );
+
+              ins1 && wrapSolInstructions.push(ins1);
+              ins2 && wrapSolInstructions.push(ins2);
+            } catch (err) {
+              console.log("Error when wrap sol", err);
+            }
+          }
+
+          /**
            * @dev Fullfiling deposit token from buyer to token vault.
            */
           const instruction =
@@ -451,7 +505,7 @@ export class SwapProgramProvider {
             );
 
           if (!instruction) return;
-          instructions.push(instruction);
+          instructions = [...instructions, ...wrapSolInstructions, instruction];
         })
       );
 
@@ -485,8 +539,22 @@ export class SwapProgramProvider {
               item.id,
               SwapItemActionType.redeeming
             );
+
+          /**
+           * @dev Add to process if valid.
+           */
           if (!instruction) return;
           instructions.push(instruction);
+
+          /** @dev Unwrap sol if item is currency. */
+          if (item.type === SwapItemType.CURRENCY) {
+            const inst = await this.instructionProvider.unwrapSol(
+              walletProvider.publicKey
+            );
+
+            /** @dev Add if valid */
+            !inst && instructions.push(inst);
+          }
         })
       );
 
@@ -526,7 +594,7 @@ export class SwapProgramProvider {
       /**
        * @dev Check if signer is not proposal owner.
        */
-      if (state.owner !== walletProvider.publicKey.toBase58().toString()) {
+      if (state.owner !== walletProvider?.publicKey?.toBase58().toString()) {
         throw new Error("Signer is not proposal owner.");
       }
 
@@ -582,6 +650,16 @@ export class SwapProgramProvider {
             );
           if (!instruction) return;
           instructions.push(instruction);
+
+          /** @dev Unwrap sol if item is currency. */
+          if (item.type === SwapItemType.CURRENCY) {
+            const inst = await this.instructionProvider.unwrapSol(
+              walletProvider.publicKey
+            );
+
+            /** @dev Add if valid */
+            !inst && instructions.push(inst);
+          }
         })
       );
 

@@ -63,6 +63,11 @@ export type OfferedItemEntity = Omit<NftEntity, `id`> &
      * @dev AssetTypes in SolScan.
      */
     assetType: SwapItemType;
+
+    /**
+     * @dev Use this to display WSOL amount
+     */
+    tokenAmount?: number;
   };
 
 export type ExpectedItemEntity = Omit<NftEntity, `id`> &
@@ -76,6 +81,11 @@ export type ExpectedItemEntity = Omit<NftEntity, `id`> &
      * @dev AssetTypes in SolScan.
      */
     assetType: SwapItemType;
+
+    /**
+     * @dev Use this to display WSOL amount
+     */
+    tokenAmount?: number;
   };
 
 /**

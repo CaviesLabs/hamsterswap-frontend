@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import type { NextPage } from "next";
 import { useCallback, useEffect, useState } from "react";
 import { useWallet } from "@/src/hooks/useWallet";
@@ -11,10 +12,11 @@ import {
   getExploreProposals,
 } from "@/src/redux/actions/proposal/proposal.action";
 import { SwapProgramService } from "@/src/services/swap-program.service";
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import {
   SwapProposalEntity,
-  SwapItemType,
+  AssetTypes,
+  SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
 import MainLayout from "@/src/layouts/main";
 
@@ -54,7 +56,7 @@ const TestPage: NextPage = () => {
                 ),
                 id: SwapProgramService.generateUID(),
                 amount: new anchor.BN(1 * 10),
-                itemType: { [SwapItemType.CURRENCY]: {} },
+                itemType: { [AssetTypes.token]: {} },
               },
             ],
           },
@@ -62,11 +64,11 @@ const TestPage: NextPage = () => {
         offeredOptions: [
           {
             mintAccount: new PublicKey(
-              "AaPymjMSALgb7ymPwND8C43mkMwTSoV8Jbxg3w2kkPg3"
+              "So11111111111111111111111111111111111111112"
             ),
             id: SwapProgramService.generateUID(),
-            amount: new anchor.BN(1 * 10),
-            itemType: { [SwapItemType.CURRENCY]: {} },
+            amount: new anchor.BN(0.5 * LAMPORTS_PER_SOL),
+            itemType: { [AssetTypes.token]: {} },
           },
         ],
         expiredAt: new Date(),
@@ -81,7 +83,7 @@ const TestPage: NextPage = () => {
        * @dev Reload to get new proposals.
        */
       dispatch(
-        getPropsals({ walletAddress: wallet.publicKey.toBase58().toString() })
+        getPropsals({ walletAddress: wallet?.publicKey?.toBase58().toString() })
       );
       handleGetExploreProposals();
     } catch (err: any) {
@@ -103,7 +105,9 @@ const TestPage: NextPage = () => {
          * @dev Reload to get new proposals.
          */
         dispatch(
-          getPropsals({ walletAddress: wallet.publicKey.toBase58().toString() })
+          getPropsals({
+            walletAddress: wallet?.publicKey?.toBase58().toString(),
+          })
         );
       } catch (err: any) {
         console.log("error", err);
@@ -133,7 +137,7 @@ const TestPage: NextPage = () => {
     dispatch(
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      getExploreProposals({ options: { limit: 50 } }, (proposals) => {
+      getExploreProposals({ options: { limit: 250, statuses: [SwapProposalStatus.DEPOSITED] } }, (proposals) => {
         setExploreProposals(proposals);
       })
     );
@@ -145,7 +149,7 @@ const TestPage: NextPage = () => {
   useEffect(() => {
     if (!wallet) return;
     dispatch(
-      getPropsals({ walletAddress: wallet.publicKey.toBase58().toString() })
+      getPropsals({ walletAddress: wallet.publicKey.toBase58().toString(), options: { limit: 250, statuses: [SwapProposalStatus.DEPOSITED] } })
     );
   }, [wallet]);
 

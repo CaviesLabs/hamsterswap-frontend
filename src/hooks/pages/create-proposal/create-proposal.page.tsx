@@ -9,7 +9,7 @@ import {
 } from "@/src/entities/proposal.entity";
 import { SwapProgramService } from "@/src/services/swap-program.service";
 import { BN } from "@project-serum/anchor";
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useWallet } from "@/src/hooks/useWallet";
 import * as anchor from "@project-serum/anchor";
 
@@ -55,7 +55,8 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
   const addExpectedItem = async (
     item: NftEntity & { nftId: string; assetType: SwapItemType },
     type: AssetTypes,
-    opinionIndex: number
+    opinionIndex: number,
+    amount?: number
   ) => {
     setExpectedItems((prev) => {
       return prev.map((opinion, index) => {
@@ -68,9 +69,11 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
               nftId: item.nftId,
               assetType: item.assetType,
               id: SwapProgramService.generateUID(),
-              amount: new BN(1 * 10),
               mintAccount: new PublicKey(item.nft_address),
               itemType: { [type]: {} },
+              amount: amount ? new BN(amount * LAMPORTS_PER_SOL) : null,
+              nft_address: item.nft_address,
+              tokenAmount: amount,
               ...item,
             },
           ],
@@ -103,18 +106,21 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
    */
   const addOfferItem = async (
     item: NftEntity & { nftId: string; assetType: SwapItemType },
-    type: AssetTypes
+    type: AssetTypes,
+    amount?: number
   ) => {
     setOfferItems((prev) => {
       return [
         ...prev,
         {
-          nftId: item.nftId,
-          assetType: item.assetType,
+          nftId: item?.nftId,
+          assetType: item?.assetType,
           id: SwapProgramService.generateUID(),
-          amount: new BN(1 * 10),
           mintAccount: new PublicKey(item.nft_address),
           itemType: { [type]: {} },
+          amount: amount ? new BN(amount * LAMPORTS_PER_SOL) : null,
+          nft_address: item.nft_address,
+          tokenAmount: amount,
           ...item,
         },
       ];
@@ -149,14 +155,14 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
           askingItems: item.askingItems.map((askingItem) => ({
             mintAccount: new PublicKey(askingItem.nft_address),
             id: askingItem.id,
-            amount: new anchor.BN(1),
+            amount: askingItem.amount ? askingItem.amount : new anchor.BN(1),
             itemType: askingItem.itemType,
           })),
         })),
       offeredOptions: offferedItems.map((item) => ({
         mintAccount: new PublicKey(item.nft_address),
         id: item.id,
-        amount: new anchor.BN(1),
+        amount: item.amount ? item.amount : new anchor.BN(1),
         itemType: item.itemType,
       })),
       expiredAt: expiredTime,

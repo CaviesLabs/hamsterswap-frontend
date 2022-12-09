@@ -1,11 +1,21 @@
 import { Program } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
-import { Connection, PublicKey, TransactionInstruction } from "@solana/web3.js";
+import {
+  Connection,
+  PublicKey,
+  TransactionInstruction,
+  SystemProgram,
+} from "@solana/web3.js";
 import {
   CreateProposalDto,
   SwapItemActionType,
 } from "@/src/entities/proposal.entity";
-import { getAssociatedTokenAddress } from "@solana/spl-token";
+import {
+  getAssociatedTokenAddress,
+  createSyncNativeInstruction,
+  createCloseAccountInstruction,
+  NATIVE_MINT,
+} from "@solana/spl-token";
 import { getOrCreateAssociatedTokenAccount } from "./getOrCreateAssociatedTokenAccount";
 import { SwapIdl } from "./swap.idl";
 
@@ -137,6 +147,18 @@ export class InstructionProvider {
     proposalOwner: PublicKey,
     swapProposal: PublicKey
   ): Promise<TransactionInstruction> {
+    console.log({
+      params: JSON.parse(
+        JSON.stringify({
+          id: createProposalDto.id.slice(0, 10),
+          swapOptions: createProposalDto.swapOptions,
+          offeredItems: createProposalDto.offeredOptions,
+          expiredAt: new anchor.BN(
+            new Date().getTime() + 1000 * 60 * 60 * 24 * 7
+          ),
+        })
+      ),
+    });
     return await this.program.methods
       .createProposal({
         id: createProposalDto.id.slice(0, 10),
@@ -292,5 +314,55 @@ export class InstructionProvider {
         mintAccount: mintAccount,
       })
       .instruction();
+  }
+
+  /**
+   * @dev Wrap SOL to wSOL before deposit.
+   * @param {PublicKey} walletPublicKey
+   * @param {BN} amount
+   * @returns @arrays {[TransactionInstruction, TransactionInstruction]}
+   */
+  public async wrapSol(
+    walletPublicKey: PublicKey,
+    amount: anchor.BN
+  ): Promise<[TransactionInstruction, TransactionInstruction]> {
+    /**
+     * @dev Get token account of wSOL.
+     */
+    const associatedTokenAccount = await getAssociatedTokenAddress(
+      NATIVE_MINT,
+      walletPublicKey
+    );
+
+    /**
+     * @dev Transfer sol to wsol account.
+     */
+    const instruction1 = SystemProgram.transfer({
+      fromPubkey: walletPublicKey,
+      toPubkey: associatedTokenAccount,
+      lamports: amount.toNumber(),
+    });
+
+    /**
+     * @dev Create native sol.
+     */
+    const instruction2 = createSyncNativeInstruction(associatedTokenAccount);
+
+    return [instruction1, instruction2];
+  }
+
+  /**
+   * @dev Unwrap wSOL to sol instruction.
+   * @param {PublicKey} walletPublicKey
+   * @returns {TransactionInstruction}.
+   */
+  public async unwrapSol(
+    walletPublicKey: PublicKey
+  ): Promise<TransactionInstruction> {
+    return createCloseAccountInstruction(
+      NATIVE_MINT,
+      walletPublicKey,
+      walletPublicKey
+    );
   }
 }

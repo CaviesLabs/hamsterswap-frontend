@@ -36,7 +36,7 @@ export interface WalletContextState {
    */
   disconnect(): Promise<void>;
 
-  getSolBalance(pub: web3.PublicKey): Promise<number>;
+  getSolBalance(pub?: web3.PublicKey): Promise<number>;
 
   /**
    * @dev Expose context frrom solana-adapter.
@@ -48,6 +48,7 @@ export interface WalletContextState {
    * @dev Define Program service.
    */
   programService: SwapProgramService;
+  solBalance: number;
 }
 
 /** @dev Initiize context. */
@@ -68,6 +69,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
 
   /** @dev Program service */
   const [programService, initProgram] = useState<SwapProgramService>(null);
+  const [solBalance, setSolBalance] = useState(0);
 
   /** @dev Import auth service. */
   const authService = getAuthService();
@@ -115,9 +117,28 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
    * @param address
    * @returns
    */
-  const getSolBalance = async (address: web3.PublicKey) => {
-    return await walletConnection.connection.getBalance(address);
-  };
+  const getSolBalance = useCallback(
+    async (address?: web3.PublicKey) => {
+      if (!address && !solanaWallet?.publicKey) return;
+
+      /**
+       * @dev Get blance if whether address or signer is valid.
+       */
+      const balance = await walletConnection.connection.getBalance(
+        address || solanaWallet?.publicKey
+      );
+
+      /**
+       * @dev Check signer sol balance if address is null.
+       */
+      if (!address && balance) {
+        setSolBalance(balance);
+      }
+
+      return balance;
+    },
+    [solanaWallet]
+  );
 
   /**
    * @dev Watch changes in wallet adpater and update.
@@ -148,13 +169,16 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
           reInit: true,
         });
 
-        console.log("Initlize program service");
-
         /**
          * @dev Initlize swap program service with initlized programProvider.
          */
         const program = new SwapProgramService(swapProgramProvider);
         initProgram(program);
+
+        /**
+         * @dev update sol balance if wallet changes.
+         */
+        getSolBalance();
       } catch (err: any) {
         console.log(err.message);
       }
@@ -170,6 +194,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
         solanaWallet,
         walletConnection,
         programService,
+        solBalance,
       }}
     >
       {props.children}
