@@ -38,8 +38,6 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
     props.onDelete();
   };
 
-  console.log(props);
-
   return (
     <>
       <div className="md:left w-full mb-[20px]">
