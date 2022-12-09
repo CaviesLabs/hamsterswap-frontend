@@ -26,7 +26,7 @@ export const ConfirmedTransactionModal: FC<ConfirmModalProps> = (props) => {
           </h2>
           <p className="mb-6 text-lg text-center">
             Your swap with{" "}
-            <strong>{utilsProvider.makeShort(seller.walletAddress, 4)}</strong>{" "}
+            <strong>{utilsProvider.makeShort(seller?.walletAddress, 4)}</strong>{" "}
             has been completed successfully.
           </p>
 
