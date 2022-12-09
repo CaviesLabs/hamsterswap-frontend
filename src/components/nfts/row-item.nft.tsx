@@ -3,9 +3,11 @@ import { RowNftItemProps } from "./types";
 import { GameItemModal, NFTDetailsModal } from "../modal";
 import { DetailIcon, VerticalDots } from "@/src/components/icons";
 import { SwapItemType } from "@/src/entities/proposal.entity";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 
 export const RowNftItem: FC<RowNftItemProps> = (props) => {
+  console.log(props);
   const { assetType } = props;
 
   const [collapse, setCollapse] = useState(false);
@@ -29,19 +31,27 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
       <div className="bg-white duration-500 flex rounded-[16px] p-[16px]">
         <div className="left pl-[2px]">
           <img
-            src={props.image}
+            src={
+              props.assetType === SwapItemType.CURRENCY
+                ? "/assets/images/solana.svg"
+                : props.image
+            }
             alt="NFT image"
             className="h-full !w-[80px] object-cover rounded-[8px]"
           />
         </div>
         <div className="px-4 w-72 left">
           <p className="text-lg semi-bold text-black truncate block capitalize">
-            {props.name}
+            {props.name?.includes("USD")
+              ? `${parseInt(props.name.split(" ")[0]) / LAMPORTS_PER_SOL} SOL`
+              : props.name}
           </p>
           <div className="flex items-center">
-            <p className="text-[14px] regular-text text-purple cursor-auto mb-3">
-              {props.collection}
-            </p>
+            {props.assetType !== SwapItemType.CURRENCY && (
+              <p className="text-[14px] regular-text text-purple cursor-auto mb-3">
+                {props.collection}
+              </p>
+            )}
           </div>
         </div>
         {(assetType === SwapItemType.NFT ||

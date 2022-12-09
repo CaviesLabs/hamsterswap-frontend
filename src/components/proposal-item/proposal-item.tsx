@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { ProposalItemProps } from "./types";
 import { UserAvatarCardItem } from "@/src/components/user-card";
 import { RowNftItem, RowNftItemProps } from "@/src/components/nfts";
@@ -15,6 +15,14 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
    */
   const [optionSelected, setOptionSelected] = useState(0);
   const profile = useSelector((state: State) => state.hPublicProfile);
+
+  /***
+   * @dev Call onChange event when option changed.
+   */
+  useEffect(
+    () => props.changeOption && props.changeOption(optionSelected),
+    [optionSelected]
+  );
 
   return (
     <StyledProposalItem

@@ -198,7 +198,6 @@ export class SwapProgramProvider {
     walletProvider: WalletProvider,
     createProposalDto: CreateProposalDto
   ) {
-    console.log({ createProposalDto });
     try {
       /**
        * @dev Find swap program.
@@ -557,8 +556,6 @@ export class SwapProgramProvider {
           }
         })
       );
-
-      console.log(instructions);
 
       /**
        * @dev Sign and confirm instructions.

@@ -30,6 +30,13 @@ const Layout: FC = () => {
   const { connect } = useWalletKit();
   const { programService, solanaWallet } = useWallet();
   const [isTransFailed, setIsTransFailed] = useState(false);
+
+  /**
+   * @dev Declare option which user chose to swap.
+   * @default {0}.
+   */
+  const [optionSelected, setOptionSelected] = useState(0);
+
   /**
    * @dev Get user wallet
    */
@@ -45,7 +52,7 @@ const Layout: FC = () => {
       await programService.swapProposal(
         solanaWallet,
         proposal.id,
-        proposal.swapOptions[0].id
+        proposal.swapOptions[optionSelected].id
       );
       toast.success("Wrap proposal successfully");
     } catch (err: any) {
@@ -92,6 +99,7 @@ const Layout: FC = () => {
           <div className="block mt-[20px]">
             <ProposalItem
               data={proposal}
+              changeOption={(value) => setOptionSelected(value)}
               swapItems={
                 proposal?.offerItems.map((_) => parseProposal(_)) ?? []
               }
