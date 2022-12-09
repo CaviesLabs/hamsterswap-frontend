@@ -58,7 +58,7 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
               <div className="text-indigo-600">{data?.collection}</div>
               <p className="mt-6 mb-3 text-gray-500 text-sm">Attributes</p>
               <Row gutter={[16, 16]}>
-                {attributes.map((attr, index) => (
+                {attributes?.map((attr, index) => (
                   <Col span={12} key={`attr-item-${index}`}>
                     <AttributeCard {...attr} />
                   </Col>
