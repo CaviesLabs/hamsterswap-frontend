@@ -1,6 +1,7 @@
 import Select from "@/src/components/select";
 import { Input } from "antd";
 import { allowNTFCollection } from "@/src/dto/platform-config";
+import { useMemo, useState } from "react";
 
 type FormProps = {
   allowNTFCollections: allowNTFCollection[];
@@ -12,6 +13,19 @@ type FormProps = {
 
 export const AddExpectedNftForm = (props: FormProps) => {
   const { allowNTFCollections, collection, setCollection, setNftId } = props;
+  const [search, setSearch] = useState<string>("");
+
+  const allowNTFCollectionsMemo = useMemo(() => {
+    return allowNTFCollections
+      .filter(
+        (_) => !search || _.name.toLowerCase().includes(search.toLowerCase())
+      )
+      .map((_) => ({
+        label: _.name,
+        value: _.id,
+        image: _.image,
+      }));
+  }, [search, allowNTFCollections]);
 
   return (
     <>
@@ -23,13 +37,10 @@ export const AddExpectedNftForm = (props: FormProps) => {
         searchPlaceholder="Search NFT Collection name"
         className="rounded-3xl p-3"
         placeholder="Search for NFT, collection"
-        options={allowNTFCollections.map((_) => ({
-          label: _.name,
-          value: _.id,
-          image: _.image,
-        }))}
+        options={allowNTFCollectionsMemo}
         onChange={(v) => setCollection(v)}
         values={[collection]}
+        onSearch={(value) => setSearch(value)}
       />
 
       <p className="mt-6 text-dark60 text-lg">
