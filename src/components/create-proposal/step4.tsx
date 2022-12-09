@@ -1,29 +1,15 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { useWallet } from "@/src/hooks/useWallet";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 export const Step4: FC = () => {
-  const { getSolBalance, solanaWallet } = useWallet();
+  const { solBalance } = useWallet();
 
   /**
    * @dev Import functions from context screen.
    */
   const { setGuaranteeSol, guaranteeSol } = useCreateProposal();
-
-  const handleGetSolBalance = async () => {
-    if (!solanaWallet.publicKey) return;
-    try {
-      console.log("Balance :", {
-        balance: await getSolBalance(solanaWallet.publicKey),
-      });
-    } catch (err) {
-      console.log("err when get sol balance", err);
-    }
-  };
-
-  useEffect(() => {
-    handleGetSolBalance();
-  }, [solanaWallet]);
 
   return (
     <div>
@@ -69,7 +55,7 @@ export const Step4: FC = () => {
               className="!w-[16px] h-[16px] ml-[12px] float-left"
             />
             <p className="ml-[12px] text-[16px] ml-[12px] float-left">
-              2,043.54 SOL
+              {Math.round(solBalance) / LAMPORTS_PER_SOL} SOL
             </p>
           </div>
         </div>
