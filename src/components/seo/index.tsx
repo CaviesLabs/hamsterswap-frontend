@@ -44,7 +44,7 @@ export const SeoComponent: FC = () => {
 
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
-      <meta property="twitter:url" content={url} />
+      <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={banner} />
       <meta name="twitter:image:alt" content={title} />
 

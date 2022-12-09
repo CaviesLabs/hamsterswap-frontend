@@ -2,8 +2,9 @@ import { SelectProps, OptionProps } from "@/src/components/select/types";
 import classnames from "classnames";
 import { CheckIcon, ChevronDownIcon } from "@/src/components/icons";
 import SearchInput from "@/src/components/search";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
+import useDebounce from "@/src/hooks/useDebounce";
 
 function Select(props: SelectProps) {
   /**
@@ -12,7 +13,9 @@ function Select(props: SelectProps) {
    */
   const ref = useRef(null);
 
-  const { showSearch, values, onChange } = props;
+  const [search, setSearch] = useState<string>("");
+
+  const { showSearch, values, onChange, onSearch } = props;
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
 
   const renderItemInfo = (option: OptionProps, inList?: boolean) => {
@@ -40,6 +43,12 @@ function Select(props: SelectProps) {
   useOnClickOutside(ref, () => {
     setIsOpenDropdown(false);
   });
+
+  const debouncedSearch: string = useDebounce<string>(search, 500);
+  // Only call effect if debounced search term changes
+  useEffect(() => {
+    onSearch && onSearch(search);
+  }, [debouncedSearch]);
 
   return (
     <div className="relative">
@@ -72,6 +81,7 @@ function Select(props: SelectProps) {
               <SearchInput
                 className="rounded-3xl p-3"
                 placeholder={props.searchPlaceholder}
+                onChange={(e) => setSearch(e.target.value)}
               />
             </div>
           )}

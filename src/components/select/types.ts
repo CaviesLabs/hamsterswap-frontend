@@ -16,4 +16,5 @@ export type SelectProps = {
   mode?: "multiple";
   values?: string[];
   onChange?: (v: any) => void;
+  onSearch?: (v: any) => void;
 };
