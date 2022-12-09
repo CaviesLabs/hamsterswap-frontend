@@ -7,6 +7,7 @@ export type ProposalItemProps = {
   swapItems?: RowNftItemProps[];
   receiveItems?: RowNftItemProps[][];
   data?: SwapProposalEntity;
+  changeOption?: (value: number) => void;
 };
 
 export type ProposalItemsProps = {

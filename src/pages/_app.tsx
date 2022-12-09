@@ -82,7 +82,6 @@ function MyApp({ Component, pageProps }: AppProps) {
               defaultNetwork={network}
               app={{
                 name: "Hamsterswap",
-                icon: <img src="/assets/icons/apple-icon.png" alt="icon" />,
               }}
               debugMode={true} // you may want to set this in REACT_APP_DEBUG_MODE
             >

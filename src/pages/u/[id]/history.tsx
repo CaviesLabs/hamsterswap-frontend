@@ -18,7 +18,6 @@ const Layout: FC = () => {
   const router = useRouter();
   const profile = useSelector((state: State) => state.hPublicProfile);
   const proposals = useSelector((state: State) => state.proposals);
-  console.log("proposals", proposals);
 
   /**
    * Fetch proposal by user id
@@ -29,7 +28,7 @@ const Layout: FC = () => {
       getExploreProposals({
         walletAddress: profile.walletAddress,
         options: {
-          statuses: SwapProposalStatus.FULFILLED,
+          statuses: [SwapProposalStatus.FULFILLED, SwapProposalStatus.REDEEMED],
           search: _search,
         },
       })

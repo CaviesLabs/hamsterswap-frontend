@@ -1,6 +1,6 @@
 import { put, call } from "redux-saga/effects";
 import { SagaPayload } from "@/src/redux/entities";
-import { GetListNftDto, NftDto } from "@/src/dto/nft.dto";
+import { GetListNftDto, NftEntity } from "@/src/dto/nft.dto";
 import { nftService } from "@/src/redux/saga/nft/nft.service";
 import { setNft } from "@/src/redux/actions/nft/nft.action";
 
@@ -13,9 +13,9 @@ import { setNft } from "@/src/redux/actions/nft/nft.action";
 export function* getListNft({
   payload,
   callback,
-}: SagaPayload<GetListNftDto, NftDto>) {
+}: SagaPayload<GetListNftDto, NftEntity[]>) {
   try {
-    const nft: NftDto = yield call(nftService.listNft, payload);
+    const nft: NftEntity[] = yield call(nftService.listNft, payload);
     yield put(setNft(nft));
     callback && callback(nft);
   } catch (err) {

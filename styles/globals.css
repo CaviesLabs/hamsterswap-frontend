@@ -92,3 +92,8 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+.hamster-modal > .ant-modal-content,
+.hamster-modal .ant-modal-header,
+.hamster-modal .ant-modal-footer {
+  background-color: #F8F9FE;
+}

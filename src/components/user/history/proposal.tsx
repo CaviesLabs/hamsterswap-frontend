@@ -4,6 +4,7 @@ import { DATE_TIME_FORMAT, utilsProvider } from "@/src/utils";
 import { DotIcon } from "@/src/components/icons";
 import dayjs from "dayjs";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
+import { getStatus } from "@/src/utils/proposal-status";
 
 function Proposal(props: ProposalHistoryProps) {
   const { data } = props;
@@ -24,9 +25,9 @@ function Proposal(props: ProposalHistoryProps) {
             <div key={`swapItems-${i}`} className="flex items-center mb-3">
               <img
                 className="w-10 rounded-lg"
-                src={item.nftMetadata[0].nft_image}
+                src={item.nftMetadata.nft_image}
               />
-              <p className="ml-2 text-lg">{item.nftMetadata[0].nft_name}</p>
+              <p className="ml-2 text-lg">{item.nftMetadata.nft_name}</p>
             </div>
           ))}
 
@@ -39,9 +40,9 @@ function Proposal(props: ProposalHistoryProps) {
             <div key={item.id} className="flex items-center mb-3">
               <img
                 className="w-10 rounded-lg"
-                src={item.nftMetadata[0].nft_image}
+                src={item.nftMetadata.nft_image}
               />
-              <p className="ml-2 text-lg">{item.nftMetadata[0].nft_name}</p>
+              <p className="ml-2 text-lg">{item.nftMetadata.nft_name}</p>
             </div>
           ))}
         </Col>
@@ -50,7 +51,7 @@ function Proposal(props: ProposalHistoryProps) {
         </Col>
         <Col span={3}>
           <Tag
-            className="w-min flex items-center capitalize"
+            className="px-4 py-1 w-min flex items-center capitalize bg-[#EEFFDA] border-[#EEFFDA]"
             icon={<DotIcon className="mr-2" />}
             color={
               status === SwapProposalStatus.CANCELED
@@ -60,7 +61,7 @@ function Proposal(props: ProposalHistoryProps) {
                 : "error"
             }
           >
-            {status.split("::")[1]}
+            <span className="text-[#353C4B]">{getStatus(status)}</span>
           </Tag>
         </Col>
       </Row>

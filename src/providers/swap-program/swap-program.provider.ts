@@ -198,7 +198,6 @@ export class SwapProgramProvider {
     walletProvider: WalletProvider,
     createProposalDto: CreateProposalDto
   ) {
-    console.log({ createProposalDto });
     try {
       /**
        * @dev Find swap program.
@@ -558,8 +557,6 @@ export class SwapProgramProvider {
         })
       );
 
-      console.log(instructions);
-
       /**
        * @dev Sign and confirm instructions.
        */
@@ -573,6 +570,7 @@ export class SwapProgramProvider {
       });
     } catch (err: any) {
       console.error("Error when wrap proposal", err);
+      throw Error(err);
     }
   }
 

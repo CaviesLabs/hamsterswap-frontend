@@ -1,12 +1,12 @@
-import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
+import { FC } from "react";
+import { EmptyBoxProps } from "@/src/components/create-proposal/empty-box/types";
 
-export const EmptyBox = () => {
-  const { offferedItems } = useCreateProposal();
-  const existItems = offferedItems.length;
+export const EmptyBox: FC<EmptyBoxProps> = (props) => {
+  const { existsAmount } = props;
 
   return (
     <>
-      {Array.from(Array(4 - existItems).keys()).map((i) => {
+      {Array.from(Array(4 - existsAmount).keys()).map((i) => {
         return (
           <div
             className="block md:left w-full md:w-[50%] md:pl-[20px]"
@@ -17,7 +17,7 @@ export const EmptyBox = () => {
                 className="text-[16px] float-left text-gray-400 regular-text"
                 style={{ transform: "translateY(50%)" }}
               >
-                Item #{existItems + i + 1}
+                Item #{existsAmount + i + 1}
               </p>
             </div>
             <div className="pt-[20px]">

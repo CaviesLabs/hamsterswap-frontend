@@ -35,6 +35,7 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
       onCancel={props.handleCancel}
       width={945}
       footer={null}
+      className="hamster-modal"
     >
       <div className="py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
@@ -57,7 +58,7 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
               <div className="text-indigo-600">{data?.collection}</div>
               <p className="mt-6 mb-3 text-gray-500 text-sm">Attributes</p>
               <Row gutter={[16, 16]}>
-                {attributes.map((attr, index) => (
+                {attributes?.map((attr, index) => (
                   <Col span={12} key={`attr-item-${index}`}>
                     <AttributeCard {...attr} />
                   </Col>

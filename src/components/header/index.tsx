@@ -8,6 +8,8 @@ import classnames from "classnames";
 import styles from "./index.module.scss";
 import UserProfile from "@/src/components/header/user-profile";
 import { useMain } from "@/src/hooks/pages/main";
+import { HamsterboxIcon } from "@/src/components/icons";
+import styled from "@emotion/styled";
 
 interface MenuItem {
   title: string;
@@ -17,6 +19,7 @@ interface MenuItem {
 
 const Header: FC = () => {
   const [curSlug, setCurSlug] = useState<string>("#about-us");
+  const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
   const { hProfile } = useMain();
 
@@ -84,34 +87,6 @@ const Header: FC = () => {
 
   /**
    * @description
-   * This function will automatically make bold on menu item when user scroll
-   * into the view that item present for
-   */
-  useEffect(() => {
-    window.addEventListener("scroll", () => {
-      const ids = ["about-us", "objectives", "hamsterbox"];
-      const items = ids.map((id) => document.getElementById(id));
-      items.map((item, index: number) => {
-        if (
-          item?.offsetTop !== undefined &&
-          pageYOffset >= item?.offsetTop - 450
-        ) {
-          setCurSlug(`#${ids[index]}`);
-        }
-
-        if (
-          index === items.length - 1 &&
-          item?.offsetTop !== undefined &&
-          pageYOffset + item?.offsetHeight >= item?.offsetTop
-        ) {
-          setCurSlug(`#${ids[index]}`);
-        }
-      });
-    });
-  }, []);
-
-  /**
-   * @description
    * This function set current selected section based on the location user are in
    */
   useEffect(() => {
@@ -133,45 +108,34 @@ const Header: FC = () => {
         document.body.scrollTop > 120 ||
         document.documentElement.scrollTop > 120
       ) {
-        !header?.classList.contains(className) &&
-          header?.classList.add("scrolled-header");
+        !header?.classList.contains(className) && setIsScrolled(true);
       } else {
-        header?.classList.contains(className) &&
-          header?.classList.remove("scrolled-header");
+        header?.classList.contains(className) && setIsScrolled(false);
       }
     };
   }, []);
 
   return (
-    <div
-      className={classnames("app-header", {
+    <StyledHeader
+      className={classnames("app-header fixed z-50 w-full", {
         /**
          * @dev Restrict fill purple background & clear border for specific pages.
          */
-        "bg-purpleBg border-b-[0px] relative": PURPLE_HEADER_PAGES.filter(
-          (item) => router.asPath.includes(item)
+        "bg-purpleBg border-b-[0px]": PURPLE_HEADER_PAGES.filter((item) =>
+          router.asPath.includes(item)
         ).length,
-        "text-white": isHomepage,
+        "text-white": !isScrolled && isHomepage,
+        "scrolled-header shadow-lg": isScrolled,
       })}
       id="app-header"
     >
-      <div className="absolute top-0 left-0 w-full py-[18px] md:py-[25px] flow-root">
+      <div className="w-full py-[18px] md:py-[25px] flow-root">
         <div className="lg:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="float-left logo-wrapper md:mt-0 mt-[0px]">
             <a href="/">
-              <img
-                src="/assets/images/logo.png"
-                className={classnames(
-                  "w-[170px] md:w-[190px] dark:hidden mt-[2px] md:mt-0",
-                  isHomepage ? "hidden" : "block"
-                )}
-              />
-              <img
-                src="/assets/images/logo-dark.png"
-                className={classnames(
-                  "w-[95px] md:w-[180px] dark:block",
-                  isHomepage ? "block" : "hidden"
-                )}
+              <HamsterboxIcon
+                className={classnames("w-[95px] md:w-[180px] hamsterbox-icon")}
+                color={isScrolled || !isHomepage ? "#07080A" : "white"}
               />
             </a>
           </div>
@@ -281,8 +245,15 @@ const Header: FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </StyledHeader>
   );
 };
 
 export default Header;
+
+const StyledHeader = styled.div`
+  transition: background-color 0.3s ease;
+  &.scrolled-header {
+    background-color: white;
+  }
+`;

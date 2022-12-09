@@ -8,7 +8,6 @@ import { LayoutSection } from "@/src/components/layout-section";
 import { GuaranteedCard } from "@/src/components/guaranteed.card";
 import { UserInfoCard } from "@/src/components/user-card";
 import { BreadCrumb } from "@/src/components/bread-crumb";
-import { Button, toast } from "@hamsterbox/ui-kit";
 import { Col, Row } from "antd";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
@@ -19,35 +18,42 @@ import {
 } from "@/src/entities/proposal.entity";
 import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
 import { useWallet } from "@/src/hooks/useWallet";
-import { useConnectedWallet } from "@saberhq/use-solana";
 import dayjs from "dayjs";
+import { useConnectedWallet } from "@saberhq/use-solana";
+import BuyButton from "@/src/components/advertisment/buy-button";
 
 const Layout: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { programService, solanaWallet } = useWallet();
+
+  /**
+   * @dev Declare option which user chose to swap.
+   * @default {0}.
+   */
+  const [optionSelected, setOptionSelected] = useState(0);
+
   /**
    * @dev Get user wallet
    */
   const wallet = useConnectedWallet();
 
+  /**
+   * @dev Proposal state.
+   */
   const [proposal, setProposal] = useState<SwapProposalEntity>();
 
   const handleSwap = useCallback(async () => {
-    if (!proposal || !solanaWallet.publicKey) return;
-    try {
-      await programService.swapProposal(
-        solanaWallet,
-        proposal.id,
-        proposal.swapOptions[0].id
-      );
-      toast.success("Wrap proposal successfully");
-    } catch (err: any) {
-      console.log("error", err);
-      toast.error("Swap proposal failed!", err);
-    }
+    await programService.swapProposal(
+      solanaWallet,
+      proposal.id,
+      proposal.swapOptions[optionSelected].id
+    );
   }, [wallet, programService, solanaWallet, proposal]);
 
+  /**
+   * @dev Get proposal detail by id.
+   */
   useEffect(() => {
     if (!router.query.id) return;
     dispatch(
@@ -87,6 +93,7 @@ const Layout: FC = () => {
           <div className="block mt-[20px]">
             <ProposalItem
               data={proposal}
+              changeOption={(value) => setOptionSelected(value)}
               swapItems={
                 proposal?.offerItems.map((_) => parseProposal(_)) ?? []
               }
@@ -131,23 +138,11 @@ const Layout: FC = () => {
 
           <div className="mt-12">
             <Row justify="end">
-              {solanaWallet.publicKey &&
+              {(!solanaWallet.publicKey ||
                 solanaWallet.publicKey?.toBase58().toString() !==
-                  proposal?.ownerAddress && (
-                  <>
-                    <Button
-                      text="Buy"
-                      className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
-                      onClick={handleSwap}
-                    />
-                    <Button
-                      text="Order / Bid"
-                      shape="secondary"
-                      className="!border-[1.5px] ml-[24px] !rounded-[100px] after:!rounded-[100px] float-right !w-[150px] md:!w-[200px]"
-                      onClick={handleSwap}
-                    />
-                  </>
-                )}
+                  proposal?.ownerAddress) && (
+                <BuyButton handleSwap={handleSwap} />
+              )}
             </Row>
           </div>
         </LayoutSection>

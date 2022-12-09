@@ -13,15 +13,14 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
   /**
    * @dev Get user list nfts.
    */
-  const {
-    nft: { list_nfts: ownerNftList },
-  } = useMain();
+  const { nft: ownerNftList } = useMain();
 
   /**
    * @dev Import functions in screen context.
    */
   const { addOfferItem, offferedItems } = useCreateProposal();
 
+  // TODO filter NFT in whitelist
   const nftsMemo = useMemo<NftEntity[]>(() => {
     return ownerNftList
       .filter(
@@ -67,6 +66,7 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
       onCancel={props.handleCancel}
       width={600}
       footer={null}
+      className="hamster-modal"
     >
       <StyledModal>
         <div className="pt-6">

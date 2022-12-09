@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { ProposalItemProps } from "./types";
 import { UserAvatarCardItem } from "@/src/components/user-card";
 import { RowNftItem, RowNftItemProps } from "@/src/components/nfts";
@@ -15,6 +15,14 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
    */
   const [optionSelected, setOptionSelected] = useState(0);
   const profile = useSelector((state: State) => state.hPublicProfile);
+
+  /***
+   * @dev Call onChange event when option changed.
+   */
+  useEffect(
+    () => props.changeOption && props.changeOption(optionSelected),
+    [optionSelected]
+  );
 
   return (
     <StyledProposalItem
@@ -40,7 +48,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
           />
         </svg>
       )}
-      <div className="relative bg-dark10 w-full h-full min-h-[200px] rounded-[32px] pb-[50px]">
+      <div className="relative bg-[#F8F9FE] w-full h-full min-h-[200px] rounded-[32px] pb-[50px]">
         <div className="px-24">
           {props.isGuaranteedPayment && (
             <div className="pt-12">

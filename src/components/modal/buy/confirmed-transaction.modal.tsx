@@ -1,15 +1,17 @@
 import { FC } from "react";
 import { Modal } from "antd";
-import { BuyModalProps } from "./types";
+import { ConfirmModalProps } from "./types";
+import { utilsProvider } from "@/src/utils";
 
-export const ConfirmedTransactionModal: FC<BuyModalProps> = (props) => {
+export const ConfirmedTransactionModal: FC<ConfirmModalProps> = (props) => {
+  const { seller } = props;
   return (
     <Modal
       open={props.isModalOpen}
-      onOk={props.handleOk}
       onCancel={props.handleCancel}
       width={600}
       footer={null}
+      className="hamster-modal"
     >
       <div className="py-6">
         <div className="mx-auto items-center max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
@@ -23,14 +25,15 @@ export const ConfirmedTransactionModal: FC<BuyModalProps> = (props) => {
             Success!
           </h2>
           <p className="mb-6 text-lg text-center">
-            Your swap with <strong>3t2yig...56xg</strong> has been completed
-            successfully.
+            Your swap with{" "}
+            <strong>{utilsProvider.makeShort(seller?.walletAddress, 4)}</strong>{" "}
+            has been completed successfully.
           </p>
 
           <button
             type="button"
-            onClick={() => props.handleCancel}
-            className="flex justify-center items-center w-full bg-purple text-white rounded-3xl text-lg font-bold py-3 hover:bg-blurPurple"
+            onClick={props.handleCancel}
+            className="flex justify-center items-center w-full !bg-purple text-white rounded-3xl text-lg font-bold py-3"
           >
             Ok
           </button>

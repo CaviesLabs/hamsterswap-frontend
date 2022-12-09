@@ -10,12 +10,13 @@ import { nftService } from "@/src/redux/saga/nft/nft.service";
 import { NftDetailDto } from "@/src/dto/nft.dto";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
+import { toast } from "@hamsterbox/ui-kit";
 
 export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   /**
    * @dev Import functions in screen context.
    */
-  const { addExpectedItem } = useCreateProposal();
+  const { expectedItems, addExpectedItem } = useCreateProposal();
 
   /**
    * @dev initialize states for collection id and nft id from form
@@ -50,6 +51,10 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
    * @param nftItem
    */
   const handleAddNft = (nftItem: NftDetailDto) => {
+    if (expectedItems[props.index]?.askingItems.length === 4) {
+      return toast.warn("Only a maximum of 4 items are allowed");
+    }
+
     /**
      * @dev Add in context.
      */
@@ -89,6 +94,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
       }}
       width={600}
       footer={null}
+      className="hamster-modal"
     >
       <StyledModal>
         <div className="pt-6">

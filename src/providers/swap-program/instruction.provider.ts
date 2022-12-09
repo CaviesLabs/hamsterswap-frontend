@@ -147,26 +147,12 @@ export class InstructionProvider {
     proposalOwner: PublicKey,
     swapProposal: PublicKey
   ): Promise<TransactionInstruction> {
-    console.log({
-      params: JSON.parse(
-        JSON.stringify({
-          id: createProposalDto.id.slice(0, 10),
-          swapOptions: createProposalDto.swapOptions,
-          offeredItems: createProposalDto.offeredOptions,
-          expiredAt: new anchor.BN(
-            new Date().getTime() + 1000 * 60 * 60 * 24 * 7
-          ),
-        })
-      ),
-    });
     return await this.program.methods
       .createProposal({
         id: createProposalDto.id.slice(0, 10),
         swapOptions: createProposalDto.swapOptions,
         offeredItems: createProposalDto.offeredOptions,
-        expiredAt: new anchor.BN(
-          new Date().getTime() + 1000 * 60 * 60 * 24 * 7
-        ),
+        expiredAt: createProposalDto.expiredAt,
       })
       .accounts({
         proposalOwner,

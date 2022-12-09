@@ -2,8 +2,11 @@ import { FC } from "react";
 import { Modal } from "antd";
 import { ModalProps } from "./types";
 import { Button } from "@hamsterbox/ui-kit";
+import { useRouter } from "next/router";
 
 export const ConfirmedTransactionModal: FC<ModalProps> = (props) => {
+  const router = useRouter();
+
   return (
     <Modal
       open={props.isModalOpen}
@@ -37,7 +40,7 @@ export const ConfirmedTransactionModal: FC<ModalProps> = (props) => {
           <Button
             shape="secondary"
             size="large"
-            onClick={() => props.handleCancel()}
+            onClick={() => router.push("/")}
             text="Go home"
           />
         </div>
