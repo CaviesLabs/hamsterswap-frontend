@@ -37,51 +37,20 @@ const Footer: FC = () => {
   );
 
   return (
-    <div className="footer pb-6">
+    <div className="footer pb-9">
       <div className="md:px-[40px] px-[20px] lg:max-w-[1180px] lg:mx-auto">
-        <div className="flex items-center md:flex-col">
-          <div className="w-full">
-            <div className="relative md:bottom-[-34px]">
-              <img
-                src="/assets/images/logo.png"
-                className="w-[155px] h-auto  mx-auto"
-              />
-              <div className="flex mx-auto mt-[14px] justify-center">
-                <sup className="top-0 regular-text text-[14px]">by</sup>
-                <img
-                  src="https://cavies.xyz/assets/images/logo.png"
-                  className="w-[110px] h-auto"
-                />
-              </div>
-            </div>
-          </div>
-          <ul className="footer-menu w-[100%] relative top-[-10px] hidden md:block">
-            {socialItems.map((item, index) => (
-              <li
-                key={`footer-item-${index}`}
-                className="ml-[20px] md:ml-[30px] cursor-pointer float-right"
-                onClick={() => window.open(item.uri)}
-              >
-                <img
-                  src={item.image}
-                  className="text-[10px] md:text-[16px] w-[15px] h-[15px] md:w-[18px] md:h-[18px]"
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="flex">
-          <div className="float-left menu-wrapper w-[100%] md:pt-0 pt-[20px]">
+        <div className="flex justify-between items-end">
+          <div className="menu-wrapper md:pt-0 pt-[20px]">
             <ul className="footer-menu w-[100%] flex justify-center flex-wrap md:justify-start">
               {footers.map((item, index) => (
                 <li
                   key={`footer-item-${index}`}
-                  className="md:float-right mx-[10px] md:mx-0 md:mr-[30px] cursor-pointer float-left text-center leading-[35px] md:leading-[25px]"
+                  className="text-center mr-2 leading-[35px] md:leading-[25px]"
                 >
                   <a
                     target={item.newWindow === false ? "" : "_blank"}
                     href={item.uri}
-                    className="text-[14px] md:text-[14px] normal-text text-footerItemColor dark:text-footerItemColorDark regular-text"
+                    className="p-2 text-[14px] md:text-[14px] normal-text text-footerItemColor dark:text-footerItemColorDark regular-text"
                   >
                     {item.name}
                   </a>
@@ -89,10 +58,41 @@ const Footer: FC = () => {
               ))}
             </ul>
           </div>
-          <div className="bottom-menu-wrapper float-right w-[60%] md:w-[27%] lg:w-[60%] hidden md:block md:flex md:justify-end">
-            <p className="text-footerItemColor dark:text-footerItemColorDark text-[12px] md:text-[14px] regular-text">
-              © 2022 Cavies Ltd.
-            </p>
+
+          <div className="relative">
+            <img
+              src="/assets/images/logo.png"
+              className="w-[155px] h-auto  mx-auto"
+            />
+            <div className="flex mx-auto mt-[14px] justify-center items-start">
+              <div className="top-0 regular-text text-[14px] mr-[5px]">by</div>
+              <img
+                src="https://cavies.xyz/assets/images/logo.png"
+                className="w-[110px] h-auto"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col items-end">
+            <ul className="footer-menu relative hidden md:block mb-6">
+              {socialItems.map((item, index) => (
+                <li
+                  key={`footer-item-${index}`}
+                  className="ml-[20px] md:ml-[30px] cursor-pointer"
+                  onClick={() => window.open(item.uri)}
+                >
+                  <img
+                    src={item.image}
+                    className="text-[10px] md:text-[16px] w-[15px] h-[15px] md:w-[18px] md:h-[18px]"
+                  />
+                </li>
+              ))}
+            </ul>
+            <div className="bottom-menu-wrapper hidden md:block">
+              <p className="text-footerItemColor dark:text-footerItemColorDark text-[12px] md:text-[14px] regular-text">
+                © 2022 Cavies Ltd.
+              </p>
+            </div>
           </div>
         </div>
         <div className="block md:hidden pt-[20px]">

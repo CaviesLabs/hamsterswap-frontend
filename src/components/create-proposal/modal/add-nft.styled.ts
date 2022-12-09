@@ -1,11 +1,6 @@
 import styled from "@emotion/styled";
 
 export const StyledModal = styled.div`
-  & .ant-modal-content {
-    // TODO set modal background color to #F8F9FE
-    background-color: cornflowerblue;
-  }
-
   button {
     display: flex;
     justify-content: center;
