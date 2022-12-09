@@ -30,10 +30,7 @@ export const initState: State = {
   userChats: [],
   nft: [],
   proposals: [],
-  proposal: {
-    swapItems: [],
-    receiveItems: [[], [], []],
-  },
+  proposal: null,
   hProfile: null,
   hPublicProfile: null,
   platformConfig: {
