@@ -154,7 +154,7 @@ const Layout: FC = () => {
 
   return (
     <MainLayout>
-      <div className="bg-white">
+      <div className="mb-44">
         <div className="cover-container bg-purpleBg">
           <LayoutSection className="!min-h-[350px]">
             <BreadCrumb data={["Home", "Create a Proposal"]} />

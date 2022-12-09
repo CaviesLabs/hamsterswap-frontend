@@ -205,7 +205,9 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                   </div>
                 </div>
               ))}
-              <EmptyBox />
+              <EmptyBox
+                existsAmount={expectedItems[props.index]?.askingItems.length}
+              />
             </div>
           </div>
         </div>

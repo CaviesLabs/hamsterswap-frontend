@@ -190,7 +190,7 @@ export const Step1: FC = () => {
               </div>
             </div>
           ))}
-          {offferedItems.length < 4 && <EmptyBox />}
+          <EmptyBox existsAmount={offferedItems.length} />
         </div>
       </div>
     </div>
