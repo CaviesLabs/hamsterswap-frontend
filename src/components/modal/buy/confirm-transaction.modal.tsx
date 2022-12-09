@@ -23,12 +23,12 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
             <Row justify="space-between" align="middle">
               <Col span={8} className="flex flex-col items-center">
                 <img
-                  src={seller.avatar}
+                  src={seller?.avatar}
                   alt="Seller avatar"
                   className="rounded-[50%] max-w-[80px]"
                 />
                 <div className="font-bold text-center text-xl">
-                  {utilsProvider.makeShort(seller.walletAddress, 4)}
+                  {utilsProvider.makeShort(seller?.walletAddress, 4)}
                 </div>
               </Col>
               <Col span={8}>
@@ -40,7 +40,7 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
               </Col>
               <Col span={8} className="flex flex-col items-center">
                 <img
-                  src={buyer.avatar}
+                  src={buyer?.avatar}
                   alt="onchain, but there isn't item in wallet"
                   className="rounded-[50%] max-w-[80px]"
                 />
@@ -54,7 +54,8 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
           </h2>
           <p className="mb-9 text-lg text-center">
             Confirm the transaction in your wallet to swap item(s) with{" "}
-            <strong>{utilsProvider.makeShort(seller.walletAddress, 4)}</strong>.
+            <strong>{utilsProvider.makeShort(seller?.walletAddress, 4)}</strong>
+            .
           </p>
 
           <button

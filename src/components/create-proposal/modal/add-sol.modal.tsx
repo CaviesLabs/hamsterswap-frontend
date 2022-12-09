@@ -38,7 +38,7 @@ export const AddSolModal: FC<
   const myRemainSolBalance = useMemo(() => {
     let result: number = +solBalance;
     if (!isNaN(result)) {
-      swapItems.forEach((i: any) => {
+      swapItems?.forEach((i: any) => {
         if (i.assetType === "token") {
           result -= i.value;
         }
