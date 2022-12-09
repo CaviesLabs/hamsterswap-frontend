@@ -2,9 +2,13 @@ import styles from "./banner.module.scss";
 import { Button } from "@hamsterbox/ui-kit";
 import { useRouter } from "next/router";
 import classnames from "classnames";
+import { useWalletKit } from "@gokiprotocol/walletkit";
+import { useConnectedWallet } from "@saberhq/use-solana";
 
 export function Banner() {
   const router = useRouter();
+  const { connect } = useWalletKit();
+  const wallet = useConnectedWallet();
 
   return (
     <div className={styles.bannerWrap}>
@@ -37,7 +41,9 @@ export function Banner() {
               text="Create a Proposal"
               size="large"
               shape="secondary"
-              onClick={() => router.push("create-proposal")}
+              onClick={() =>
+                wallet ? router.push("create-proposal") : connect()
+              }
               theme={{
                 backgroundColor: "transparent",
                 color: "white",

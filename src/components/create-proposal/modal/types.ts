@@ -2,8 +2,8 @@ import { MouseEvent } from "react";
 
 export type ModalProps = {
   isModalOpen: boolean;
-  handleOk(e: MouseEvent<HTMLElement> | string, ...args: any): void;
-  handleCancel(e: MouseEvent<HTMLElement>): void;
+  handleOk?(e?: MouseEvent<HTMLElement> | string, ...args: any): void;
+  handleCancel?(e: MouseEvent<HTMLElement>): void;
   isLoading?: boolean;
 };
 

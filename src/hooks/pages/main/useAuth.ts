@@ -5,6 +5,7 @@ import { useConnectedWallet } from "@saberhq/use-solana";
 import { useWallet } from "@/src/hooks/useWallet";
 import { getUserService, getAuthService } from "@/src/actions/firebase.action";
 import { SIGN_MESSAGE } from "@/src/utils";
+import { getHamsterProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 
 /** @dev Expore authenticate hook to process tasks related user authentcation */
 export const useAuth = () => {
@@ -24,27 +25,35 @@ export const useAuth = () => {
 
   /** @dev The function to login. */
   const handleLogin = async () => {
-    /** @dev Sign message to get signature. */
-    const signature = await signMessage(SIGN_MESSAGE);
+    try {
+      /** @dev Sign message to get signature. */
+      const signature = await signMessage(SIGN_MESSAGE);
 
-    /** @dev Call function to sign message in wallet and login firebase & hamsterbox server. */
-    const user = await authService.signInWithWallet(
-      wallet?.publicKey?.toString(),
-      signature
-    );
+      /** @dev Call function to sign message in wallet and login firebase & hamsterbox server. */
+      const user = await authService.signInWithWallet(
+        wallet?.publicKey?.toString(),
+        signature
+      );
 
-    /** @dev Update user in state. */
-    dispatch(setUser(user?.user));
+      /** @dev Get hamster profile. */
+      dispatch(getHamsterProfile());
+
+      /** @dev Update user in state. */
+      if (user) {
+        dispatch(setUser(user?.user));
+      }
+    } catch {}
   };
 
   /** @dev The function to handle authentication. */
   const handleAuth = async () => {
+    console.log("chage");
     try {
       /** Get user profile. */
       const user = await userService.getProfile();
 
       /** Force to logout. */
-      await authService.logout();
+      // await authService.logout();
 
       if (
         user.email
@@ -52,7 +61,10 @@ export const useAuth = () => {
           .includes(wallet?.publicKey?.toString().toLowerCase())
       ) {
         /** Try to relogin with stored credentials. */
-        return dispatch(setUser((await authService.reAuthenticate())?.user));
+        dispatch(setUser((await authService.reAuthenticate())?.user));
+        /** @dev Get hamster profile. */
+        dispatch(getHamsterProfile());
+        return;
       }
 
       /** Throw error to next block. */

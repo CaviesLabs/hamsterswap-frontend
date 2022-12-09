@@ -51,12 +51,13 @@ export class NetworkProvider {
         ...this.defaultNetWorkOptions,
         ...requestConfig.headers,
       },
-    });
+    }).catch((e) => e.response);
 
     if (resp.status >= 400) {
       if (resp.status === 401) {
-        this.storageProvider.removeItem("AccessToken");
-        this.storageProvider.removeItem("hAccessToken");
+        // this.storageProvider.removeItem("userCredential");
+        // this.storageProvider.removeItem("AccessToken");
+        // this.storageProvider.removeItem("hAccessToken");
       }
       throw new Error(`Error when request server, ${resp.statusText}`);
     }
@@ -82,7 +83,7 @@ export class NetworkProvider {
   ): Promise<RequestResponse> {
     const credential = this.storageProvider.getItem("hAccessToken");
     if (!credential) {
-      throw new Error("Credential not found");
+      return null;
     }
     const options = Object.assign({}, requestConfig);
     options.headers = {

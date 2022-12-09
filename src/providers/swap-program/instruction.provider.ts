@@ -1,11 +1,22 @@
 import { Program } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
-import { Connection, PublicKey, TransactionInstruction } from "@solana/web3.js";
+import {
+  Connection,
+  PublicKey,
+  TransactionInstruction,
+  SystemProgram,
+} from "@solana/web3.js";
 import {
   CreateProposalDto,
   SwapItemActionType,
 } from "@/src/entities/proposal.entity";
-import { Account, getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
+import {
+  getAssociatedTokenAddress,
+  createSyncNativeInstruction,
+  createCloseAccountInstruction,
+  NATIVE_MINT,
+} from "@solana/spl-token";
+import { getOrCreateAssociatedTokenAccount } from "./getOrCreateAssociatedTokenAccount";
 import { SwapIdl } from "./swap.idl";
 
 export class InstructionProvider {
@@ -112,15 +123,15 @@ export class InstructionProvider {
    * @param {PublicKey} mintAccount
    * @returns {PublicKey}
    */
-  private async getOrCreateProposalTokenAccount(
-    proposalOwner: PublicKey,
+  public async getOrCreateProposalTokenAccount(
+    publicKey: PublicKey,
     mintAccount: PublicKey
-  ): Promise<Account> {
+  ): Promise<TransactionInstruction> {
     return getOrCreateAssociatedTokenAccount(
       this.connection,
-      { publicKey: proposalOwner } as any,
+      { publicKey } as any,
       mintAccount,
-      proposalOwner
+      publicKey
     );
   }
 
@@ -136,6 +147,18 @@ export class InstructionProvider {
     proposalOwner: PublicKey,
     swapProposal: PublicKey
   ): Promise<TransactionInstruction> {
+    console.log({
+      params: JSON.parse(
+        JSON.stringify({
+          id: createProposalDto.id.slice(0, 10),
+          swapOptions: createProposalDto.swapOptions,
+          offeredItems: createProposalDto.offeredOptions,
+          expiredAt: new anchor.BN(
+            new Date().getTime() + 1000 * 60 * 60 * 24 * 7
+          ),
+        })
+      ),
+    });
     return await this.program.methods
       .createProposal({
         id: createProposalDto.id.slice(0, 10),
@@ -200,9 +223,9 @@ export class InstructionProvider {
     /**
      * @dev Get @var {asociatedTokenAccount} to hold mintAccount.
      */
-    const asociatedTokenAccount = await this.getOrCreateProposalTokenAccount(
-      proposalOwner,
-      mintAccount
+    const asociatedTokenAccountAddress = await getAssociatedTokenAddress(
+      mintAccount,
+      proposalOwner
     );
 
     /**
@@ -225,7 +248,7 @@ export class InstructionProvider {
       .transferAssetsToVault(params)
       .accounts({
         signer: proposalOwner,
-        signerTokenAccount: asociatedTokenAccount.address,
+        signerTokenAccount: asociatedTokenAccountAddress,
         swapTokenVault,
         mintAccount,
         swapProposal,
@@ -259,9 +282,9 @@ export class InstructionProvider {
     /**
      * @dev Get @var {asociatedTokenAccount} to hold mintAccount.
      */
-    const asociatedTokenAccount = await this.getOrCreateProposalTokenAccount(
-      targetAccount,
-      mintAccount
+    const asociatedTokenAccountAddress = await getAssociatedTokenAddress(
+      mintAccount,
+      targetAccount
     );
 
     /**
@@ -275,6 +298,8 @@ export class InstructionProvider {
       actionType: { [actionType]: {} },
     };
 
+    console.log({ ...params, signer: targetAccount });
+
     /**
      * @dev Call to program to create an instruction.
      */
@@ -282,12 +307,62 @@ export class InstructionProvider {
       .transferAssetsFromVault(params)
       .accounts({
         signer: targetAccount,
-        signerTokenAccount: asociatedTokenAccount.address,
+        signerTokenAccount: asociatedTokenAccountAddress,
         swapProposal,
         swapTokenVault,
         swapRegistry: this.swapRegistry,
         mintAccount: mintAccount,
       })
       .instruction();
+  }
+
+  /**
+   * @dev Wrap SOL to wSOL before deposit.
+   * @param {PublicKey} walletPublicKey
+   * @param {BN} amount
+   * @returns @arrays {[TransactionInstruction, TransactionInstruction]}
+   */
+  public async wrapSol(
+    walletPublicKey: PublicKey,
+    amount: anchor.BN
+  ): Promise<[TransactionInstruction, TransactionInstruction]> {
+    /**
+     * @dev Get token account of wSOL.
+     */
+    const associatedTokenAccount = await getAssociatedTokenAddress(
+      NATIVE_MINT,
+      walletPublicKey
+    );
+
+    /**
+     * @dev Transfer sol to wsol account.
+     */
+    const instruction1 = SystemProgram.transfer({
+      fromPubkey: walletPublicKey,
+      toPubkey: associatedTokenAccount,
+      lamports: amount.toNumber(),
+    });
+
+    /**
+     * @dev Create native sol.
+     */
+    const instruction2 = createSyncNativeInstruction(associatedTokenAccount);
+
+    return [instruction1, instruction2];
+  }
+
+  /**
+   * @dev Unwrap wSOL to sol instruction.
+   * @param {PublicKey} walletPublicKey
+   * @returns {TransactionInstruction}.
+   */
+  public async unwrapSol(
+    walletPublicKey: PublicKey
+  ): Promise<TransactionInstruction> {
+    return createCloseAccountInstruction(
+      NATIVE_MINT,
+      walletPublicKey,
+      walletPublicKey
+    );
   }
 }

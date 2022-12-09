@@ -1,5 +1,16 @@
 import { BN } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
+import { NftEntity } from "@/src/dto/nft.dto";
+
+/**
+ * @dev Expose asset types enum for UI handling.
+ */
+export enum AssetTypes {
+  nft = "nft",
+  game = "game",
+  usd = "usd",
+  token = "currency",
+}
 
 /**
  * @dev Exporse item action type.
@@ -24,8 +35,8 @@ export enum SwapItemType {
 export enum SwapItemStatus {
   CREATED = "SWAP_ITEM_STATUS::CREATED",
   DEPOSITED = "SWAP_ITEM_STATUS::DEPOSITED",
-  REDEEMED = "SWAP_ITEM_STATUS::REDEEMED",
-  WITHDRAWN = "SWAP_ITEM_STATUS::WITHDRAWN",
+  FULFILLED = "SWAP_ITEM_STATUS::FULFILLED",
+  CANCELED = "SWAP_ITEM_STATUS::CANCELED",
 }
 
 /** @dev Expose stuff item. */
@@ -33,7 +44,59 @@ export class StuffItemEntity {
   id: string;
   mintAccount: PublicKey;
   amount: BN;
-  itemType: any;
+  itemType: {
+    [key: string]: any;
+  };
+}
+
+/**
+ * @dev Use this entity to show in UI
+ * */
+export type OfferedItemEntity = Omit<NftEntity, `id`> &
+  StuffItemEntity & {
+    /**
+     * @dev On-chain id of token in SolScan.
+     */
+    nftId: string;
+
+    /**
+     * @dev AssetTypes in SolScan.
+     */
+    assetType: SwapItemType;
+
+    /**
+     * @dev Use this to display WSOL amount
+     */
+    tokenAmount?: number;
+  };
+
+export type ExpectedItemEntity = Omit<NftEntity, `id`> &
+  StuffItemEntity & {
+    /**
+     * @dev On-chain id of token in SolScan.
+     */
+    nftId: string;
+
+    /**
+     * @dev AssetTypes in SolScan.
+     */
+    assetType: SwapItemType;
+
+    /**
+     * @dev Use this to display WSOL amount
+     */
+    tokenAmount?: number;
+  };
+
+/**
+ * @dev Use this for expected opinions in UI
+ */
+export interface ExpectedOpitionEntity {
+  /**
+   * @dev Must generate first.
+   */
+  id: string;
+  askingItems: ExpectedItemEntity[];
 }
 
 /** @dev Expose dto to create proposal on-chain. */
@@ -105,7 +168,7 @@ export class SwapItemEntity {
 
   status: SwapItemStatus;
 
-  nftMetadata?: any;
+  nftMetadata?: NftEntity[];
 
   id: string;
 }
@@ -130,6 +193,7 @@ export class SwapProposalEntity {
   ownerId: string;
 
   ownerAddress: string;
+  owner?: string;
 
   offerItems: SwapItemEntity[] = [];
 
@@ -146,6 +210,9 @@ export class SwapProposalEntity {
   searchText?: string;
 
   note?: string;
+
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 /**
@@ -154,7 +221,7 @@ export class SwapProposalEntity {
 export class GetProposalsDto {
   walletAddress?: string;
   options?: {
-    statuses?: SwapProposalStatus[];
+    statuses?: SwapProposalStatus[] | SwapProposalStatus;
     limit?: number;
     offset?: number;
     search?: string;

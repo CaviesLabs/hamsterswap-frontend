@@ -10,22 +10,18 @@ import { Col, Row } from "antd";
 import dayjs from "dayjs";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import { completedOrderPercent, DATE_TIME_FORMAT } from "@/src/utils";
-import { getHamsterPublicProfile } from "@/src/redux/actions/hamster-profile/profile.action";
-import { useDispatch } from "react-redux";
 import { hProfileDto } from "@/src/dto/hProfile.dto";
+import { hProfileService } from "@/src/redux/saga/hamster-profile/profile.service";
 
 export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
-  const dispatch = useDispatch();
   const [profile, setProfile] = useState<hProfileDto>();
   const router = useRouter();
   const { data } = props;
 
   useEffect(() => {
-    dispatch(
-      getHamsterPublicProfile({ id: data.ownerId }, (_profile) =>
-        setProfile(_profile)
-      )
-    );
+    hProfileService
+      .getPublicProfile({ id: data.ownerId })
+      .then((resp) => setProfile(resp));
   }, []);
 
   return (
@@ -42,7 +38,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           style={{ zIndex: 3 }}
-          className="absolute right-0 left-[20px] md:left-[initial] md:right-[143px] w-[37px] top-[42px]"
+          className="absolute right-0 left-[20px] md:left-[initial] md:right-[86px] w-[37px] top-[40px]"
         >
           <path
             fillRule="evenodd"
@@ -53,42 +49,39 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
         </svg>
       )}
       <div className="relative bg-dark10 w-full h-full min-h-[200px]  rounded-[32px] pb-[50px]">
-        <div className="pl-[20px] pr-[20px] md:pl-[77px]">
-          <div className="pt-[120px] md:pt-[32px]">
-            <UserAvatarCardItem
-              avatar="https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
-              orders={profile?.ordersStat.orders || 0}
-              completion={completedOrderPercent(
-                profile?.ordersStat.completedOrders,
-                profile?.ordersStat.orders
-              )}
-              reputation={true}
-              walletAddress={utilsProvider.makeShort(data.ownerAddress, 4)}
-            />
-          </div>
+        <div className="px-24 pt-12">
+          <UserAvatarCardItem
+            id={profile?.id}
+            avatar={profile?.avatar}
+            orders={profile?.ordersStat.orders || 0}
+            completion={completedOrderPercent(
+              profile?.ordersStat.completedOrders,
+              profile?.ordersStat.orders
+            )}
+            reputation={true}
+            walletAddress={utilsProvider.makeShort(data.ownerAddress, 4)}
+          />
           <ProposalItems
             userAssets={data.offerItems}
             userLookingFor={data.swapOptions}
           />
-          <Row className="pt-10 md:px-10" gutter={20}>
-            <Col span={12}>
+          <Row className="pt-8">
+            <Col span={11}>
               <div className="md:left">
                 <p className="semi-bold text-[16px] h-[36px] leading-9">Note</p>
-                <p className="mt-[12px] text-[16px] regular-text">
-                  {data.note}
-                </p>
-                <p className="mt-[12px] text-[16px] regular-text text-dark60">
+                <p className="mt-[8px] text-[16px] regular-text">{data.note}</p>
+                <p className="mt-[16px] text-[14px] regular-text text-dark60">
                   Expiration date:{" "}
                   {dayjs(data.expiredAt).format(DATE_TIME_FORMAT)}
                 </p>
               </div>
             </Col>
-            <Col span={12}>
+            <Col offset={2} span={11}>
               <div className="md:left">
                 <p className="semi-bold text-[16px] h-[36px] leading-9">
                   Warranty
                 </p>
-                <p className="mt-[12px] text-[16px] regular-text flex">
+                <p className="mt-[8px] text-[16px] regular-text flex">
                   Guaranteed payment amount:
                   <img
                     src="/assets/images/solana-icon.svg"
@@ -100,9 +93,9 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
               </div>
             </Col>
           </Row>
-          <div className="flex mt-[20px] justify-end px-10">
+          <div className="flex mt-[20px] justify-end">
             <Button
-              className={classnames("!rounded-[100px] !px-4")}
+              className={classnames("!rounded-[100px] !px-9")}
               text="View Detail"
               onClick={() => router.push(`/proposal/${data.id}`)}
             />

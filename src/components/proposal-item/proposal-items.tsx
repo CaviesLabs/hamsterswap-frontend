@@ -3,7 +3,6 @@ import { ProposalItemsProps } from "@/src/components/proposal-item/types";
 import { Col, Row } from "antd";
 import { Button } from "@hamsterbox/ui-kit";
 import { RowNftItem } from "@/src/components/nfts";
-import { SwapItemType } from "@/src/entities/proposal.entity";
 
 const ProposalItems: FC<ProposalItemsProps> = (props) => {
   const { userAssets, userLookingFor } = props;
@@ -15,41 +14,52 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
 
   return (
     <>
-      <Row className="pt-[40px] md:px-10" gutter={20}>
-        <Col span={12}>
-          <div className="semi-bold text-[16px] h-[36px] leading-9">I Have</div>
+      <Row className="pt-[40px]">
+        <Col span={11}>
+          <div className="semi-bold text-[16px] h-[36px] leading-9">I have</div>
         </Col>
-        <Col span={12}>
+        <Col offset={2} span={11}>
           <div className="flex justify-between">
-            <div className="semi-bold text-[16px] leading-9">Looking For</div>
+            <div className="semi-bold text-[16px] leading-9">looking for</div>
             <div className="flex">
-              {userLookingFor.map((_, index) => (
-                <div className="ml-3" key={`ml3dix-${index}`}>
-                  <Button
-                    className="!rounded-[100px] after:!rounded-[100px] !px-5"
-                    size="small"
-                    shape={optionSelected === index ? "primary" : "secondary"}
-                    text={`Option ${index + 1}`}
-                    onClick={() => setOptionSelected(index)}
-                  />
-                </div>
-              ))}
+              {userLookingFor.length > 1 &&
+                userLookingFor.map((_: any, index: number) => (
+                  <div className="ml-3" key={`ml3dix-${index}`}>
+                    <Button
+                      className="!rounded-[100px] after:!rounded-[100px] !px-5"
+                      size="small"
+                      shape={optionSelected === index ? "primary" : "secondary"}
+                      text={`Option ${index + 1}`}
+                      onClick={() => setOptionSelected(index)}
+                    />
+                  </div>
+                ))}
             </div>
           </div>
         </Col>
       </Row>
-      <Row className="mt-4 md:px-10" gutter={20}>
-        <Col span={12}>
+      <Row className="mt-4">
+        <Col span={11}>
           {userAssets.map((item, index) => (
             <div className="mb-4" key={`proposal-item-${index}`}>
-              <RowNftItem {...item} assetType={item.type} />
+              <RowNftItem
+                {...item}
+                collectionId={item.nftMetadata[0]?.nft_collection_id}
+                nftId={item.id}
+                assetType={item.type}
+              />
             </div>
           ))}
         </Col>
-        <Col span={12}>
+        <Col offset={2} span={11}>
           {userLookingFor[optionSelected]?.map((item: any, index: number) => (
             <div className="mb-4" key={`swapoptions-${index}`}>
-              <RowNftItem {...item} />
+              <RowNftItem
+                {...item}
+                collectionId={item.nftMetadata[0]?.nft_collection_id}
+                nftId={item.id}
+                assetType={item.type as any}
+              />
             </div>
           ))}
         </Col>

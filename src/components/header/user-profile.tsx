@@ -4,11 +4,15 @@ import { FC, useEffect } from "react";
 import { getHamsterProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useRouter } from "next/router";
+import { useWallet } from "@/src/hooks/useWallet";
+import classnames from "classnames";
+import styles from "./index.module.scss";
 
 const UserProfile: FC = () => {
   const dispatch = useDispatch();
   const wallet = useConnectedWallet();
   const router = useRouter();
+  const { disconnect } = useWallet();
 
   /**
    * @description
@@ -21,12 +25,14 @@ const UserProfile: FC = () => {
   const profile = useSelector((state: any) => state.hProfile);
   useEffect(() => {
     dispatch(getHamsterProfile());
-  }, []);
+  }, [wallet]);
 
   return (
     <div
-      className="relative flex items-center h-full py-[3px] px-[10px] border-solid border-[0px] border-purple rounded-[5px] cursor-pointer"
-      onClick={() => router.push(`/u/${profile.id}/profile`)}
+      className={classnames(
+        "relative flex items-center h-full py-[3px] px-[10px] border-solid border-[0px] border-purple rounded-[5px] cursor-pointer avatar-profile",
+        styles["avatar-profile"]
+      )}
     >
       <img
         className="w-[20px] md:w-[40px] h-[auto] mr-[10px]"
@@ -36,6 +42,18 @@ const UserProfile: FC = () => {
       <span className="text-[7px] md:text-[14px]">
         {utilsProvider.makeShort(wallet?.publicKey?.toString(), 3)}
       </span>
+      <ul className={styles["toggle-container"]}>
+        <div className={styles.container}>
+          <ul>
+            <li onClick={() => router.push(`/u/${profile.id}/profile`)}>
+              Profile Setting
+            </li>
+            <li onClick={disconnect} className="text-red300">
+              Disconnect
+            </li>
+          </ul>
+        </div>
+      </ul>
     </div>
   );
 };

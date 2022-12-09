@@ -1,4 +1,8 @@
 import { ProposalItemProps } from "@/src/components/proposal-item";
+import {
+  SwapProposalEntity,
+  SwapProposalStatus,
+} from "@/src/entities/proposal.entity";
 
 export type BreadcrumbProps = {
   title: string;
@@ -10,25 +14,22 @@ export type SubMenuProps = {
 
 type ProposalStatus = "pending" | "success" | "canceled" | "expired";
 export type ProposalDetailProps = ProposalItemProps & {
-  status: ProposalStatus;
+  proposalId: string;
+  proposalOwner: string;
+  status: SwapProposalStatus;
 };
 
 export type ProposalItem = {
   id: string;
   createdAt: string;
-  swapItems: any[];
-  receiveItems: any[];
+  offerItems: any[];
+  swapOptions: any[];
   swapper: string;
   status: ProposalStatus;
 };
 
-export type ProposalReducer = {
-  swapItems: any[];
-  receiveItems: any[];
-};
-
 export type ProposalHistoryProps = {
-  data: ProposalItem;
+  data: SwapProposalEntity;
 };
 
 type PaymentType = "stripe" | "paypal" | "bank";

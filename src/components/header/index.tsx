@@ -7,6 +7,8 @@ import { PURPLE_HEADER_PAGES } from "@/src/utils";
 import classnames from "classnames";
 import styles from "./index.module.scss";
 import UserProfile from "@/src/components/header/user-profile";
+import { useMain } from "@/src/hooks/pages/main";
+
 interface MenuItem {
   title: string;
   href: string;
@@ -16,6 +18,7 @@ interface MenuItem {
 const Header: FC = () => {
   const [curSlug, setCurSlug] = useState<string>("#about-us");
   const router = useRouter();
+  const { hProfile } = useMain();
 
   /**
    * Check homepage and display logo on dark theme
@@ -152,21 +155,21 @@ const Header: FC = () => {
       })}
       id="app-header"
     >
-      <div className="absolute top-0 left-0 w-full py-[18px] md:py-[25px] pl-[20px] pr-0 flow-root">
-        <div className="lg:max-w-[1180px] lg:mx-auto">
+      <div className="absolute top-0 left-0 w-full py-[18px] md:py-[25px] flow-root">
+        <div className="lg:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="float-left logo-wrapper md:mt-0 mt-[0px]">
             <a href="/">
               <img
                 src="/assets/images/logo.png"
                 className={classnames(
-                  "w-[170px] md:w-[250px] dark:hidden mt-[2px] md:mt-0",
+                  "w-[170px] md:w-[190px] dark:hidden mt-[2px] md:mt-0",
                   isHomepage ? "hidden" : "block"
                 )}
               />
               <img
                 src="/assets/images/logo-dark.png"
                 className={classnames(
-                  "w-[95px] md:w-[149px] dark:block",
+                  "w-[95px] md:w-[180px] dark:block",
                   isHomepage ? "block" : "hidden"
                 )}
               />
@@ -174,13 +177,13 @@ const Header: FC = () => {
           </div>
           <div className="relative flex items-center float-right right-[16px]">
             <div className="float-right relative">
-              {!wallet ? (
+              {!hProfile ? (
                 <div className="relative">
                   {" "}
                   <Button
-                    className="!px-4"
+                    className="!px-8"
                     size="small"
-                    text="Connect"
+                    text="Connect Wallet"
                     onClick={connectWallet}
                   />{" "}
                 </div>
@@ -227,7 +230,7 @@ const Header: FC = () => {
           >
             {
               <ul className="menu-container float-left">
-                {wallet && (
+                {wallet && hProfile && (
                   <Button
                     className="!rounded-[100px] after:!rounded-[100px] !px-[20px]"
                     text="Create a Proposal"

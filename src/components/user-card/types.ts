@@ -2,6 +2,7 @@
  * @dev Define props interface for @var {UserAvatarCard} component.
  */
 export type UserAvatarCardItemProps = {
+  id?: string;
   className?: string;
   walletAddress: string;
   orders: number;

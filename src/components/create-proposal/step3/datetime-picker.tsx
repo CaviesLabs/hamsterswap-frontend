@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { DatePicker, Dropdown, Input } from "antd";
 import { ChevronDownIcon } from "@/src/components/icons";
 import { TIME_ARRAYS } from "@/src/utils";
 import { DatetimePickerProps } from "@/src/components/create-proposal/step3/types";
+import dayjs, { Dayjs } from "dayjs";
 
 /**
  * @description
@@ -11,15 +13,44 @@ import { DatetimePickerProps } from "@/src/components/create-proposal/step3/type
  * the `onChange` will be triggered when value of each component changed
  */
 export default function DatetimePicker(props: DatetimePickerProps) {
+  const [dateTime, setDateTime] = useState<Dayjs>(dayjs("2022-08-08"));
   const value = props.value;
 
+  /**
+   * @dev
+   * Modify time
+   * Split value to get hour & minute for modifying
+   * @param {string} timeSelected
+   */
   const handleSelectTime = (timeSelected: string) => {
     const [hour, minute] = timeSelected.split(":");
-    const newValue = value
+    const newValue = dateTime
       ?.set("hour", parseInt(hour) | 0)
-      .set("minute", parseInt(minute) | 0);
-    props.onChange(newValue);
+      ?.set("minute", parseInt(minute) | 0);
+
+    setDateTime(newValue);
   };
+
+  /**
+   * @dev Modify date value in datetime.
+   * @param _date
+   */
+  const handleSelectDate = (_date: any) => {
+    const date = new Date(_date);
+    const newValue = dateTime
+      ?.set("date", date.getDate())
+      ?.set("year", date.getUTCFullYear())
+      ?.set("month", date.getMonth());
+    setDateTime(newValue);
+  };
+
+  useEffect(() => {
+    setDateTime(dayjs(Date.now()));
+  }, []);
+
+  useEffect(() => {
+    props.onChange(dateTime.toDate());
+  }, [dateTime]);
 
   return (
     <div className="flex">
@@ -28,8 +59,8 @@ export default function DatetimePicker(props: DatetimePickerProps) {
         size="large"
         className="rounded-[16px] px-[50px]"
         placeholder="dd/mm/yyyy"
-        value={props.value}
-        onChange={(v) => props.onChange(v)}
+        // defaultValue={new Date(dateTime.date())}
+        onChange={(v) => handleSelectDate(v)}
       />
       <div className="ml-[20px] relative">
         <Dropdown
@@ -58,8 +89,8 @@ export default function DatetimePicker(props: DatetimePickerProps) {
               bordered={false}
               className="text-center text-gray-500 focus:ring-0 text-center regular-text rounded-[16px]"
               value={
-                props.value
-                  ? `${props.value?.format("HH")}:${props.value?.format("mm")}`
+                dateTime
+                  ? `${dateTime.format("HH")}:${dateTime.format("mm")}`
                   : "00:00"
               }
               onChange={(e) => handleSelectTime(e.target.value)}

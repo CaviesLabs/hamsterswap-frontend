@@ -12,11 +12,14 @@ import {
 import classnames from "classnames";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 import { ExpectedItemProps } from "@/src/components/create-proposal/step2/types";
-import { useDispatch, useSelector } from "react-redux";
-import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
+import { useSelector } from "react-redux";
+import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
+import { WSOL_ADDRESS } from "@/src/utils/constants";
+import { AssetTypes } from "@/src/entities/proposal.entity";
 
 export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
-  const dispatch = useDispatch();
+  const { expectedItems, removeExpectedItem, addExpectedItem } =
+    useCreateProposal();
 
   const { optionName, defaultCollapsed } = props;
   /**
@@ -37,42 +40,18 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
    */
   const proposal = useSelector((state: any) => state.proposal);
 
-  const handleUnSelectNft = (idx: number) => {
-    const newReceiveItems = proposal.receiveItems;
-    newReceiveItems[props.index] = newReceiveItems[props.index].filter(
-      (_: any, index: number) => idx !== index
-    );
-    dispatch(
-      setProposal({
-        ...proposal,
-        receiveItems: newReceiveItems,
-      })
-    );
-  };
-
   /**
-   * Handle save sol value into receiveItems array of redux-store
+   * Handle save sol value into swapItems array of redux-store
    * @param value [string]
    */
   const handleAddSol = (value: string) => {
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
-
-    const newReceiveItems: any = proposal.receiveItems;
-    const newChildReceiveItems: any = newReceiveItems[props.index];
-    newChildReceiveItems.push({
-      assetType: "token",
-      name: `${value} SOL`,
-      collection: "SOL",
-      image: "/assets/images/solana-icon.svg",
-      value,
-    });
-    newReceiveItems[props.index] = newChildReceiveItems;
-    dispatch(
-      setProposal({
-        ...proposal,
-        receiveItems: newReceiveItems,
-      })
+    addExpectedItem(
+      { nft_address: WSOL_ADDRESS } as any,
+      AssetTypes.token,
+      props.index,
+      parseFloat(value)
     );
     setIsAddSol(false);
   };
@@ -96,12 +75,6 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
       value,
     });
     newReceiveItems[props.index] = newChildReceiveItems;
-    dispatch(
-      setProposal({
-        ...proposal,
-        receiveItems: newReceiveItems,
-      })
-    );
     setIsAddCash(false);
   };
 
@@ -129,10 +102,10 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
       </div>
       <Collapse isOpened={collapse}>
         <div className="px-[20px]">
-          <div className="block mt-[20px]">
+          <div className="flex items-center mt-[20px]">
             <Button
               text="Add NFT"
-              className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[120px]"
+              className="!rounded-[100px] after:!rounded-[100px] float-right !px-4"
               icon={<PlusIcon />}
               onClick={() => setIsAddNft(true)}
               size="small"
@@ -143,82 +116,99 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
               handleOk={() => setIsAddNft(false)}
               handleCancel={() => setIsAddNft(false)}
             />
-            <Button
-              text="Add SOL"
-              className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[120px] ml-[12px]"
-              theme={{
-                backgroundColor: "#41ADD1",
-                color: "#FFFFFF",
-              }}
-              icon={<PlusIcon />}
-              onClick={() => setIsAddSol(true)}
-              size="small"
-            />
-            <AddSolModal
-              isModalOpen={isAddSol}
-              handleOk={(value: string) => handleAddSol(value)}
-              handleCancel={() => setIsAddSol(false)}
-            />
-            <Button
-              text="Add in-game item"
-              className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[180px] ml-[12px]"
-              theme={{
-                backgroundColor: "#F47048",
-                color: "#FFFFFF",
-              }}
-              icon={<PlusIcon />}
-              onClick={() => setIsAddGameItem(true)}
-              size="small"
-            />
-            <AddGameItemModal
-              isModalOpen={isAddGameItem}
-              handleOk={() => setIsAddGameItem(false)}
-              handleCancel={() => setIsAddGameItem(false)}
-            />
-            <Button
-              text="Add Cash"
-              className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[120px] ml-[12px]"
-              theme={{
-                backgroundColor: "#97B544",
-                color: "#FFFFFF",
-              }}
-              icon={<PlusIcon />}
-              onClick={() => setIsAddCash(true)}
-              size="small"
-            />
-            <AddCashModal
-              isModalOpen={isAddCash}
-              handleOk={(value: string, method: string) =>
-                handleAddCash(value, method)
-              }
-              handleCancel={() => setIsAddCash(false)}
-            />
+            <div className="ml-[12px]">
+              <Button
+                text="Add SOL"
+                className="!rounded-[100px] after:!rounded-[100px] !px-4"
+                theme={{
+                  backgroundColor: "#41ADD1",
+                  color: "#FFFFFF",
+                }}
+                icon={<PlusIcon />}
+                onClick={() => setIsAddSol(true)}
+                size="small"
+              />
+              <AddSolModal
+                isModalOpen={isAddSol}
+                handleCancel={() => setIsAddSol(false)}
+                addInOwner={false}
+                handleAddSol={(value) => {
+                  setIsAddSol(false);
+                  handleAddSol(value);
+                }}
+              />
+            </div>
+            <div className="ml-[12px]">
+              <Button
+                text="Add in-game item"
+                className="!rounded-[100px] after:!rounded-[100px] !px-4"
+                theme={{
+                  backgroundColor: "#F47048",
+                  color: "#FFFFFF",
+                }}
+                icon={<PlusIcon />}
+                onClick={() => setIsAddGameItem(true)}
+                size="small"
+              />
+              <AddGameItemModal
+                isModalOpen={isAddGameItem}
+                handleOk={() => setIsAddGameItem(false)}
+                handleCancel={() => setIsAddGameItem(false)}
+              />
+            </div>
+            <div className="ml-[12px]">
+              <Button
+                text="Add Cash"
+                className="!rounded-[100px] after:!rounded-[100px] !px-4"
+                theme={{
+                  backgroundColor: "#97B544",
+                  color: "#FFFFFF",
+                }}
+                icon={<PlusIcon />}
+                onClick={() => setIsAddCash(true)}
+                size="small"
+              />
+              <AddCashModal
+                isModalOpen={isAddCash}
+                handleOk={(value: string, method: string) =>
+                  handleAddCash(value, method)
+                }
+                handleCancel={() => setIsAddCash(false)}
+              />
+            </div>
           </div>
           <div className="block">
             <div className="md:flex py-5 flex-wrap">
-              {proposal?.receiveItems[props.index].map(
-                (option: any, index: any) => (
-                  <div
-                    className="block md:left w-full md:w-[50%] md:pl-[20px]"
-                    key={`swapoptions-${index}`}
-                  >
-                    <div className="flow-root items-center h-[50px]">
-                      <p
-                        className="text-[16px] float-left text-gray-400 regular-text"
-                        style={{ transform: "translateY(50%)" }}
-                      >
-                        Item #{index + 1}
-                      </p>
-                    </div>
-                    <div className="pt-[20px]">
-                      <RowEditNftItem
-                        {...option}
-                        onDelete={() => handleUnSelectNft(index)}
-                      />
-                    </div>
+              {expectedItems[props.index]?.askingItems.map((item, index) => (
+                <div
+                  className="block md:left w-full md:w-[50%] md:pl-[20px]"
+                  key={`swapoptions-${index}`}
+                >
+                  <div className="flow-root items-center h-[50px]">
+                    <p
+                      className="text-[16px] float-left text-gray-400 regular-text"
+                      style={{ transform: "translateY(50%)" }}
+                    >
+                      Item #{index + 1}
+                    </p>
                   </div>
-                )
-              )}
+                  <div className="pt-[20px]">
+                    <RowEditNftItem
+                      collection={item.nft_symbol}
+                      image={item.nft_image_uri}
+                      name={item.nft_name}
+                      collectionId={item.nft_collection_id}
+                      nftId={item.id}
+                      assetType={item.assetType}
+                      nftAddress={item?.nft_address}
+                      tokenAmount={item?.tokenAmount}
+                      onDelete={() => {
+                        removeExpectedItem(item.id);
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
               <EmptyBox />
             </div>
           </div>

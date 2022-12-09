@@ -8,6 +8,11 @@ export type RowNftItemProps = {
   collectionId?: string;
   nftId?: string;
   assetType: SwapItemType;
+  nftAddress?: string;
+  /**
+   * @dev Use this to display WSOL amount
+   */
+  tokenAmount?: number;
 };
 
 /** @dev Define props for specific nft item which is editable. */

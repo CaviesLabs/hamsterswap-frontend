@@ -156,12 +156,12 @@ class UtilsProvider {
     const arr = value.split("");
     if (arr.length > size) {
       return (
-        arr.splice(0, size).join(" ") +
-        " ..." +
-        arr.splice(arr.length - size, size).join(" ")
+        arr.splice(0, size).join("") +
+        "..." +
+        arr.splice(arr.length - size, size).join("")
       );
     }
-    return arr.splice(0, size).join(" ");
+    return arr.splice(0, size).join("");
   }
 }
 

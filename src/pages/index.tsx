@@ -21,7 +21,7 @@ const Layout: FC = () => {
     <MainLayout>
       <Banner />
       <div className={styles.container}>
-        <div className="bg-white">
+        <div className="bg-white mb-10">
           <div>
             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <section aria-labelledby="products-heading" className="pt-6">
@@ -29,7 +29,7 @@ const Layout: FC = () => {
                 <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
                   <div className="lg:col-span-8">
                     <div className="rounded-lg  lg:h-full px-[10px] py-[20px]">
-                      {proposals.map((proposal: SwapProposalEntity) => {
+                      {proposals?.map((proposal: SwapProposalEntity) => {
                         const p: any = { ...proposal };
                         const newOfferItems = p.offerItems.map(
                           (offerItem: SwapItemEntity) =>
@@ -50,6 +50,7 @@ const Layout: FC = () => {
                             data={p}
                             receiveItems={p.offerItems}
                             swapItems={p.swapOptions}
+                            isGuaranteedPayment
                           />
                         );
                       })}

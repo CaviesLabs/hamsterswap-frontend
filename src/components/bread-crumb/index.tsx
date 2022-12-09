@@ -3,7 +3,7 @@ import { BreadCrumbProps } from "./types";
 
 export const BreadCrumb: FC<BreadCrumbProps> = (props) => {
   return (
-    <nav className="flex mt-10" aria-label="Breadcrumb">
+    <nav className="flex mt-20" aria-label="Breadcrumb">
       <ol className="inline-flex items-center space-x-1 md:space-x-3">
         {props.data.map((item, index) => (
           <li

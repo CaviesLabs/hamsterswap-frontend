@@ -1,14 +1,16 @@
-import { FC, useState, useCallback, useRef } from "react";
+import { FC, useMemo, useCallback, useRef, useState } from "react";
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
 import MainLayout from "@/src/layouts/main";
-import { ProposalDetailPageProvider } from "@/src/hooks/pages/proposal-detail";
+import { CreateProposalProvider } from "@/src/hooks/pages/create-proposal";
 import { LayoutSection } from "@/src/components/layout-section";
 import { BreadCrumb } from "@/src/components/bread-crumb";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { StepProgressBar } from "@/src/components/stepper";
 import type { StepProgressHandle } from "@/src/components/stepper";
 import { Carousel } from "react-responsive-carousel";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Form } from "antd";
+import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import {
   Step1,
   Step2,
@@ -16,13 +18,26 @@ import {
   Step4,
   Step5,
 } from "@/src/components/create-proposal";
-import { Form } from "antd";
-import { useSelector } from "react-redux";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import classnames from "classnames";
 
 const Layout: FC = () => {
-  const proposal = useSelector((state: any) => state.proposal);
-  const isButtonNextDisabled = !proposal || proposal?.swapItems.length === 0;
+  /**
+   * @dev Use next router.
+   */
+  const router = useRouter();
+
+  /**
+   * @dev Import functions in screen context.
+   */
+  const {
+    offferedItems,
+    expectedItems,
+    note,
+    expiredTime,
+    guaranteeSol,
+    submitProposal,
+  } = useCreateProposal();
 
   /**
    * @dev Define proposal form, that include:
@@ -41,24 +56,56 @@ const Layout: FC = () => {
    * @dev display modal when user confirm transaction successfully
    */
   const [modalOpened, setModalOpened] = useState(false);
+  const [proposalId, setProposalId] = useState("");
 
   /** @dev Initilize ref for stepper component. */
   const stepperRef = useRef<StepProgressHandle>(null);
+
+  /**
+   * @dev This memo will use for condition whether allow to go next screen or not.
+   * @param {number} currentStep
+   * @param {offferedItems} @arrays
+   */
+  const isButtonNextDisabled = useMemo<boolean>(() => {
+    switch (currentStep) {
+      case 0:
+        return offferedItems.length === 0;
+      case 1:
+        return (
+          expectedItems.map((item) => item.askingItems).flat(1).length === 0
+        );
+      case 2:
+        return !note || !expiredTime;
+      case 3:
+        return guaranteeSol <= 0;
+      default:
+        return true;
+    }
+  }, [
+    currentStep,
+    offferedItems,
+    expectedItems,
+    expiredTime,
+    note,
+    guaranteeSol,
+  ]);
 
   /**
    * @dev The function to process when click next.
    * @returns {Function}
    */
   const handleNextStep = useCallback(async () => {
-    if (currentStep === 2) {
-      /**
-       * @dev validate user has entered expire time
-       * before going to next step
-       */
-      await formProposal.validateFields();
-    }
-    setCurrentStep((prev) => prev + 1);
-    stepperRef.current.nextHandler();
+    try {
+      if (currentStep === 2) {
+        /**
+         * @dev validate user has entered expire time
+         * before going to next step
+         */
+        await formProposal.validateFields();
+      }
+      setCurrentStep((prev) => prev + 1);
+      stepperRef.current.nextHandler();
+    } catch {}
   }, [currentStep]);
 
   /**
@@ -70,9 +117,23 @@ const Layout: FC = () => {
     stepperRef.current.prevHandler();
   }, [currentStep]);
 
+  /**
+   * @dev Click submit to create proposal.
+   */
+  const hanndleSubmitProposal = async () => {
+    try {
+      const proposalId = await submitProposal();
+      setProposalId(proposalId);
+      setModalOpened(true);
+    } catch (err: unknown) {
+      toast.error("Create proposal failed", (err as any).message);
+    }
+  };
+
   function onFormSubmit() {
     return true;
   }
+
   return (
     <MainLayout>
       <div className="bg-white">
@@ -82,19 +143,19 @@ const Layout: FC = () => {
             <div className="mt-5 block md:flex">
               <p className="text-[32px]">Create a Proposal</p>
             </div>
-            <div className="mt-8">
+            <div className="mt-[75px] pb-10">
               <StepProgressBar
                 ref={stepperRef}
                 startingStep={0}
                 onSubmit={onFormSubmit}
                 steps={[
                   {
-                    label: "Swap Items",
-                    name: "Swap Items",
+                    label: "Your Items",
+                    name: "Your Items",
                   },
                   {
-                    label: "Expect Items",
-                    name: "Expect Items",
+                    label: "Expected Items",
+                    name: "Expected Items",
                   },
                   {
                     label: "Additional info",
@@ -128,7 +189,10 @@ const Layout: FC = () => {
                   <Step4 />
                   <Step5
                     modalOpened={modalOpened}
-                    setModalOpened={(v) => setModalOpened(v)}
+                    setModalOpened={(v) => {
+                      setModalOpened(v);
+                      proposalId && router.push(`/proposal/${proposalId}`);
+                    }}
                   />
                 </Carousel>
               </div>
@@ -149,7 +213,7 @@ const Layout: FC = () => {
                   text="Next"
                   className={classnames(
                     "!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right",
-                    isButtonNextDisabled && "hover:!text-black"
+                    isButtonNextDisabled && "hover:!text-black !cursor-default"
                   )}
                   onClick={handleNextStep}
                   theme={
@@ -164,7 +228,7 @@ const Layout: FC = () => {
                 <Button
                   text="Confirm"
                   className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right"
-                  onClick={() => setModalOpened(true)}
+                  onClick={hanndleSubmitProposal}
                 />
               )}
             </div>
@@ -177,9 +241,9 @@ const Layout: FC = () => {
 
 const ProposalDetailPage: NextPage = () => {
   return (
-    <ProposalDetailPageProvider>
+    <CreateProposalProvider>
       <Layout />
-    </ProposalDetailPageProvider>
+    </CreateProposalProvider>
   );
 };
 

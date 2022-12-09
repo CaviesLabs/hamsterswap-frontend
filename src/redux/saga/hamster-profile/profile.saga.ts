@@ -21,7 +21,6 @@ export function* getHProfile({
     yield put(setProfile(profile));
     callback && callback(profile);
   } catch (err) {
-    console.error(err);
     callback && callback(null);
   }
 }

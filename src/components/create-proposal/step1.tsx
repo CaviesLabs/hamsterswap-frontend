@@ -9,13 +9,20 @@ import {
 import { RowEditNftItem } from "@/src/components/nfts";
 import { FC, useEffect, useState } from "react";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
-import { useDispatch, useSelector } from "react-redux";
-import { setProposal } from "@/src/redux/actions/proposal/proposal.action";
+import { useDispatch } from "react-redux";
 import { getListNft } from "@/src/redux/actions/nft/nft.action";
 import { useConnectedWallet } from "@saberhq/use-solana";
+import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
+import { OfferedItemEntity, AssetTypes } from "@/src/entities/proposal.entity";
+import { WSOL_ADDRESS } from "@/src/utils/constants";
 
 export const Step1: FC = () => {
   const wallet = useConnectedWallet();
+
+  /**
+   * @dev Import functions in screen context.
+   */
+  const { offferedItems, removeOfferItem, addOfferItem } = useCreateProposal();
 
   /**
    * @dev handle open modal by type
@@ -26,20 +33,6 @@ export const Step1: FC = () => {
   const [isAddCash, setIsAddCash] = useState(false);
 
   const dispatch = useDispatch();
-  const proposal = useSelector((state: any) => state.proposal);
-  const swapItems = useSelector((state: any) => state.proposal?.swapItems);
-
-  const handleUnSelectNft = (idx: number) => {
-    const newSwapItems = swapItems.filter(
-      (_: any, index: number) => idx !== index
-    );
-    dispatch(
-      setProposal({
-        ...proposal,
-        swapItems: newSwapItems,
-      })
-    );
-  };
 
   useEffect(() => {
     if (!wallet) return;
@@ -57,20 +50,10 @@ export const Step1: FC = () => {
   const handleAddSol = (value: string) => {
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
-
-    const newSwapItems: any = swapItems;
-    newSwapItems.push({
-      assetType: "token",
-      name: `${value} SOL`,
-      collection: "SOL",
-      image: "/assets/images/solana-icon.svg",
-      value,
-    });
-    dispatch(
-      setProposal({
-        ...proposal,
-        swapItems: newSwapItems,
-      })
+    addOfferItem(
+      { nft_address: WSOL_ADDRESS } as any,
+      AssetTypes.token,
+      parseFloat(value)
     );
     setIsAddSol(false);
   };
@@ -80,24 +63,19 @@ export const Step1: FC = () => {
    * @param value [string]
    * @param method [string]
    */
-  const handleAddCash = (value: string, method: string) => {
+  const handleAddCash = (value: string) => {
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
 
-    const newSwapItems: any = swapItems;
-    newSwapItems.push({
-      assetType: "usd",
-      name: `${value} USD`,
-      collection: method.toUpperCase(),
-      image: "/assets/images/asset-cash.png",
-      value,
-    });
-    dispatch(
-      setProposal({
-        ...proposal,
-        swapItems: newSwapItems,
-      })
-    );
+    // const newSwapItems: any = swapItems;
+    // newSwapItems.push({
+    //   assetType: "usd",
+    //   name: `${value} USD`,
+    //   collection: method.toUpperCase(),
+    //   image: "/assets/images/asset-cash.png",
+    //   value,
+    // });
+    addOfferItem(null, AssetTypes.token, parseFloat(value));
     setIsAddCash(false);
   };
 
@@ -109,11 +87,11 @@ export const Step1: FC = () => {
       <p className="regular-text text-[16px] text-dark60">
         Max 4 items per swap. Choose an item below to add:
       </p>
-      <div className="block mt-[20px]">
+      <div className="flex items-center mt-[20px]">
         <Button
           size="small"
           text="Add NFT"
-          className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
+          className="!rounded-[100px] after:!rounded-[100px] !px-4"
           icon={<PlusIcon />}
           onClick={() => setIsAddNft(true)}
         />
@@ -122,60 +100,68 @@ export const Step1: FC = () => {
           handleOk={() => setIsAddNft(false)}
           handleCancel={() => setIsAddNft(false)}
         />
-        <Button
-          size="small"
-          text="Add SOL"
-          className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] ml-[12px]"
-          theme={{
-            backgroundColor: "#41ADD1",
-            color: "#FFFFFF",
-          }}
-          icon={<PlusIcon />}
-          onClick={() => setIsAddSol(true)}
-        />
-        <AddSolModal
-          isModalOpen={isAddSol}
-          handleOk={(value: string) => handleAddSol(value)}
-          handleCancel={() => setIsAddSol(false)}
-        />
-        <Button
-          size="small"
-          text="Add in-game item"
-          className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[250px] ml-[12px]"
-          theme={{
-            backgroundColor: "#F47048",
-            color: "#FFFFFF",
-          }}
-          icon={<PlusIcon />}
-          onClick={() => setIsAddGameItem(true)}
-        />
-        <AddGameItemModal
-          isModalOpen={isAddGameItem}
-          handleOk={() => setIsAddGameItem(false)}
-          handleCancel={() => setIsAddGameItem(false)}
-        />
-        <Button
-          size="small"
-          text="Add Cash"
-          className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] ml-[12px]"
-          theme={{
-            backgroundColor: "#97B544",
-            color: "#FFFFFF",
-          }}
-          icon={<PlusIcon />}
-          onClick={() => setIsAddCash(true)}
-        />
-        <AddCashModal
-          isModalOpen={isAddCash}
-          handleOk={(value: string, method: string) =>
-            handleAddCash(value, method)
-          }
-          handleCancel={() => setIsAddCash(false)}
-        />
+        <div className="ml-[12px]">
+          <Button
+            size="small"
+            text="Add SOL"
+            className="!rounded-[100px] after:!rounded-[100px] !px-4"
+            theme={{
+              backgroundColor: "#41ADD1",
+              color: "#FFFFFF",
+            }}
+            icon={<PlusIcon />}
+            onClick={() => setIsAddSol(true)}
+          />
+          <AddSolModal
+            isModalOpen={isAddSol}
+            handleCancel={() => setIsAddSol(false)}
+            addInOwner={true}
+            handleAddSol={(value) => {
+              setIsAddSol(false);
+              handleAddSol(value);
+            }}
+          />
+        </div>
+        <div className="ml-[12px]">
+          <Button
+            size="small"
+            text="Add in-game item"
+            className="!rounded-[100px] after:!rounded-[100px] !px-4"
+            theme={{
+              backgroundColor: "#F47048",
+              color: "#FFFFFF",
+            }}
+            icon={<PlusIcon />}
+            onClick={() => setIsAddGameItem(true)}
+          />
+          <AddGameItemModal
+            isModalOpen={isAddGameItem}
+            handleOk={() => setIsAddGameItem(false)}
+            handleCancel={() => setIsAddGameItem(false)}
+          />
+        </div>
+        <div className="ml-[12px]">
+          <Button
+            size="small"
+            text="Add Cash"
+            className="!rounded-[100px] after:!rounded-[100px] !px-4"
+            theme={{
+              backgroundColor: "#97B544",
+              color: "#FFFFFF",
+            }}
+            icon={<PlusIcon />}
+            onClick={() => setIsAddCash(true)}
+          />
+          <AddCashModal
+            isModalOpen={isAddCash}
+            handleOk={(value: string) => handleAddCash(value)}
+            handleCancel={() => setIsAddCash(false)}
+          />
+        </div>
       </div>
       <div className="block mt-[20px]">
         <div className="md:flex pt-[40px] flex-wrap">
-          {swapItems.map((item: any, index: number) => (
+          {offferedItems.map((item: OfferedItemEntity, index) => (
             <div
               className="block md:left w-full md:w-[50%] md:pl-[20px]"
               key={`swapoptions-${index}`}
@@ -190,15 +176,22 @@ export const Step1: FC = () => {
               </div>
               <div className="pt-[20px]">
                 <RowEditNftItem
-                  {...item}
+                  collection={item.nft_symbol}
+                  image={item.nft_image_uri}
+                  name={item.nft_name}
+                  collectionId={item.nft_collection_id}
+                  nftId={item.id}
+                  assetType={item.assetType}
+                  nftAddress={item?.nft_address}
+                  tokenAmount={item?.tokenAmount}
                   onDelete={() => {
-                    handleUnSelectNft(index);
+                    removeOfferItem(item.id);
                   }}
                 />
               </div>
             </div>
           ))}
-          {swapItems.length < 4 && <EmptyBox />}
+          {offferedItems.length < 4 && <EmptyBox />}
         </div>
       </div>
     </div>

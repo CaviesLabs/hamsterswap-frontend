@@ -71,3 +71,24 @@ a {
 .ReactCollapse--collapse {
   transition: height 500ms;
 }
+
+::-webkit-scrollbar {
+  width: 1px;
+  /* height: 2em */
+}
+
+div {
+  /* overflow-x: hidden !important; */
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
