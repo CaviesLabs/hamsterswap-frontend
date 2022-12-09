@@ -53,8 +53,8 @@ export class NetworkProvider {
       },
     }).catch((e) => e.response);
 
-    if (resp.status >= 400) {
-      if (resp.status === 401) {
+    if (!resp || resp?.status >= 400) {
+      if (resp?.status === 401) {
         // this.storageProvider.removeItem("userCredential");
         // this.storageProvider.removeItem("AccessToken");
         // this.storageProvider.removeItem("hAccessToken");
