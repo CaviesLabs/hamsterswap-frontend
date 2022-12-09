@@ -47,7 +47,6 @@ export const useAuth = () => {
 
   /** @dev The function to handle authentication. */
   const handleAuth = async () => {
-    console.log("chage");
     try {
       /** Get user profile. */
       const user = await userService.getProfile();

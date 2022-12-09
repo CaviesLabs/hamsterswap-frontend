@@ -7,7 +7,6 @@ import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 
 export const RowNftItem: FC<RowNftItemProps> = (props) => {
-  console.log(props);
   const { assetType } = props;
 
   const [collapse, setCollapse] = useState(false);

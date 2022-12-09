@@ -251,8 +251,6 @@ export class SwapProgramProvider {
         instructions.push(createProposalInstruction);
       }
 
-      console.log(JSON.parse(JSON.stringify(createProposalInstruction)));
-
       /**
        * @dev Now deposit all tokens which user want to wrap in proposal.
        */
@@ -309,7 +307,6 @@ export class SwapProgramProvider {
            */
           if (!ins) return;
           instructions = [...instructions, ...wrapSolInstructions, ins];
-          console.log("ins", instructions);
         })
       );
 
@@ -434,7 +431,6 @@ export class SwapProgramProvider {
     proposal: SwapProposalEntity,
     optionId: string
   ) {
-    console.log(proposal);
     try {
       /**
        * @dev Find swap program.
