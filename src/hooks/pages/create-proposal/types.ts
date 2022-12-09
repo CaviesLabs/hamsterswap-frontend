@@ -25,7 +25,8 @@ export interface CreateProposalPageContextState {
    */
   addOfferItem(
     item: NftEntity & { nftId: string; assetType: SwapItemType },
-    type: AssetTypes
+    type: AssetTypes,
+    amount?: number
   ): void;
 
   /**
@@ -37,7 +38,8 @@ export interface CreateProposalPageContextState {
   addExpectedItem(
     item: NftEntity & { nftId: string; assetType: SwapItemType },
     type: AssetTypes,
-    opinionIndex: number
+    opinionIndex: number,
+    amount?: number
   ): void;
 
   /**

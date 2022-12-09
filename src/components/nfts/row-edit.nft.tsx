@@ -5,6 +5,7 @@ import { GameItemModal, NFTDetailsModal } from "@/src/components/modal";
 import classnames from "classnames";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 import { SwapItemType } from "@/src/entities/proposal.entity";
+import { WSOL_ADDRESS } from "@/src/utils/constants";
 
 export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
   /**
@@ -37,13 +38,19 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
     props.onDelete();
   };
 
+  console.log(props);
+
   return (
     <>
       <div className="md:left w-full mb-[20px]">
         <div className="bg-white shadow-md hover:scale-105 hover:shadow-xl duration-500 flex rounded-[16px] p-[16px]">
           <div className="left pl-[2px]">
             <img
-              src={props.image}
+              src={
+                props.nftAddress === WSOL_ADDRESS
+                  ? "/assets/images/solana.svg"
+                  : props.image
+              }
               alt="NFT image"
               className={classnames(
                 "!h-full !w-[72px] !object-cover !rounded-[8px]",
@@ -55,11 +62,13 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
           </div>
           <div className="px-4 w-72 left">
             <p className="text-lg semi-bold text-black truncate block capitalize">
-              {props.name}
+              {props.nftAddress === WSOL_ADDRESS
+                ? `${props.tokenAmount} SOL`
+                : props.name}
             </p>
             <div className="flex items-center">
               <p className="text-[14px] regular-text text-purple cursor-auto mb-3">
-                {props.collection}
+                {props.nftAddress !== WSOL_ADDRESS && props.collection}
               </p>
             </div>
           </div>

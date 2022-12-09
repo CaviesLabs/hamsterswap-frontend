@@ -9,11 +9,12 @@ import {
 import { RowEditNftItem } from "@/src/components/nfts";
 import { FC, useEffect, useState } from "react";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getListNft } from "@/src/redux/actions/nft/nft.action";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import { OfferedItemEntity } from "@/src/entities/proposal.entity";
+import { OfferedItemEntity, AssetTypes } from "@/src/entities/proposal.entity";
+import { WSOL_ADDRESS } from "@/src/utils/constants";
 
 export const Step1: FC = () => {
   const wallet = useConnectedWallet();
@@ -21,7 +22,7 @@ export const Step1: FC = () => {
   /**
    * @dev Import functions in screen context.
    */
-  const { offferedItems, removeOfferItem } = useCreateProposal();
+  const { offferedItems, removeOfferItem, addOfferItem } = useCreateProposal();
 
   /**
    * @dev handle open modal by type
@@ -32,7 +33,6 @@ export const Step1: FC = () => {
   const [isAddCash, setIsAddCash] = useState(false);
 
   const dispatch = useDispatch();
-  const swapItems = useSelector((state: any) => state.proposal?.swapItems);
 
   useEffect(() => {
     if (!wallet) return;
@@ -50,15 +50,11 @@ export const Step1: FC = () => {
   const handleAddSol = (value: string) => {
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
-
-    const newSwapItems: any = swapItems;
-    newSwapItems.push({
-      assetType: "token",
-      name: `${value} SOL`,
-      collection: "SOL",
-      image: "/assets/images/solana-icon.svg",
-      value,
-    });
+    addOfferItem(
+      { nft_address: WSOL_ADDRESS } as any,
+      AssetTypes.token,
+      parseFloat(value)
+    );
     setIsAddSol(false);
   };
 
@@ -67,18 +63,19 @@ export const Step1: FC = () => {
    * @param value [string]
    * @param method [string]
    */
-  const handleAddCash = (value: string, method: string) => {
+  const handleAddCash = (value: string) => {
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
 
-    const newSwapItems: any = swapItems;
-    newSwapItems.push({
-      assetType: "usd",
-      name: `${value} USD`,
-      collection: method.toUpperCase(),
-      image: "/assets/images/asset-cash.png",
-      value,
-    });
+    // const newSwapItems: any = swapItems;
+    // newSwapItems.push({
+    //   assetType: "usd",
+    //   name: `${value} USD`,
+    //   collection: method.toUpperCase(),
+    //   image: "/assets/images/asset-cash.png",
+    //   value,
+    // });
+    addOfferItem(null, AssetTypes.token, parseFloat(value));
     setIsAddCash(false);
   };
 
@@ -117,8 +114,12 @@ export const Step1: FC = () => {
           />
           <AddSolModal
             isModalOpen={isAddSol}
-            handleOk={(value: string) => handleAddSol(value)}
             handleCancel={() => setIsAddSol(false)}
+            addInOwner={true}
+            handleAddSol={(value) => {
+              setIsAddSol(false);
+              handleAddSol(value);
+            }}
           />
         </div>
         <div className="ml-[12px]">
@@ -153,9 +154,7 @@ export const Step1: FC = () => {
           />
           <AddCashModal
             isModalOpen={isAddCash}
-            handleOk={(value: string, method: string) =>
-              handleAddCash(value, method)
-            }
+            handleOk={(value: string) => handleAddCash(value)}
             handleCancel={() => setIsAddCash(false)}
           />
         </div>
@@ -183,6 +182,8 @@ export const Step1: FC = () => {
                   collectionId={item.nft_collection_id}
                   nftId={item.id}
                   assetType={item.assetType}
+                  nftAddress={item?.nft_address}
+                  tokenAmount={item?.tokenAmount}
                   onDelete={() => {
                     removeOfferItem(item.id);
                   }}

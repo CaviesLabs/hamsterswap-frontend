@@ -14,9 +14,12 @@ import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 import { ExpectedItemProps } from "@/src/components/create-proposal/step2/types";
 import { useSelector } from "react-redux";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
+import { WSOL_ADDRESS } from "@/src/utils/constants";
+import { AssetTypes } from "@/src/entities/proposal.entity";
 
 export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
-  const { expectedItems, removeExpectedItem } = useCreateProposal();
+  const { expectedItems, removeExpectedItem, addExpectedItem } =
+    useCreateProposal();
 
   const { optionName, defaultCollapsed } = props;
   /**
@@ -38,23 +41,18 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
   const proposal = useSelector((state: any) => state.proposal);
 
   /**
-   * Handle save sol value into receiveItems array of redux-store
+   * Handle save sol value into swapItems array of redux-store
    * @param value [string]
    */
   const handleAddSol = (value: string) => {
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
-
-    const newReceiveItems: any = proposal.receiveItems;
-    const newChildReceiveItems: any = newReceiveItems[props.index];
-    newChildReceiveItems.push({
-      assetType: "token",
-      name: `${value} SOL`,
-      collection: "SOL",
-      image: "/assets/images/solana-icon.svg",
-      value,
-    });
-    newReceiveItems[props.index] = newChildReceiveItems;
+    addExpectedItem(
+      { nft_address: WSOL_ADDRESS } as any,
+      AssetTypes.token,
+      props.index,
+      parseFloat(value)
+    );
     setIsAddSol(false);
   };
 
@@ -132,8 +130,12 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
               />
               <AddSolModal
                 isModalOpen={isAddSol}
-                handleOk={(value: string) => handleAddSol(value)}
                 handleCancel={() => setIsAddSol(false)}
+                addInOwner={false}
+                handleAddSol={(value) => {
+                  setIsAddSol(false);
+                  handleAddSol(value);
+                }}
               />
             </div>
             <div className="ml-[12px]">
@@ -198,6 +200,8 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                       collectionId={item.nft_collection_id}
                       nftId={item.id}
                       assetType={item.assetType}
+                      nftAddress={item?.nft_address}
+                      tokenAmount={item?.tokenAmount}
                       onDelete={() => {
                         removeExpectedItem(item.id);
                       }}
