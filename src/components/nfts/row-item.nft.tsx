@@ -31,7 +31,7 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
           <img
             src={props.image}
             alt="NFT image"
-            className="h-full !w-[80px] object-cover rounded-[8px]"
+            className="h-full !w-[80px] object-cover rounded-[8px] aspect-square"
           />
         </div>
         <div className="px-4 w-72 left">
