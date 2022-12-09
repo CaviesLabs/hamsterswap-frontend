@@ -16,7 +16,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   /**
    * @dev Import functions in screen context.
    */
-  const { expectedItems, addExpectedItem } = useCreateProposal();
+  const { offferedItems, expectedItems, addExpectedItem } = useCreateProposal();
 
   /**
    * @dev initialize states for collection id and nft id from form
@@ -61,6 +61,12 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
         .indexOf(nftItem.nft_address) > -1
     ) {
       return toast.warn("Item is there in choice");
+    }
+
+    if (
+      offferedItems.map((_) => _.nft_address).indexOf(nftItem.nft_address) > -1
+    ) {
+      return toast.warn("Item is there in your offered list");
     }
 
     /**
