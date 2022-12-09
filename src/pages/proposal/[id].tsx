@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, useCallback } from "react";
+import { FC, useEffect, useState } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import { ProposalDetailPageProvider } from "@/src/hooks/pages/proposal-detail";
@@ -8,7 +8,6 @@ import { LayoutSection } from "@/src/components/layout-section";
 import { GuaranteedCard } from "@/src/components/guaranteed.card";
 import { UserInfoCard } from "@/src/components/user-card";
 import { BreadCrumb } from "@/src/components/bread-crumb";
-import { Button, toast } from "@hamsterbox/ui-kit";
 import { Col, Row } from "antd";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
@@ -19,39 +18,16 @@ import {
 } from "@/src/entities/proposal.entity";
 import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
 import { useWallet } from "@/src/hooks/useWallet";
-import { useConnectedWallet } from "@saberhq/use-solana";
 import dayjs from "dayjs";
-import { useWalletKit } from "@gokiprotocol/walletkit";
-import { WalletEmptyModal } from "@/src/components/modal";
+import BuyButton from "@/src/components/advertisment/buy-button";
 
 const Layout: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { connect } = useWalletKit();
-  const { programService, solanaWallet } = useWallet();
-  const [isTransFailed, setIsTransFailed] = useState(false);
-  /**
-   * @dev Get user wallet
-   */
-  const wallet = useConnectedWallet();
+
+  const { solanaWallet } = useWallet();
 
   const [proposal, setProposal] = useState<SwapProposalEntity>();
-
-  const handleSwap = useCallback(async () => {
-    if (!proposal) return;
-    if (!solanaWallet.publicKey) return connect();
-
-    try {
-      await programService.swapProposal(
-        solanaWallet,
-        proposal.id,
-        proposal.swapOptions[0].id
-      );
-      toast.success("Wrap proposal successfully");
-    } catch (err: any) {
-      setIsTransFailed(true);
-    }
-  }, [wallet, programService, solanaWallet, proposal]);
 
   useEffect(() => {
     if (!router.query.id) return;
@@ -138,30 +114,11 @@ const Layout: FC = () => {
             <Row justify="end">
               {(!solanaWallet.publicKey ||
                 solanaWallet.publicKey?.toBase58().toString() !==
-                  proposal?.ownerAddress) && (
-                <>
-                  <Button
-                    text="Buy"
-                    className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
-                    onClick={handleSwap}
-                  />
-                  <Button
-                    text="Order / Bid"
-                    shape="secondary"
-                    className="!border-[1.5px] ml-[24px] !rounded-[100px] after:!rounded-[100px] float-right !w-[150px] md:!w-[200px]"
-                    onClick={handleSwap}
-                  />
-                </>
-              )}
+                  proposal?.ownerAddress) && <BuyButton />}
             </Row>
           </div>
         </LayoutSection>
       </StyledProposalDetailPage>
-      <WalletEmptyModal
-        handleOk={() => setIsTransFailed(false)}
-        handleCancel={() => setIsTransFailed(false)}
-        isModalOpen={isTransFailed}
-      />
     </MainLayout>
   );
 };
