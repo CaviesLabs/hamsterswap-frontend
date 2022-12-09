@@ -8,6 +8,7 @@ import classnames from "classnames";
 import styles from "./index.module.scss";
 import UserProfile from "@/src/components/header/user-profile";
 import { useMain } from "@/src/hooks/pages/main";
+import { HamsterboxIcon } from "@/src/components/icons";
 
 interface MenuItem {
   title: string;
@@ -159,19 +160,9 @@ const Header: FC = () => {
         <div className="lg:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="float-left logo-wrapper md:mt-0 mt-[0px]">
             <a href="/">
-              <img
-                src="/assets/images/logo.png"
-                className={classnames(
-                  "w-[170px] md:w-[190px] dark:hidden mt-[2px] md:mt-0",
-                  isHomepage ? "hidden" : "block"
-                )}
-              />
-              <img
-                src="/assets/images/logo-dark.png"
-                className={classnames(
-                  "w-[95px] md:w-[180px] dark:block",
-                  isHomepage ? "block" : "hidden"
-                )}
+              <HamsterboxIcon
+                className={classnames("w-[95px] md:w-[180px]")}
+                color={isHomepage ? "white" : "#07080A"}
               />
             </a>
           </div>
