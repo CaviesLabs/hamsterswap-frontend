@@ -1,4 +1,4 @@
-import { FC, useMemo, useCallback, useRef, useState } from "react";
+import { FC, useMemo, useCallback, useRef, useState, useEffect } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import MainLayout from "@/src/layouts/main";
@@ -20,6 +20,8 @@ import {
 } from "@/src/components/create-proposal";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import classnames from "classnames";
+import { StorageProvider } from "@/src/providers/storage.provider";
+import { useConnectedWallet } from "@saberhq/use-solana";
 
 const Layout: FC = () => {
   /**
@@ -133,6 +135,22 @@ const Layout: FC = () => {
   function onFormSubmit() {
     return true;
   }
+
+  /**
+   * @description
+   * Validate user authenticated and allow create proposal
+   * if not, navigate user to homepage
+   * trigger wallet when user disconnected with
+   * need stop to wait local storage remove access token
+   */
+  const wallet = useConnectedWallet();
+  useEffect(() => {
+    setTimeout(() => {
+      const storageProvider = new StorageProvider();
+      const authen = storageProvider.getItem("hAccessToken");
+      if (!authen) router.push("/");
+    }, 500);
+  }, [wallet]);
 
   return (
     <MainLayout>
