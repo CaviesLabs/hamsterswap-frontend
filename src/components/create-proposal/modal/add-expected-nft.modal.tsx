@@ -55,6 +55,14 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
       return toast.warn("Only a maximum of 4 items are allowed");
     }
 
+    if (
+      expectedItems[props.index]?.askingItems
+        .map((_) => _.nft_address)
+        .indexOf(nftItem.nft_address) > -1
+    ) {
+      return toast.warn("Item is there in choice");
+    }
+
     /**
      * @dev Add in context.
      */
