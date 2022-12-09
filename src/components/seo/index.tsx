@@ -42,7 +42,7 @@ export const SeoComponent: FC = () => {
       <meta property="og:locale" content="en_US" />
       <meta property="og:locale:alternate" content="en_GB" />
 
-      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content={url} />
       <meta name="twitter:image" content={banner} />
       <meta name="twitter:image:alt" content={title} />
