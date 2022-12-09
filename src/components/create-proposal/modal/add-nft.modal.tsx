@@ -62,6 +62,7 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
       onCancel={props.handleCancel}
       width={600}
       footer={null}
+      className="hamster-modal"
     >
       <StyledModal>
         <div className="pt-6">
