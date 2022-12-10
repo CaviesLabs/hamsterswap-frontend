@@ -55,7 +55,7 @@ function Select(props: SelectProps) {
       <div
         className={classnames(
           props.className,
-          "py-3 px-4 text-lg font-regular border rounded-2xl cursor-pointer flex justify-between items-center"
+          "py-[10px] px-3 text-[14px] regular-text border rounded-3xl cursor-pointer flex justify-between items-center"
         )}
         style={{ backgroundColor: "white", color: "#20242D" }}
         onClick={() => setIsOpenDropdown(!isOpenDropdown)}
