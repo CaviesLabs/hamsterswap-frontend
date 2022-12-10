@@ -33,11 +33,11 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
     return ownerNftList.filter((item) => {
       return (
         !offferedItems.find((s) => s.nft_address === item.nft_address) &&
-        allowNftCollections.find((s) => s.id === item.nft_address) &&
+        allowNftCollections.find((s) => s.id === item.nft_collection_id) &&
         item.nft_status.valueOf() !== NftStatus.transfer.valueOf()
       );
     });
-  }, [ownerNftList, offferedItems]);
+  }, [ownerNftList, offferedItems, allowNftCollections]);
 
   /**
    * @dev The function to handle adding nft to offered field for proposal.
