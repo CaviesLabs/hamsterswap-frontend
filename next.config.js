@@ -47,4 +47,7 @@ module.exports = withPlugins([withPWA, withTM], {
     secondSecret: process.env.SECOND_SECRET, // Pass through env variables
   },
   publicRuntimeConfig: {},
+  devIndicators: {
+    buildActivity: false,
+  },
 });

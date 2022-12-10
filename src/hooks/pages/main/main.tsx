@@ -5,6 +5,7 @@ import { NFTDetailsModal } from "@/src/components/modal";
 import { useUI } from "./useUI";
 import { useAuth } from "./useAuth";
 import { useAppState } from "./useAppState";
+import { useRouter } from "./useRouter";
 import ReduxState from "@/src/redux/entities/state";
 
 export const MainProvider = (props: { children: ReactNode }) => {
@@ -32,8 +33,13 @@ export const MainProvider = (props: { children: ReactNode }) => {
   /** @dev Call hook to use functions related to update main states. */
   useAppState();
 
+  /** @dev Call hooks to detect router changes. */
+  const { transitionLoading } = useRouter();
+
   return (
-    <MainContext.Provider value={{ openNftDetailModal, ...reduxState }}>
+    <MainContext.Provider
+      value={{ openNftDetailModal, transitionLoading, ...reduxState }}
+    >
       {/**
        * @dev Render pages.
        */}
