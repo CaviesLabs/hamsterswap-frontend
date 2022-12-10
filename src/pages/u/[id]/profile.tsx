@@ -40,6 +40,7 @@ const Layout: FC = () => {
           statuses: [
             SwapProposalStatus.DEPOSITED,
             SwapProposalStatus.FULFILLED,
+            SwapProposalStatus.WITHDRAWN,
             SwapProposalStatus.CANCELED,
           ],
           search: _search,
