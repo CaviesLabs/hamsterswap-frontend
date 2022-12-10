@@ -80,7 +80,7 @@ const Layout: FC = () => {
           </h3>
           <div className="block py-[50px]">
             <div className="md:flex items-center">
-              <p>Sort by</p>
+              <p>Filter by</p>
               <Select
                 mode="multiple"
                 placeholder={
