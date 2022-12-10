@@ -11,6 +11,8 @@ import { NftDetailDto } from "@/src/dto/nft.dto";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { toast } from "@hamsterbox/ui-kit";
+import animationData from "./animation-loading.json";
+import Lottie from "react-lottie";
 
 export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   /**
@@ -122,7 +124,15 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
                 allowNTFCollections={allowNTFCollections}
               />
             )}
-            {step === 1 && <div>Loading</div>}
+            {step === 1 && (
+              <div className="max-w-[185px] mx-auto">
+                <Lottie
+                  options={{
+                    animationData,
+                  }}
+                />
+              </div>
+            )}
             {step === 2 && nft && <AddExpectedNftDetail nft={nft} />}
             <div className="mt-14">
               {step === 0 && (
