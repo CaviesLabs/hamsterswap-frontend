@@ -23,6 +23,7 @@ import {
   SolflareWalletAdapter,
   SolletWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
+import { HamsterboxIcon } from "@/src/components/icons";
 
 const store = makeStore();
 
@@ -82,6 +83,12 @@ function MyApp({ Component, pageProps }: AppProps) {
               defaultNetwork={network}
               app={{
                 name: "Hamsterswap",
+                icon: (
+                  <img
+                    className="bg-dark60 rounded-full"
+                    src="/assets/icons/favicon-196.png"
+                  />
+                ),
               }}
               debugMode={true} // you may want to set this in REACT_APP_DEBUG_MODE
             >
