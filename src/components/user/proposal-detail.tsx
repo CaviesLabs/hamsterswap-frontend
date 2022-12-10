@@ -13,7 +13,7 @@ import { WithdrewProposalModal } from "@/src/components/user/modal/withdrew-prop
 import { useSelector } from "react-redux";
 import State from "@/src/redux/entities/state";
 import dayjs from "dayjs";
-import { DATE_TIME_FORMAT } from "@/src/utils";
+import { completedOrderPercent, DATE_TIME_FORMAT } from "@/src/utils";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import { useProgram } from "@/src/hooks/useProgram";
@@ -72,7 +72,10 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
             <UserAvatarCardItem
               avatar={profile?.avatar}
               orders={profile?.ordersStat.orders}
-              completion={profile?.ordersStat.completedOrders}
+              completion={completedOrderPercent(
+                profile?.ordersStat.completedOrders,
+                profile?.ordersStat.orders
+              )}
               reputation={true}
               walletAddress={utilsProvider.makeShort(profile?.walletAddress, 4)}
             />

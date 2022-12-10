@@ -7,5 +7,5 @@ export const TIME_ARRAYS = Array.from(Array(24).keys())
   .flat(1);
 
 export const completedOrderPercent = (completedOrders = 0, orders = 0) => {
-  return (completedOrders / (orders || 1)).toFixed(2);
+  return ((completedOrders * 100) / (orders || 1)).toFixed(2);
 };
