@@ -75,23 +75,29 @@ const Layout: FC = () => {
             <div className="md:flex items-center">
               <p>Sort by</p>
               <Select
-                placeholder="All status"
+                placeholder={
+                  <>
+                    <div></div>
+                    <div className="text-center">All status</div>
+                  </>
+                }
                 options={sortOptions.map((_) => ({
                   value: _.value,
                 }))}
                 className="w-44 ml-6"
               />
-              <div className="max-w-2xl ml-6">
+              <div className="ml-6 w-full max-w-md">
                 <Search
-                  className="py-3 text-lg rounded-2xl"
-                  placeholder="Enter SOL amount"
+                  className="px-4 py-2 text-[14px] rounded-3xl"
+                  placeholder="Search by NFT name, collection, game, seller"
                 />
               </div>
-              <div className="md:ml-6">
+              <div className="md:ml-4">
                 <Button
                   text="Search"
                   shape="secondary"
-                  className="ml-[24px] !rounded-[100px] after:!rounded-[100px] float-right !w-[150px] md:!w-[200px]"
+                  size="xsmall"
+                  className="!rounded-[100px] after:!rounded-[100px] !w-[100px]"
                 />
               </div>
             </div>
