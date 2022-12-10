@@ -8,6 +8,8 @@ import { useMain } from "@/src/hooks/pages/main";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { NftEntity, NftStatus } from "@/src/dto/nft.dto";
+import { allowNTFCollection } from "@/src/dto/platform-config";
+import { useSelector } from "react-redux";
 
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
   /**
@@ -16,19 +18,25 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
   const { nft: ownerNftList } = useMain();
 
   /**
+   * @dev get allowed NFTs from hamster config
+   */
+  const allowNftCollections: allowNTFCollection[] = useSelector(
+    (state: any) => state.platformConfig?.allowNTFCollections
+  );
+
+  /**
    * @dev Import functions in screen context.
    */
   const { addOfferItem, offferedItems } = useCreateProposal();
 
-  // TODO filter NFT in whitelist
   const nftsMemo = useMemo<NftEntity[]>(() => {
-    return ownerNftList
-      .filter(
-        (item) => !offferedItems.find((s) => s.nft_address === item.nft_address)
-      )
-      .filter(
-        (item) => item.nft_status.valueOf() !== NftStatus.transfer.valueOf()
+    return ownerNftList.filter((item) => {
+      return (
+        !offferedItems.find((s) => s.nft_address === item.nft_address) &&
+        allowNftCollections.find((s) => s.id === item.nft_address) &&
+        item.nft_status.valueOf() !== NftStatus.transfer.valueOf()
       );
+    });
   }, [ownerNftList, offferedItems]);
 
   /**
