@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from "axios";
+import qs from "qs";
 import { getStorageProvider } from "./";
 
 export type RequestConfig = AxiosRequestConfig;
@@ -47,6 +48,11 @@ export class NetworkProvider {
     const resp = await axios(url, {
       ...requestConfig,
       baseURL: `${this.BASE_URL}/api`,
+      paramsSerializer: {
+        serialize: (params: any) => {
+          return qs.stringify(params, { arrayFormat: "repeat" });
+        },
+      },
       headers: {
         ...this.defaultNetWorkOptions,
         ...requestConfig.headers,
@@ -54,11 +60,6 @@ export class NetworkProvider {
     }).catch((e) => e.response);
 
     if (!resp || resp?.status >= 400) {
-      if (resp?.status === 401) {
-        // this.storageProvider.removeItem("userCredential");
-        // this.storageProvider.removeItem("AccessToken");
-        // this.storageProvider.removeItem("hAccessToken");
-      }
       throw new Error(`Error when request server, ${resp.statusText}`);
     }
 

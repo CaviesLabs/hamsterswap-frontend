@@ -4,20 +4,20 @@ import { UserAvatarCardItem } from "@/src/components/user-card";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "@/src/components/proposal-item/proposal-item.style";
 import { Button } from "@hamsterbox/ui-kit";
-import classnames from "classnames";
 import { Col, Row } from "antd";
 import { CancelProposalModal } from "@/src/components/user/modal/cancel-proposal.modal";
 import { ProposalDetailProps } from "./types";
 import { CanceledProposalModal } from "@/src/components/user/modal/canceled-proposal.modal";
 import { WithdrewProposalModal } from "@/src/components/user/modal/withdrew-proposal.modal";
 import { useSelector } from "react-redux";
-import State from "@/src/redux/entities/state";
-import dayjs from "dayjs";
 import { completedOrderPercent, DATE_TIME_FORMAT } from "@/src/utils";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
-import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import { useProgram } from "@/src/hooks/useProgram";
 import { useWallet } from "@/src/hooks/useWallet";
+import classnames from "classnames";
+import ProposalItems from "@/src/components/proposal-item/proposal-items";
+import State from "@/src/redux/entities/state";
+import dayjs from "dayjs";
 
 export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   const { data, status, isGuaranteedPayment } = props;
@@ -147,12 +147,14 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                 <div className="h-full">
                   {status.valueOf() ===
                     SwapProposalStatus.FULFILLED.valueOf() && (
-                    <button
+                    <Button
                       className="border-purple text-purple !border-2 px-10 rounded-3xl !h-full"
                       onClick={() => redeemProposal(props.proposalId)}
+                      size="large"
+                      text="Redeem"
                     >
                       Redeem
-                    </button>
+                    </Button>
                   )}
                   {status.valueOf() ===
                     SwapProposalStatus.CANCELED.valueOf() && (

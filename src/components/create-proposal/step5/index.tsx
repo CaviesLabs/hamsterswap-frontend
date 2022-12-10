@@ -29,9 +29,9 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
       <div className="block mt-[60px] flex">
         <ProposalItem
           swapItems={clonedOfferedItems.map((_) => parseOfferCreateProposal(_))}
-          receiveItems={clonedExpectedItems.map((_) =>
-            _.askingItems.map((p) => parseOfferCreateProposal(p))
-          )}
+          receiveItems={clonedExpectedItems
+            .filter((item) => item.askingItems.length)
+            .map((_) => _.askingItems.map((p) => parseOfferCreateProposal(p)))}
           isGuaranteedPayment={isGuaranteedPayment}
         />
       </div>

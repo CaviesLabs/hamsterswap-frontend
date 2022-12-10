@@ -57,7 +57,7 @@ const Layout: FC = () => {
       proposal.id,
       proposal.swapOptions[optionSelected].id
     );
-  }, [wallet, programService, solanaWallet, proposal]);
+  }, [wallet, programService, solanaWallet, proposal, optionSelected]);
 
   /**
    * @dev Get proposal detail by id.
@@ -108,7 +108,10 @@ const Layout: FC = () => {
           <div className="block mt-[20px]">
             <ProposalItem
               data={proposal}
-              changeOption={(value) => setOptionSelected(value)}
+              changeOption={(value) => {
+                console.log(value);
+                setOptionSelected(value);
+              }}
               swapItems={
                 proposal?.offerItems.map((_) => parseProposal(_)) ?? []
               }
@@ -162,7 +165,12 @@ const Layout: FC = () => {
               {solanaWallet.publicKey &&
                 solanaWallet.publicKey?.toBase58().toString() !==
                   proposal?.ownerAddress &&
-                !isExpired && <BuyButton handleSwap={handleSwap} />}
+                !isExpired && (
+                  <BuyButton
+                    handleSwap={handleSwap}
+                    optionIndex={optionSelected}
+                  />
+                )}
             </Row>
           </div>
         </LayoutSection>

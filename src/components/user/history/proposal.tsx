@@ -1,12 +1,14 @@
+import { useRouter } from "next/router";
 import { Col, Row, Tag } from "antd";
 import { ProposalHistoryProps } from "@/src/components/user/types";
 import { DATE_TIME_FORMAT, utilsProvider } from "@/src/utils";
 import { DotIcon } from "@/src/components/icons";
-import dayjs from "dayjs";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 import { getStatus } from "@/src/utils/proposal-status";
+import dayjs from "dayjs";
 
 function Proposal(props: ProposalHistoryProps) {
+  const router = useRouter();
   const { data } = props;
   const status = data.status;
 
@@ -31,7 +33,10 @@ function Proposal(props: ProposalHistoryProps) {
             </div>
           ))}
 
-          <a href={"#"} className="text-md text-purple hover:underline">
+          <a
+            className="text-md text-purple hover:underline cursor-pointer"
+            onClick={() => router.push(`/proposal/${props.data.id}`)}
+          >
             View Proposal
           </a>
         </Col>

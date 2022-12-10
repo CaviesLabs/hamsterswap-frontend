@@ -11,7 +11,9 @@ import {
   WalletEmptyModal,
 } from "@/src/components/modal";
 
-const BuyButton: FC<{ handleSwap(): Promise<void> }> = (props) => {
+const BuyButton: FC<{ handleSwap(): Promise<void>; optionIndex: number }> = (
+  props
+) => {
   /**
    * @dev Get user wallet
    */
@@ -29,6 +31,7 @@ const BuyButton: FC<{ handleSwap(): Promise<void> }> = (props) => {
   const [isTransFailed, setIsTransFailed] = useState(false);
   const [isDisplayConfirm, setIsDisplayConfirm] = useState(false);
   const [isDisplayConfirmed, setIsDisplayConfirmed] = useState(false);
+  const [isBuyButtonLoading, setIsBuyButtonLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSwap = useCallback(async () => {
@@ -37,15 +40,18 @@ const BuyButton: FC<{ handleSwap(): Promise<void> }> = (props) => {
 
     try {
       setIsLoading(true);
+      setIsBuyButtonLoading(true);
       await props.handleSwap();
       setIsDisplayConfirm(false);
+      setIsBuyButtonLoading(false);
       setIsDisplayConfirmed(true);
     } catch (err: any) {
+      setIsBuyButtonLoading(false);
       setIsTransFailed(true);
     } finally {
       setIsLoading(false);
     }
-  }, [wallet, programService, solanaWallet, proposal]);
+  }, [wallet, programService, solanaWallet, proposal, props.optionIndex]);
 
   return (
     <>
@@ -53,6 +59,7 @@ const BuyButton: FC<{ handleSwap(): Promise<void> }> = (props) => {
         text="Buy"
         className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
         onClick={() => setIsDisplayConfirm(true)}
+        loading={isBuyButtonLoading}
       />
       <Button
         text="Order / Bid"
