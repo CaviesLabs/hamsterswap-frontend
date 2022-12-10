@@ -21,6 +21,7 @@ function Search(props: SearchInputProps) {
 export default Search;
 
 const StyledInput = styled.div`
+  width: 100%;
   span {
     background-color: #f8f9fe;
     .ant-input {
