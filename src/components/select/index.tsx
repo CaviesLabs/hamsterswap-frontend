@@ -15,7 +15,7 @@ function Select(props: SelectProps) {
 
   const [search, setSearch] = useState<string>("");
 
-  const { showSearch, values, onChange, onSearch } = props;
+  const { showSearch, values = [], onChange, onSearch, mode } = props;
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
 
   const renderItemInfo = (option: OptionProps, inList?: boolean) => {
@@ -51,6 +51,21 @@ function Select(props: SelectProps) {
     onSearch && onSearch(search);
   }, [debouncedSearch]);
 
+  const handleSelect = (v: string) => {
+    const newValues = [...values];
+    if (mode === "multiple") {
+      if (values.indexOf(v) > -1) {
+        onChange(newValues.filter((_) => _ !== v));
+      } else {
+        newValues.push(v);
+        onChange(newValues);
+      }
+    } else {
+      onChange([v]);
+    }
+    setIsOpenDropdown(false);
+  };
+
   return (
     <div className="relative">
       <div
@@ -61,7 +76,7 @@ function Select(props: SelectProps) {
         style={{ backgroundColor: "white", color: "#20242D" }}
         onClick={() => setIsOpenDropdown(!isOpenDropdown)}
       >
-        {props.mode === "multiple" || !values || !values[0]
+        {mode === "multiple" || !values || !values[0]
           ? props.placeholder
           : renderItemInfo(
               props.options.find((_) => _.value === values[0]),
@@ -92,10 +107,7 @@ function Select(props: SelectProps) {
               <div
                 className="cursor-pointer hover:bg-dark30 px-6"
                 key={`${option.value}${i}`}
-                onClick={() => {
-                  onChange && onChange(option.value);
-                  setIsOpenDropdown(false);
-                }}
+                onClick={() => handleSelect(option.value)}
               >
                 <div className="flex items-center border-b py-4">
                   {renderItemInfo(option)}

@@ -28,7 +28,11 @@ const Layout: FC = () => {
       getExploreProposals({
         walletAddress: profile.walletAddress,
         options: {
-          statuses: [SwapProposalStatus.FULFILLED, SwapProposalStatus.REDEEMED],
+          statuses: [
+            SwapProposalStatus.FULFILLED,
+            SwapProposalStatus.WITHDRAWN,
+            SwapProposalStatus.REDEEMED,
+          ],
           search: _search,
         },
       })

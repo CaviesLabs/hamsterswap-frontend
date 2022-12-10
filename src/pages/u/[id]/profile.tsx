@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import { ProfilePageProvider } from "@/src/hooks/pages/profile";
@@ -28,6 +28,7 @@ const Layout: FC = () => {
   const proposals = useSelector((state: State) => state.proposals);
 
   /**
+   * @description
    * Fetch proposal by user id
    */
   const dispatch = useDispatch();
@@ -51,6 +52,12 @@ const Layout: FC = () => {
     handleSearch();
   }, [profile]);
 
+  /**
+   * @description
+   * Handle state of selected values
+   */
+  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
+
   return (
     <MainLayout>
       <Breadcrumb title="Profile" />
@@ -73,18 +80,22 @@ const Layout: FC = () => {
           </h3>
           <div className="block py-[50px]">
             <div className="md:flex items-center">
-              <p>Sort by</p>
+              <p>Filter by</p>
               <Select
+                mode="multiple"
                 placeholder={
                   <>
                     <div></div>
-                    <div className="text-center">All status</div>
+                    <div>All status</div>
                   </>
                 }
                 options={sortOptions.map((_) => ({
                   value: _.value,
+                  label: _.name,
                 }))}
                 className="w-44 ml-6"
+                values={selectedStatus}
+                onChange={(v) => setSelectedStatus(v)}
               />
               <div className="ml-6 w-full max-w-md">
                 <Search

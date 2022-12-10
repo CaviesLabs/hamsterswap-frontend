@@ -61,7 +61,8 @@ function Proposal(props: ProposalHistoryProps) {
             color={
               status === SwapProposalStatus.CANCELED
                 ? "warning"
-                : status === SwapProposalStatus.FULFILLED
+                : status === SwapProposalStatus.FULFILLED ||
+                  status === SwapProposalStatus.REDEEMED
                 ? "success"
                 : "error"
             }
