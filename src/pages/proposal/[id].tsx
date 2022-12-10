@@ -34,6 +34,11 @@ const Layout: FC = () => {
   const [optionSelected, setOptionSelected] = useState(0);
 
   /**
+   * @dev Decalre state condition whenther the proposal is expired.
+   */
+  const [isExpired, setIsExpired] = useState(false);
+
+  /**
    * @dev Get user wallet
    */
   const wallet = useConnectedWallet();
@@ -43,6 +48,9 @@ const Layout: FC = () => {
    */
   const [proposal, setProposal] = useState<SwapProposalEntity>();
 
+  /**
+   * @dev The function to process swaping when click buy button.
+   */
   const handleSwap = useCallback(async () => {
     await programService.swapProposal(
       solanaWallet,
@@ -62,6 +70,13 @@ const Layout: FC = () => {
       )
     );
   }, [router.query.id]);
+
+  /**
+   * @dev Watch changes in proposal and process state.
+   */
+  useEffect(() => {
+    Date.now() > new Date(proposal?.expiredAt)?.getTime() && setIsExpired(true);
+  }, [proposal]);
 
   return (
     <MainLayout>
@@ -114,8 +129,14 @@ const Layout: FC = () => {
                 <div className="block mt-2">
                   <p className="regular-text text-[16px]">{proposal?.note}</p>
                   <p className="regular-text text-[14px] text-red300 mt-10">
-                    Expiration date:{" "}
-                    {dayjs(proposal?.expiredAt).format(DATE_TIME_FORMAT)}
+                    {isExpired ? (
+                      "Expired"
+                    ) : (
+                      <>
+                        Expiration date:{" "}
+                        {dayjs(proposal?.expiredAt).format(DATE_TIME_FORMAT)}
+                      </>
+                    )}
                   </p>
                 </div>
               </Col>
@@ -138,11 +159,10 @@ const Layout: FC = () => {
 
           <div className="mt-12">
             <Row justify="end">
-              {(!solanaWallet.publicKey ||
+              {solanaWallet.publicKey &&
                 solanaWallet.publicKey?.toBase58().toString() !==
-                  proposal?.ownerAddress) && (
-                <BuyButton handleSwap={handleSwap} />
-              )}
+                  proposal?.ownerAddress &&
+                !isExpired && <BuyButton handleSwap={handleSwap} />}
             </Row>
           </div>
         </LayoutSection>
