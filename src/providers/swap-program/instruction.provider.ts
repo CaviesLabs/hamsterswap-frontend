@@ -152,7 +152,7 @@ export class InstructionProvider {
         id: createProposalDto.id.slice(0, 10),
         swapOptions: createProposalDto.swapOptions,
         offeredItems: createProposalDto.offeredOptions,
-        expiredAt: createProposalDto.expiredAt,
+        expiredAt: new anchor.BN(createProposalDto.expiredAt.getTime()),
       })
       .accounts({
         proposalOwner,
