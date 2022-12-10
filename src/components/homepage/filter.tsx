@@ -138,7 +138,7 @@ const Filter: FC = () => {
         </div>
       )}
       <div className="flex items-center justify-between pt-24 pb-6">
-        <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+        <h1 className="text-[32px] font-bold tracking-tight text-gray-900">
           Active Swaps
         </h1>
         <div className="w-[550px] flex">
