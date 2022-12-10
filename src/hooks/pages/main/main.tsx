@@ -34,11 +34,16 @@ export const MainProvider = (props: { children: ReactNode }) => {
   useAppState();
 
   /** @dev Call hooks to detect router changes. */
-  const { transitionLoading } = useRouter();
+  const { transitionLoading, fistLoading } = useRouter();
 
   return (
     <MainContext.Provider
-      value={{ openNftDetailModal, transitionLoading, ...reduxState }}
+      value={{
+        openNftDetailModal,
+        transitionLoading,
+        fistLoading,
+        ...reduxState,
+      }}
     >
       {/**
        * @dev Render pages.

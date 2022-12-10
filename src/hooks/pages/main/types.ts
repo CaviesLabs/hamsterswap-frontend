@@ -26,6 +26,9 @@ export interface MainContextState extends ReduxState {
 
   /** @dev The value present for page transition. */
   transitionLoading: boolean;
+
+  /** @dev Detect fist loading */
+  fistLoading: boolean;
 }
 
 /** @dev Create context */

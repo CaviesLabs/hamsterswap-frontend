@@ -6,9 +6,15 @@ import { useRouter as useNextRouter } from "next/router";
  */
 export interface HookState {
   transitionLoading: boolean;
+  fistLoading: boolean;
 }
 
 export const useRouter = (): HookState => {
+  /**
+   * @dev Declare state to detect fist loading page.
+   */
+  const [fistLoading, setFistLoading] = useState(true);
+
   /**
    * @dev Declare state to detect page transition.
    */
@@ -48,7 +54,12 @@ export const useRouter = (): HookState => {
     };
   }, [setTransitionLoading]);
 
+  useEffect(() => {
+    setTimeout(() => setFistLoading(false), 3000);
+  }, []);
+
   return {
     transitionLoading,
+    fistLoading,
   };
 };

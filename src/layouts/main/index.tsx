@@ -11,7 +11,7 @@ export interface MainLayoutProps {
 }
 
 const MainLayout: FC<MainLayoutProps> = ({ children }) => {
-  const { transitionLoading } = useMain();
+  const { transitionLoading, fistLoading } = useMain();
 
   return (
     <AuthMiddleware>
@@ -20,6 +20,19 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
         <div className="layout-content">{children}</div>
         <Footer />
       </div>
+      {fistLoading && (
+        <div
+          className="w-full h-full fixed top-0 bottom-0 right-0 left-0 bg-white"
+          style={{ zIndex: 100 }}
+        >
+          <Lottie
+            style={{ width: "300px" }}
+            options={{
+              animationData,
+            }}
+          />
+        </div>
+      )}
       {transitionLoading && (
         <div
           className="w-[185px] fixed bottom-[20px] right-[81px]"
