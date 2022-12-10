@@ -11,12 +11,14 @@ import { NftDetailDto } from "@/src/dto/nft.dto";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { toast } from "@hamsterbox/ui-kit";
+import animationData from "./animation-loading.json";
+import Lottie from "react-lottie";
 
 export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   /**
    * @dev Import functions in screen context.
    */
-  const { expectedItems, addExpectedItem } = useCreateProposal();
+  const { offferedItems, expectedItems, addExpectedItem } = useCreateProposal();
 
   /**
    * @dev initialize states for collection id and nft id from form
@@ -53,6 +55,20 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   const handleAddNft = (nftItem: NftDetailDto) => {
     if (expectedItems[props.index]?.askingItems.length === 4) {
       return toast.warn("Only a maximum of 4 items are allowed");
+    }
+
+    if (
+      expectedItems[props.index]?.askingItems
+        .map((_) => _.nft_address)
+        .indexOf(nftItem.nft_address) > -1
+    ) {
+      return toast.warn("Item is there in choice");
+    }
+
+    if (
+      offferedItems.map((_) => _.nft_address).indexOf(nftItem.nft_address) > -1
+    ) {
+      return toast.warn("Item is there in your offered list");
     }
 
     /**
@@ -108,7 +124,15 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
                 allowNTFCollections={allowNTFCollections}
               />
             )}
-            {step === 1 && <div>Loading</div>}
+            {step === 1 && (
+              <div className="max-w-[185px] mx-auto">
+                <Lottie
+                  options={{
+                    animationData,
+                  }}
+                />
+              </div>
+            )}
             {step === 2 && nft && <AddExpectedNftDetail nft={nft} />}
             <div className="mt-14">
               {step === 0 && (

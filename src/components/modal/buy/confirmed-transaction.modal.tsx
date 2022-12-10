@@ -2,9 +2,12 @@ import { FC } from "react";
 import { Modal } from "antd";
 import { ConfirmModalProps } from "./types";
 import { utilsProvider } from "@/src/utils";
+import { useRouter } from "next/router";
 
 export const ConfirmedTransactionModal: FC<ConfirmModalProps> = (props) => {
-  const { seller } = props;
+  const { seller, buyer } = props;
+  const router = useRouter();
+
   return (
     <Modal
       open={props.isModalOpen}
@@ -32,7 +35,7 @@ export const ConfirmedTransactionModal: FC<ConfirmModalProps> = (props) => {
 
           <button
             type="button"
-            onClick={props.handleCancel}
+            onClick={() => router.push(`/u/${buyer.id}/history`)}
             className="flex justify-center items-center w-full !bg-purple text-white rounded-3xl text-lg font-bold py-3"
           >
             Ok
