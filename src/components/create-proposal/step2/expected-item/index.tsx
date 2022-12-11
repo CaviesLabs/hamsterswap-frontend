@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { Collapse } from "react-collapse";
 import { RowEditNftItem } from "@/src/components/nfts";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { PlusIcon } from "@/src/components/icons";
 import {
   AddCashModal,
@@ -15,7 +15,7 @@ import { ExpectedItemProps } from "@/src/components/create-proposal/step2/types"
 import { useSelector } from "react-redux";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { WSOL_ADDRESS } from "@/src/utils/constants";
-import { AssetTypes } from "@/src/entities/proposal.entity";
+import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 
 export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
   const { expectedItems, removeExpectedItem, addExpectedItem } =
@@ -45,10 +45,14 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
    * @param value [string]
    */
   const handleAddSol = (value: string) => {
+    if (expectedItems[props.index]?.askingItems.length === 4) {
+      return toast.warn("Only a maximum of 4 items are allowed");
+    }
+
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
     addExpectedItem(
-      { nft_address: WSOL_ADDRESS } as any,
+      { nft_address: WSOL_ADDRESS, assetType: SwapItemType.CURRENCY } as any,
       AssetTypes.token,
       props.index,
       parseFloat(value)
@@ -62,6 +66,10 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
    * @param method [string]
    */
   const handleAddCash = (value: string, method: string) => {
+    if (expectedItems[props.index]?.askingItems.length === 4) {
+      return toast.warn("Only a maximum of 4 items are allowed");
+    }
+
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
 

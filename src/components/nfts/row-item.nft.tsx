@@ -9,6 +9,10 @@ import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 export const RowNftItem: FC<RowNftItemProps> = (props) => {
   const { assetType } = props;
 
+  const isSol = assetType === SwapItemType.CURRENCY;
+  const isNft = assetType === SwapItemType.NFT;
+  const isGameItem = assetType === SwapItemType.GAME;
+
   const [collapse, setCollapse] = useState(false);
 
   /**
@@ -30,31 +34,26 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
       <div className="bg-white duration-500 flex rounded-[16px] p-[16px]">
         <div className="left pl-[2px]">
           <img
-            src={
-              props.assetType === SwapItemType.CURRENCY
-                ? "/assets/images/solana.svg"
-                : props.image
-            }
+            src={isSol ? "/assets/images/solana.svg" : props.image}
             alt="NFT image"
             className="h-full !w-[80px] object-cover rounded-[8px] aspect-square"
           />
         </div>
         <div className="px-4 w-72 left">
           <p className="text-lg semi-bold text-black truncate block capitalize">
-            {props.name?.includes("USD")
+            {isSol
               ? `${parseInt(props.name.split(" ")[0]) / LAMPORTS_PER_SOL} SOL`
               : props.name}
           </p>
           <div className="flex items-center">
-            {props.assetType !== SwapItemType.CURRENCY && (
+            {!isSol && (
               <p className="text-[14px] regular-text text-purple cursor-auto mb-3">
                 {props.collection}
               </p>
             )}
           </div>
         </div>
-        {(assetType === SwapItemType.NFT ||
-          assetType === SwapItemType.GAME) && (
+        {(isNft || isGameItem) && (
           <div className="ml-auto left mr-[20px] relative" ref={ref}>
             <button
               className="relative right-[-20px]"
@@ -86,7 +85,7 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
           </div>
         )}
       </div>
-      {assetType === SwapItemType.NFT ? (
+      {isNft ? (
         <NFTDetailsModal
           data={props}
           isModalOpen={isDetailOpen}
@@ -94,7 +93,7 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
           handleOk={() => setIsDetailOpen(false)}
         />
       ) : (
-        assetType === SwapItemType.GAME && (
+        isGameItem && (
           <GameItemModal
             data={props}
             isModalOpen={isDetailOpen}

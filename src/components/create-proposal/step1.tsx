@@ -1,4 +1,4 @@
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { PlusIcon } from "@/src/components/icons";
 import {
   AddCashModal,
@@ -13,7 +13,11 @@ import { useDispatch } from "react-redux";
 import { getListNft } from "@/src/redux/actions/nft/nft.action";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import { OfferedItemEntity, AssetTypes } from "@/src/entities/proposal.entity";
+import {
+  OfferedItemEntity,
+  AssetTypes,
+  SwapItemType,
+} from "@/src/entities/proposal.entity";
 import { WSOL_ADDRESS } from "@/src/utils/constants";
 
 export const Step1: FC = () => {
@@ -48,10 +52,14 @@ export const Step1: FC = () => {
    * @param value [string]
    */
   const handleAddSol = (value: string) => {
+    if (offferedItems.length === 4) {
+      return toast.warn("Only a maximum of 4 items are allowed");
+    }
+
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
     addOfferItem(
-      { nft_address: WSOL_ADDRESS } as any,
+      { nft_address: WSOL_ADDRESS, assetType: SwapItemType.CURRENCY } as any,
       AssetTypes.token,
       parseFloat(value)
     );
@@ -64,6 +72,10 @@ export const Step1: FC = () => {
    * @param method [string]
    */
   const handleAddCash = (value: string) => {
+    if (offferedItems.length === 4) {
+      return toast.warn("Only a maximum of 4 items are allowed");
+    }
+
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
 
