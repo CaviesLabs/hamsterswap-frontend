@@ -205,6 +205,7 @@ export class SwapProposalEntity {
   swapOptions: SwapOptionEntity[] = [];
 
   fulfillBy?: string;
+  fulfillByUserId?: string;
 
   fulfilledWithOptionId?: string;
 
