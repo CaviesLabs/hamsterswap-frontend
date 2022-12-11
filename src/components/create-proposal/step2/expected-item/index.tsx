@@ -15,7 +15,7 @@ import { ExpectedItemProps } from "@/src/components/create-proposal/step2/types"
 import { useSelector } from "react-redux";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { WSOL_ADDRESS } from "@/src/utils/constants";
-import { AssetTypes } from "@/src/entities/proposal.entity";
+import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 
 export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
   const { expectedItems, removeExpectedItem, addExpectedItem } =
@@ -48,7 +48,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
     addExpectedItem(
-      { nft_address: WSOL_ADDRESS } as any,
+      { nft_address: WSOL_ADDRESS, assetType: SwapItemType.CURRENCY } as any,
       AssetTypes.token,
       props.index,
       parseFloat(value)

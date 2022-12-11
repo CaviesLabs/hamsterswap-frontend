@@ -13,7 +13,11 @@ import { useDispatch } from "react-redux";
 import { getListNft } from "@/src/redux/actions/nft/nft.action";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import { OfferedItemEntity, AssetTypes } from "@/src/entities/proposal.entity";
+import {
+  OfferedItemEntity,
+  AssetTypes,
+  SwapItemType,
+} from "@/src/entities/proposal.entity";
 import { WSOL_ADDRESS } from "@/src/utils/constants";
 
 export const Step1: FC = () => {
@@ -51,7 +55,7 @@ export const Step1: FC = () => {
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
     addOfferItem(
-      { nft_address: WSOL_ADDRESS } as any,
+      { nft_address: WSOL_ADDRESS, assetType: SwapItemType.CURRENCY } as any,
       AssetTypes.token,
       parseFloat(value)
     );

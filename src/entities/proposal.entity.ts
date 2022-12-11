@@ -27,6 +27,7 @@ export enum SwapItemType {
   NFT = "SWAP_ITEM_TYPE::NFT",
   GAME = "SWAP_ITEM_TYPE::GAME",
   CURRENCY = "SWAP_ITEM_TYPE::CURRENCY",
+  CASH = "SWAP_ITEM_TYPE::CASH",
 }
 
 /**

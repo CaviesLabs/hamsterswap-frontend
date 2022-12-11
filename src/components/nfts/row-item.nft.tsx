@@ -41,7 +41,7 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
         </div>
         <div className="px-4 w-72 left">
           <p className="text-lg semi-bold text-black truncate block capitalize">
-            {props.name?.includes("USD")
+            {props.name?.includes("SOL")
               ? `${parseInt(props.name.split(" ")[0]) / LAMPORTS_PER_SOL} SOL`
               : props.name}
           </p>
