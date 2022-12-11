@@ -23,7 +23,6 @@ import {
   SolflareWalletAdapter,
   SolletWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
-import { HamsterboxIcon } from "@/src/components/icons";
 
 const store = makeStore();
 

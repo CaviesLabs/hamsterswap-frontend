@@ -23,6 +23,12 @@ export interface AppState {
 export interface MainContextState extends ReduxState {
   /** @dev Expose function to open nft detail modal. */
   openNftDetailModal(): void;
+
+  /** @dev The value present for page transition. */
+  transitionLoading: boolean;
+
+  /** @dev Detect fist loading */
+  fistLoading: boolean;
 }
 
 /** @dev Create context */

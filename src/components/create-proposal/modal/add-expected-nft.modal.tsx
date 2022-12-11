@@ -11,7 +11,7 @@ import { NftDetailDto } from "@/src/dto/nft.dto";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { toast } from "@hamsterbox/ui-kit";
-import animationData from "./animation-loading.json";
+import animationData from "@/src/components/icons/animation-loading.json";
 import Lottie from "react-lottie";
 
 export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {

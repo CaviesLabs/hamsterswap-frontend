@@ -163,7 +163,7 @@ const TestPage: NextPage = () => {
 
   return (
     <MainLayout>
-      <div>
+      <div className="pt-[200px]">
         <h2>TestPage</h2>
         <Button onClick={handleCreateProposal} text="Test create a proposal" />
         <div className="flex">

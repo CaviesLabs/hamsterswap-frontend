@@ -36,18 +36,30 @@ export interface WalletContextState {
    */
   disconnect(): Promise<void>;
 
+  /**
+   * @dev The function to get sol balance of a specific wallet or signer.
+   * @param {PublicKey} pub
+   */
   getSolBalance(pub?: web3.PublicKey): Promise<number>;
 
   /**
    * @dev Expose context frrom solana-adapter.
    */
   solanaWallet: SolanaWalletContextState;
+
+  /**
+   * @dev Solana chain connection.
+   */
   walletConnection: ConnectionContextState;
 
   /**
    * @dev Define Program service.
    */
   programService: SwapProgramService;
+
+  /**
+   * @dev Sol balance of signer.
+   */
   solBalance: number;
 }
 
