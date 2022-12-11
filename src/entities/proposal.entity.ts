@@ -192,6 +192,7 @@ export class SwapOptionEntity {
  */
 export class SwapProposalEntity {
   id: string;
+  numberId: number;
 
   ownerId: string;
 
