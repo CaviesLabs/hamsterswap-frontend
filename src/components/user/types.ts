@@ -17,6 +17,7 @@ export type ProposalDetailProps = ProposalItemProps & {
   proposalId: string;
   proposalOwner: string;
   status: SwapProposalStatus;
+  isPrivateProfile?: boolean;
 };
 
 export type ProposalItem = {

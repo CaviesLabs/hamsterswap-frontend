@@ -20,7 +20,7 @@ import State from "@/src/redux/entities/state";
 import dayjs from "dayjs";
 
 export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
-  const { data, status, isGuaranteedPayment } = props;
+  const { data, status, isGuaranteedPayment, isPrivateProfile } = props;
   const profile = useSelector((state: State) => state.hPublicProfile);
   const router = useRouter();
   const [cancelModal, setCancelModal] = useState(false);

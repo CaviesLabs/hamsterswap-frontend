@@ -29,6 +29,13 @@ const Layout: FC = () => {
 
   /**
    * @description
+   * validate public or private profile
+   */
+  const { id: userId } = router.query;
+  const isPrivateProfile = userId && userId === profile?.id;
+
+  /**
+   * @description
    * Fetch proposal by user id
    */
   const dispatch = useDispatch();
