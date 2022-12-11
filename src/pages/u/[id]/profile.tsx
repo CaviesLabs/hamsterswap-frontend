@@ -31,8 +31,8 @@ const Layout: FC = () => {
    * @description
    * validate public or private profile
    */
-  const { id: userId } = router.query;
-  const isPrivateProfile = userId && userId === profile?.id;
+  // const { id: userId } = router.query;
+  // const isPrivateProfile = userId && userId === profile?.id;
 
   /**
    * @description
