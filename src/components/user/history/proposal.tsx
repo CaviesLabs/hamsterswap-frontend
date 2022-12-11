@@ -10,7 +10,6 @@ import dayjs from "dayjs";
 function Proposal(props: ProposalHistoryProps) {
   const router = useRouter();
   const { data } = props;
-  console.log("data", data);
   const status = data.status;
 
   const swapOption = data.swapOptions.find(
