@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { Collapse } from "react-collapse";
 import { RowEditNftItem } from "@/src/components/nfts";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { PlusIcon } from "@/src/components/icons";
 import {
   AddCashModal,
@@ -45,6 +45,10 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
    * @param value [string]
    */
   const handleAddSol = (value: string) => {
+    if (expectedItems[props.index]?.askingItems.length === 4) {
+      return toast.warn("Only a maximum of 4 items are allowed");
+    }
+
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
     addExpectedItem(
@@ -62,6 +66,10 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
    * @param method [string]
    */
   const handleAddCash = (value: string, method: string) => {
+    if (expectedItems[props.index]?.askingItems.length === 4) {
+      return toast.warn("Only a maximum of 4 items are allowed");
+    }
+
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
 

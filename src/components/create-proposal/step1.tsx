@@ -1,4 +1,4 @@
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { PlusIcon } from "@/src/components/icons";
 import {
   AddCashModal,
@@ -52,6 +52,10 @@ export const Step1: FC = () => {
    * @param value [string]
    */
   const handleAddSol = (value: string) => {
+    if (offferedItems.length === 4) {
+      return toast.warn("Only a maximum of 4 items are allowed");
+    }
+
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
     addOfferItem(
@@ -68,6 +72,10 @@ export const Step1: FC = () => {
    * @param method [string]
    */
   const handleAddCash = (value: string) => {
+    if (offferedItems.length === 4) {
+      return toast.warn("Only a maximum of 4 items are allowed");
+    }
+
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
 
