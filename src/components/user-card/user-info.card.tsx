@@ -39,7 +39,7 @@ export const UserInfoCard: FC<UserInfoCardProps> = (props) => {
         />
         <div className="md:float-left md:ml-[26px] flex justify-center items-center md:block mt-[20px] md:mt-0">
           <CopyText content={profile?.walletAddress}>
-            <p className="text-[24px]">
+            <p className="text-[24px] text-[#735CF7]">
               {utilsProvider.makeShort(profile?.walletAddress, 4)}
             </p>
           </CopyText>
