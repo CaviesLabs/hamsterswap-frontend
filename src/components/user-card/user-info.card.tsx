@@ -7,6 +7,7 @@ import CopyText from "@/src/components/copy-text";
 import { useDispatch } from "react-redux";
 import { getHamsterPublicProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { hProfileDto } from "@/src/dto/hProfile.dto";
+import { useRouter } from "next/router";
 
 /** @dev Define styled component. */
 export const StyledUserInfoCard = styled.div`
@@ -19,6 +20,7 @@ export const StyledUserInfoCard = styled.div`
 
 export const UserInfoCard: FC<UserInfoCardProps> = (props) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [profile, setProfile] = useState<hProfileDto>();
 
   useEffect(() => {
@@ -39,7 +41,10 @@ export const UserInfoCard: FC<UserInfoCardProps> = (props) => {
         />
         <div className="md:float-left md:ml-[26px] flex justify-center items-center md:block mt-[20px] md:mt-0">
           <CopyText content={profile?.walletAddress}>
-            <p className="text-[24px] text-[#735CF7]">
+            <p
+              className="text-[24px] text-[#735CF7] cursor-pointer"
+              onClick={() => router.push(`/u/${profile.id}/profile`)}
+            >
               {utilsProvider.makeShort(profile?.walletAddress, 4)}
             </p>
           </CopyText>
