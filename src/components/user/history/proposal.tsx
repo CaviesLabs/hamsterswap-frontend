@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 function Proposal(props: ProposalHistoryProps) {
   const router = useRouter();
   const { data } = props;
+  console.log("data", data);
   const status = data.status;
 
   const swapOption = data.swapOptions.find(
@@ -52,7 +53,15 @@ function Proposal(props: ProposalHistoryProps) {
           ))}
         </Col>
         <Col span={4} className="text-lg">
-          {utilsProvider.makeShort(data.fulfillBy ?? " ", 4)}
+          <div>
+            You ({utilsProvider.makeShort(data.ownerAddress ?? " ", 4)})
+          </div>
+          <div
+            className="text-[#735CF7] cursor-pointer"
+            // onClick={() => router.push(`/u/${data.fulfillBy}/profile`)}
+          >
+            {utilsProvider.makeShort(data.fulfillBy ?? " ", 4)}
+          </div>
         </Col>
         <Col span={3}>
           <Tag

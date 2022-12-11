@@ -6,7 +6,7 @@ function Title() {
       <Col span={5}>Date</Col>
       <Col span={6}>Swap Items</Col>
       <Col span={6}>Receive Items</Col>
-      <Col span={4}>Swapper</Col>
+      <Col span={4}>Swap by</Col>
       <Col span={3}>Status</Col>
     </Row>
   );

@@ -223,6 +223,7 @@ export class SwapProposalEntity {
 export class GetProposalsDto {
   walletAddress?: string;
   options?: {
+    countParticipation?: boolean;
     statuses?: SwapProposalStatus[] | SwapProposalStatus;
     limit?: number;
     offset?: number;
