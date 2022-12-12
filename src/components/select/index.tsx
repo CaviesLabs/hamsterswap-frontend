@@ -31,7 +31,7 @@ function Select(props: SelectProps) {
         >
           <img className="rounded-[50%] aspect-square" src={option.image} />
         </div>
-        <div className="w-5/6 h-18 flex flex-col justify-between">
+        <div className="w-full h-18 flex flex-col justify-between">
           <p className="text-[14px] regular-text">
             {option.label || option.value}
           </p>
@@ -60,6 +60,9 @@ function Select(props: SelectProps) {
   }, [isOpenDropdown]);
 
   const handleSelect = (v: string) => {
+    setIsOpenDropdown(false);
+
+    if (!onChange) return;
     const newValues = [...values];
     if (mode === "multiple") {
       if (values.indexOf(v) > -1) {
@@ -71,7 +74,6 @@ function Select(props: SelectProps) {
     } else {
       onChange([v]);
     }
-    setIsOpenDropdown(false);
   };
 
   return (
