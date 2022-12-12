@@ -36,6 +36,7 @@ export const AddGameItemModal: FC<AddItemModalProps> = (props) => {
       onCancel={props.handleCancel}
       width={970}
       footer={null}
+      className="hamster-modal"
     >
       <StyledModal>
         <div className="pt-6 flex flex-row">

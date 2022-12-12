@@ -114,7 +114,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
     >
       <StyledModal>
         <div className="pt-6">
-          <div className="mx-auto items-center max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto items-center max-w-3xl">
             {step === 0 && (
               <AddExpectedNftForm
                 collection={collection}

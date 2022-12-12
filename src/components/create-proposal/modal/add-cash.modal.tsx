@@ -63,10 +63,11 @@ export const AddCashModal: FC<AddItemModalProps> = (props) => {
       onCancel={props.handleCancel}
       width={600}
       footer={null}
+      className="hamster-modal"
     >
       <StyledModal>
         <div className="pt-6">
-          <div className="mx-auto items-center max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto items-center max-w-3xl">
             <Input
               size="large"
               className="rounded-2xl p-3 mt-2"

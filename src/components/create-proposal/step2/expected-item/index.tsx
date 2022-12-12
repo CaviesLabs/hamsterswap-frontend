@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { WSOL_ADDRESS } from "@/src/utils/constants";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
+import { Col, Row } from "antd";
 
 export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
   const { expectedItems, removeExpectedItem, addExpectedItem } =
@@ -185,22 +186,20 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
               />
             </div>
           </div>
-          <div className="block">
-            <div className="md:flex py-5 flex-wrap">
+          <div className="block py-5">
+            <Row gutter={[139, 20]}>
               {expectedItems[props.index]?.askingItems.map((item, index) => (
-                <div
-                  className="block md:left w-full md:w-[50%] md:pl-[20px]"
+                <Col
+                  span={12}
+                  className="block w-full md:pl-[20px]"
                   key={`swapoptions-${index}`}
                 >
-                  <div className="flow-root items-center h-[50px]">
-                    <p
-                      className="text-[16px] float-left text-gray-400 regular-text"
-                      style={{ transform: "translateY(50%)" }}
-                    >
+                  <div className="flex">
+                    <p className="text-[16px] text-gray-400 regular-text">
                       Item #{index + 1}
                     </p>
                   </div>
-                  <div className="pt-[20px]">
+                  <div className="pt-[16px]">
                     <RowEditNftItem
                       collection={item.nft_symbol}
                       image={item.nft_image_uri}
@@ -215,12 +214,12 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                       }}
                     />
                   </div>
-                </div>
+                </Col>
               ))}
               <EmptyBox
                 existsAmount={expectedItems[props.index]?.askingItems.length}
               />
-            </div>
+            </Row>
           </div>
         </div>
       </Collapse>

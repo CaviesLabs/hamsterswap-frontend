@@ -78,7 +78,7 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
     >
       <StyledModal>
         <div className="pt-6">
-          <div className="mx-auto items-center max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto items-center max-w-3xl">
             <SearchInput
               className="rounded-3xl p-3"
               placeholder="Search for NFT, collection "
@@ -86,13 +86,13 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
             <div className="mt-10 max-h-96 overflow-scroll">
               {nftsMemo?.map((nftItem, i) => (
                 <Row
-                  className="bg-white rounded-lg p-4 w-full mb-4 cursor-pointer hover:bg-dark30"
+                  className="bg-white rounded-lg p-4 w-full mb-4 cursor-pointer hover:bg-[#F0F3FA]"
                   key={`add-nft-item-pr-${i}`}
                   onClick={() => handleAddNft(nftItem)}
                 >
                   <Col span={5}>
                     <img
-                      className="rounded bg-dark10"
+                      className="rounded-lg bg-dark10"
                       src={nftItem.nft_image_uri}
                       alt=""
                     />
