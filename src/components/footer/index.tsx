@@ -1,4 +1,5 @@
 import { FC, useMemo } from "react";
+import { useRouter } from "next/router";
 
 interface FooterItem {
   name: string;
@@ -12,6 +13,8 @@ interface SocialItem {
 }
 
 const Footer: FC = () => {
+  const router = useRouter();
+
   const footers = useMemo<FooterItem[]>(
     () => [
       {
@@ -62,14 +65,17 @@ const Footer: FC = () => {
           <div className="relative">
             <img
               src="/assets/images/logo.png"
-              className="w-[155px] h-auto  mx-auto"
+              className="w-[155px] h-auto  mx-auto cursor-pointer"
+              onClick={() => router.push("/")}
             />
             <div className="flex mx-auto mt-[14px] justify-center items-start">
               <div className="top-0 regular-text text-[14px] mr-[5px]">by</div>
-              <img
-                src="https://cavies.xyz/assets/images/logo.png"
-                className="w-[110px] h-auto"
-              />
+              <a href="https://cavies.xyz/" target="_blank">
+                <img
+                  src="https://cavies.xyz/assets/images/logo.png"
+                  className="w-[110px] h-auto"
+                />
+              </a>
             </div>
           </div>
 
