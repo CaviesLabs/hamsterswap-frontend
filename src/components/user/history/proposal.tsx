@@ -23,13 +23,15 @@ function Proposal(props: ProposalHistoryProps) {
           {dayjs(data.createdAt).format(DATE_TIME_FORMAT)}
         </Col>
         <Col span={6}>
-          {data.offerItems.map((item, i) => (
-            <div key={`swapItems-${i}`} className="flex items-center mb-3">
+          {data.offerItems.map(({ id, nftMetadata }) => (
+            <div key={`swapItems-${id}`} className="flex items-center mb-3">
               <img
                 className="w-10 rounded-lg"
-                src={item.nftMetadata.nft_image}
+                src={nftMetadata.nft_image || nftMetadata.icon}
               />
-              <p className="ml-2 text-lg">{item.nftMetadata.nft_name}</p>
+              <p className="ml-2 text-lg">
+                {nftMetadata.nft_name || nftMetadata.symbol}
+              </p>
             </div>
           ))}
 
@@ -41,13 +43,15 @@ function Proposal(props: ProposalHistoryProps) {
           </a>
         </Col>
         <Col span={6}>
-          {swapOption?.items.map((item) => (
-            <div key={item.id} className="flex items-center mb-3">
+          {swapOption?.items.map(({ id, nftMetadata }) => (
+            <div key={id} className="flex items-center mb-3">
               <img
                 className="w-10 rounded-lg"
-                src={item.nftMetadata.nft_image}
+                src={nftMetadata.nft_image || nftMetadata.icon}
               />
-              <p className="ml-2 text-lg">{item.nftMetadata.nft_name}</p>
+              <p className="ml-2 text-lg">
+                {nftMetadata.nft_name || nftMetadata.symbol}
+              </p>
             </div>
           ))}
         </Col>
