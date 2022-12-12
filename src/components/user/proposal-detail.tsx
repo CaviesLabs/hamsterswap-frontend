@@ -70,7 +70,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   return (
     <StyledProposalItem
       className="w-full bg-[#F8F9FE] min-h-[200px] rounded-[32px] mb-[46px]"
-      data-label={isGuaranteedPayment && "Guaranteed payment"}
+      data-label={isGuaranteedPayment && "Warranty"}
       {...props}
     >
       {isGuaranteedPayment && (
@@ -140,7 +140,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                   Warranty
                 </p>
                 <p className="mt-[12px] text-[16px] regular-text flex">
-                  Guaranteed payment amount:
+                  Guarantee deposit amount:
                   <img
                     src="/assets/images/solana-icon.svg"
                     alt="Solana Icon"

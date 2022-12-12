@@ -23,7 +23,7 @@ export const CanceledProposalModal: FC<ModalProps> = (props) => {
             Success!
           </h2>
           <p className="mb-6 text-lg text-center">
-            You have cancel a proposal successfully. Tokens and NFT will be
+            You have cancel a proposal successfully. Tokens and NFTs will be
             automatically refunded to your wallet.
           </p>
 

@@ -27,7 +27,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
   return (
     <StyledProposalItem
       className="w-full bg-[#F8F9FE] min-h-[200px] rounded-[32px] rounded-[32px] mb-[46px]"
-      data-label={props.isGuaranteedPayment && "Guaranteed payment"}
+      data-label={props.isGuaranteedPayment && "Warranty"}
       {...props}
     >
       {props.isGuaranteedPayment && (
@@ -38,7 +38,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           style={{ zIndex: 3 }}
-          className="absolute right-0 left-[20px] md:left-[initial] md:right-[86px] w-[37px] top-[40px]"
+          className="absolute right-0 left-[20px] md:left-[initial] md:right-[92px] w-[16px] top-[45px]"
         >
           <path
             fillRule="evenodd"
@@ -82,7 +82,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
                   Warranty
                 </p>
                 <p className="mt-[8px] text-[16px] regular-text flex">
-                  Guaranteed payment amount:
+                  Guarantee deposit amount:
                   <img
                     src="/assets/images/solana-icon.svg"
                     alt="Solana Icon"

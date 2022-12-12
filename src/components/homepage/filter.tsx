@@ -179,16 +179,16 @@ const Filter: FC = () => {
             className="text-center rounded-3xl text-sm"
             placeholder={
               <div className="w-full regular-text text-center">
-                Reputation advertisers
+                Pro Advertisers
               </div>
             }
             values={[]}
             options={[
               {
-                value: "Reputation",
+                value: "Pro Advertisers",
               },
               {
-                value: "No Reputation",
+                value: "No Pro Advertisers",
               },
             ]}
             onChange={(value) => {
@@ -225,16 +225,16 @@ const Filter: FC = () => {
             className="text-center rounded-3xl text-sm"
             placeholder={
               <div className="w-full regular-text text-center">
-                Include Guaranted payment
+                Include warranty
               </div>
             }
             values={["Include Guaranted payment"]}
             options={[
               {
-                value: "Include Guaranted payment",
+                value: "Include warranty",
               },
               {
-                value: "No Guaranted payment",
+                value: "No include warranty",
               },
             ]}
           ></Select>
