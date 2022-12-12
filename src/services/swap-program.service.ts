@@ -45,7 +45,7 @@ export class SwapProgramService {
     /**
      * @dev Now create proposal to on-chain, wrap in sync function to sync data after done processing on-chain.
      */
-    return await this.requestAndSyncProposal(response.id, async () => {
+    return this.requestAndSyncProposal(response.id, async () => {
       /**
        * @dev Create on-chain.
        */

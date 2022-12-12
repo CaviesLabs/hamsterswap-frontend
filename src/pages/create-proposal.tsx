@@ -58,7 +58,16 @@ const Layout: FC = () => {
    * @dev display modal when user confirm transaction successfully
    */
   const [modalOpened, setModalOpened] = useState(false);
+
+  /**
+   * @dev Modal id.
+   */
   const [proposalId, setProposalId] = useState("");
+
+  /**
+   * @dev Define sate condition loading button during processing submit proposal.
+   */
+  const [isDuringSubmit, setIsDuringSubmit] = useState(false);
 
   /** @dev Initilize ref for stepper component. */
   const stepperRef = useRef<StepProgressHandle>(null);
@@ -124,11 +133,15 @@ const Layout: FC = () => {
    */
   const hanndleSubmitProposal = async () => {
     try {
+      setIsDuringSubmit(true);
       const proposalId = await submitProposal();
       setProposalId(proposalId);
       setModalOpened(true);
+      setIsDuringSubmit(false);
     } catch (err: unknown) {
       toast.error("Create proposal failed", (err as any).message);
+    } finally {
+      setIsDuringSubmit(false);
     }
   };
 
@@ -247,6 +260,7 @@ const Layout: FC = () => {
                   text="Confirm"
                   className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right"
                   onClick={hanndleSubmitProposal}
+                  loading={isDuringSubmit}
                 />
               )}
             </div>

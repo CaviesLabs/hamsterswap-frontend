@@ -325,6 +325,7 @@ export class SwapProgramProvider {
       }, 2000);
     } catch (err: any) {
       console.error("Error", err.message);
+      throw err;
     }
   }
 

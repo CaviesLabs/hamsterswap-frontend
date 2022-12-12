@@ -1,18 +1,18 @@
 import { FC, useEffect } from "react";
 import type { NextPage } from "next";
-import MainLayout from "@/src/layouts/main";
 import { ProfilePageProvider } from "@/src/hooks/pages/profile";
 import { LayoutSection } from "@/src/components/layout-section";
 import { UserInfoCard } from "@/src/components/user-card";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
+import { SwapProposalStatus } from "@/src/entities/proposal.entity";
+import MainLayout from "@/src/layouts/main";
 import Breadcrumb from "@/src/components/user/breadcrumb";
 import SubMenu from "@/src/components/user/sub-menu";
 import Title from "@/src/components/user/history/title";
 import Proposal from "@/src/components/user/history/proposal";
-import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
-import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
 import State from "@/src/redux/entities/state";
-import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 
 const Layout: FC = () => {
   const router = useRouter();

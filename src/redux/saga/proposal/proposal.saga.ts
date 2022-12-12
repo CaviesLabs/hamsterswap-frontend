@@ -75,10 +75,16 @@ export function* getExploreProposals({
     /**
      * @dev Fetch proposal data from Hamster server.
      */
-    const swapProposals: SwapProposalEntity[] = yield call(
+    let swapProposals: SwapProposalEntity[] = yield call(
       proposalService.getProposals,
       payload
     );
+
+    /** @todo Filter get proposals which have expired timne large than now */
+    swapProposals = swapProposals.filter(
+      (item) => new Date(item.expiredAt).getTime() > Date.now()
+    );
+
     yield put(setProposals(swapProposals));
     callback && callback(swapProposals);
   } catch (err) {
