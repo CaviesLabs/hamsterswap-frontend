@@ -23,6 +23,7 @@ import {
   SolflareWalletAdapter,
   SolletWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
+import { SeoComponent } from "@/src/components/seo";
 
 const store = makeStore();
 
@@ -56,6 +57,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <Provider store={store}>
+      <SeoComponent />
       <ThemeProvider>
         {/**
          * @dev
