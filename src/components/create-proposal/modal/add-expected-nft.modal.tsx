@@ -108,7 +108,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
         setStep(0);
         props.handleCancel(e);
       }}
-      width={600}
+      width={560}
       footer={null}
       className="hamster-modal"
     >
