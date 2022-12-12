@@ -53,7 +53,7 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
           <p className="text-3xl">Warranty</p>
           <div className="mt-[12px] flex items-center">
             <p className="regular-text text-[16px] float-left">
-              Guaranteed payment amount:
+              Guarantee deposit amount:
             </p>
             <img
               src="/assets/images/solana-icon.svg"

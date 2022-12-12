@@ -27,7 +27,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
   return (
     <StyledProposalItem
       className="w-full bg-[#F8F9FE] min-h-[200px] rounded-[32px] mb-[46px]"
-      data-label={props.isGuaranteedPayment && "Guaranteed payment"}
+      data-label={props.isGuaranteedPayment && "Warranty"}
       {...props}
     >
       {props.isGuaranteedPayment && (

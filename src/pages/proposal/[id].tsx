@@ -85,7 +85,7 @@ const Layout: FC = () => {
         <div className="cover-container">
           <LayoutSection>
             <BreadCrumb data={["Home", "Advertiser"]} />
-            <div className="mt-4 block md:flex">
+            <div className="mt-4 block md:flex items-center">
               <p className="text-[32px]">Advertisement #{proposal?.numberId}</p>
               <GuaranteedCard className="md:ml-[12px]" />
             </div>
@@ -151,7 +151,7 @@ const Layout: FC = () => {
                   Warranty
                 </div>
                 <p className="mt-2 text-[16px] regular-text flex">
-                  Guaranteed payment amount:
+                  Guarantee deposit amount:
                   <img
                     src="/assets/images/solana-icon.svg"
                     alt="Solana Icon"
