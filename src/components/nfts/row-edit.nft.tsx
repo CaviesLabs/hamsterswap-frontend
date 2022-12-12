@@ -51,7 +51,7 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
               }
               alt="NFT image"
               className={classnames(
-                "!h-full !w-[72px] !object-cover !rounded-[8px]",
+                "!h-full !w-[80px] !object-cover !rounded-[8px]",
                 (assetType === SwapItemType.NFT ||
                   assetType === SwapItemType.GAME) &&
                   "bg-dark10"
@@ -59,7 +59,7 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
             />
           </div>
           <div className="px-4 w-72 left">
-            <p className="text-lg semi-bold text-black truncate block capitalize">
+            <p className="semi-bold text-black truncate block capitalize">
               {props.nftAddress === WSOL_ADDRESS
                 ? `${props.tokenAmount} SOL`
                 : props.name}

@@ -249,8 +249,8 @@ const Layout: FC = () => {
                   onClick={handleNextStep}
                   theme={
                     isButtonNextDisabled && {
-                      color: "black",
-                      backgroundColor: "#cccccc",
+                      color: "white",
+                      backgroundColor: "#94A3B8",
                     }
                   }
                   disabled={isButtonNextDisabled}

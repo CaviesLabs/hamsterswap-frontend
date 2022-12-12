@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { EmptyBoxProps } from "@/src/components/create-proposal/empty-box/types";
+import { Col } from "antd";
 
 export const EmptyBox: FC<EmptyBoxProps> = (props) => {
   const { existsAmount } = props;
@@ -8,8 +9,8 @@ export const EmptyBox: FC<EmptyBoxProps> = (props) => {
     <>
       {Array.from(Array(4 - existsAmount).keys()).map((i) => {
         return (
-          <div
-            className="block md:left w-full md:w-[50%] md:pl-[20px]"
+          <Col
+            className="block w-full md:w-[50%]"
             key={`swapoptions-empty-${i}`}
           >
             <div className="flow-root items-center h-[50px]">
@@ -21,9 +22,9 @@ export const EmptyBox: FC<EmptyBoxProps> = (props) => {
               </p>
             </div>
             <div className="pt-[20px]">
-              <div className="bg-dark10 border border-dashed border-1 border-[#94A3B8] rounded-2xl h-[103px]"></div>
+              <div className="bg-dark10 border border-dashed border-1 border-[#94A3B8] rounded-2xl h-[112px]"></div>
             </div>
-          </div>
+          </Col>
         );
       })}
     </>
