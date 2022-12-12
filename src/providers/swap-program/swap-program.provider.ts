@@ -12,7 +12,6 @@ import {
   SwapItemType,
   AssetTypes,
 } from "@/src/entities/proposal.entity";
-import { closeAccount } from "@solana/spl-token";
 import { SwapIdl, IDL } from "./swap.idl";
 import { InstructionProvider } from "./instruction.provider";
 import { TransactionProvider } from "./transaction.provider";

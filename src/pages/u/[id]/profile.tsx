@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useMemo } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import { ProfilePageProvider } from "@/src/hooks/pages/profile";
@@ -12,80 +12,39 @@ import Select from "@/src/components/select";
 import Search from "@/src/components/search";
 import { ProposalDetail } from "@/src/components/user/proposal-detail";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
-import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
-import State from "@/src/redux/entities/state";
 import {
   SwapItemEntity,
   SwapOptionEntity,
   SwapProposalEntity,
-  SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
+import { useProfilePage } from "@/src/hooks/pages/profile";
+import { useMain } from "@/src/hooks/pages/main";
 
 const Layout: FC = () => {
+  /**
+   * @dev Get router
+   */
   const router = useRouter();
-  const profile = useSelector((state: State) => state.hPublicProfile);
-  const proposals = useSelector((state: State) => state.proposals);
 
   /**
-   * @description
-   * validate public or private profile
+   * @dev Import redux states
    */
-  // const { id: userId } = router.query;
-  // const isPrivateProfile = userId && userId === profile?.id;
+  const { hPublicProfile: profile, proposals } = useMain();
+
+  /**
+   * @dev Import functions from provider
+   */
+  const { selectedStatus, search, setSelectedStatus, setSearch, handleFilter } =
+    useProfilePage();
 
   /**
    * @description
    * Fetch proposal by user id
    */
-  const dispatch = useDispatch();
-  const handleSearch = (_search?: string, _statuses?: SwapProposalStatus[]) => {
-    dispatch(
-      getExploreProposals({
-        walletAddress: profile?.walletAddress,
-        options: {
-          statuses: _statuses,
-          search: _search,
-        },
-      })
-    );
-  };
   useEffect(() => {
     if (!profile || !profile.walletAddress) return;
     handleFilter();
   }, [profile]);
-
-  /**
-   * @description
-   * Handle state of selected values
-   */
-  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
-  const [search, setSearch] = useState<string>("");
-
-  /**
-   * @description
-   * handle parse status to filter and search nft
-   */
-  const handleFilter = (searchText?: string, _selectedStatus?: string[]) => {
-    const status: SwapProposalStatus[] =
-      !_selectedStatus || _selectedStatus.length === 0
-        ? [
-            SwapProposalStatus.DEPOSITED,
-            SwapProposalStatus.FULFILLED,
-            SwapProposalStatus.WITHDRAWN,
-            SwapProposalStatus.CANCELED,
-          ]
-        : [];
-    _selectedStatus?.includes(sortOptions[0].value) &&
-      status.push(SwapProposalStatus.EXPIRED);
-    _selectedStatus?.includes(sortOptions[1].value) &&
-      status.push(SwapProposalStatus.REDEEMED) &&
-      status.push(SwapProposalStatus.WITHDRAWN);
-    _selectedStatus?.includes(sortOptions[2].value) &&
-      status.push(SwapProposalStatus.CANCELED);
-
-    return handleSearch(searchText, status);
-  };
 
   /**
    * @dev Reset data when status filter change.

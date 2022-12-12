@@ -19,6 +19,7 @@ import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import State from "@/src/redux/entities/state";
 import dayjs from "dayjs";
 import { RedeemButton } from "@/src/components/user/redeem-button";
+import { useProfilePage } from "@/src/hooks/pages/profile";
 
 export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   const { data, status, isGuaranteedPayment, proposalId } = props;
@@ -32,6 +33,11 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
 
   const isPending = status.valueOf() === SwapProposalStatus.DEPOSITED.valueOf();
   const isExpired = new Date(data?.expiredAt) < new Date();
+
+  /**
+   * @dev Import functions from hook.
+   */
+  const { handleFilter } = useProfilePage();
 
   /**
    * @dev Condition to render status text.
@@ -62,6 +68,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
         console.log(err);
       } finally {
         setIsDuringSubmitCancel(false);
+        handleFilter();
       }
     },
     [props.proposalId]
