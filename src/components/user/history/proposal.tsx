@@ -70,8 +70,11 @@ function Proposal(props: ProposalHistoryProps) {
           {_isBuyer ? renderSwapItemCol() : renderReceiveItemCol()}
         </Col>
         <Col span={4} className="text-lg">
-          <div>
-            You ({utilsProvider.makeShort(data.ownerAddress ?? " ", 4)})
+          <div
+            className="text-[#735CF7] cursor-pointer"
+            onClick={() => router.push(`/u/${data.ownerId}/profile`)}
+          >
+            {utilsProvider.makeShort(data.ownerAddress ?? " ", 4)}
           </div>
           <img className="w-6 my-2" src="/assets/images/arrow-two-way.svg" />
           <div
