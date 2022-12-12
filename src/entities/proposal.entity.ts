@@ -156,6 +156,15 @@ export enum SwapProposalStatus {
   EXPIRED = "SWAP_PROPOSAL_STATUS::EXPIRED",
 }
 
+class TokenEntity {
+  address: string;
+  decimals: number;
+  holder: number;
+  icon: string;
+  name: string;
+  symbol: string;
+}
+
 /**
  * @dev Expose interface for swap item.
  * */
@@ -172,7 +181,7 @@ export class SwapItemEntity {
 
   status: SwapItemStatus;
 
-  nftMetadata?: NftEntity;
+  nftMetadata?: NftEntity & TokenEntity;
 
   id: string;
 }

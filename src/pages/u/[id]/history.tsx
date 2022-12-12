@@ -29,11 +29,7 @@ const Layout: FC = () => {
         walletAddress: profile.walletAddress,
         options: {
           countParticipation: true,
-          statuses: [
-            SwapProposalStatus.FULFILLED,
-            SwapProposalStatus.WITHDRAWN,
-            SwapProposalStatus.REDEEMED,
-          ],
+          statuses: [SwapProposalStatus.FULFILLED, SwapProposalStatus.REDEEMED],
           search: _search,
         },
       })
