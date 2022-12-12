@@ -90,14 +90,14 @@ export const AddSolModal: FC<
             />
 
             {props.addInOwner && (
-              <div className="text-lg regular-text flex items-center mt-5">
+              <div className="text-[16px] regular-text flex items-center mt-5">
                 <p>Your balance:</p>
                 <SolanaIcon className="ml-3 mr-2" />
                 {myRemainSolBalance} SOL
               </div>
             )}
 
-            <div className="mt-14 w-1/2 ml-auto">
+            <div className="mt-14 w-[234px] ml-auto">
               <button
                 disabled={
                   !value ||
