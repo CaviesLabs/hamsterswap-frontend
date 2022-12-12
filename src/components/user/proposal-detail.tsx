@@ -1,38 +1,51 @@
 import { FC, useCallback, useState } from "react";
+import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
+import { Col, Row } from "antd";
 import { UserAvatarCardItem } from "@/src/components/user-card";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "@/src/components/proposal-item/proposal-item.style";
 import { Button, toast } from "@hamsterbox/ui-kit";
-import { Col, Row } from "antd";
 import { CancelProposalModal } from "@/src/components/user/modal/cancel-proposal.modal";
 import { ProposalDetailProps } from "./types";
 import { CanceledProposalModal } from "@/src/components/user/modal/canceled-proposal.modal";
 import { WithdrewProposalModal } from "@/src/components/user/modal/withdrew-proposal.modal";
-import { useSelector } from "react-redux";
 import { completedOrderPercent, DATE_TIME_FORMAT } from "@/src/utils";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 import { useProgram } from "@/src/hooks/useProgram";
 import { useWallet } from "@/src/hooks/useWallet";
+import { RedeemButton } from "@/src/components/user/redeem-button";
+import { useProfilePage } from "@/src/hooks/pages/profile";
 import classnames from "classnames";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import State from "@/src/redux/entities/state";
 import dayjs from "dayjs";
-import { RedeemButton } from "@/src/components/user/redeem-button";
-import { useProfilePage } from "@/src/hooks/pages/profile";
 
 export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
+  /** @todo Get all data from @var {props} */
   const { data, status, isGuaranteedPayment, proposalId } = props;
+
   const profile = useSelector((state: State) => state.hPublicProfile);
   const router = useRouter();
+
+  /** @todo Declare all states related to modal appearance */
   const [cancelModal, setCancelModal] = useState(false);
   const [canceledModal, setCanceledModal] = useState(false);
   const [withdrewModal, setWithdrewModal] = useState(false);
   const [isDuringSubmitCancel, setIsDuringSubmitCancel] = useState(false);
+
+  /** @todo Get wallet proivder */
   const { solanaWallet } = useWallet();
 
+  /** @todo Condition when proposal is already deposited offered items */
   const isPending = status.valueOf() === SwapProposalStatus.DEPOSITED.valueOf();
-  const isExpired = new Date(data?.expiredAt) < new Date();
+
+  /** @todo Condition when proposal is expired but not canceled */
+  const isExpired =
+    status.valueOf() !== SwapProposalStatus.CANCELED.valueOf() &&
+    status.valueOf() !== SwapProposalStatus.FULFILLED.valueOf() &&
+    status.valueOf() !== SwapProposalStatus.REDEEMED.valueOf() &&
+    new Date(data?.expiredAt) < new Date();
 
   /**
    * @dev Import functions from hook.
@@ -45,7 +58,8 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   const statusText =
     status.valueOf() === SwapProposalStatus.FULFILLED.valueOf()
       ? "Swap Success"
-      : status.valueOf() === SwapProposalStatus.CANCELED.valueOf()
+      : status.valueOf() === SwapProposalStatus.CANCELED.valueOf() ||
+        status.valueOf() === SwapProposalStatus.WITHDRAWN.valueOf()
       ? "Canceled"
       : isExpired && "Expired";
 

@@ -19,13 +19,6 @@ export const RedeemButton: FC<RedeemButtonProps> = (props) => {
   const [isDuringSubmit, setIsDuringSubmit] = useState(false);
 
   /**
-   * @dev Condition allow redeem proposal
-   */
-  const [redeemed] = useState<boolean>(
-    status.valueOf() === SwapProposalStatus.FULFILLED.valueOf()
-  );
-
-  /**
    * @dev Import program service to use.
    */
   const { redeemProposal } = useProgram();
@@ -47,7 +40,7 @@ export const RedeemButton: FC<RedeemButtonProps> = (props) => {
   }, [props.proposalId]);
 
   return (
-    redeemed && (
+    status.valueOf() === SwapProposalStatus.FULFILLED.valueOf() && (
       <Button
         className="border-purple text-purple !border-2 px-10 rounded-3xl !h-full"
         loading={isDuringSubmit}
