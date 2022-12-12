@@ -23,7 +23,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   /**
    * @dev initialize states for collection id and nft id from form
    */
-  const [collection, setCollection] = useState("");
+  const [collection, setCollection] = useState<string[]>([]);
   const [nftId, setNftId] = useState<string>("");
 
   const allowNTFCollections: allowNTFCollection[] = useSelector(

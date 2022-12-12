@@ -29,19 +29,22 @@ const Layout: FC = () => {
 
   /**
    * @description
+   * validate public or private profile
+   */
+  // const { id: userId } = router.query;
+  // const isPrivateProfile = userId && userId === profile?.id;
+
+  /**
+   * @description
    * Fetch proposal by user id
    */
   const dispatch = useDispatch();
-  const handleSearch = (_search?: string) => {
+  const handleSearch = (_search?: string, _statuses?: SwapProposalStatus[]) => {
     dispatch(
       getExploreProposals({
         walletAddress: profile.walletAddress,
         options: {
-          statuses: [
-            SwapProposalStatus.DEPOSITED,
-            SwapProposalStatus.FULFILLED,
-            SwapProposalStatus.CANCELED,
-          ],
+          statuses: _statuses,
           search: _search,
         },
       })
@@ -49,7 +52,7 @@ const Layout: FC = () => {
   };
   useEffect(() => {
     if (!profile || !profile.walletAddress) return;
-    handleSearch();
+    handleFilter();
   }, [profile]);
 
   /**
@@ -57,6 +60,32 @@ const Layout: FC = () => {
    * Handle state of selected values
    */
   const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
+  const [search, setSearch] = useState<string>("");
+
+  /**
+   * @description
+   * handle parse status to filter and search nft
+   */
+  const handleFilter = (searchText?: string, _selectedStatus?: string[]) => {
+    const status: SwapProposalStatus[] =
+      !_selectedStatus || _selectedStatus.length === 0
+        ? [
+            SwapProposalStatus.DEPOSITED,
+            SwapProposalStatus.FULFILLED,
+            SwapProposalStatus.WITHDRAWN,
+            SwapProposalStatus.CANCELED,
+          ]
+        : [];
+    _selectedStatus?.includes(sortOptions[0].value) &&
+      status.push(SwapProposalStatus.EXPIRED);
+    _selectedStatus?.includes(sortOptions[1].value) &&
+      status.push(SwapProposalStatus.REDEEMED) &&
+      status.push(SwapProposalStatus.WITHDRAWN);
+    _selectedStatus?.includes(sortOptions[2].value) &&
+      status.push(SwapProposalStatus.CANCELED);
+
+    return handleSearch(searchText, status);
+  };
 
   return (
     <MainLayout>
@@ -99,6 +128,7 @@ const Layout: FC = () => {
               />
               <div className="ml-6 w-full max-w-md">
                 <Search
+                  onChange={(e) => setSearch(e.target.value)}
                   className="px-4 py-2 text-[14px] rounded-3xl"
                   placeholder="Search by NFT name, collection, game, seller"
                 />
@@ -109,6 +139,7 @@ const Layout: FC = () => {
                   shape="secondary"
                   size="xsmall"
                   className="!rounded-[100px] after:!rounded-[100px] !w-[100px]"
+                  onClick={() => handleFilter(search, selectedStatus)}
                 />
               </div>
             </div>

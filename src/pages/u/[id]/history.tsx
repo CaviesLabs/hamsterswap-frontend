@@ -28,6 +28,7 @@ const Layout: FC = () => {
       getExploreProposals({
         walletAddress: profile.walletAddress,
         options: {
+          countParticipation: true,
           statuses: [
             SwapProposalStatus.FULFILLED,
             SwapProposalStatus.WITHDRAWN,

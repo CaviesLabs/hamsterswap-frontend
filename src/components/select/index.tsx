@@ -51,6 +51,14 @@ function Select(props: SelectProps) {
     onSearch && onSearch(search);
   }, [debouncedSearch]);
 
+  /**
+   * @description
+   * validate if dropdown closed, clear search text
+   */
+  useEffect(() => {
+    if (!isOpenDropdown) setSearch("");
+  }, [isOpenDropdown]);
+
   const handleSelect = (v: string) => {
     const newValues = [...values];
     if (mode === "multiple") {

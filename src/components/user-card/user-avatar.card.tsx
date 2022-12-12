@@ -8,7 +8,10 @@ export const UserAvatarCardItem: FC<UserAvatarCardItemProps> = (props) => {
   const router = useRouter();
   return (
     <div className="flex items-center">
-      <div className="left">
+      <div
+        className="left cursor-pointer"
+        onClick={() => router.push(id ? `/u/${id}/profile` : "/#")}
+      >
         <img
           src={avatar || "/assets/images/sample-avatar.png"}
           alt="User avatar"
@@ -19,7 +22,7 @@ export const UserAvatarCardItem: FC<UserAvatarCardItemProps> = (props) => {
         <div className="flex items-center">
           <div
             onClick={() => router.push(id ? `/u/${id}/profile` : "/#")}
-            className="left text-[18px] semi-bold"
+            className="left text-[18px] semi-bold text-[#735CF7] cursor-pointer"
           >
             {walletAddress}
           </div>

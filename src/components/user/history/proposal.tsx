@@ -52,7 +52,19 @@ function Proposal(props: ProposalHistoryProps) {
           ))}
         </Col>
         <Col span={4} className="text-lg">
-          {utilsProvider.makeShort(data.fulfillBy ?? " ", 4)}
+          <div>
+            You ({utilsProvider.makeShort(data.ownerAddress ?? " ", 4)})
+          </div>
+          <img
+            className="w-[19px] my-2"
+            src="/assets/images/arrow-two-way.svg"
+          />
+          <div
+            className="text-[#735CF7] cursor-pointer"
+            onClick={() => router.push(`/u/${data.fulfillByUserId}/profile`)}
+          >
+            {utilsProvider.makeShort(data.fulfillBy ?? " ", 4)}
+          </div>
         </Col>
         <Col span={3}>
           <Tag

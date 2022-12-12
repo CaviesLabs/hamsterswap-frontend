@@ -85,7 +85,7 @@ const Layout: FC = () => {
           <LayoutSection>
             <BreadCrumb data={["Home", "Advertiser"]} />
             <div className="mt-4 block md:flex">
-              <p className="text-[32px]">Advertisement #675424</p>
+              <p className="text-[32px]">Advertisement #{proposal?.numberId}</p>
               <GuaranteedCard className="md:ml-[12px]" />
             </div>
 

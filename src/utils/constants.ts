@@ -3,8 +3,8 @@
  */
 export const sortOptions = [
   { value: "expired", name: "Expired" },
-  { value: "success", name: "Success" },
-  { value: "cancel", name: "Cancel" },
+  { value: "success", name: "Successful" },
+  { value: "cancel", name: "Canceled" },
 ];
 
 /**
