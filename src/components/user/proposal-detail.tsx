@@ -56,7 +56,8 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
    * @dev Condition to render status text.
    */
   const statusText =
-    status.valueOf() === SwapProposalStatus.FULFILLED.valueOf()
+    status.valueOf() === SwapProposalStatus.FULFILLED.valueOf() ||
+    status.valueOf() === SwapProposalStatus.REDEEMED.valueOf()
       ? "Swap Success"
       : status.valueOf() === SwapProposalStatus.CANCELED.valueOf() ||
         status.valueOf() === SwapProposalStatus.WITHDRAWN.valueOf()
@@ -158,7 +159,9 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                 {statusText && (
                   <p className="mt-[12px] text-[16px] regular-text text-dark60">
                     Status:{" "}
-                    {status === SwapProposalStatus.FULFILLED.valueOf() ? (
+                    {status === SwapProposalStatus.FULFILLED.valueOf() ||
+                    status.valueOf() ===
+                      SwapProposalStatus.REDEEMED.valueOf() ? (
                       <span className="text-green font-bold">{statusText}</span>
                     ) : (
                       <span className="text-red-500 font-bold capitalize">

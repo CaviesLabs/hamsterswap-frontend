@@ -169,6 +169,7 @@ const Layout: FC = () => {
                 solanaWallet.publicKey?.toBase58().toString() !==
                   proposal?.ownerAddress &&
                 !isExpired &&
+                proposal?.status !== SwapProposalStatus.FULFILLED &&
                 proposal?.status !== SwapProposalStatus.REDEEMED && (
                   <BuyButton
                     handleSwap={handleSwap}
