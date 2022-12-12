@@ -59,7 +59,7 @@ function Proposal(props: ProposalHistoryProps) {
           <div>
             You ({utilsProvider.makeShort(data.ownerAddress ?? " ", 4)})
           </div>
-          <img
+          <img className="w-6 my-2" src="/assets/images/arrow-two-way.svg" />
             className="w-[19px] my-2"
             src="/assets/images/arrow-two-way.svg"
           />
