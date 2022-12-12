@@ -18,9 +18,10 @@ import classnames from "classnames";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import State from "@/src/redux/entities/state";
 import dayjs from "dayjs";
+import { RedeemButton } from "@/src/components/user/redeem-button";
 
 export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
-  const { data, status, isGuaranteedPayment } = props;
+  const { data, status, isGuaranteedPayment, proposalId } = props;
   const profile = useSelector((state: State) => state.hPublicProfile);
   const router = useRouter();
   const [cancelModal, setCancelModal] = useState(false);
@@ -40,7 +41,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   /**
    * @dev Import program service to use.
    */
-  const { redeemProposal, cancelProposal } = useProgram();
+  const { cancelProposal } = useProgram();
 
   return (
     <StyledProposalItem
@@ -145,17 +146,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
               {solanaWallet?.publicKey?.toBase58().toString() ===
                 props.proposalOwner && (
                 <div className="h-full">
-                  {status.valueOf() ===
-                    SwapProposalStatus.FULFILLED.valueOf() && (
-                    <Button
-                      className="border-purple text-purple !border-2 px-10 rounded-3xl !h-full"
-                      onClick={() => redeemProposal(props.proposalId)}
-                      size="large"
-                      text="Redeem"
-                    >
-                      Redeem
-                    </Button>
-                  )}
+                  <RedeemButton status={status} proposalId={proposalId} />
                   {status.valueOf() ===
                     SwapProposalStatus.CANCELED.valueOf() && (
                     <button
