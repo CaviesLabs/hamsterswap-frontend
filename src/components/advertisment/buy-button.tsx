@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { useCallback, useState } from "react";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useWalletKit } from "@gokiprotocol/walletkit";
@@ -40,15 +40,38 @@ const BuyButton: FC<{ handleSwap(): Promise<void>; optionIndex: number }> = (
 
     try {
       setIsLoading(true);
+
+      /**
+       * @dev Turn on loading status in buy button.
+       */
       setIsBuyButtonLoading(true);
+
+      /**
+       * @dev Call function to process.
+       */
       await props.handleSwap();
+
+      /**
+       * @dev Turn off confirm modal.
+       */
       setIsDisplayConfirm(false);
-      setIsBuyButtonLoading(false);
+
+      /**
+       * @dev Show confirmed modal when swap successfully.
+       */
       setIsDisplayConfirmed(true);
     } catch (err: any) {
-      setIsBuyButtonLoading(false);
-      setIsTransFailed(true);
+      console.log(err.message);
+      if (
+        err?.message ===
+        "WalletSignTransactionError: User rejected the request."
+      ) {
+        toast(`Buy proposal failed, user rejected the request.`);
+      } else {
+        setIsTransFailed(true);
+      }
     } finally {
+      setIsBuyButtonLoading(false);
       setIsLoading(false);
     }
   }, [wallet, programService, solanaWallet, proposal, props.optionIndex]);

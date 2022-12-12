@@ -53,7 +53,7 @@ const Layout: FC = () => {
    * @dev The function to process swaping when click buy button.
    */
   const handleSwap = useCallback(async () => {
-    await programService.swapProposal(
+    return programService.swapProposal(
       solanaWallet,
       proposal.id,
       proposal.swapOptions[optionSelected].id
