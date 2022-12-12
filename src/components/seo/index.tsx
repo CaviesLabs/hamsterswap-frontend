@@ -34,7 +34,6 @@ export const SeoComponent: FC = () => {
           site_name: siteName,
         }}
         twitter={{
-          handle: "@HngL29661922",
           site: siteName,
           cardType: "summary_large_image",
         }}
