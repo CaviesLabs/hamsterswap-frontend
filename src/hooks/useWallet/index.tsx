@@ -117,10 +117,9 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
    *      Step 2. Logout user.
    */
   const disconnect = useCallback(async () => {
-    if (!wallet) return;
-    await wallet.disconnect();
-    await solanaWallet.disconnect();
-    await authService.logout();
+    await wallet?.disconnect();
+    await solanaWallet?.disconnect();
+    await authService?.logout();
     dispatch(setProfile(null));
   }, [solanaWallet, wallet]);
 

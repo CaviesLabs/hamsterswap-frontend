@@ -153,9 +153,7 @@ export class AuthService {
         uid: userCredential.user.uid,
         email: userCredential.user.email,
       });
-    } catch (err) {
-      console.error(`Error when creating user ${err}`);
-    }
+    } catch {}
   }
 
   /**
