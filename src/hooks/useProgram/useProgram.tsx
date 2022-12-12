@@ -37,11 +37,7 @@ export const useProgram = (): ProgramHookState => {
       /**
        * @dev Call service to cancel proposal.
        */
-      try {
-        await programService.cancelProposal(solanaWallet, proposalId);
-      } catch (err) {
-        console.log(err);
-      }
+      return programService.cancelProposal(solanaWallet, proposalId);
     },
     [solanaWallet, programService]
   );

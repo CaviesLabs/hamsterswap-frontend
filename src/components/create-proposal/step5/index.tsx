@@ -41,7 +41,7 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
           className="block float-left w-full pr-[20px] md:pr-[60px]"
         >
           <p className="text-3xl">Note</p>
-          <p className="text-[16px] regular-text mt-[12px]">{note}</p>
+          <p className="text-[16px] regular-text mt-[12px] break-all">{note}</p>
           <p className="regular-text text-[14px] text-red300 mt-12">
             Expiration date: {expiredTime && expiredTime.toLocaleString()}
           </p>

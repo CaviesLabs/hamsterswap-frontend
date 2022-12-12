@@ -1,8 +1,19 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Modal } from "antd";
 import { ModalProps } from "../../modal/types";
+import { Button } from "@hamsterbox/ui-kit";
 
 export const CancelProposalModal: FC<ModalProps> = (props) => {
+  /** @dev Condition whenter processing */
+  const [isDuringSubmit, setIsDuringSubmit] = useState(false);
+
+  /** @dev Handle click to accept cancel. */
+  const handleConfirmCancel = async () => {
+    setIsDuringSubmit(true);
+    await props.handleOk();
+    setIsDuringSubmit(false);
+  };
+
   return (
     <Modal
       open={props.isModalOpen}
@@ -18,7 +29,6 @@ export const CancelProposalModal: FC<ModalProps> = (props) => {
             alt="Warning item"
             className="mx-auto"
           />
-
           <h2 className="mt-4 mb-2 font-bold text-gray-800 text-2xl text-center">
             Cancel proposal?
           </h2>
@@ -26,22 +36,24 @@ export const CancelProposalModal: FC<ModalProps> = (props) => {
             Are you sure you want to cancel your proposal ? You won't be able to
             undo.
           </p>
-
-          <button
+          <Button
             type="button"
-            onClick={props.handleOk}
-            className="w-full !bg-red-500 text-white rounded-3xl text-lg font-bold py-3"
-          >
-            Yes, Cancel Proposal
-          </button>
+            onClick={handleConfirmCancel}
+            className="!bg-red-500 text-white rounded-3xl text-lg font-bold py-3"
+            theme={{ backgroundColor: "#EF4444", color: "white" }}
+            width="100%"
+            text="Yes, Cancel Proposal"
+            loading={isDuringSubmit}
+          />
           <div className="mt-4">
-            <button
+            <Button
               type="button"
               onClick={props.handleCancel}
-              className="w-full !bg-white !text-purple border border-2 border-purple rounded-3xl text-lg font-bold py-3"
-            >
-              Keep Proposal
-            </button>
+              className="!bg-red-500 text-white rounded-3xl text-lg font-bold py-3"
+              shape="secondary"
+              width="100%"
+              text="Keep Proposal"
+            />
           </div>
         </div>
       </div>

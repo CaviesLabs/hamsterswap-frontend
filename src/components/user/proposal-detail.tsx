@@ -1,9 +1,9 @@
-import { FC, useState } from "react";
+import { FC, useCallback, useState } from "react";
 import { useRouter } from "next/router";
 import { UserAvatarCardItem } from "@/src/components/user-card";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "@/src/components/proposal-item/proposal-item.style";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { Col, Row } from "antd";
 import { CancelProposalModal } from "@/src/components/user/modal/cancel-proposal.modal";
 import { ProposalDetailProps } from "./types";
@@ -26,10 +26,15 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   const [cancelModal, setCancelModal] = useState(false);
   const [canceledModal, setCanceledModal] = useState(false);
   const [withdrewModal, setWithdrewModal] = useState(false);
+  const [isDuringSubmitCancel, setIsDuringSubmitCancel] = useState(false);
   const { solanaWallet } = useWallet();
 
   const isPending = status.valueOf() === SwapProposalStatus.DEPOSITED.valueOf();
   const isExpired = new Date(data?.expiredAt) < new Date();
+
+  /**
+   * @dev Condition to render status text.
+   */
   const statusText =
     status.valueOf() === SwapProposalStatus.FULFILLED.valueOf()
       ? "Swap Success"
@@ -41,6 +46,25 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
    * @dev Import program service to use.
    */
   const { redeemProposal, cancelProposal } = useProgram();
+
+  /**
+   * @dev The function to handle cancling proposal
+   */
+  const handleCancleProposal = useCallback(
+    async (method: "cancel" | "widthdraw", next: () => void) => {
+      try {
+        setIsDuringSubmitCancel(true);
+        await cancelProposal(props.proposalId);
+        next();
+      } catch (err: any) {
+        toast.error(`Failed to ${method} proposal. ${err?.message}`);
+        console.log(err);
+      } finally {
+        setIsDuringSubmitCancel(false);
+      }
+    },
+    [props.proposalId]
+  );
 
   return (
     <StyledProposalItem
@@ -88,7 +112,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
             <Col span={isPending ? 11 : 24}>
               <div className="md:left">
                 <p className="semi-bold text-[16px] h-[36px] leading-9">Note</p>
-                <p className="mt-[12px] text-[16px] regular-text">
+                <p className="mt-[12px] text-[16px] regular-text break-all">
                   {data?.note}
                 </p>
                 <p className="mt-[12px] text-[16px] regular-text text-dark60">
@@ -106,20 +130,6 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                       </span>
                     )}
                   </p>
-                )}
-                {isExpired && (
-                  <div className="mt-4">
-                    <Button
-                      onClick={() => setWithdrewModal(true)}
-                      shape="secondary"
-                      text="Withdraw"
-                    />
-                    <WithdrewProposalModal
-                      isModalOpen={withdrewModal}
-                      handleCancel={() => setWithdrewModal(false)}
-                      handleOk={() => setWithdrewModal(false)}
-                    />
-                  </div>
                 )}
               </div>
             </Col>
@@ -156,55 +166,72 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                       Redeem
                     </Button>
                   )}
-                  {status.valueOf() ===
-                    SwapProposalStatus.CANCELED.valueOf() && (
-                    <button
-                      className="border-purple text-purple !border-2 px-10 rounded-3xl !h-full"
-                      onClick={() => cancelProposal(props.proposalId)}
-                    >
-                      Withdraw
-                    </button>
-                  )}
+                  {status.valueOf() !==
+                    SwapProposalStatus.WITHDRAWN.valueOf() &&
+                    isExpired && (
+                      <>
+                        <Button
+                          className="border-purple text-purple !border-2 px-10 rounded-3xl !h-full"
+                          onClick={() =>
+                            handleCancleProposal("widthdraw", () =>
+                              setWithdrewModal(true)
+                            )
+                          }
+                          size="large"
+                          text="Withdraw"
+                          shape="secondary"
+                          loading={isDuringSubmitCancel}
+                        />
+                        <WithdrewProposalModal
+                          isModalOpen={withdrewModal}
+                          handleCancel={() => setWithdrewModal(false)}
+                          handleOk={() => setWithdrewModal(false)}
+                        />
+                      </>
+                    )}
                 </div>
               )}
             </div>
-            <div className="flex justify-center">
-              {solanaWallet?.publicKey?.toBase58().toString() ===
-                props.proposalOwner &&
-                isPending && (
-                  <>
-                    <button
-                      className="border-red-500 text-red-500 !border-2 px-10 rounded-3xl"
-                      onClick={() => setCancelModal(true)}
-                    >
-                      Cancel Proposal
-                    </button>
-                    <CancelProposalModal
-                      isModalOpen={cancelModal}
-                      handleCancel={() => setCancelModal(false)}
-                      handleOk={async () => {
-                        await cancelProposal(props.proposalId);
-                        setCancelModal(false);
-                        setCanceledModal(true);
-                      }}
-                    />
-                    <CanceledProposalModal
-                      isModalOpen={canceledModal}
-                      handleCancel={() => setCanceledModal(false)}
-                      handleOk={() => setCanceledModal(false)}
-                    />
-                  </>
-                )}
-              <div className="ml-4">
-                <Button
-                  className={classnames(
-                    "!rounded-[100px] after:!rounded-[100px] !px-10 relative"
+            {!isExpired && (
+              <div className="flex justify-center">
+                {solanaWallet?.publicKey?.toBase58().toString() ===
+                  props.proposalOwner &&
+                  isPending && (
+                    <>
+                      <button
+                        className="border-red-500 text-red-500 !border-2 px-10 rounded-3xl"
+                        onClick={() => setCancelModal(true)}
+                      >
+                        Cancel Proposal
+                      </button>
+                      <CancelProposalModal
+                        isModalOpen={cancelModal}
+                        handleCancel={() => setCancelModal(false)}
+                        handleOk={() =>
+                          handleCancleProposal("cancel", () => {
+                            setCancelModal(false);
+                            setCanceledModal(true);
+                          })
+                        }
+                      />
+                      <CanceledProposalModal
+                        isModalOpen={canceledModal}
+                        handleCancel={() => setCanceledModal(false)}
+                        handleOk={() => setCanceledModal(false)}
+                      />
+                    </>
                   )}
-                  text="View on market"
-                  onClick={() => router.push(`/proposal/${data.id}`)}
-                />
+                <div className="ml-4">
+                  <Button
+                    className={classnames(
+                      "!rounded-[100px] after:!rounded-[100px] !px-10 relative"
+                    )}
+                    text="View on market"
+                    onClick={() => router.push(`/proposal/${data.id}`)}
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

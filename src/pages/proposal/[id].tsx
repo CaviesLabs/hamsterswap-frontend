@@ -130,7 +130,9 @@ const Layout: FC = () => {
                   Note
                 </div>
                 <div className="block mt-2">
-                  <p className="regular-text text-[16px]">{proposal?.note}</p>
+                  <p className="regular-text text-[16px] break-all">
+                    {proposal?.note}
+                  </p>
                   <p className="regular-text text-[14px] text-red300 mt-10">
                     {isExpired ? (
                       "Expired"

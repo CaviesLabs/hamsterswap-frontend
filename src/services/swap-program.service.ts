@@ -75,8 +75,8 @@ export class SwapProgramService {
     /**
      * @dev Call to program.
      */
-    return await this.requestAndSyncProposal(proposalId, async () => {
-      return this.swapProgramProvider.cancelProposal(
+    return this.requestAndSyncProposal(proposalId, async () => {
+      return await this.swapProgramProvider.cancelProposal(
         walletProvider,
         await this.getProposal(proposalId)
       );

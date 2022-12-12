@@ -10,6 +10,7 @@ import { DetailDto } from "@/src/dto/detail.dto";
 import {
   GetProposalsDto,
   SwapProposalEntity,
+  SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
 
 /**
@@ -81,9 +82,11 @@ export function* getExploreProposals({
     );
 
     /** @todo Filter get proposals which have expired timne large than now */
-    swapProposals = swapProposals.filter(
-      (item) => new Date(item.expiredAt).getTime() > Date.now()
-    );
+    if (!payload.options.statuses.includes(SwapProposalStatus.EXPIRED)) {
+      swapProposals = swapProposals.filter(
+        (item) => new Date(item.expiredAt).getTime() > Date.now()
+      );
+    }
 
     yield put(setProposals(swapProposals));
     callback && callback(swapProposals);

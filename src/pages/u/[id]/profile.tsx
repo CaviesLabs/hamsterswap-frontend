@@ -42,7 +42,7 @@ const Layout: FC = () => {
   const handleSearch = (_search?: string, _statuses?: SwapProposalStatus[]) => {
     dispatch(
       getExploreProposals({
-        walletAddress: profile.walletAddress,
+        walletAddress: profile?.walletAddress,
         options: {
           statuses: _statuses,
           search: _search,
@@ -86,6 +86,11 @@ const Layout: FC = () => {
 
     return handleSearch(searchText, status);
   };
+
+  /**
+   * @dev Reset data when status filter change.
+   */
+  useEffect(() => handleFilter(search, selectedStatus), [selectedStatus]);
 
   return (
     <MainLayout>
