@@ -15,6 +15,7 @@ import { getProposal } from "@/src/redux/actions/proposal/proposal.action";
 import {
   SwapOptionEntity,
   SwapProposalEntity,
+  SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
 import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
 import { useWallet } from "@/src/hooks/useWallet";
@@ -167,7 +168,8 @@ const Layout: FC = () => {
               {solanaWallet.publicKey &&
                 solanaWallet.publicKey?.toBase58().toString() !==
                   proposal?.ownerAddress &&
-                !isExpired && (
+                !isExpired &&
+                proposal.status !== SwapProposalStatus.REDEEMED && (
                   <BuyButton
                     handleSwap={handleSwap}
                     optionIndex={optionSelected}
