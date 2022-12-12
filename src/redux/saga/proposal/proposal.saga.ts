@@ -82,11 +82,19 @@ export function* getExploreProposals({
     );
 
     /** @todo Filter get proposals which have expired timne large than now */
-    if (!payload.options.statuses.includes(SwapProposalStatus.EXPIRED)) {
+    if (
+      payload.options.statuses.length &&
+      !payload.options.statuses.includes(SwapProposalStatus.EXPIRED)
+    ) {
       swapProposals = swapProposals.filter(
         (item) => new Date(item.expiredAt).getTime() > Date.now()
       );
     }
+
+    /**
+     * @todo Filter proposal which has offer items and swap items.
+     */
+    swapProposals = swapProposals.filter((item) => item.offerItems.length);
 
     yield put(setProposals(swapProposals));
     callback && callback(swapProposals);

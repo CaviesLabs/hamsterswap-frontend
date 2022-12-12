@@ -65,14 +65,28 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
         next();
       } catch (err: any) {
         toast.error(`Failed to ${method} proposal. ${err?.message}`);
-        console.log(err);
       } finally {
         setIsDuringSubmitCancel(false);
-        handleFilter();
       }
     },
     [props.proposalId]
   );
+
+  /**
+   * @dev Handle close successfull canceled modal
+   */
+  const handleCloseCanceledProposalModal = () => {
+    setCanceledModal(false);
+    handleFilter();
+  };
+
+  /**
+   * @dev Handle close successfull withdrew modal
+   */
+  const handleCloseWithdrewProposalModal = () => {
+    setWithdrewModal(false);
+    handleFilter();
+  };
 
   return (
     <StyledProposalItem
@@ -182,8 +196,8 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                         />
                         <WithdrewProposalModal
                           isModalOpen={withdrewModal}
-                          handleCancel={() => setWithdrewModal(false)}
-                          handleOk={() => setWithdrewModal(false)}
+                          handleCancel={handleCloseWithdrewProposalModal}
+                          handleOk={handleCloseWithdrewProposalModal}
                         />
                       </>
                     )}
@@ -214,8 +228,8 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                       />
                       <CanceledProposalModal
                         isModalOpen={canceledModal}
-                        handleCancel={() => setCanceledModal(false)}
-                        handleOk={() => setCanceledModal(false)}
+                        handleCancel={handleCloseCanceledProposalModal}
+                        handleOk={handleCloseCanceledProposalModal}
                       />
                     </>
                   )}

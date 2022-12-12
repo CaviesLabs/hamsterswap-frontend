@@ -579,103 +579,97 @@ export class SwapProgramProvider {
     walletProvider: WalletProvider,
     proposal: SwapProposalEntity
   ) {
-    try {
-      /**
-       * @dev Find swap program.
-       */
-      const [swapProposal, state] = await this.getProposalState(proposal.id);
+    /**
+     * @dev Find swap program.
+     */
+    const [swapProposal, state] = await this.getProposalState(proposal.id);
 
-      /**
-       * @dev Check if signer is not proposal owner.
-       */
-      if (state.owner !== walletProvider?.publicKey?.toBase58().toString()) {
-        throw new Error("Signer is not proposal owner.");
-      }
-
-      /**
-       * @dev Check status of proposal.
-       */
-      if (
-        proposal.status.valueOf() !== SwapProposalStatus.FULFILLED.valueOf()
-      ) {
-        throw new Error("Proposal's status is not fulfied!");
-      }
-
-      /**
-       * @dev Define @var {TransactionInstruction} @arrays instructions to process.
-       */
-      const instructions: TransactionInstruction[] = [];
-      const swapOption = proposal.swapOptions.find(
-        (item) => item.id === proposal.fulfilledWithOptionId
-      );
-
-      /**
-       * @dev Transfer all items included in swap option to owner.
-       */
-      await Promise.all(
-        swapOption.items.map(async (item) => {
-          /**
-           * @dev Instruction to create associated token account if doest exists.
-           */
-          const associatedInstruction =
-            await this.instructionProvider.getOrCreateProposalTokenAccount(
-              walletProvider.publicKey,
-              new PublicKey(item.contractAddress)
-            );
-
-          /**
-           * @dev Add to arrays to process if valid.
-           */
-          if (associatedInstruction) {
-            instructions.push(associatedInstruction);
-          }
-
-          /**
-           * @dev Fullfiling deposit token from buyer to token vault.
-           */
-          const instruction =
-            await this.instructionProvider.transferTokenFromVault(
-              new PublicKey(proposal.ownerAddress),
-              new PublicKey(item.contractAddress),
-              swapProposal,
-              proposal.id,
-              item.id,
-              SwapItemActionType.redeeming
-            );
-          if (!instruction) return;
-          instructions.push(instruction);
-
-          /** @dev Unwrap sol if item is currency. */
-          if (item.type === SwapItemType.CURRENCY) {
-            const inst = await this.instructionProvider.unwrapSol(
-              walletProvider.publicKey
-            );
-
-            /** @dev Add if valid */
-            !inst && instructions.push(inst);
-          }
-        })
-      );
-
-      /**
-       * @dev Sign and confirm instructions.
-       */
-      const txId = await this.transactionProvider.signAndSendTransaction(
-        walletProvider,
-        instructions
-      );
-
-      console.log("Claim proposal successfully!", proposal.id, {
-        txId,
-      });
-
-      console.log(
-        "Proposal state: ",
-        (await this.getProposalState(proposal.id))[1]
-      );
-    } catch (err) {
-      console.log("Error whe redeem proposal", err);
+    /**
+     * @dev Check if signer is not proposal owner.
+     */
+    if (state.owner !== walletProvider?.publicKey?.toBase58().toString()) {
+      throw new Error("Signer is not proposal owner.");
     }
+
+    /**
+     * @dev Check status of proposal.
+     */
+    if (proposal.status.valueOf() !== SwapProposalStatus.FULFILLED.valueOf()) {
+      throw new Error("Proposal's status is not fulfied!");
+    }
+
+    /**
+     * @dev Define @var {TransactionInstruction} @arrays instructions to process.
+     */
+    const instructions: TransactionInstruction[] = [];
+    const swapOption = proposal.swapOptions.find(
+      (item) => item.id === proposal.fulfilledWithOptionId
+    );
+
+    /**
+     * @dev Transfer all items included in swap option to owner.
+     */
+    await Promise.all(
+      swapOption.items.map(async (item) => {
+        /**
+         * @dev Instruction to create associated token account if doest exists.
+         */
+        const associatedInstruction =
+          await this.instructionProvider.getOrCreateProposalTokenAccount(
+            walletProvider.publicKey,
+            new PublicKey(item.contractAddress)
+          );
+
+        /**
+         * @dev Add to arrays to process if valid.
+         */
+        if (associatedInstruction) {
+          instructions.push(associatedInstruction);
+        }
+
+        /**
+         * @dev Fullfiling deposit token from buyer to token vault.
+         */
+        const instruction =
+          await this.instructionProvider.transferTokenFromVault(
+            new PublicKey(proposal.ownerAddress),
+            new PublicKey(item.contractAddress),
+            swapProposal,
+            proposal.id,
+            item.id,
+            SwapItemActionType.redeeming
+          );
+        if (!instruction) return;
+        instructions.push(instruction);
+
+        /** @dev Unwrap sol if item is currency. */
+        if (item.type === SwapItemType.CURRENCY) {
+          const inst = await this.instructionProvider.unwrapSol(
+            walletProvider.publicKey
+          );
+
+          /** @dev Add if valid */
+          !inst && instructions.push(inst);
+        }
+      })
+    );
+
+    /**
+     * @dev Sign and confirm instructions.
+     */
+    const txId = await this.transactionProvider.signAndSendTransaction(
+      walletProvider,
+      instructions
+    );
+
+    console.log("Claim proposal successfully!", proposal.id, {
+      txId,
+    });
+
+    console.log(
+      "Proposal state: ",
+      (await this.getProposalState(proposal.id))[1]
+    );
   }
 
   /**

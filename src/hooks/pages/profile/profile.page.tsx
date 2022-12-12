@@ -59,13 +59,14 @@ export const ProfilePageProvider = (props: { children: ReactNode }) => {
     searchText: string = search,
     _selectedStatus: string[] = selectedStatus
   ) => {
+    console.log(_selectedStatus);
     const status: SwapProposalStatus[] =
       !_selectedStatus || _selectedStatus.length === 0
         ? [
-            SwapProposalStatus.DEPOSITED,
-            SwapProposalStatus.FULFILLED,
-            SwapProposalStatus.WITHDRAWN,
-            SwapProposalStatus.CANCELED,
+            // SwapProposalStatus.DEPOSITED,
+            // SwapProposalStatus.FULFILLED,
+            // SwapProposalStatus.WITHDRAWN,
+            // SwapProposalStatus.EXPIRED,
           ]
         : [];
     _selectedStatus?.includes(sortOptions[0].value) &&
