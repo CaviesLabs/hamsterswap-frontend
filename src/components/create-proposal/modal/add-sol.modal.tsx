@@ -73,6 +73,7 @@ export const AddSolModal: FC<
       onCancel={props.handleCancel}
       width={600}
       footer={null}
+      destroyOnClose={true}
       className="hamster-modal"
     >
       <StyledModal>
