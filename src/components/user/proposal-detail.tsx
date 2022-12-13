@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from "react";
+import { FC, useCallback, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { Col, Row } from "antd";
@@ -39,6 +39,13 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
 
   /** @todo Condition when proposal is already deposited offered items */
   const isPending = status.valueOf() === SwapProposalStatus.DEPOSITED.valueOf();
+
+  /** @todo Condition when proposal belong to signer */
+  const isOwner = useMemo(
+    () =>
+      solanaWallet?.publicKey?.toBase58().toString() === props.proposalOwner,
+    [props.proposalOwner, solanaWallet]
+  );
 
   /** @todo Condition when proposal is expired but not canceled */
   const isExpired =
@@ -191,10 +198,13 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
           </Row>
           <div className="flex mt-[20px] justify-between">
             <div className="flex justify-center">
-              {solanaWallet?.publicKey?.toBase58().toString() ===
-                props.proposalOwner && (
+              {isOwner && (
                 <div className="h-full">
-                  <RedeemButton status={status} proposalId={proposalId} />
+                  <RedeemButton
+                    status={status}
+                    proposalId={proposalId}
+                    isOwner={isOwner}
+                  />
                   {status.valueOf() !==
                     SwapProposalStatus.WITHDRAWN.valueOf() &&
                     isExpired && (
@@ -223,33 +233,31 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
             </div>
             {!isExpired && (
               <div className="flex justify-center">
-                {solanaWallet?.publicKey?.toBase58().toString() ===
-                  props.proposalOwner &&
-                  isPending && (
-                    <>
-                      <button
-                        className="border-red-500 text-red-500 !border-2 px-10 rounded-3xl"
-                        onClick={() => setCancelModal(true)}
-                      >
-                        Cancel Proposal
-                      </button>
-                      <CancelProposalModal
-                        isModalOpen={cancelModal}
-                        handleCancel={() => setCancelModal(false)}
-                        handleOk={() =>
-                          handleCancleProposal("cancel", () => {
-                            setCancelModal(false);
-                            setCanceledModal(true);
-                          })
-                        }
-                      />
-                      <CanceledProposalModal
-                        isModalOpen={canceledModal}
-                        handleCancel={handleCloseCanceledProposalModal}
-                        handleOk={handleCloseCanceledProposalModal}
-                      />
-                    </>
-                  )}
+                {isOwner && isPending && (
+                  <>
+                    <button
+                      className="border-red-500 text-red-500 !border-2 px-10 rounded-3xl"
+                      onClick={() => setCancelModal(true)}
+                    >
+                      Cancel Proposal
+                    </button>
+                    <CancelProposalModal
+                      isModalOpen={cancelModal}
+                      handleCancel={() => setCancelModal(false)}
+                      handleOk={() =>
+                        handleCancleProposal("cancel", () => {
+                          setCancelModal(false);
+                          setCanceledModal(true);
+                        })
+                      }
+                    />
+                    <CanceledProposalModal
+                      isModalOpen={canceledModal}
+                      handleCancel={handleCloseCanceledProposalModal}
+                      handleOk={handleCloseCanceledProposalModal}
+                    />
+                  </>
+                )}
                 <div className="ml-4">
                   <Button
                     className={classnames(

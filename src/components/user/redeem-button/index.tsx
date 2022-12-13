@@ -6,7 +6,7 @@ import { useProgram } from "@/src/hooks/useProgram";
 import { useProfilePage } from "@/src/hooks/pages/profile";
 
 export const RedeemButton: FC<RedeemButtonProps> = (props) => {
-  const { status, proposalId } = props;
+  const { status, proposalId, isOwner } = props;
 
   /**
    * @dev Import functions from hook
@@ -40,7 +40,8 @@ export const RedeemButton: FC<RedeemButtonProps> = (props) => {
   }, [props.proposalId]);
 
   return (
-    status.valueOf() === SwapProposalStatus.FULFILLED.valueOf() && (
+    status.valueOf() === SwapProposalStatus.FULFILLED.valueOf() &&
+    isOwner && (
       <Button
         className="border-purple text-purple !border-2 px-10 rounded-3xl !h-full"
         loading={isDuringSubmit}
