@@ -1,3 +1,5 @@
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+
 /** @dev Export date arrays/ */
 export const TIME_ARRAYS = Array.from(Array(24).keys())
   .map((item) => {
@@ -12,4 +14,8 @@ export const TIME_ARRAYS = Array.from(Array(24).keys())
 
 export const completedOrderPercent = (completedOrders = 0, orders = 0) => {
   return ((completedOrders * 100) / (orders || 1)).toFixed(2);
+};
+
+export const solAmount = (amount: string | number) => {
+  return (parseInt(amount.toString()) / LAMPORTS_PER_SOL).toFixed(2);
 };
