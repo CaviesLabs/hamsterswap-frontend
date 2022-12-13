@@ -214,6 +214,7 @@ export class SwapProposalEntity {
   swapOptions: SwapOptionEntity[] = [];
 
   fulfillBy?: string;
+
   fulfillByUserId?: string;
 
   fulfilledWithOptionId?: string;
@@ -227,6 +228,8 @@ export class SwapProposalEntity {
   note?: string;
 
   createdAt: Date;
+
+  /** */
   updatedAt: Date;
 }
 

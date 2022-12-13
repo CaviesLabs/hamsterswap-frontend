@@ -18,8 +18,6 @@ const Layout: FC = () => {
   const router = useRouter();
   const { hPublicProfile: profile, proposals } = useMain();
 
-  console.log(proposals);
-
   /**
    * Fetch proposal by user id
    */
@@ -30,11 +28,7 @@ const Layout: FC = () => {
         walletAddress: profile.walletAddress,
         options: {
           countParticipation: true,
-          statuses: [
-            SwapProposalStatus.FULFILLED,
-            SwapProposalStatus.REDEEMED,
-            SwapProposalStatus.EXPIRED,
-          ],
+          statuses: [SwapProposalStatus.FULFILLED, SwapProposalStatus.REDEEMED],
           search: _search,
         },
       })
@@ -42,7 +36,6 @@ const Layout: FC = () => {
   };
   useEffect(() => {
     if (!profile || !profile.walletAddress) return;
-    console.log("search");
     handleSearch();
   }, [profile]);
 

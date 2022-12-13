@@ -86,9 +86,16 @@ export function* getExploreProposals({
       payload.options.statuses.length &&
       !payload.options.statuses.includes(SwapProposalStatus.EXPIRED)
     ) {
-      swapProposals = swapProposals.filter(
-        (item) => new Date(item.expiredAt).getTime() > Date.now()
-      );
+      swapProposals = swapProposals.filter((item) => {
+        if (
+          item.status !== SwapProposalStatus.FULFILLED &&
+          item.status !== SwapProposalStatus.REDEEMED
+        ) {
+          return new Date(item.expiredAt).getTime() > Date.now();
+        }
+
+        return true;
+      });
     }
 
     /**

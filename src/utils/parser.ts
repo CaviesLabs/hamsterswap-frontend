@@ -17,5 +17,5 @@ export const completedOrderPercent = (completedOrders = 0, orders = 0) => {
 };
 
 export const solAmount = (amount: string | number) => {
-  return (parseInt(amount.toString()) / LAMPORTS_PER_SOL).toFixed(2);
+  return parseInt(amount.toString()) / LAMPORTS_PER_SOL;
 };
