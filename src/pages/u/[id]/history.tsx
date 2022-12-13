@@ -4,20 +4,21 @@ import { ProfilePageProvider } from "@/src/hooks/pages/profile";
 import { LayoutSection } from "@/src/components/layout-section";
 import { UserInfoCard } from "@/src/components/user-card";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
+import { useMain } from "@/src/hooks/pages/main";
 import MainLayout from "@/src/layouts/main";
 import Breadcrumb from "@/src/components/user/breadcrumb";
 import SubMenu from "@/src/components/user/sub-menu";
 import Title from "@/src/components/user/history/title";
 import Proposal from "@/src/components/user/history/proposal";
-import State from "@/src/redux/entities/state";
 
 const Layout: FC = () => {
   const router = useRouter();
-  const profile = useSelector((state: State) => state.hPublicProfile);
-  const proposals = useSelector((state: State) => state.proposals);
+  const { hPublicProfile: profile, proposals } = useMain();
+
+  console.log(proposals);
 
   /**
    * Fetch proposal by user id
@@ -29,7 +30,11 @@ const Layout: FC = () => {
         walletAddress: profile.walletAddress,
         options: {
           countParticipation: true,
-          statuses: [SwapProposalStatus.FULFILLED, SwapProposalStatus.REDEEMED],
+          statuses: [
+            SwapProposalStatus.FULFILLED,
+            SwapProposalStatus.REDEEMED,
+            SwapProposalStatus.EXPIRED,
+          ],
           search: _search,
         },
       })
@@ -37,6 +42,7 @@ const Layout: FC = () => {
   };
   useEffect(() => {
     if (!profile || !profile.walletAddress) return;
+    console.log("search");
     handleSearch();
   }, [profile]);
 

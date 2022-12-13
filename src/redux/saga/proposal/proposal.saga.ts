@@ -94,7 +94,9 @@ export function* getExploreProposals({
     /**
      * @todo Filter proposal which has offer items and swap items.
      */
-    swapProposals = swapProposals.filter((item) => item.offerItems.length);
+    swapProposals = swapProposals
+      .filter((item) => item.offerItems.length)
+      .filter((item) => item.swapOptions.length);
 
     yield put(setProposals(swapProposals));
     callback && callback(swapProposals);

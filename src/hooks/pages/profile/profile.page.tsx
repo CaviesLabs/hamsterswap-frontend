@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import { useDispatch } from "react-redux";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 import { useMain } from "@/src/hooks/pages/main";
@@ -33,14 +33,6 @@ export const ProfilePageProvider = (props: { children: ReactNode }) => {
   };
 
   /**
-   * @dev Watch changes in profile and refetch data
-   */
-  useEffect(() => {
-    if (!profile || !profile.walletAddress) return;
-    handleFilter();
-  }, [profile]);
-
-  /**
    * @description
    * Handle state of selected values
    */
@@ -59,7 +51,6 @@ export const ProfilePageProvider = (props: { children: ReactNode }) => {
     searchText: string = search,
     _selectedStatus: string[] = selectedStatus
   ) => {
-    console.log(_selectedStatus);
     const status: SwapProposalStatus[] =
       !_selectedStatus || _selectedStatus.length === 0
         ? [
