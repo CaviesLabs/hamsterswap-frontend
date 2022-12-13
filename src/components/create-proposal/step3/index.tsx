@@ -24,6 +24,7 @@ export const Step3: FC<any> = (props: any) => {
             value={note}
             onChange={(e) => setNote(e.target.value)}
           />
+          <p>22/225</p>
         </Form.Item>
         <Form.Item
           name="expiredAt"
