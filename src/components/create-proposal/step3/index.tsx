@@ -3,6 +3,11 @@ import { Form } from "antd";
 import DatetimePicker from "@/src/components/create-proposal/step3/datetime-picker";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 
+/**
+ * @dev Max length of note
+ */
+const MAX = 255;
+
 export const Step3: FC<any> = (props: any) => {
   const { form } = props;
 
@@ -22,9 +27,11 @@ export const Step3: FC<any> = (props: any) => {
             className="bg-[#F8F9FE] w-full min-h-[212px] p-[24px] rounded-[16px] mt-[12px] outline-0 focus:outline-0 focus:ring-0 regular-text focus:border-0"
             placeholder="Additional Info"
             value={note}
-            onChange={(e) => setNote(e.target.value)}
+            onChange={(e) => note.length <= MAX && setNote(e.target.value)}
           />
-          <p>22/225</p>
+          <p className="absolute right-[20px] bottom-[20px]">
+            {note.length}/{MAX}
+          </p>
         </Form.Item>
         <Form.Item
           name="expiredAt"
