@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { Col, Row, Tag } from "antd";
 import { ProposalHistoryProps } from "@/src/components/user/types";
-import { DATE_TIME_FORMAT, utilsProvider } from "@/src/utils";
+import { DATE_TIME_FORMAT, solAmount, utilsProvider } from "@/src/utils";
 import { DotIcon } from "@/src/components/icons";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 import { getStatus } from "@/src/utils/proposal-status";
@@ -25,30 +25,28 @@ function Proposal(props: ProposalHistoryProps) {
   );
 
   const renderSwapItemCol = () =>
-    data.offerItems.map(({ id, nftMetadata }) => (
-      <div key={`swapItems-${id}`} className="flex items-center mb-3">
-        <img
-          className="w-10 rounded-lg"
-          src={nftMetadata.nft_image || nftMetadata.icon}
-        />
-        <p className="ml-2 text-lg">
-          {nftMetadata.nft_name || nftMetadata.symbol}
-        </p>
-      </div>
-    ));
+    data.offerItems.map(
+      ({ id, amount, nftMetadata: { nft_image, icon, nft_name, symbol } }) => (
+        <div key={`swapItems-${id}`} className="flex items-center mb-3">
+          <img className="w-10 rounded-lg" src={nft_image || icon} />
+          <p className="ml-2 text-lg">
+            {nft_name || (symbol && `${solAmount(amount)} ${symbol}`)}
+          </p>
+        </div>
+      )
+    );
 
   const renderReceiveItemCol = () =>
-    swapOption?.items.map(({ id, nftMetadata }) => (
-      <div key={id} className="flex items-center mb-3">
-        <img
-          className="w-10 rounded-lg"
-          src={nftMetadata.nft_image || nftMetadata.icon}
-        />
-        <p className="ml-2 text-lg">
-          {nftMetadata.nft_name || nftMetadata.symbol}
-        </p>
-      </div>
-    ));
+    swapOption?.items.map(
+      ({ id, amount, nftMetadata: { nft_image, icon, nft_name, symbol } }) => (
+        <div key={id} className="flex items-center mb-3">
+          <img className="w-10 rounded-lg" src={nft_image || icon} />
+          <p className="ml-2 text-lg">
+            {nft_name || (symbol && `${solAmount(amount)} ${symbol}`)}
+          </p>
+        </div>
+      )
+    );
 
   return (
     <div className="border border-1 border-gray rounded-3xl p-6 mb-6">
