@@ -109,11 +109,14 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
         props.handleCancel(e);
       }}
       width={560}
+      bodyStyle={{
+        height: 290,
+      }}
       footer={null}
       className="hamster-modal"
     >
       <StyledModal>
-        <div className="pt-6">
+        <div className="pt-4">
           <div className="mx-auto items-center max-w-3xl">
             {step === 0 && (
               <AddExpectedNftForm
@@ -134,7 +137,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
               </div>
             )}
             {step === 2 && nft && <AddExpectedNftDetail nft={nft} />}
-            <div className="mt-14">
+            <div>
               {step === 0 && (
                 <button type="button" onClick={() => handleFetchNftData(nftId)}>
                   Next
