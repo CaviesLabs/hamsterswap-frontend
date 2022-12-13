@@ -8,11 +8,12 @@ export const StyledModal = styled.div`
     width: 100%;
     background-color: #735cf7;
     color: white;
-    border-radius: 1.5rem;
-    font-size: 20px;
+    border-radius: 100px;
+    font-size: 18px;
     font-weight: 700;
     margin: 1rem 0;
-    padding: 0.75rem 0;
+    padding: 14px 0;
+    font-family: semi-poppins-bold;
   }
 
   button:disabled {

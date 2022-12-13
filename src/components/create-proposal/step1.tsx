@@ -19,6 +19,7 @@ import {
   SwapItemType,
 } from "@/src/entities/proposal.entity";
 import { WSOL_ADDRESS } from "@/src/utils/constants";
+import { Col, Row } from "antd";
 
 export const Step1: FC = () => {
   const wallet = useConnectedWallet();
@@ -172,38 +173,38 @@ export const Step1: FC = () => {
         </div>
       </div>
       <div className="block mt-[20px]">
-        <div className="md:flex pt-[40px] flex-wrap">
-          {offferedItems.map((item: OfferedItemEntity, index) => (
-            <div
-              className="block md:left w-full md:w-[50%] md:pl-[20px]"
-              key={`swapoptions-${index}`}
-            >
-              <div className="flow-root items-center h-[50px]">
-                <p
-                  className="text-[16px] float-left text-gray-400 regular-text"
-                  style={{ transform: "translateY(50%)" }}
-                >
-                  Item #{index + 1}
-                </p>
-              </div>
-              <div className="pt-[20px]">
-                <RowEditNftItem
-                  collection={item.nft_symbol}
-                  image={item.nft_image_uri}
-                  name={item.nft_name}
-                  collectionId={item.nft_collection_id}
-                  nftId={item.id}
-                  assetType={item.assetType}
-                  nftAddress={item?.nft_address}
-                  tokenAmount={item?.tokenAmount}
-                  onDelete={() => {
-                    removeOfferItem(item.id);
-                  }}
-                />
-              </div>
-            </div>
-          ))}
-          <EmptyBox existsAmount={offferedItems.length} />
+        <div className="pt-[40px] px-10">
+          <Row gutter={[139, 20]}>
+            {offferedItems.map((item: OfferedItemEntity, index) => (
+              <Col
+                span={12}
+                className="block w-full md:pl-[20px]"
+                key={`swapoptions-${index}`}
+              >
+                <div className="flex">
+                  <p className="text-[16px] text-gray-400 regular-text">
+                    Item #{index + 1}
+                  </p>
+                </div>
+                <div className="pt-[16px]">
+                  <RowEditNftItem
+                    collection={item.nft_symbol}
+                    image={item.nft_image_uri}
+                    name={item.nft_name}
+                    collectionId={item.nft_collection_id}
+                    nftId={item.id}
+                    assetType={item.assetType}
+                    nftAddress={item?.nft_address}
+                    tokenAmount={item?.tokenAmount}
+                    onDelete={() => {
+                      removeOfferItem(item.id);
+                    }}
+                  />
+                </div>
+              </Col>
+            ))}
+            <EmptyBox existsAmount={offferedItems.length} />
+          </Row>
         </div>
       </div>
     </div>

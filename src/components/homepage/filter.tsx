@@ -182,7 +182,7 @@ const Filter: FC = () => {
                 Pro Advertisers
               </div>
             }
-            values={[]}
+            values={["Pro Advertisers"]}
             options={[
               {
                 value: "Pro Advertisers",
