@@ -263,7 +263,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                     className={classnames(
                       "!rounded-[100px] after:!rounded-[100px] !px-10 relative"
                     )}
-                    text="View on market"
+                    text="View on Market"
                     onClick={() => router.push(`/proposal/${data.id}`)}
                   />
                 </div>
