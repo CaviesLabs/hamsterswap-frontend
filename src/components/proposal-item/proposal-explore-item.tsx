@@ -66,7 +66,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
             userLookingFor={data.swapOptions}
           />
           <Row className="pt-8">
-            <Col span={11}>
+            <Col span={10}>
               <div className="md:left">
                 <p className="semi-bold text-[16px] h-[36px] leading-9">Note</p>
                 <p className="mt-[8px] text-[16px] regular-text">{data.note}</p>
@@ -76,7 +76,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col offset={2} span={11}>
+            <Col offset={4} span={10}>
               <div className="md:left">
                 <p className="semi-bold text-[16px] h-[36px] leading-9">
                   Warranty

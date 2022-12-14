@@ -6,7 +6,7 @@ export const StyledGuaranteedCard = styled.div`
   height: 32px;
   padding: 0 16px;
   background: linear-gradient(90deg, #1eb130 0%, #1ea866 100%);
-  border-radius: 12px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   svg {

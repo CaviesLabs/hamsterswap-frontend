@@ -18,9 +18,9 @@ export const StyledProposalItem = styled.div<ProposalItemProps>`
       }
     
       &::after {
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
-        border-bottom-left-radius: 12px;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        border-bottom-left-radius: 8px;
         position: absolute;
         content: attr(data-label);
         top: 41px;
