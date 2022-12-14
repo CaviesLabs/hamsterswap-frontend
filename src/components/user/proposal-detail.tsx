@@ -153,7 +153,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
             userLookingFor={data.swapOptions}
           />
           <Row className="mt-4">
-            <Col span={isPending ? 11 : 24}>
+            <Col span={isPending ? 10 : 24}>
               <div className="md:left">
                 <p className="semi-bold text-[16px] h-[36px] leading-9">Note</p>
                 <p className="mt-[12px] text-[16px] regular-text break-all">
@@ -179,7 +179,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                 )}
               </div>
             </Col>
-            <Col offset={2} span={isPending ? 11 : 0}>
+            <Col offset={4} span={isPending ? 10 : 0}>
               <div className="md:left">
                 <p className="semi-bold text-[16px] h-[36px] leading-9">
                   Warranty

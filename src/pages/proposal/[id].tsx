@@ -125,7 +125,7 @@ const Layout: FC = () => {
 
           <div className="mt-14">
             <Row gutter={20} className="mb-[20px]">
-              <Col span={12}>
+              <Col span={10}>
                 <div className="text-2xl semi-bold tracking-tight text-gray-900">
                   Note
                 </div>
@@ -145,7 +145,7 @@ const Layout: FC = () => {
                   </p>
                 </div>
               </Col>
-              <Col span={12}>
+              <Col offset={4} span={10}>
                 <div className="text-2xl semi-bold tracking-tight text-gray-900">
                   Warranty
                 </div>
