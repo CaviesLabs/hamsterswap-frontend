@@ -214,7 +214,6 @@ const Layout: FC = () => {
                   showIndicators={false}
                   selectedItem={currentStep}
                 >
-                  <Step3 form={formProposal} />
                   <Step1 />
                   <Step2 />
                   <Step3 form={formProposal} />
