@@ -110,7 +110,6 @@ const Layout: FC = () => {
             <ProposalItem
               data={proposal}
               changeOption={(value) => {
-                console.log(value);
                 setOptionSelected(value);
               }}
               swapItems={
