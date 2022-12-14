@@ -144,7 +144,7 @@ export class SwapProgramService {
           method: "PATCH",
         });
         resolve(data);
-      }, 2000)
+      }, 4000)
     );
   }
 
@@ -154,6 +154,7 @@ export class SwapProgramService {
    * @returns {SwapProposalEntity}
    */
   public async getProposal(proposalId: string): Promise<SwapProposalEntity> {
+    console.log(proposalId);
     return networkProvider.requestWithCredentials<SwapProposalEntity>(
       `/proposal/${proposalId}`,
       { method: "GET" }

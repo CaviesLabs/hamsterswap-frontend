@@ -345,8 +345,16 @@ export class InstructionProvider {
   public async unwrapSol(
     walletPublicKey: PublicKey
   ): Promise<TransactionInstruction> {
-    return createCloseAccountInstruction(
+    /**
+     * @dev Get token account of wSOL.
+     */
+    const associatedTokenAccount = await getAssociatedTokenAddress(
       NATIVE_MINT,
+      walletPublicKey
+    );
+
+    return createCloseAccountInstruction(
+      associatedTokenAccount,
       walletPublicKey,
       walletPublicKey
     );

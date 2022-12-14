@@ -25,6 +25,7 @@ const TestPage: NextPage = () => {
   const [exploreProposals, setExploreProposals] = useState<
     SwapProposalEntity[]
   >([]);
+  // const [proposalId, setProposalId] = useState("");
   const { solanaWallet, programService } = useWallet();
   const { proposals } = useMain();
 
@@ -52,10 +53,10 @@ const TestPage: NextPage = () => {
             askingItems: [
               {
                 mintAccount: new PublicKey(
-                  "JaqCceske4iqD1rQscV7zSQhREjnzVobhVGsYg7Vv1D"
+                  "So11111111111111111111111111111111111111112"
                 ),
                 id: SwapProgramService.generateUID(),
-                amount: new anchor.BN(1 * 10),
+                amount: new anchor.BN(0.001 * LAMPORTS_PER_SOL),
                 itemType: { [AssetTypes.token]: {} },
               },
             ],
@@ -67,7 +68,7 @@ const TestPage: NextPage = () => {
               "So11111111111111111111111111111111111111112"
             ),
             id: SwapProgramService.generateUID(),
-            amount: new anchor.BN(0.5 * LAMPORTS_PER_SOL),
+            amount: new anchor.BN(0.001 * LAMPORTS_PER_SOL),
             itemType: { [AssetTypes.token]: {} },
           },
         ],
@@ -149,7 +150,7 @@ const TestPage: NextPage = () => {
   useEffect(() => {
     if (!wallet) return;
     dispatch(
-      getPropsals({ walletAddress: wallet.publicKey.toBase58().toString(), options: { limit: 250, statuses: [SwapProposalStatus.DEPOSITED] } })
+      getPropsals({ walletAddress: wallet.publicKey.toBase58().toString(), options: { limit: 250, statuses: [] } })
     );
   }, [wallet]);
 
@@ -176,9 +177,7 @@ const TestPage: NextPage = () => {
                   <div className="float-left pl-[20px]">
                     <Button
                       onClick={() =>
-                        handleCancelProposal(
-                          "394ef0b2-f25b-4dcd-a576-4368d82fb1db"
-                        )
+                        handleCancelProposal(item.id)
                       }
                       size="small"
                       text="Cancel this proposal"
@@ -211,6 +210,17 @@ const TestPage: NextPage = () => {
             ))}
           </div>
         </div>
+
+        {/* <Button
+          onClick={async () => {
+            await programService.closeAccount(solanaWallet);
+          }}
+          size="small"
+          text="Unwrap sol"
+        /> */}
+
+        {/* <input type="text" value={proposalId} onChange={e => setProposalId(e?.target?.value)} />
+        <button onClick={() => handleCancelProposal(proposalId)} >Cancel</button> */}
       </div>
     </MainLayout>
   );

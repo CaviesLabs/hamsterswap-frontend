@@ -198,6 +198,7 @@ export class SwapProgramProvider {
     createProposalDto: CreateProposalDto
   ) {
     try {
+      console.log(createProposalDto.id);
       /**
        * @dev Find swap program.
        */
@@ -321,7 +322,7 @@ export class SwapProgramProvider {
       setTimeout(async () => {
         const [, state] = await this.getProposalState(createProposalDto.id);
         console.log({ state });
-      }, 2000);
+      }, 4000);
     } catch (err: any) {
       console.error("Error", err.message);
       throw err;
@@ -340,6 +341,7 @@ export class SwapProgramProvider {
     /**
      * @dev Find swap program.
      */
+    console.log(proposal.id);
     const [swapProposal, state] = await this.getProposalState(proposal.id);
 
     /**
@@ -370,6 +372,9 @@ export class SwapProgramProvider {
       proposal.ownerAddress === walletProvider?.publicKey?.toBase58().toString()
         ? proposal.offerItems
         : proposal.swapOptions.find((item) => item.id === optionId)?.items;
+
+    console.log(proposal);
+    console.log(widthDrawItems);
 
     /**
      * @dev Create each instruction to withdraw nft to signer.
@@ -403,7 +408,7 @@ export class SwapProgramProvider {
             );
 
             /** @dev Add if valid */
-            !inst && instructions.push(inst);
+            instructions.push(inst);
           }
         })
       );
@@ -548,7 +553,7 @@ export class SwapProgramProvider {
             );
 
             /** @dev Add if valid */
-            !inst && instructions.push(inst);
+            instructions.push(inst);
           }
         })
       );
@@ -649,7 +654,7 @@ export class SwapProgramProvider {
           );
 
           /** @dev Add if valid */
-          !inst && instructions.push(inst);
+          instructions.push(inst);
         }
       })
     );
