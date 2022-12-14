@@ -132,7 +132,7 @@ const Header: FC = () => {
       <div className="w-full py-[18px] md:py-[25px] flow-root">
         <div className="lg:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="float-left logo-wrapper md:mt-0 mt-[0px]">
-            <a href="/">
+            <a className="cursor-pointer" onClick={() => router.push("/")}>
               <HamsterboxIcon
                 className={classnames("w-[95px] md:w-[180px] hamsterbox-icon")}
                 color={isScrolled || !isHomepage ? "#07080A" : "white"}

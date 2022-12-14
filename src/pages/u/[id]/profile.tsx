@@ -12,44 +12,44 @@ import Select from "@/src/components/select";
 import Search from "@/src/components/search";
 import { ProposalDetail } from "@/src/components/user/proposal-detail";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
-import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
-import State from "@/src/redux/entities/state";
 import {
   SwapItemEntity,
   SwapOptionEntity,
   SwapProposalEntity,
-  SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
+import { useProfilePage } from "@/src/hooks/pages/profile";
+import { useMain } from "@/src/hooks/pages/main";
 
 const Layout: FC = () => {
+  /**
+   * @dev Get router
+   */
   const router = useRouter();
-  const profile = useSelector((state: State) => state.hPublicProfile);
-  const proposals = useSelector((state: State) => state.proposals);
 
   /**
+   * @dev Import redux states
+   */
+  const { hPublicProfile: profile, proposals } = useMain();
+
+  /**
+   * @dev Import functions from provider
+   */
+  const { selectedStatus, search, setSelectedStatus, setSearch, handleFilter } =
+    useProfilePage();
+
+  /**
+   * @description
    * Fetch proposal by user id
    */
-  const dispatch = useDispatch();
-  const handleSearch = (_search?: string) => {
-    dispatch(
-      getExploreProposals({
-        walletAddress: profile.walletAddress,
-        options: {
-          statuses: [
-            SwapProposalStatus.DEPOSITED,
-            SwapProposalStatus.FULFILLED,
-            SwapProposalStatus.CANCELED,
-          ],
-          search: _search,
-        },
-      })
-    );
-  };
   useEffect(() => {
     if (!profile || !profile.walletAddress) return;
-    handleSearch();
+    handleFilter();
   }, [profile]);
+
+  /**
+   * @dev Reset data when status filter change.
+   */
+  useEffect(() => handleFilter(search, selectedStatus), [selectedStatus]);
 
   return (
     <MainLayout>
@@ -68,30 +68,42 @@ const Layout: FC = () => {
         </div>
         <SubMenu curTab={0} />
         <div className="mb-4 mt-10">
-          <h3 className="text-3xl font-bold tracking-tight text-gray-900">
+          <h3 className="text-2xl font-bold tracking-tight text-gray-900">
             Your Proposal
           </h3>
           <div className="block py-[50px]">
             <div className="md:flex items-center">
-              <p>Sort by</p>
+              <p>Filter by</p>
               <Select
-                placeholder="All status"
+                mode="multiple"
+                placeholder={
+                  <>
+                    <div></div>
+                    <div>All status</div>
+                  </>
+                }
                 options={sortOptions.map((_) => ({
                   value: _.value,
+                  label: _.name,
                 }))}
                 className="w-44 ml-6"
+                values={selectedStatus}
+                onChange={(v) => setSelectedStatus(v)}
               />
-              <div className="max-w-2xl ml-6">
+              <div className="ml-6 w-full max-w-md">
                 <Search
-                  className="py-3 text-lg rounded-2xl"
-                  placeholder="Enter SOL amount"
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="px-4 py-2 text-[14px] rounded-3xl"
+                  placeholder="Search by NFT name, collection, game, seller"
                 />
               </div>
-              <div className="md:ml-6">
+              <div className="md:ml-4">
                 <Button
                   text="Search"
                   shape="secondary"
-                  className="ml-[24px] !rounded-[100px] after:!rounded-[100px] float-right !w-[150px] md:!w-[200px]"
+                  size="xsmall"
+                  className="!rounded-[100px] after:!rounded-[100px] !w-[100px]"
+                  onClick={() => handleFilter(search, selectedStatus)}
                 />
               </div>
             </div>

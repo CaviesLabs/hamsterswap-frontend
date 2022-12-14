@@ -19,7 +19,7 @@ const Layout: FC = () => {
 
   return (
     <MainLayout>
-      <Breadcrumb title="Payment" />
+      <Breadcrumb title="Profile" />
       <LayoutSection className="relative top-[-180px]">
         <div className="mb-[20px]">
           <div className="block mt-[20px]">
@@ -31,13 +31,14 @@ const Layout: FC = () => {
         <SubMenu curTab={3} />
         <div className="mt-10">
           <div className="flex justify-between">
-            <h3 className="text-3xl font-bold tracking-tight text-gray-900">
+            <h3 className="text-2xl font-bold tracking-tight text-gray-900">
               Payment
             </h3>
             <HButton
               onClick={() => setAddPaymentVisible(true)}
               text="Add payment method"
               icon={<PlusIcon />}
+              className="!px-8"
             />
             <AddPaymentModal
               handleCancel={() => setAddPaymentVisible(false)}

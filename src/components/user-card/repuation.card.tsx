@@ -15,7 +15,7 @@ export const ReputationCard: FC = () => {
         alt="repuation icon"
         className="w-[14px] h-[14px] mr-[4px]"
       />
-      <span className="text-white text-[12px] semi-bold">Reputation</span>
+      <span className="text-white text-[12px] semi-bold">Pro</span>
     </StyledReputationCard>
   );
 };

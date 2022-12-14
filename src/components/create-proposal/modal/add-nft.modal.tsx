@@ -8,6 +8,8 @@ import { useMain } from "@/src/hooks/pages/main";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { NftEntity, NftStatus } from "@/src/dto/nft.dto";
+import { allowNTFCollection } from "@/src/dto/platform-config";
+import { useSelector } from "react-redux";
 
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
   /**
@@ -16,20 +18,26 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
   const { nft: ownerNftList } = useMain();
 
   /**
+   * @dev get allowed NFTs from hamster config
+   */
+  const allowNftCollections: allowNTFCollection[] = useSelector(
+    (state: any) => state.platformConfig?.allowNTFCollections
+  );
+
+  /**
    * @dev Import functions in screen context.
    */
   const { addOfferItem, offferedItems } = useCreateProposal();
 
-  // TODO filter NFT in whitelist
   const nftsMemo = useMemo<NftEntity[]>(() => {
-    return ownerNftList
-      .filter(
-        (item) => !offferedItems.find((s) => s.nft_address === item.nft_address)
-      )
-      .filter(
-        (item) => item.nft_status.valueOf() !== NftStatus.transfer.valueOf()
+    return ownerNftList.filter((item) => {
+      return (
+        !offferedItems.find((s) => s.nft_address === item.nft_address) &&
+        allowNftCollections.find((s) => s.id === item.nft_collection_id) &&
+        item.nft_status.valueOf() !== NftStatus.transfer.valueOf()
       );
-  }, [ownerNftList, offferedItems]);
+    });
+  }, [ownerNftList, offferedItems, allowNftCollections]);
 
   /**
    * @dev The function to handle adding nft to offered field for proposal.
@@ -70,7 +78,7 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
     >
       <StyledModal>
         <div className="pt-6">
-          <div className="mx-auto items-center max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto items-center max-w-3xl">
             <SearchInput
               className="rounded-3xl p-3"
               placeholder="Search for NFT, collection "
@@ -78,13 +86,13 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
             <div className="mt-10 max-h-96 overflow-scroll">
               {nftsMemo?.map((nftItem, i) => (
                 <Row
-                  className="bg-white rounded-lg p-4 w-full mb-4 cursor-pointer hover:bg-dark30"
+                  className="bg-white rounded-lg p-4 w-full mb-4 cursor-pointer hover:bg-[#F0F3FA]"
                   key={`add-nft-item-pr-${i}`}
                   onClick={() => handleAddNft(nftItem)}
                 >
                   <Col span={5}>
                     <img
-                      className="rounded bg-dark10"
+                      className="rounded-lg bg-dark10"
                       src={nftItem.nft_image_uri}
                       alt=""
                     />

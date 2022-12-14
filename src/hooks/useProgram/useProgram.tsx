@@ -33,15 +33,13 @@ export const useProgram = (): ProgramHookState => {
    */
   const cancelProposal = useCallback(
     async (proposalId: string) => {
-      if (!solanaWallet.publicKey || !programService) return;
+      console.log(solanaWallet.publicKey, programService);
+      if (!solanaWallet.publicKey || !programService)
+        throw new Error("Wallet not connected");
       /**
        * @dev Call service to cancel proposal.
        */
-      try {
-        await programService.cancelProposal(solanaWallet, proposalId);
-      } catch (err) {
-        console.log(err);
-      }
+      return programService.cancelProposal(solanaWallet, proposalId);
     },
     [solanaWallet, programService]
   );

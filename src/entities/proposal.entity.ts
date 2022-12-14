@@ -27,6 +27,7 @@ export enum SwapItemType {
   NFT = "SWAP_ITEM_TYPE::NFT",
   GAME = "SWAP_ITEM_TYPE::GAME",
   CURRENCY = "SWAP_ITEM_TYPE::CURRENCY",
+  CASH = "SWAP_ITEM_TYPE::CASH",
 }
 
 /**
@@ -152,6 +153,16 @@ export enum SwapProposalStatus {
   CANCELED = "SWAP_PROPOSAL_STATUS::CANCELED",
   REDEEMED = "SWAP_PROPOSAL_STATUS::REDEEMED",
   WITHDRAWN = "SWAP_PROPOSAL_STATUS::WITHDRAWN",
+  EXPIRED = "SWAP_PROPOSAL_STATUS::EXPIRED",
+}
+
+class TokenEntity {
+  address: string;
+  decimals: number;
+  holder: number;
+  icon: string;
+  name: string;
+  symbol: string;
 }
 
 /**
@@ -170,7 +181,7 @@ export class SwapItemEntity {
 
   status: SwapItemStatus;
 
-  nftMetadata?: NftEntity;
+  nftMetadata?: NftEntity & TokenEntity;
 
   id: string;
 }
@@ -191,6 +202,7 @@ export class SwapOptionEntity {
  */
 export class SwapProposalEntity {
   id: string;
+  numberId: number;
 
   ownerId: string;
 
@@ -203,6 +215,8 @@ export class SwapProposalEntity {
 
   fulfillBy?: string;
 
+  fulfillByUserId?: string;
+
   fulfilledWithOptionId?: string;
 
   expiredAt: Date;
@@ -214,6 +228,8 @@ export class SwapProposalEntity {
   note?: string;
 
   createdAt: Date;
+
+  /** */
   updatedAt: Date;
 }
 
@@ -223,6 +239,7 @@ export class SwapProposalEntity {
 export class GetProposalsDto {
   walletAddress?: string;
   options?: {
+    countParticipation?: boolean;
     statuses?: SwapProposalStatus[] | SwapProposalStatus;
     limit?: number;
     offset?: number;

@@ -3,9 +3,14 @@ import { useDispatch } from "react-redux";
 import { setUser } from "@/src/redux/actions/user/user.action";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useWallet } from "@/src/hooks/useWallet";
-import { getUserService, getAuthService } from "@/src/actions/firebase.action";
+import { getAuthService } from "@/src/actions/firebase.action";
 import { SIGN_MESSAGE } from "@/src/utils";
 import { getHamsterProfile } from "@/src/redux/actions/hamster-profile/profile.action";
+
+/**
+ * @dev Delayed hook to check if wallet is disconnected, will reset all auth sessions
+ * */
+let delayed: NodeJS.Timeout;
 
 /** @dev Expore authenticate hook to process tasks related user authentcation */
 export const useAuth = () => {
@@ -15,10 +20,7 @@ export const useAuth = () => {
   const wallet = useConnectedWallet();
 
   /** @dev Import signMessage function to use. */
-  const { signMessage } = useWallet();
-
-  /** @dev Import user service. */
-  const userService = getUserService();
+  const { signMessage, disconnect } = useWallet();
 
   /** @dev Import auth service. */
   const authService = getAuthService();
@@ -47,42 +49,40 @@ export const useAuth = () => {
 
   /** @dev The function to handle authentication. */
   const handleAuth = async () => {
-    try {
-      /** Get user profile. */
-      const user = await userService.getProfile();
-
-      /** Force to logout. */
-      // await authService.logout();
-
-      if (
-        user.email
-          .toLowerCase()
-          .includes(wallet?.publicKey?.toString().toLowerCase())
-      ) {
-        /** Try to relogin with stored credentials. */
-        dispatch(setUser((await authService.reAuthenticate())?.user));
-        /** @dev Get hamster profile. */
-        dispatch(getHamsterProfile());
-        return;
-      }
-
-      /** Throw error to next block. */
-      throw Error("HASTN");
-    } catch (err) {
-      /**
-       * This mean user hasnt already login before
-       * and process authenticating by sign in a message to blockchain.
-       * */
-      handleLogin();
-    }
+    /** @dev Get hamster profile. */
+    dispatch(
+      getHamsterProfile(null, (user) => {
+        if (!user) {
+          /** Throw error to next block. */
+          handleLogin();
+        }
+      })
+    );
   };
 
   /**
    * @dev Listen wallet changes.
    */
   useEffect(() => {
+    /** @dev Force to clear. */
+    delayed && clearTimeout(delayed);
+
+    /**
+     * @dev Condition to reset or login.
+     */
     if (wallet?.publicKey?.toString()) {
       handleAuth();
+    } else {
+      /**
+       * @dev Delayed checking mean when user disconnect completed from wallet, it will reset authentication session.
+       */
+      console.log("delayed");
+      delayed = setTimeout(async () => {
+        console.log("disconnect");
+        await disconnect();
+      }, 3000);
     }
+
+    return () => delayed && clearTimeout(delayed);
   }, [wallet]);
 };

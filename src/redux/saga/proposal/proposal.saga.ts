@@ -10,6 +10,7 @@ import { DetailDto } from "@/src/dto/detail.dto";
 import {
   GetProposalsDto,
   SwapProposalEntity,
+  SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
 
 /**
@@ -75,10 +76,35 @@ export function* getExploreProposals({
     /**
      * @dev Fetch proposal data from Hamster server.
      */
-    const swapProposals: SwapProposalEntity[] = yield call(
+    let swapProposals: SwapProposalEntity[] = yield call(
       proposalService.getProposals,
       payload
     );
+
+    /** @todo Filter get proposals which have expired timne large than now */
+    if (
+      payload.options.statuses.length &&
+      !payload.options.statuses.includes(SwapProposalStatus.EXPIRED)
+    ) {
+      swapProposals = swapProposals.filter((item) => {
+        if (
+          item.status !== SwapProposalStatus.FULFILLED &&
+          item.status !== SwapProposalStatus.REDEEMED
+        ) {
+          return new Date(item.expiredAt).getTime() > Date.now();
+        }
+
+        return true;
+      });
+    }
+
+    /**
+     * @todo Filter proposal which has offer items and swap items.
+     */
+    swapProposals = swapProposals
+      .filter((item) => item.offerItems.length)
+      .filter((item) => item.swapOptions.length);
+
     yield put(setProposals(swapProposals));
     callback && callback(swapProposals);
   } catch (err) {

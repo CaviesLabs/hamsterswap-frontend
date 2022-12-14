@@ -12,7 +12,6 @@ import {
   SwapItemType,
   AssetTypes,
 } from "@/src/entities/proposal.entity";
-import { closeAccount } from "@solana/spl-token";
 import { SwapIdl, IDL } from "./swap.idl";
 import { InstructionProvider } from "./instruction.provider";
 import { TransactionProvider } from "./transaction.provider";
@@ -122,13 +121,13 @@ export class SwapProgramProvider {
     /**
      * @dev Prepares for some infra config
      */
-    this.connection = new Connection(this.rpcEndpoint, "processed");
+    this.connection = new Connection(this.rpcEndpoint, "finalized");
     const provider = new anchor.AnchorProvider(
       this.connection,
       this.walletProvider,
       {
-        preflightCommitment: "processed",
-        commitment: "processed",
+        preflightCommitment: "finalized",
+        commitment: "finalized",
       }
     );
 
@@ -199,6 +198,7 @@ export class SwapProgramProvider {
     createProposalDto: CreateProposalDto
   ) {
     try {
+      console.log(createProposalDto.id);
       /**
        * @dev Find swap program.
        */
@@ -322,9 +322,10 @@ export class SwapProgramProvider {
       setTimeout(async () => {
         const [, state] = await this.getProposalState(createProposalDto.id);
         console.log({ state });
-      }, 2000);
+      }, 4000);
     } catch (err: any) {
       console.error("Error", err.message);
+      throw err;
     }
   }
 
@@ -340,6 +341,7 @@ export class SwapProgramProvider {
     /**
      * @dev Find swap program.
      */
+    console.log(proposal.id);
     const [swapProposal, state] = await this.getProposalState(proposal.id);
 
     /**
@@ -370,6 +372,9 @@ export class SwapProgramProvider {
       proposal.ownerAddress === walletProvider?.publicKey?.toBase58().toString()
         ? proposal.offerItems
         : proposal.swapOptions.find((item) => item.id === optionId)?.items;
+
+    console.log(proposal);
+    console.log(widthDrawItems);
 
     /**
      * @dev Create each instruction to withdraw nft to signer.
@@ -403,7 +408,7 @@ export class SwapProgramProvider {
             );
 
             /** @dev Add if valid */
-            !inst && instructions.push(inst);
+            instructions.push(inst);
           }
         })
       );
@@ -463,6 +468,7 @@ export class SwapProgramProvider {
           /**
            * @dev Add to arrays to process if valid.
            */
+          console.log("associatedInstruction 1", associatedInstruction);
           if (associatedInstruction) {
             instructions.push(associatedInstruction);
           }
@@ -507,19 +513,30 @@ export class SwapProgramProvider {
       await Promise.all(
         proposal.offerItems.map(async (item) => {
           /**
-           * @dev Instruction to create associated token account if doest exists.
+           * @dev If offer items is not exist in swap option,
+           * it mean the signer not already created associated token before, then create one.
            */
-          const associatedInstruction =
-            await this.instructionProvider.getOrCreateProposalTokenAccount(
-              walletProvider.publicKey,
-              new PublicKey(item.contractAddress)
-            );
+          if (
+            !swapOption.items.find(
+              (swapItem) => swapItem.contractAddress === item.contractAddress
+            )
+          ) {
+            console.log("created in depositing swap item");
+            /**
+             * @dev Instruction to create associated token account if doest exists.
+             */
+            const associatedInstruction =
+              await this.instructionProvider.getOrCreateProposalTokenAccount(
+                walletProvider.publicKey,
+                new PublicKey(item.contractAddress)
+              );
 
-          /**
-           * @dev Add to arrays to process if valid.
-           */
-          if (associatedInstruction) {
-            instructions.push(associatedInstruction);
+            /**
+             * @dev Add to arrays to process if valid.
+             */
+            if (associatedInstruction) {
+              instructions.push(associatedInstruction);
+            }
           }
 
           /**
@@ -548,7 +565,7 @@ export class SwapProgramProvider {
             );
 
             /** @dev Add if valid */
-            !inst && instructions.push(inst);
+            instructions.push(inst);
           }
         })
       );
@@ -579,103 +596,97 @@ export class SwapProgramProvider {
     walletProvider: WalletProvider,
     proposal: SwapProposalEntity
   ) {
-    try {
-      /**
-       * @dev Find swap program.
-       */
-      const [swapProposal, state] = await this.getProposalState(proposal.id);
+    /**
+     * @dev Find swap program.
+     */
+    const [swapProposal, state] = await this.getProposalState(proposal.id);
 
-      /**
-       * @dev Check if signer is not proposal owner.
-       */
-      if (state.owner !== walletProvider?.publicKey?.toBase58().toString()) {
-        throw new Error("Signer is not proposal owner.");
-      }
-
-      /**
-       * @dev Check status of proposal.
-       */
-      if (
-        proposal.status.valueOf() !== SwapProposalStatus.FULFILLED.valueOf()
-      ) {
-        throw new Error("Proposal's status is not fulfied!");
-      }
-
-      /**
-       * @dev Define @var {TransactionInstruction} @arrays instructions to process.
-       */
-      const instructions: TransactionInstruction[] = [];
-      const swapOption = proposal.swapOptions.find(
-        (item) => item.id === proposal.fulfilledWithOptionId
-      );
-
-      /**
-       * @dev Transfer all items included in swap option to owner.
-       */
-      await Promise.all(
-        swapOption.items.map(async (item) => {
-          /**
-           * @dev Instruction to create associated token account if doest exists.
-           */
-          const associatedInstruction =
-            await this.instructionProvider.getOrCreateProposalTokenAccount(
-              walletProvider.publicKey,
-              new PublicKey(item.contractAddress)
-            );
-
-          /**
-           * @dev Add to arrays to process if valid.
-           */
-          if (associatedInstruction) {
-            instructions.push(associatedInstruction);
-          }
-
-          /**
-           * @dev Fullfiling deposit token from buyer to token vault.
-           */
-          const instruction =
-            await this.instructionProvider.transferTokenFromVault(
-              new PublicKey(proposal.ownerAddress),
-              new PublicKey(item.contractAddress),
-              swapProposal,
-              proposal.id,
-              item.id,
-              SwapItemActionType.redeeming
-            );
-          if (!instruction) return;
-          instructions.push(instruction);
-
-          /** @dev Unwrap sol if item is currency. */
-          if (item.type === SwapItemType.CURRENCY) {
-            const inst = await this.instructionProvider.unwrapSol(
-              walletProvider.publicKey
-            );
-
-            /** @dev Add if valid */
-            !inst && instructions.push(inst);
-          }
-        })
-      );
-
-      /**
-       * @dev Sign and confirm instructions.
-       */
-      const txId = await this.transactionProvider.signAndSendTransaction(
-        walletProvider,
-        instructions
-      );
-
-      console.log("Claim proposal successfully!", proposal.id, {
-        txId,
-      });
-
-      console.log(
-        "Proposal state: ",
-        (await this.getProposalState(proposal.id))[1]
-      );
-    } catch (err) {
-      console.log("Error whe redeem proposal", err);
+    /**
+     * @dev Check if signer is not proposal owner.
+     */
+    if (state.owner !== walletProvider?.publicKey?.toBase58().toString()) {
+      throw new Error("Signer is not proposal owner.");
     }
+
+    /**
+     * @dev Check status of proposal.
+     */
+    if (proposal.status.valueOf() !== SwapProposalStatus.FULFILLED.valueOf()) {
+      throw new Error("Proposal's status is not fulfied!");
+    }
+
+    /**
+     * @dev Define @var {TransactionInstruction} @arrays instructions to process.
+     */
+    const instructions: TransactionInstruction[] = [];
+    const swapOption = proposal.swapOptions.find(
+      (item) => item.id === proposal.fulfilledWithOptionId
+    );
+
+    /**
+     * @dev Transfer all items included in swap option to owner.
+     */
+    await Promise.all(
+      swapOption.items.map(async (item) => {
+        /**
+         * @dev Instruction to create associated token account if doest exists.
+         */
+        const associatedInstruction =
+          await this.instructionProvider.getOrCreateProposalTokenAccount(
+            walletProvider.publicKey,
+            new PublicKey(item.contractAddress)
+          );
+
+        /**
+         * @dev Add to arrays to process if valid.
+         */
+        if (associatedInstruction) {
+          instructions.push(associatedInstruction);
+        }
+
+        /**
+         * @dev Fullfiling deposit token from buyer to token vault.
+         */
+        const instruction =
+          await this.instructionProvider.transferTokenFromVault(
+            new PublicKey(proposal.ownerAddress),
+            new PublicKey(item.contractAddress),
+            swapProposal,
+            proposal.id,
+            item.id,
+            SwapItemActionType.redeeming
+          );
+        if (!instruction) return;
+        instructions.push(instruction);
+
+        /** @dev Unwrap sol if item is currency. */
+        if (item.type === SwapItemType.CURRENCY) {
+          const inst = await this.instructionProvider.unwrapSol(
+            walletProvider.publicKey
+          );
+
+          /** @dev Add if valid */
+          instructions.push(inst);
+        }
+      })
+    );
+
+    /**
+     * @dev Sign and confirm instructions.
+     */
+    const txId = await this.transactionProvider.signAndSendTransaction(
+      walletProvider,
+      instructions
+    );
+
+    console.log("Claim proposal successfully!", proposal.id, {
+      txId,
+    });
+
+    console.log(
+      "Proposal state: ",
+      (await this.getProposalState(proposal.id))[1]
+    );
   }
 
   /**

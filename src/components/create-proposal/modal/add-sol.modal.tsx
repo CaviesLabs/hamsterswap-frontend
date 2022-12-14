@@ -73,10 +73,12 @@ export const AddSolModal: FC<
       onCancel={props.handleCancel}
       width={600}
       footer={null}
+      destroyOnClose={true}
+      className="hamster-modal"
     >
       <StyledModal>
         <div className="pt-6">
-          <div className="mx-auto items-center max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto items-center max-w-3xl">
             <Input
               size="large"
               className="rounded-2xl p-3 mt-2"
@@ -89,14 +91,14 @@ export const AddSolModal: FC<
             />
 
             {props.addInOwner && (
-              <div className="text-lg regular-text flex items-center mt-5">
+              <div className="text-[16px] regular-text flex items-center mt-5">
                 <p>Your balance:</p>
                 <SolanaIcon className="ml-3 mr-2" />
                 {myRemainSolBalance} SOL
               </div>
             )}
 
-            <div className="mt-14 w-1/2 ml-auto">
+            <div className="mt-14 w-[234px] ml-auto">
               <button
                 disabled={
                   !value ||

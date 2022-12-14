@@ -11,22 +11,22 @@ export const AddExpectedNftDetail: FC<DetailProps> = (props) => {
   const { nft } = props;
 
   return (
-    <div className="overflow-scroll h-96">
-      <div className="mt-6 flex justify-between items-center">
+    <div className="overflow-scroll h-52">
+      <div className="flex justify-between items-center">
         <div className="">
-          <p className="text-dark60 text-lg">NFT Name</p>
-          <p className="font-bold text-lg">{nft.nft_name}</p>
-          <p className="mt-6 text-dark60 text-lg">Collection</p>
-          <p className="font-bold text-lg text-purple">
+          <p className="text-dark60">NFT Name</p>
+          <p className="font-bold text-[16px]">{nft.nft_name}</p>
+          <p className="mt-6 text-dark60">Collection</p>
+          <p className="font-bold text-[16px] text-purple">
             {nft.nft_collection_name}
           </p>
         </div>
 
-        <div className="w-36 bg-dark30 rounded-2xl">
-          <img className="aspect-square" src={nft.nft_image} />
+        <div className="w-28">
+          <img className="aspect-square rounded-2xl" src={nft.nft_image} />
         </div>
       </div>
-      <p className="mt-6 text-dark60 text-lg">Attributes</p>
+      <p className="mt-6 text-dark60">Attributes</p>
       <Row gutter={[16, 16]}>
         {nft.nft_attributes.attributes.map((attr, index) => (
           <Col span={12} key={`attr-item-${index}`}>

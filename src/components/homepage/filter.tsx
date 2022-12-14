@@ -138,7 +138,7 @@ const Filter: FC = () => {
         </div>
       )}
       <div className="flex items-center justify-between pt-24 pb-6">
-        <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+        <h1 className="text-[32px] font-bold tracking-tight text-gray-900">
           Active Swaps
         </h1>
         <div className="w-[550px] flex">
@@ -179,16 +179,16 @@ const Filter: FC = () => {
             className="text-center rounded-3xl text-sm"
             placeholder={
               <div className="w-full regular-text text-center">
-                Reputation advertisers
+                Pro Advertisers
               </div>
             }
-            values={[]}
+            values={["Pro Advertisers"]}
             options={[
               {
-                value: "Reputation",
+                value: "Pro Advertisers",
               },
               {
-                value: "No Reputation",
+                value: "No Pro Advertisers",
               },
             ]}
             onChange={(value) => {
@@ -225,16 +225,16 @@ const Filter: FC = () => {
             className="text-center rounded-3xl text-sm"
             placeholder={
               <div className="w-full regular-text text-center">
-                Include Guaranted payment
+                Include warranty
               </div>
             }
             values={["Include Guaranted payment"]}
             options={[
               {
-                value: "Include Guaranted payment",
+                value: "Include warranty",
               },
               {
-                value: "No Guaranted payment",
+                value: "No include warranty",
               },
             ]}
           ></Select>

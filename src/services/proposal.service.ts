@@ -5,7 +5,6 @@ import {
 } from "@/src/entities/proposal.entity";
 import { DetailDto } from "@/src/dto/detail.dto";
 import { CreateProposalDto, ProposalDto } from "@/src/dto/proposal.dto";
-import qs from "qs";
 
 export class ProposalService {
   /**
@@ -24,11 +23,6 @@ export class ProposalService {
             ...getProposalsDto.options,
           }
         : {},
-      paramsSerializer: {
-        serialize: (params: any) => {
-          return qs.stringify(params, { arrayFormat: "repeat" });
-        },
-      },
     });
   }
 

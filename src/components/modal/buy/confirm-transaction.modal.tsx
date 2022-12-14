@@ -64,7 +64,7 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
             className="flex justify-center items-center w-full !bg-purple text-white rounded-3xl text-lg font-bold py-3"
           >
             {isLoading && <LoadingIcon className="text-white" />}
-            {isLoading ? "Confirming transaction in wallet" : "Confirm"}
+            {isLoading ? "Confirming transaction in Wallet" : "Confirm"}
           </button>
         </div>
       </div>

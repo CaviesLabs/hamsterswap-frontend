@@ -45,7 +45,7 @@ export class SwapProgramService {
     /**
      * @dev Now create proposal to on-chain, wrap in sync function to sync data after done processing on-chain.
      */
-    return await this.requestAndSyncProposal(response.id, async () => {
+    return this.requestAndSyncProposal(response.id, async () => {
       /**
        * @dev Create on-chain.
        */
@@ -75,8 +75,8 @@ export class SwapProgramService {
     /**
      * @dev Call to program.
      */
-    return await this.requestAndSyncProposal(proposalId, async () => {
-      return this.swapProgramProvider.cancelProposal(
+    return this.requestAndSyncProposal(proposalId, async () => {
+      return await this.swapProgramProvider.cancelProposal(
         walletProvider,
         await this.getProposal(proposalId)
       );
@@ -98,7 +98,7 @@ export class SwapProgramService {
     /**
      * @dev Now create proposal to on-chain, wrap in sync function to sync data after done processing on-chain.
      */
-    return await this.requestAndSyncProposal(proposalId, async () => {
+    return this.requestAndSyncProposal(proposalId, async () => {
       return this.swapProgramProvider.swapProposal(
         walletProvider,
         await this.getProposal(proposalId),
@@ -119,7 +119,7 @@ export class SwapProgramService {
     /**
      * @dev Now create redeem proposal to on-chain, wrap in sync function to sync data after done processing on-chain.
      */
-    return await this.requestAndSyncProposal(proposalId, async () => {
+    return this.requestAndSyncProposal(proposalId, async () => {
       return this.swapProgramProvider.redeemProposal(
         walletProvider,
         await this.getProposal(proposalId)
@@ -144,7 +144,7 @@ export class SwapProgramService {
           method: "PATCH",
         });
         resolve(data);
-      }, 2000)
+      }, 4000)
     );
   }
 
@@ -154,6 +154,7 @@ export class SwapProgramService {
    * @returns {SwapProposalEntity}
    */
   public async getProposal(proposalId: string): Promise<SwapProposalEntity> {
+    console.log(proposalId);
     return networkProvider.requestWithCredentials<SwapProposalEntity>(
       `/proposal/${proposalId}`,
       { method: "GET" }

@@ -11,17 +11,19 @@ import { NftDetailDto } from "@/src/dto/nft.dto";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { toast } from "@hamsterbox/ui-kit";
+import animationData from "@/src/components/icons/animation-loading.json";
+import Lottie from "react-lottie";
 
 export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   /**
    * @dev Import functions in screen context.
    */
-  const { expectedItems, addExpectedItem } = useCreateProposal();
+  const { offferedItems, expectedItems, addExpectedItem } = useCreateProposal();
 
   /**
    * @dev initialize states for collection id and nft id from form
    */
-  const [collection, setCollection] = useState("");
+  const [collection, setCollection] = useState<string[]>([]);
   const [nftId, setNftId] = useState<string>("");
 
   const allowNTFCollections: allowNTFCollection[] = useSelector(
@@ -53,6 +55,20 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   const handleAddNft = (nftItem: NftDetailDto) => {
     if (expectedItems[props.index]?.askingItems.length === 4) {
       return toast.warn("Only a maximum of 4 items are allowed");
+    }
+
+    if (
+      expectedItems[props.index]?.askingItems
+        .map((_) => _.nft_address)
+        .indexOf(nftItem.nft_address) > -1
+    ) {
+      return toast.warn("Item is there in choice");
+    }
+
+    if (
+      offferedItems.map((_) => _.nft_address).indexOf(nftItem.nft_address) > -1
+    ) {
+      return toast.warn("Item is there in your offered list");
     }
 
     /**
@@ -92,13 +108,16 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
         setStep(0);
         props.handleCancel(e);
       }}
-      width={600}
+      width={560}
+      bodyStyle={{
+        height: 290,
+      }}
       footer={null}
       className="hamster-modal"
     >
       <StyledModal>
-        <div className="pt-6">
-          <div className="mx-auto items-center max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="pt-4">
+          <div className="mx-auto items-center max-w-3xl">
             {step === 0 && (
               <AddExpectedNftForm
                 collection={collection}
@@ -108,9 +127,17 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
                 allowNTFCollections={allowNTFCollections}
               />
             )}
-            {step === 1 && <div>Loading</div>}
+            {step === 1 && (
+              <div className="max-w-[185px] mx-auto">
+                <Lottie
+                  options={{
+                    animationData,
+                  }}
+                />
+              </div>
+            )}
             {step === 2 && nft && <AddExpectedNftDetail nft={nft} />}
-            <div className="mt-14">
+            <div>
               {step === 0 && (
                 <button type="button" onClick={() => handleFetchNftData(nftId)}>
                   Next

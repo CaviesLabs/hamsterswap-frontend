@@ -7,8 +7,8 @@ import { AttributeDto } from "@/src/dto/nft.dto";
 
 export const AttributeCard = (attr: AttributeDto) => (
   <div className="bg-gray-100 py-4 px-6 rounded-2xl	w-full">
-    <p className="uppercase">{attr.trait_type}</p>
-    <p className="font-bold text-gray-800 text-xl py-3">{attr.value}</p>
+    <p className="uppercase text-[12px]">{attr.trait_type}</p>
+    <p className="font-bold text-gray-800 text-[16px] py-1">{attr.value}</p>
   </div>
 );
 

@@ -64,6 +64,7 @@ export default function DatetimePicker(props: DatetimePickerProps) {
       />
       <div className="ml-[20px] relative">
         <Dropdown
+          overlayStyle={{ height: "40px" }}
           menu={{
             items: TIME_ARRAYS.map((_) => ({
               key: _,

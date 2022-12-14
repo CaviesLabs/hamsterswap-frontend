@@ -8,7 +8,7 @@ export const StyledProposalItem = styled.div<ProposalItemProps>`
     return `
       &::before {
         position: absolute;
-        top: 57px;
+        top: 59px;
         right: -1px;
         content: "";
         background: linear-gradient(90deg, #1eb130 0%, #1ea866 100%);
@@ -18,15 +18,15 @@ export const StyledProposalItem = styled.div<ProposalItemProps>`
       }
     
       &::after {
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
-        border-bottom-left-radius: 12px;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        border-bottom-left-radius: 8px;
         position: absolute;
         content: attr(data-label);
-        top: 31px;
+        top: 41px;
         right: -7px;
-        padding: 8px 0px 8px 40px;
-        width: 132px;
+        padding: 10px 0px 10px 35px;
+        width: 127px;
         background: linear-gradient(90deg, #1eb130 0%, #1ea866 100%);
         color: white;
         text-align: center;
@@ -35,6 +35,7 @@ export const StyledProposalItem = styled.div<ProposalItemProps>`
         border-bottom-right-radius: -9px;
         text-align: start;
         font-weight: bold;
+        font-size: 14px;
         line-height: 12px;
         text-transform: uppercase;
       }

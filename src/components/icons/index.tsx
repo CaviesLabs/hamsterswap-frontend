@@ -1,6 +1,10 @@
 import { FC } from "react";
 import { IconProps } from "./types";
 import classnames from "classnames";
+export * from "./bank";
+export * from "./paypal";
+export * from "./stripe";
+export * from "./two-way-arrow";
 
 /** @dev Expore Plus Icon Component */
 export const PlusIcon: FC<IconProps> = (props) => {

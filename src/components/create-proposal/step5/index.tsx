@@ -29,9 +29,9 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
       <div className="block mt-[60px] flex">
         <ProposalItem
           swapItems={clonedOfferedItems.map((_) => parseOfferCreateProposal(_))}
-          receiveItems={clonedExpectedItems.map((_) =>
-            _.askingItems.map((p) => parseOfferCreateProposal(p))
-          )}
+          receiveItems={clonedExpectedItems
+            .filter((item) => item.askingItems.length)
+            .map((_) => _.askingItems.map((p) => parseOfferCreateProposal(p)))}
           isGuaranteedPayment={isGuaranteedPayment}
         />
       </div>
@@ -41,7 +41,7 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
           className="block float-left w-full pr-[20px] md:pr-[60px]"
         >
           <p className="text-3xl">Note</p>
-          <p className="text-[16px] regular-text mt-[12px]">{note}</p>
+          <p className="text-[16px] regular-text mt-[12px] break-all">{note}</p>
           <p className="regular-text text-[14px] text-red300 mt-12">
             Expiration date: {expiredTime && expiredTime.toLocaleString()}
           </p>
@@ -53,7 +53,7 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
           <p className="text-3xl">Warranty</p>
           <div className="mt-[12px] flex items-center">
             <p className="regular-text text-[16px] float-left">
-              Guaranteed payment amount:
+              Guarantee deposit amount:
             </p>
             <img
               src="/assets/images/solana-icon.svg"

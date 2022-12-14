@@ -23,6 +23,7 @@ import {
   SolflareWalletAdapter,
   SolletWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
+import { SeoComponent } from "@/src/components/seo";
 
 const store = makeStore();
 
@@ -56,6 +57,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <Provider store={store}>
+      <SeoComponent />
       <ThemeProvider>
         {/**
          * @dev
@@ -82,6 +84,12 @@ function MyApp({ Component, pageProps }: AppProps) {
               defaultNetwork={network}
               app={{
                 name: "Hamsterswap",
+                icon: (
+                  <img
+                    className="bg-dark60 rounded-full"
+                    src="/assets/icons/favicon-196.png"
+                  />
+                ),
               }}
               debugMode={true} // you may want to set this in REACT_APP_DEBUG_MODE
             >

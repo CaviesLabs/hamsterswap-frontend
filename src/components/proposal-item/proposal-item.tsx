@@ -8,6 +8,7 @@ import { Button } from "@hamsterbox/ui-kit";
 import { Col, Row } from "antd";
 import { useSelector } from "react-redux";
 import State from "@/src/redux/entities/state";
+import { TwoWayArrowIcon } from "@/src/components/icons";
 
 export const ProposalItem: FC<ProposalItemProps> = (props) => {
   /**
@@ -27,7 +28,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
   return (
     <StyledProposalItem
       className="w-full bg-[#F8F9FE] min-h-[200px] rounded-[32px] mb-[46px]"
-      data-label={props.isGuaranteedPayment && "Guaranteed payment"}
+      data-label={props.isGuaranteedPayment && "Warranty"}
       {...props}
     >
       {props.isGuaranteedPayment && (
@@ -65,12 +66,12 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
             </div>
           )}
           <Row className="pt-[40px]">
-            <Col span={11}>
+            <Col span={10}>
               <div className="semi-bold text-[16px] h-[36px] leading-9">
                 I have
               </div>
             </Col>
-            <Col offset={2} span={11}>
+            <Col offset={4} span={10}>
               <div className="flex justify-between">
                 <div className="semi-bold text-[16px] leading-9">
                   looking for
@@ -95,14 +96,19 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
             </Col>
           </Row>
           <Row className="mt-4">
-            <Col span={11}>
+            <Col span={10}>
               {props.swapItems.map((item: RowNftItemProps, index) => (
                 <div className="mb-4" key={`proposal-item-${index}`}>
                   <RowNftItem {...item} />
                 </div>
               ))}
             </Col>
-            <Col offset={2} span={11}>
+            <Col span={4} className="flex justify-center items-center">
+              <div className="rounded-full bg-white p-[18px]">
+                <TwoWayArrowIcon className="w-6" />
+              </div>
+            </Col>
+            <Col span={10}>
               {props.receiveItems[optionSelected]?.map(
                 (item: RowNftItemProps, index: number) => (
                   <div className="mb-4" key={`swapoptions-${index}`}>

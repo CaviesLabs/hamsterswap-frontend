@@ -27,7 +27,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
   return (
     <StyledProposalItem
       className="w-full bg-[#F8F9FE] min-h-[200px] rounded-[32px] rounded-[32px] mb-[46px]"
-      data-label={props.isGuaranteedPayment && "Guaranteed payment"}
+      data-label={props.isGuaranteedPayment && "Warranty"}
       {...props}
     >
       {props.isGuaranteedPayment && (
@@ -38,7 +38,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           style={{ zIndex: 3 }}
-          className="absolute right-0 left-[20px] md:left-[initial] md:right-[86px] w-[37px] top-[40px]"
+          className="absolute right-0 left-[20px] md:left-[initial] md:right-[92px] w-[16px] top-[45px]"
         >
           <path
             fillRule="evenodd"
@@ -66,7 +66,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
             userLookingFor={data.swapOptions}
           />
           <Row className="pt-8">
-            <Col span={11}>
+            <Col span={10}>
               <div className="md:left">
                 <p className="semi-bold text-[16px] h-[36px] leading-9">Note</p>
                 <p className="mt-[8px] text-[16px] regular-text">{data.note}</p>
@@ -76,13 +76,13 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
                 </p>
               </div>
             </Col>
-            <Col offset={2} span={11}>
+            <Col offset={4} span={10}>
               <div className="md:left">
                 <p className="semi-bold text-[16px] h-[36px] leading-9">
                   Warranty
                 </p>
                 <p className="mt-[8px] text-[16px] regular-text flex">
-                  Guaranteed payment amount:
+                  Guarantee deposit amount:
                   <img
                     src="/assets/images/solana-icon.svg"
                     alt="Solana Icon"

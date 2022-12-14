@@ -7,6 +7,7 @@ export const getStatus = (status: SwapProposalStatus) => {
     case SwapProposalStatus.DEPOSITED:
       return "Deposited";
     case SwapProposalStatus.FULFILLED:
+    case SwapProposalStatus.REDEEMED:
       return "Success";
     case SwapProposalStatus.CREATED:
       return "Created";

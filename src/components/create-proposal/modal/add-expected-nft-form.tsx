@@ -5,9 +5,9 @@ import { useMemo, useState } from "react";
 
 type FormProps = {
   allowNTFCollections: allowNTFCollection[];
-  collection: string;
+  collection: string[];
   nftId: string;
-  setCollection: (v: string) => void;
+  setCollection: (v: string[]) => void;
   setNftId: (v: string) => void;
 };
 
@@ -39,7 +39,7 @@ export const AddExpectedNftForm = (props: FormProps) => {
         placeholder="Search for NFT, collection"
         options={allowNTFCollectionsMemo}
         onChange={(v) => setCollection(v)}
-        values={[collection]}
+        values={collection}
         onSearch={(value) => setSearch(value)}
       />
 

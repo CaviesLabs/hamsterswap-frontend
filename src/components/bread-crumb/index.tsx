@@ -1,7 +1,10 @@
 import { FC } from "react";
+import { useRouter } from "next/router";
 import { BreadCrumbProps } from "./types";
 
 export const BreadCrumb: FC<BreadCrumbProps> = (props) => {
+  const router = useRouter();
+
   return (
     <nav className="flex mt-20" aria-label="Breadcrumb">
       <ol className="inline-flex items-center space-x-1 md:space-x-3">
@@ -11,8 +14,10 @@ export const BreadCrumb: FC<BreadCrumbProps> = (props) => {
             key={`bread-crumbs-item-${index}`}
           >
             <a
-              href="#"
-              className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+              onClick={() =>
+                index === 0 ? router.push("/") : router.push(router.asPath)
+              }
+              className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white cursor-pointer"
             >
               {index === 0 ? (
                 <svg

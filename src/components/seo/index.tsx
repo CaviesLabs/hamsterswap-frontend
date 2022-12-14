@@ -1,7 +1,9 @@
 import { FC } from "react";
+import { NextSeo } from "next-seo";
 
 export const SeoComponent: FC = () => {
-  const url = "https://p2p.hamsterbox.xyz/";
+  const siteName = "p2p.hamsterbox.xyz";
+  const url = `https://${siteName}/`;
   const title =
     "Hamsterswap | Trustless P2P Swaps for Digital Collectibles and Assets";
   const description =
@@ -11,9 +13,31 @@ export const SeoComponent: FC = () => {
   return (
     <>
       {/* Primary meta tags*/}
-      <title>{title}</title>
-      <meta property="og:title" content={title} key="title" />
-      <meta name="description" content={description} />
+      <NextSeo
+        title={title}
+        description={description}
+        canonical={`${url}`}
+        openGraph={{
+          type: "website",
+          url,
+          title,
+          description,
+          locale: "en_US",
+          images: [
+            {
+              url: banner,
+              width: 1024,
+              height: 512,
+              alt: `hero image for ${title}`,
+            },
+          ],
+          site_name: siteName,
+        }}
+        twitter={{
+          site: siteName,
+          cardType: "summary_large_image",
+        }}
+      />
       <meta
         httpEquiv="Cache-Control"
         content="no-cache, no-store, must-revalidate"
@@ -26,27 +50,6 @@ export const SeoComponent: FC = () => {
         name="keywords"
         content="cavies,hamsterbox,hamsterswap,p2p,web3,gaming,game,gamer,gamefi,crypto,nft,metaverse,unorthodox,infrastructure,multichain,btc,eth,solana,polygon,unorthodox,infrastructure,blockchain"
       />
-
-      {/**  */}
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content={url} />
-      <meta name="og:description" content={description} />
-      <meta property="og:image" content={banner} />
-      <meta property="og:image:alt" content={title} />
-      <meta property="og:image:type" content="image/jpg" />
-      <meta property="og:image:height" content="1024" />
-      <meta property="og:image:width" content="512" />
-      {/* <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" /> */}
-
-      <meta property="og:locale" content="en_US" />
-      <meta property="og:locale:alternate" content="en_GB" />
-
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={banner} />
-      <meta name="twitter:image:alt" content={title} />
 
       {/* TODO: remove this metatag once we go live */}
       {/* <meta name="robots" content="noindex" /> */}

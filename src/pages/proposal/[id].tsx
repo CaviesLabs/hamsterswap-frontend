@@ -15,6 +15,7 @@ import { getProposal } from "@/src/redux/actions/proposal/proposal.action";
 import {
   SwapOptionEntity,
   SwapProposalEntity,
+  SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
 import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
 import { useWallet } from "@/src/hooks/useWallet";
@@ -34,6 +35,11 @@ const Layout: FC = () => {
   const [optionSelected, setOptionSelected] = useState(0);
 
   /**
+   * @dev Decalre state condition whenther the proposal is expired.
+   */
+  const [isExpired, setIsExpired] = useState(false);
+
+  /**
    * @dev Get user wallet
    */
   const wallet = useConnectedWallet();
@@ -43,13 +49,16 @@ const Layout: FC = () => {
    */
   const [proposal, setProposal] = useState<SwapProposalEntity>();
 
+  /**
+   * @dev The function to process swaping when click buy button.
+   */
   const handleSwap = useCallback(async () => {
-    await programService.swapProposal(
+    return programService.swapProposal(
       solanaWallet,
       proposal.id,
       proposal.swapOptions[optionSelected].id
     );
-  }, [wallet, programService, solanaWallet, proposal]);
+  }, [wallet, programService, solanaWallet, proposal, optionSelected]);
 
   /**
    * @dev Get proposal detail by id.
@@ -63,14 +72,21 @@ const Layout: FC = () => {
     );
   }, [router.query.id]);
 
+  /**
+   * @dev Watch changes in proposal and process state.
+   */
+  useEffect(() => {
+    Date.now() > new Date(proposal?.expiredAt)?.getTime() && setIsExpired(true);
+  }, [proposal]);
+
   return (
     <MainLayout>
       <StyledProposalDetailPage>
         <div className="cover-container">
           <LayoutSection>
             <BreadCrumb data={["Home", "Advertiser"]} />
-            <div className="mt-4 block md:flex">
-              <p className="text-[32px]">Advertisement #675424</p>
+            <div className="mt-4 block md:flex items-center">
+              <p className="text-[32px]">Advertisement #{proposal?.numberId}</p>
               <GuaranteedCard className="md:ml-[12px]" />
             </div>
 
@@ -93,7 +109,9 @@ const Layout: FC = () => {
           <div className="block mt-[20px]">
             <ProposalItem
               data={proposal}
-              changeOption={(value) => setOptionSelected(value)}
+              changeOption={(value) => {
+                setOptionSelected(value);
+              }}
               swapItems={
                 proposal?.offerItems.map((_) => parseProposal(_)) ?? []
               }
@@ -107,24 +125,32 @@ const Layout: FC = () => {
 
           <div className="mt-14">
             <Row gutter={20} className="mb-[20px]">
-              <Col span={12}>
+              <Col span={10}>
                 <div className="text-2xl semi-bold tracking-tight text-gray-900">
                   Note
                 </div>
                 <div className="block mt-2">
-                  <p className="regular-text text-[16px]">{proposal?.note}</p>
+                  <p className="regular-text text-[16px] break-all">
+                    {proposal?.note}
+                  </p>
                   <p className="regular-text text-[14px] text-red300 mt-10">
-                    Expiration date:{" "}
-                    {dayjs(proposal?.expiredAt).format(DATE_TIME_FORMAT)}
+                    {isExpired ? (
+                      "Expired"
+                    ) : (
+                      <>
+                        Expiration date:{" "}
+                        {dayjs(proposal?.expiredAt).format(DATE_TIME_FORMAT)}
+                      </>
+                    )}
                   </p>
                 </div>
               </Col>
-              <Col span={12}>
+              <Col offset={4} span={10}>
                 <div className="text-2xl semi-bold tracking-tight text-gray-900">
                   Warranty
                 </div>
                 <p className="mt-2 text-[16px] regular-text flex">
-                  Guaranteed payment amount:
+                  Guarantee deposit amount:
                   <img
                     src="/assets/images/solana-icon.svg"
                     alt="Solana Icon"
@@ -138,11 +164,17 @@ const Layout: FC = () => {
 
           <div className="mt-12">
             <Row justify="end">
-              {(!solanaWallet.publicKey ||
+              {solanaWallet.publicKey &&
                 solanaWallet.publicKey?.toBase58().toString() !==
-                  proposal?.ownerAddress) && (
-                <BuyButton handleSwap={handleSwap} />
-              )}
+                  proposal?.ownerAddress &&
+                !isExpired &&
+                proposal?.status !== SwapProposalStatus.FULFILLED &&
+                proposal?.status !== SwapProposalStatus.REDEEMED && (
+                  <BuyButton
+                    handleSwap={handleSwap}
+                    optionIndex={optionSelected}
+                  />
+                )}
             </Row>
           </div>
         </LayoutSection>
