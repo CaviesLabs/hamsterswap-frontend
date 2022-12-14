@@ -6,19 +6,19 @@ import { DotIcon } from "@/src/components/icons";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 import { getStatus } from "@/src/utils/proposal-status";
 import dayjs from "dayjs";
-import { useWallet } from "@/src/hooks/useWallet";
+import { useMain } from "@/src/hooks/pages/main";
 
 function Proposal(props: ProposalHistoryProps) {
   const router = useRouter();
   const { data } = props;
   const { status, fulfillBy } = data;
+  const { hPublicProfile } = useMain();
 
   /**
    * @description
    * validate user is buyer if wallet address match with fulfill user
    */
-  const { solanaWallet } = useWallet();
-  const _isBuyer = fulfillBy === solanaWallet.publicKey?.toString();
+  const _isBuyer = fulfillBy === hPublicProfile.walletAddress;
 
   const swapOption = data.swapOptions.find(
     (_) => _.id === data.fulfilledWithOptionId
