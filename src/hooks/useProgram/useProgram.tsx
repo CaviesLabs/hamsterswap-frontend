@@ -33,6 +33,7 @@ export const useProgram = (): ProgramHookState => {
    */
   const cancelProposal = useCallback(
     async (proposalId: string) => {
+      console.log(solanaWallet.publicKey, programService);
       if (!solanaWallet.publicKey || !programService)
         throw new Error("Wallet not connected");
       /**

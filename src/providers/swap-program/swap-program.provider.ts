@@ -121,13 +121,13 @@ export class SwapProgramProvider {
     /**
      * @dev Prepares for some infra config
      */
-    this.connection = new Connection(this.rpcEndpoint, "processed");
+    this.connection = new Connection(this.rpcEndpoint, "finalized");
     const provider = new anchor.AnchorProvider(
       this.connection,
       this.walletProvider,
       {
-        preflightCommitment: "processed",
-        commitment: "processed",
+        preflightCommitment: "finalized",
+        commitment: "finalized",
       }
     );
 
@@ -468,6 +468,7 @@ export class SwapProgramProvider {
           /**
            * @dev Add to arrays to process if valid.
            */
+          console.log("associatedInstruction 1", associatedInstruction);
           if (associatedInstruction) {
             instructions.push(associatedInstruction);
           }
@@ -512,19 +513,30 @@ export class SwapProgramProvider {
       await Promise.all(
         proposal.offerItems.map(async (item) => {
           /**
-           * @dev Instruction to create associated token account if doest exists.
+           * @dev If offer items is not exist in swap option,
+           * it mean the signer not already created associated token before, then create one.
            */
-          const associatedInstruction =
-            await this.instructionProvider.getOrCreateProposalTokenAccount(
-              walletProvider.publicKey,
-              new PublicKey(item.contractAddress)
-            );
+          if (
+            !swapOption.items.find(
+              (swapItem) => swapItem.contractAddress === item.contractAddress
+            )
+          ) {
+            console.log("created in depositing swap item");
+            /**
+             * @dev Instruction to create associated token account if doest exists.
+             */
+            const associatedInstruction =
+              await this.instructionProvider.getOrCreateProposalTokenAccount(
+                walletProvider.publicKey,
+                new PublicKey(item.contractAddress)
+              );
 
-          /**
-           * @dev Add to arrays to process if valid.
-           */
-          if (associatedInstruction) {
-            instructions.push(associatedInstruction);
+            /**
+             * @dev Add to arrays to process if valid.
+             */
+            if (associatedInstruction) {
+              instructions.push(associatedInstruction);
+            }
           }
 
           /**
