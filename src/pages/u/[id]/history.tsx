@@ -41,7 +41,7 @@ const Layout: FC = () => {
 
   return (
     <MainLayout>
-      <Breadcrumb title="History" />
+      <Breadcrumb title="Profile" />
       <LayoutSection className="relative top-[-180px]">
         <div className="mb-[20px]">
           <div className="block mt-[20px]">
@@ -52,7 +52,7 @@ const Layout: FC = () => {
         </div>
         <SubMenu curTab={1} />
         <div className="mt-10">
-          <h3 className="text-3xl font-bold tracking-tight text-gray-900">
+          <h3 className="text-2xl font-bold tracking-tight text-gray-900">
             History
           </h3>
           <Title />

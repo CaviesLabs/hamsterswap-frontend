@@ -1,6 +1,13 @@
 import { Button, Col, Dropdown, MenuProps, Row } from "antd";
 import classnames from "classnames";
-import { DeleteIcon, EditIcon, VerticalDots } from "@/src/components/icons";
+import {
+  DeleteIcon,
+  EditIcon,
+  PaypalIcon,
+  StripeIcon,
+  VerticalDots,
+  BankIcon,
+} from "@/src/components/icons";
 import { PaymentItem } from "@/src/components/user/types";
 
 const mockList: PaymentItem[] = [
@@ -63,7 +70,7 @@ export default function PaymentCard() {
           <div className="border rounded-2xl">
             <div
               className={classnames(
-                "rounded-t-2xl flex items-center justify-between p-4",
+                "rounded-t-2xl flex items-center justify-between py-5 px-8",
                 _.type === "paypal"
                   ? "bg-sky-200"
                   : _.type === "stripe"
@@ -71,18 +78,15 @@ export default function PaymentCard() {
                   : "bg-orange-100"
               )}
             >
-              <div className="flex">
-                <div className="pl-2 mr-8">
-                  <img
-                    src={
-                      _.type === "paypal"
-                        ? "/assets/images/paypal.png"
-                        : _.type === "stripe"
-                        ? "/assets/images/stripe.png"
-                        : "/assets/images/bank.png"
-                    }
-                    className="w-6"
-                  />
+              <div className="flex items-center">
+                <div className="pl-2 mr-14">
+                  {_.type === "paypal" ? (
+                    <PaypalIcon className="h-[42px]" />
+                  ) : _.type === "stripe" ? (
+                    <StripeIcon className="h-[42px]" />
+                  ) : (
+                    <BankIcon className="h-[42px]" />
+                  )}
                 </div>
                 <div className="font-bold text-lg">{_.label}</div>
               </div>
@@ -92,8 +96,8 @@ export default function PaymentCard() {
                 </Button>
               </Dropdown>
             </div>
-            <div className="pl-20 text-lg pt-4 pb-10">
-              <div className="font-bold">{_.name}</div>
+            <div className="pl-20 text-[16px] pt-4 pb-10">
+              <div className="semi-bold">{_.name}</div>
               <div>{_.detail}</div>
             </div>
           </div>

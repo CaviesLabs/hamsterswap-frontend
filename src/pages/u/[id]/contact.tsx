@@ -14,7 +14,7 @@ const Layout: FC = () => {
 
   return (
     <MainLayout>
-      <Breadcrumb title="Contacts" />
+      <Breadcrumb title="Profile" />
       <LayoutSection className="relative top-[-180px]">
         <div className="mb-[20px]">
           <div className="block mt-[20px]">

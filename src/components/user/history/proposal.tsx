@@ -29,7 +29,7 @@ function Proposal(props: ProposalHistoryProps) {
       ({ id, amount, nftMetadata: { nft_image, icon, nft_name, symbol } }) => (
         <div key={`swapItems-${id}`} className="flex items-center mb-3">
           <img className="w-10 rounded-lg" src={nft_image || icon} />
-          <p className="ml-2 text-lg">
+          <p className="ml-2">
             {nft_name || (symbol && `${solAmount(amount)} ${symbol}`)}
           </p>
         </div>
@@ -41,7 +41,7 @@ function Proposal(props: ProposalHistoryProps) {
       ({ id, amount, nftMetadata: { nft_image, icon, nft_name, symbol } }) => (
         <div key={id} className="flex items-center mb-3">
           <img className="w-10 rounded-lg" src={nft_image || icon} />
-          <p className="ml-2 text-lg">
+          <p className="ml-2">
             {nft_name || (symbol && `${solAmount(amount)} ${symbol}`)}
           </p>
         </div>
@@ -51,10 +51,10 @@ function Proposal(props: ProposalHistoryProps) {
   return (
     <div className="border border-1 border-gray rounded-3xl p-6 mb-6">
       <Row className="pt-2">
-        <Col span={5} className="text-lg">
+        <Col span={5} className="text-[16px] pt-2">
           {dayjs(data.createdAt).format(DATE_TIME_FORMAT)}
         </Col>
-        <Col span={6}>
+        <Col span={6} className="text-[16px]">
           {_isBuyer ? renderReceiveItemCol() : renderSwapItemCol()}
 
           <a
@@ -64,10 +64,10 @@ function Proposal(props: ProposalHistoryProps) {
             View Proposal
           </a>
         </Col>
-        <Col span={6}>
+        <Col span={6} className="text-[16px]">
           {_isBuyer ? renderSwapItemCol() : renderReceiveItemCol()}
         </Col>
-        <Col span={4} className="text-lg">
+        <Col span={4} className="text-[16px] pt-2">
           <div
             className="text-[#735CF7] cursor-pointer"
             onClick={() => router.push(`/u/${data.ownerId}/profile`)}
@@ -84,7 +84,7 @@ function Proposal(props: ProposalHistoryProps) {
         </Col>
         <Col span={3}>
           <Tag
-            className="px-4 py-1 w-min flex items-center capitalize bg-[#EEFFDA] border-[#EEFFDA]"
+            className="px-4 py-1 w-[120px] flex justify-center items-center capitalize bg-[#EEFFDA] border-[#EEFFDA] rounded-lg"
             icon={<DotIcon className="mr-2" />}
             color={
               status === SwapProposalStatus.CANCELED

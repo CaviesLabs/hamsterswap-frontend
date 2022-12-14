@@ -68,8 +68,8 @@ const Layout: FC = () => {
         </div>
         <SubMenu curTab={0} />
         <div className="mb-4 mt-10">
-          <h3 className="text-3xl font-bold tracking-tight text-gray-900">
-            Proposal
+          <h3 className="text-2xl font-bold tracking-tight text-gray-900">
+            Your Proposal
           </h3>
           <div className="block py-[50px]">
             <div className="md:flex items-center">
