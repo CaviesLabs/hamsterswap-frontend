@@ -87,6 +87,9 @@ export function* getExploreProposals({
       !payload.options.statuses.includes(SwapProposalStatus.EXPIRED)
     ) {
       swapProposals = swapProposals.filter((item) => {
+        /**
+         * @dev Only filter expired proposal if its status is not @enum {FULFILLED} and @enum {REDEEMED}
+         */
         if (
           item.status !== SwapProposalStatus.FULFILLED &&
           item.status !== SwapProposalStatus.REDEEMED
@@ -100,6 +103,7 @@ export function* getExploreProposals({
 
     /**
      * @todo Filter proposal which has offer items and swap items.
+     * It to avoid render error proposal in UI.
      */
     swapProposals = swapProposals
       .filter((item) => item.offerItems.length)
