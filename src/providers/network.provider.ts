@@ -91,7 +91,7 @@ export class NetworkProvider {
       ...options.headers,
       Authorization: `Bearer ${credential}`,
     };
-    return this.request<RequestResponse>(url, options);
+    return this.request<RequestResponse>(url, options as any);
   }
 }
 
