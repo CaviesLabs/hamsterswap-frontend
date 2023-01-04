@@ -75,7 +75,7 @@ pipeline {
 
             when {
                 expression {
-                    params.DOKKU_DEPLOY == true && (env.GIT_BRANCH == 'develop' || env.GIT_BRANCH == 'main')
+                    params.DOKKU_DEPLOY == true && (env.GIT_BRANCH == 'dev' || env.GIT_BRANCH == 'main')
                 }
             }
 
