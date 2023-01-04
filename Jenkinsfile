@@ -84,7 +84,7 @@ pipeline {
                 sh 'rm -rf .husky/'
 
                 script {
-                    if (env.GIT_BRANCH == 'develop') {
+                    if (env.GIT_BRANCH == 'dev') {
                         sh '''
                             set +x
                             GIT_REMOTE_URL=${DOKKU_DEV_REMOTE} SSH_PRIVATE_KEY=$(cat ${SSH_PRIVATE_KEY}) dokku-deploy
