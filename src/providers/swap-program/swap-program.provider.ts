@@ -67,7 +67,7 @@ export class SwapProgramProvider {
       case "devnet":
         this.rpcEndpoint = SOLANA_DEVNET_RPC_ENDPOINT;
         break;
-      case "mainnet":
+      case "mainnet-beta":
         this.rpcEndpoint = SOLANA_MAINNET_RPC_RPC_ENDPOINT;
         break;
       default:

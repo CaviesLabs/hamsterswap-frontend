@@ -43,9 +43,6 @@ yarn.lock
 
 .DS_Store
 .env
-.env.prod
-.env.dev
-
 
 **/public/sw.js
 **/public/workbox-*.js
