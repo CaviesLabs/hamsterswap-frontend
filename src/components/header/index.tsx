@@ -9,7 +9,11 @@ import styles from "./index.module.scss";
 import UserProfile from "@/src/components/header/user-profile";
 import { useMain } from "@/src/hooks/pages/main";
 import { HamsterboxIcon } from "@/src/components/icons";
+import { useTheme } from "next-themes";
+import { utilsProvider } from "@/src/utils/utils.provider";
 import styled from "@emotion/styled";
+
+let themeChange = false;
 
 interface MenuItem {
   title: string;
@@ -18,6 +22,7 @@ interface MenuItem {
 }
 
 const Header: FC = () => {
+  const { theme, setTheme } = useTheme();
   const [curSlug, setCurSlug] = useState<string>("#about-us");
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
@@ -115,6 +120,53 @@ const Header: FC = () => {
     };
   }, []);
 
+  /**
+   * @description
+   * Handle toggle app theme
+   */
+  useEffect(() => {
+    const themeToggle = document.getElementById("theme-checkbox");
+    if (theme === "dark") {
+      (themeToggle as any).checked = true;
+    } else if (theme === "system") {
+      /**
+       * @description
+       * If user have not custom changing the theme
+       * It will be updated automatically following computer's theme change
+       */
+      utilsProvider.withInterval(() => {
+        if (themeChange === true) {
+          clearInterval(this);
+          return;
+        }
+        const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
+        if (darkThemeMq.matches) {
+          setTheme("dark");
+          (themeToggle as any).checked = true;
+        } else {
+          setTheme("light");
+          (themeToggle as any).checked = false;
+        }
+      }, 500);
+    }
+  }, []);
+
+  /**
+   * @description
+   * Pure theme configuration to tailwind config
+   */
+  useEffect(() => {
+    const classList = document.documentElement.classList;
+    document.documentElement.setAttribute("data-theme", theme as string);
+    if (theme === "dark") {
+      !classList.contains("dark") &&
+        document.documentElement.classList.add("dark");
+    } else {
+      classList.contains("dark") &&
+        document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
+
   return (
     <StyledHeader
       className={classnames("app-header fixed z-50 w-full", {
@@ -135,7 +187,13 @@ const Header: FC = () => {
             <a className="cursor-pointer" onClick={() => router.push("/")}>
               <HamsterboxIcon
                 className={classnames("w-[95px] md:w-[180px] hamsterbox-icon")}
-                color={isScrolled || !isHomepage ? "#07080A" : "white"}
+                color={
+                  !isScrolled && isHomepage
+                    ? "white"
+                    : theme === "dark"
+                    ? "white"
+                    : "#07080A"
+                }
               />
             </a>
           </div>
@@ -185,6 +243,36 @@ const Header: FC = () => {
                     "bg-strongTitle dark:bg-strongTitleDark"
                   )}
                 ></span>
+              </div>
+            </div>
+            <div className="flex items-center float-right right-[-30px] relative">
+              <div className="relative">
+                <div className="float-right relative">
+                  <input
+                    type="checkbox"
+                    className="theme-checkbox"
+                    id="theme-checkbox"
+                    onChange={() => {
+                      themeChange = true;
+                      setTheme(theme === "dark" ? "light" : "dark");
+                    }}
+                  />
+                  <label
+                    htmlFor="theme-checkbox"
+                    className="theme-label cursor-pointer"
+                  >
+                    <div className="theme-ball flex items-center">
+                      <img
+                        src="/assets/images/light-icon.svg"
+                        className="w-[9px] h-[9px] mx-auto dark:hidden"
+                      />
+                      <img
+                        src="/assets/images/dark-icon.svg"
+                        className="w-[9px] h-[9px] mx-auto hidden dark:block"
+                      />
+                    </div>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -253,7 +341,4 @@ export default Header;
 
 const StyledHeader = styled.div`
   transition: background-color 0.3s ease;
-  &.scrolled-header {
-    background-color: white;
-  }
 `;
