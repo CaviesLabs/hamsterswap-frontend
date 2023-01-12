@@ -36,12 +36,7 @@ const AppComponent: FC<{ Component: any; pageProps: any }> = ({
 
 function MyApp({ Component, pageProps }: AppProps) {
   /** @dev Process to select blockchain network. */
-  const network = useMemo(() => {
-    if ((process.env.ENV as string) === "prod") {
-      return WalletAdapterNetwork.Mainnet;
-    }
-    return WalletAdapterNetwork.Devnet;
-  }, [process.env.ENV]);
+  const network = process.env.SOLANA_CLUSTER as WalletAdapterNetwork;
 
   /** @dev Initilize needed wallet adapters. */
   const walletAdapters = useMemo(() => {
@@ -91,7 +86,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                   />
                 ),
               }}
-              debugMode={true} // you may want to set this in REACT_APP_DEBUG_MODE
+              debugMode={false} // you may want to set this in REACT_APP_DEBUG_MODE
             >
               <WalletProvider>
                 <MainProvider>
