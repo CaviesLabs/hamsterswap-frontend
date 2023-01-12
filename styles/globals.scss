@@ -256,10 +256,14 @@
   }
 }
 
+.app-header {
+  background-color: transparent;
+}
+
 .scrolled-header {
   position: fixed;
   width: 100%;
-  background-color: #ffff;
+  background-color: #ffff !important;
   z-index: 53;
 }
 
@@ -267,8 +271,12 @@
   .scrolled-header {
     position: fixed;
     width: 100%;
-    background-color: #20242D;
+    background-color: #20242D !important;
     z-index: 53;
+  }
+
+  .app-header {
+    background-color: #20242D;
   }
 }
 

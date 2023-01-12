@@ -8,7 +8,7 @@ import { FC, useMemo } from "react";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "@hamsterbox/ui-kit";
 import { ThemeProvider as NextThemeProvider } from "next-themes";
-import { WalletKitProvider } from "@gokiprotocol/walletkit";
+import { WalletKitProvider } from "@/wallet-kit";
 import { WalletProvider } from "@/src/hooks/useWallet";
 import { MainProvider } from "@/src/hooks/pages/main";
 import {
@@ -38,12 +38,7 @@ const AppComponent: FC<{ Component: any; pageProps: any }> = ({
 
 function MyApp({ Component, pageProps }: AppProps) {
   /** @dev Process to select blockchain network. */
-  const network = useMemo(() => {
-    if ((process.env.ENV as string) === "prod") {
-      return WalletAdapterNetwork.Mainnet;
-    }
-    return WalletAdapterNetwork.Devnet;
-  }, [process.env.ENV]);
+  const network = process.env.SOLANA_CLUSTER as WalletAdapterNetwork;
 
   /** @dev Initilize needed wallet adapters. */
   const walletAdapters = useMemo(() => {
@@ -60,7 +55,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <SeoComponent />
-      <NextThemeProvider>
+      <NextThemeProvider attribute="class">
         <ThemeProvider>
           {/**
            * @dev

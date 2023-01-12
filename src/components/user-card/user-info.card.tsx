@@ -11,7 +11,6 @@ import { useRouter } from "next/router";
 
 /** @dev Define styled component. */
 export const StyledUserInfoCard = styled.div`
-  background: #ffffff;
   box-shadow: 0px 6px 12px rgba(28, 39, 49, 0.05);
   border-radius: 32px;
   padding: 40px;
@@ -32,7 +31,7 @@ export const UserInfoCard: FC<UserInfoCardProps> = (props) => {
   }, [props.userId]);
 
   return (
-    <StyledUserInfoCard>
+    <StyledUserInfoCard className="bg-tDark dark:bg-tLight">
       <div className="md:flex items-center ">
         <img
           src={profile?.avatar || "/assets/images/sample-avatar.png"}
@@ -55,23 +54,29 @@ export const UserInfoCard: FC<UserInfoCardProps> = (props) => {
         <div className="md:ml-[20px]">
           <div className="md:flex items-center justify-center">
             <div className="md:float-left px-[70px] border-r-solid md:border-r-[1px] border-r-dark30 mt-[12px] md:mt-0">
-              <p className="text-[24px] semi-bold text-center">
+              <p className="text-[24px] semi-bold text-center text-tLight dark:text-tDark">
                 {profile?.ordersStat.orders || 0}
               </p>
-              <p className="text-[16px] regular-text text-center">Orders</p>
+              <p className="text-[16px] regular-text text-center text-tLight dark:text-tDark">
+                Orders
+              </p>
             </div>
             <div className="md:float-left px-[70px] border-r-solid md:border-r-[1px] border-r-dark30 mt-[12px] md:mt-0">
-              <p className="text-[24px] semi-bold text-center">
+              <p className="text-[24px] semi-bold text-center text-tLight dark:text-tDark">
                 {completedOrderPercent(
                   profile?.ordersStat.completedOrders,
                   profile?.ordersStat.orders
                 )}
                 %
               </p>
-              <p className="text-[16px] regular-text text-center">Completion</p>
+              <p className="text-[16px] regular-text text-center text-tLight dark:text-tDark">
+                Completion
+              </p>
             </div>
             <div className="md:float-left px-[70px] mt-[12px] md:mt-0">
-              <p className="text-[24px] semi-bold text-center">Contact</p>
+              <p className="text-[24px] semi-bold text-center text-tLight dark:text-tDark">
+                Contact
+              </p>
               <div className="flex justify-around min-w-[197px]">
                 {profile?.twitter && (
                   <a href={profile?.twitter} target="_blank">

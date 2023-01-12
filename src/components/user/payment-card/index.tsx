@@ -74,7 +74,7 @@ export default function PaymentCard() {
                 _.type === "paypal"
                   ? "bg-sky-200"
                   : _.type === "stripe"
-                  ? "bg-purpleBg"
+                  ? "bg-purpleBg dark:bg-purpleBgDark"
                   : "bg-orange-100"
               )}
             >

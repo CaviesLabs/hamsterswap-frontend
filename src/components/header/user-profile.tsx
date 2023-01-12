@@ -44,7 +44,7 @@ const UserProfile: FC = () => {
         src={profile?.avatar}
         alt="Boring avatar"
       />
-      <span className="text-[7px] md:text-[14px]">
+      <span className="text-[7px] md:text-[14px] text-tLight dark:text-tDark">
         {utilsProvider.makeShort(wallet?.publicKey?.toString(), 3)}
       </span>
       <ul className={styles["toggle-container"]}>

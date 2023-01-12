@@ -1,6 +1,6 @@
 import { FC, useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useWalletKit } from "@gokiprotocol/walletkit";
+import { useWalletKit } from "@/wallet-kit";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { Button } from "@hamsterbox/ui-kit";
 import { PURPLE_HEADER_PAGES } from "@/src/utils";
@@ -167,6 +167,32 @@ const Header: FC = () => {
     }
   }, [theme]);
 
+  // const headerClassName = useMemo(() => {
+  //   const prx = {
+  //     "text-white": theme === "light" && !isScrolled && isHomepage,
+  //     "scrolled-header shadow-lg": theme === "light" && isScrolled,
+  //     "!bg-tLight": theme === "dark",
+  //   };
+  //   console.log(theme, prx);
+  //   return classnames(
+  //     "app-header fixed z-50 w-full",
+  //     {
+  //       /**
+  //        * @dev Restrict fill purple background & clear border for specific pages.
+  //        */
+  //       "bg-purpleBg border-b-[0px]": PURPLE_HEADER_PAGES.filter((item) =>
+  //         router.asPath.includes(item)
+  //       ).length,
+  //       "text-white": theme === "light" && !isScrolled && isHomepage,
+  //       "scrolled-header shadow-lg": theme === "light" && isScrolled,
+  //       "!bg-tLight": theme === "dark",
+  //     },
+  //     prx
+  //   );
+  // }, [theme, isScrolled, isHomepage]);
+
+  console.log(isScrolled);
+
   return (
     <StyledHeader
       className={classnames("app-header fixed z-50 w-full", {
@@ -187,13 +213,22 @@ const Header: FC = () => {
             <a className="cursor-pointer" onClick={() => router.push("/")}>
               <HamsterboxIcon
                 className={classnames("w-[95px] md:w-[180px] hamsterbox-icon")}
-                color={
-                  !isScrolled && isHomepage
-                    ? "white"
-                    : theme === "dark"
-                    ? "white"
-                    : "#07080A"
-                }
+                color={useMemo(
+                  () =>
+                    theme === "dark"
+                      ? "white"
+                      : !isScrolled && isHomepage
+                      ? "white"
+                      : "#07080A",
+                  [theme, isScrolled, isHomepage]
+                )}
+                // color={
+                //   !isScrolled && isHomepage
+                //     ? "white"
+                //     : theme === "dark"
+                //     ? "white"
+                //     : "#07080A"
+                // }
               />
             </a>
           </div>

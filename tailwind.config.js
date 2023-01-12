@@ -63,6 +63,7 @@ module.exports = {
         footerItemColor: "#5F6C87",
         navy: "#5F6C87",
         tLight: "#20242D",
+        purpleBg: "#EDECFF",
 
         /** Dark mode */
         menuItemSelectedDark: "#FFFFFF",
@@ -80,7 +81,7 @@ module.exports = {
         dark10: "#F0F3FA",
         dark30: "#CBD4E1",
         dark60: "#5F6C87",
-        purpleBg: "#EDECFF",
+        purpleBgDark: "#735CF7",
         red300: "#DE2C47",
         tDark: "#FFFFFF",
       },

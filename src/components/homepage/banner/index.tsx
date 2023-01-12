@@ -1,7 +1,7 @@
 import { Button } from "@hamsterbox/ui-kit";
 import { useRouter } from "next/router";
 import classnames from "classnames";
-import { useWalletKit } from "@gokiprotocol/walletkit";
+import { useWalletKit } from "@/wallet-kit";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import Lottie from "react-lottie";
 import animationData from "./animationData.json";

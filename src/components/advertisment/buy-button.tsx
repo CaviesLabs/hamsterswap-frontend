@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Button, toast } from "@hamsterbox/ui-kit";
 import { useCallback, useState } from "react";
 import { useConnectedWallet } from "@saberhq/use-solana";
-import { useWalletKit } from "@gokiprotocol/walletkit";
+import { useWalletKit } from "@/wallet-kit";
 import { useWallet } from "@/src/hooks/useWallet";
 import {
   ConfirmedTransactionModal,
