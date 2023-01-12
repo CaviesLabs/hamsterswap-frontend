@@ -1,4 +1,5 @@
 import "../../styles/globals.css";
+import "../../styles/globals.scss";
 import "@hamsterbox/ui-kit/dist/cjs/styles/css/main.css";
 import Script from "next/script";
 import makeStore from "@/src/redux";
@@ -6,6 +7,7 @@ import type { AppProps } from "next/app";
 import { FC, useMemo } from "react";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "@hamsterbox/ui-kit";
+import { ThemeProvider as NextThemeProvider } from "next-themes";
 import { WalletKitProvider } from "@gokiprotocol/walletkit";
 import { WalletProvider } from "@/src/hooks/useWallet";
 import { MainProvider } from "@/src/hooks/pages/main";
@@ -53,50 +55,52 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <SeoComponent />
-      <ThemeProvider>
-        {/**
-         * @dev
-         * NextJs recommend do only add stylesheets in SEO component
-         */}
-        <Script
-          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
-          crossOrigin="anonymous"
-        />
-        <ConnectionProvider
-          endpoint={
-            network === WalletAdapterNetwork.Mainnet
-              ? "https://boldest-few-field.solana-mainnet.quiknode.pro/0ffa9f9f5e9141aa33a030081b78fdfe40bfbae6/"
-              : clusterApiUrl(network)
-          }
-        >
-          <SolanaWalletAdapterProvider wallets={walletAdapters}>
-            {/**
-             * @dev
-             * Wrap the whole app in Goki Kit provider for use.
-             */}
-            <WalletKitProvider
-              defaultNetwork={network}
-              app={{
-                name: "Hamsterswap",
-                icon: (
-                  <img
-                    className="bg-dark60 rounded-full"
-                    src="/assets/icons/favicon-196.png"
-                  />
-                ),
-              }}
-              debugMode={false} // you may want to set this in REACT_APP_DEBUG_MODE
-            >
-              <WalletProvider>
-                <MainProvider>
-                  <AppComponent {...{ Component, pageProps }} />
-                </MainProvider>
-              </WalletProvider>
-            </WalletKitProvider>
-          </SolanaWalletAdapterProvider>
-        </ConnectionProvider>
-      </ThemeProvider>
+      <NextThemeProvider>
+        <ThemeProvider>
+          {/**
+           * @dev
+           * NextJs recommend do only add stylesheets in SEO component
+           */}
+          <Script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+            crossOrigin="anonymous"
+          />
+          <ConnectionProvider
+            endpoint={
+              network === WalletAdapterNetwork.Mainnet
+                ? "https://boldest-few-field.solana-mainnet.quiknode.pro/0ffa9f9f5e9141aa33a030081b78fdfe40bfbae6/"
+                : clusterApiUrl(network)
+            }
+          >
+            <SolanaWalletAdapterProvider wallets={walletAdapters}>
+              {/**
+               * @dev
+               * Wrap the whole app in Goki Kit provider for use.
+               */}
+              <WalletKitProvider
+                defaultNetwork={network}
+                app={{
+                  name: "Hamsterswap",
+                  icon: (
+                    <img
+                      className="bg-dark60 rounded-full"
+                      src="/assets/icons/favicon-196.png"
+                    />
+                  ),
+                }}
+                debugMode={true} // you may want to set this in REACT_APP_DEBUG_MODE
+              >
+                <WalletProvider>
+                  <MainProvider>
+                    <AppComponent {...{ Component, pageProps }} />
+                  </MainProvider>
+                </WalletProvider>
+              </WalletKitProvider>
+            </SolanaWalletAdapterProvider>
+          </ConnectionProvider>
+        </ThemeProvider>
+      </NextThemeProvider>
     </Provider>
   );
 }

@@ -1,5 +1,8 @@
 import { FC, useMemo } from "react";
 import { useRouter } from "next/router";
+import { HamsterboxIcon, CaviesIcon } from "@/src/components/icons";
+import { useTheme } from "next-themes";
+import classnames from "classnames";
 
 interface FooterItem {
   name: string;
@@ -13,6 +16,7 @@ interface SocialItem {
 }
 
 const Footer: FC = () => {
+  const { theme } = useTheme();
   const router = useRouter();
 
   const footers = useMemo<FooterItem[]>(
@@ -63,17 +67,18 @@ const Footer: FC = () => {
           </div>
 
           <div className="relative">
-            <img
-              src="/assets/images/logo.png"
-              className="w-[155px] h-auto  mx-auto cursor-pointer"
-              onClick={() => router.push("/")}
-            />
+            <a className="cursor-pointer" onClick={() => router.push("/")}>
+              <HamsterboxIcon
+                className={classnames("w-[155px] h-auto hamsterbox-icon")}
+                color={theme === "dark" ? "white" : "#07080A"}
+              />
+            </a>
             <div className="flex mx-auto mt-[14px] justify-center items-start">
-              <div className="top-0 regular-text text-[14px] mr-[5px]">by</div>
+              <div className="top-0 regular-text text-[14px] mr-[5px] text-tLight dark:text-tDark">by</div>
               <a href="https://cavies.xyz/" target="_blank">
-                <img
-                  src="https://cavies.xyz/assets/images/logo.png"
-                  className="w-[110px] h-auto"
+                <CaviesIcon
+                  className={classnames("w-[110px] h-auto")}
+                  color={theme === "dark" ? "white" : "#20242D"}
                 />
               </a>
             </div>
