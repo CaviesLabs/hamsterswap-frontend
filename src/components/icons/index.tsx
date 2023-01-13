@@ -123,8 +123,8 @@ export const SolanaIcon: FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width={props.size || "24"}
+      height={props.size || "24"}
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -332,7 +332,7 @@ export const TelegramIcon: FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
+      width={props.size || "24 "}
       height="24"
       viewBox="0 0 24 24"
       fill="none"
@@ -522,3 +522,22 @@ export const HamsterboxIcon: FC<IconProps> = (props) => {
     </svg>
   );
 };
+
+export const DropdownIcon: FC<IconProps> = (props) => (
+  <svg
+    className={props.className}
+    width={props.size || "25"}
+    height={props.size || "24"}
+    viewBox="0 0 25 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M8 10L13 14L18 10"
+      stroke="#7886A0"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);

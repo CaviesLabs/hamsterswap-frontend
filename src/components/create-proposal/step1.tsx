@@ -116,7 +116,7 @@ export const Step1: FC = () => {
         <div className="ml-[12px]">
           <Button
             size="small"
-            text="Add SOL"
+            text="Add Token"
             className="!rounded-[100px] after:!rounded-[100px] !px-4"
             theme={{
               backgroundColor: "#41ADD1",

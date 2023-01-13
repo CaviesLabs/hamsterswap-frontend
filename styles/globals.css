@@ -52,6 +52,9 @@ a {
   box-sizing: border-box;
 }
 
+.thin-text {
+  font-family: poppins-thin !important;
+}
 .regular-text {
   font-family: poppins-regular !important;
 }
