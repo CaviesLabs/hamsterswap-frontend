@@ -4,79 +4,16 @@ import {
   SetStateAction,
   useMemo,
   useState,
-  ReactNode,
 } from "react";
 import { Input, Modal, Dropdown } from "antd";
 import { useSelector } from "react-redux";
 import { AddItemModalProps } from "./types";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
-import { SolanaIcon, DropdownIcon, CheckIcon } from "@/src/components/icons";
+import { SolanaIcon, DropdownIcon } from "@/src/components/icons";
 import { useWallet } from "@/src/hooks/useWallet";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
-import {
-  WSOL_ADDRESS,
-  BONK_ADDRESS,
-  USDC_ADDRESS,
-} from "@/src/utils/constants";
-
-type TokenItemProps = {
-  name: string;
-  symbol?: string;
-  address: string;
-  icon(size: string): ReactNode;
-};
-
-export const SUPPORTED_TOKEN: TokenItemProps[] = [
-  {
-    name: "SOLANA",
-    address: WSOL_ADDRESS,
-    symbol: "SOL",
-    icon: (size: string) => (
-      <img src="/assets/images/solana.svg" className={`w-${size} h-${size}`} />
-    ),
-  },
-  {
-    name: "BONK",
-    address: BONK_ADDRESS,
-    symbol: "BONK",
-    icon: (size: string) => (
-      <img src="/assets/images/bonk.svg" className={`w-${size} h-${size}`} />
-    ),
-  },
-  {
-    name: "USDC",
-    symbol: "USDC",
-    address: USDC_ADDRESS,
-    icon: (size: string) => (
-      <img src="/assets/images/usdc.svg" className={`w-${size} h-${size}`} />
-    ),
-  },
-];
-
-interface TokenItemComponentProps extends TokenItemProps {
-  onClick(address: string): void;
-  check: boolean;
-}
-
-export const TokenItem: FC<TokenItemComponentProps> = (props) => {
-  return (
-    <div
-      className="flow-root items-center pb-[20px] pt-[10px] border-b-solid border-b-[1px] border-b-[#E2E8F0]"
-      onClick={() => props.onClick(props.address)}
-    >
-      <div className="float-left">{props.icon("48")}</div>
-      <div className="float-left pl-[20px]">
-        <p className="text-[16px] regular-text uppercase">{props.name}</p>
-        <p className="text-[#5F6C87] text-[12px]">Balance: 20</p>
-      </div>
-      {props.check && (
-        <div className="float-right">
-          <CheckIcon className="relative top-[15px]" />
-        </div>
-      )}
-    </div>
-  );
-};
+import { WSOL_ADDRESS } from "@/src/utils/constants";
+import { SUPPORTED_TOKEN, TokenItem } from "../token-select-item";
 
 const decimalCount = (num: any) => {
   // Convert to String
