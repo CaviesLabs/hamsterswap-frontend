@@ -25,6 +25,8 @@ import {
 } from "@solana/wallet-adapter-wallets";
 import { SeoComponent } from "@/src/components/seo";
 
+import "flowbite";
+
 const store = makeStore();
 
 const AppComponent: FC<{ Component: any; pageProps: any }> = ({
