@@ -12,18 +12,17 @@ export const parseProposal = (item: SwapItemEntity) => {
     assetType: item.type,
   };
 
+  console.log(item);
+
   if (resp.type === SwapItemType.CURRENCY) {
-    const meta = item.nftMetadata;
-    resp.name = `${
-      item.amount /
-      Math.pow(
-        10,
-        SUPPORTED_TOKEN.find((Sitem) => Sitem.address === item.contractAddress)
-          ?.decimal
-      )
-    } ${meta.symbol}`;
+    const tokenInfo = SUPPORTED_TOKEN.find(
+      (Sitem) => Sitem.address === item.contractAddress
+    );
+    resp.name = `${item.amount / Math.pow(10, tokenInfo?.decimal)} ${
+      tokenInfo?.symbol
+    }`;
     resp.collection = "Currency";
-    resp.image = meta?.icon;
+    resp.image = tokenInfo?.iconUrl;
   } else if (resp.type === SwapItemType.NFT) {
     const meta = item.nftMetadata;
     resp.name = meta?.nft_name;
