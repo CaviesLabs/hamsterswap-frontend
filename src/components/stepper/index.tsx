@@ -8,8 +8,6 @@ import {
   useImperativeHandle,
   ForwardRefRenderFunction,
 } from "react";
-import styles from "./styles.module.css";
-
 import {
   StepStates,
   ProgressStep,
@@ -18,6 +16,7 @@ import {
   StepProgressHandler,
 } from "./types";
 import classnames from "classnames";
+import styles from "./styles.module.css";
 
 /**
  * @dev Define step reducer.

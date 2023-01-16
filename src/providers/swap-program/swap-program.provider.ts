@@ -713,9 +713,15 @@ export class SwapProgramProvider {
   private async getProposalState(
     id: string
   ): Promise<[PublicKey, SwapProposalEntity]> {
-    const swapProposal = await this.instructionProvider.findSwapProposal(id);
-    const state = await this.program.account.swapProposal.fetch(swapProposal);
-    const parseState = JSON.parse(JSON.stringify(state)) as SwapProposalEntity;
-    return [swapProposal, parseState];
+    try {
+      const swapProposal = await this.instructionProvider.findSwapProposal(id);
+      const state = await this.program.account.swapProposal.fetch(swapProposal);
+      const parseState = JSON.parse(
+        JSON.stringify(state)
+      ) as SwapProposalEntity;
+      return [swapProposal, parseState];
+    } catch {
+      return [null, null];
+    }
   }
 }
