@@ -11,8 +11,10 @@ import {
  */
 export type TokenItemEntity = {
   name: string;
-  symbol?: string;
   address: string;
+  symbol?: string;
+  iconUrl?: string;
+  decimal?: number;
   icon(size: string): ReactNode;
 };
 
@@ -25,6 +27,8 @@ export const SUPPORTED_TOKEN: TokenItemEntity[] = [
     name: "SOLANA",
     address: WSOL_ADDRESS,
     symbol: "SOL",
+    iconUrl: "/assets/images/solana.svg",
+    decimal: 9,
     icon: (size: string) => (
       <img src="/assets/images/solana.svg" className={`w-${size} h-${size}`} />
     ),
@@ -33,6 +37,8 @@ export const SUPPORTED_TOKEN: TokenItemEntity[] = [
     name: "BONK",
     address: BONK_ADDRESS,
     symbol: "BONK",
+    iconUrl: "/assets/images/bonk.svg",
+    decimal: 5,
     icon: (size: string) => (
       <img src="/assets/images/bonk.svg" className={`w-${size} h-${size}`} />
     ),
@@ -41,6 +47,8 @@ export const SUPPORTED_TOKEN: TokenItemEntity[] = [
     name: "USDC",
     symbol: "USDC",
     address: USDC_ADDRESS,
+    iconUrl: "/assets/images/usdc.svg",
+    decimal: 6,
     icon: (size: string) => (
       <img src="/assets/images/usdc.svg" className={`w-${size} h-${size}`} />
     ),
@@ -53,6 +61,7 @@ export const SUPPORTED_TOKEN: TokenItemEntity[] = [
  */
 interface TokenItemProps extends TokenItemEntity {
   onClick(address: string): void;
+  balance: string;
   check: boolean;
 }
 
@@ -70,7 +79,7 @@ export const TokenItem: FC<TokenItemProps> = (props) => {
       <div className="float-left">{props.icon("48")}</div>
       <div className="float-left pl-[20px]">
         <p className="text-[16px] regular-text uppercase">{props.name}</p>
-        <p className="text-[#5F6C87] text-[12px]">Balance: 20</p>
+        <p className="text-[#5F6C87] text-[12px]">Balance: {props.balance}</p>
       </div>
       {props.check && (
         <div className="float-right">

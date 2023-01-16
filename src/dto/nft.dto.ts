@@ -27,6 +27,7 @@ export class NftEntity {
   nft_listing_price: number;
   nft_image_uri: string;
   nft_image?: string;
+  decimal?: number;
 }
 
 export class NftDto {
