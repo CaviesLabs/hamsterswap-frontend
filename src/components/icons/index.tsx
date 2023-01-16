@@ -535,9 +535,9 @@ export const DropdownIcon: FC<IconProps> = (props) => (
     <path
       d="M8 10L13 14L18 10"
       stroke="#7886A0"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
