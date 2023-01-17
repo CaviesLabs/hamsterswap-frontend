@@ -3,7 +3,6 @@ import { RowNftItemProps } from "./types";
 import { GameItemModal, NFTDetailsModal } from "../modal";
 import { DetailIcon, VerticalDots } from "@/src/components/icons";
 import { SwapItemType } from "@/src/entities/proposal.entity";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 
 export const RowNftItem: FC<RowNftItemProps> = (props) => {
@@ -34,16 +33,14 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
       <div className="bg-white duration-500 flex rounded-[16px] p-[16px]">
         <div className="left pl-[2px]">
           <img
-            src={isSol ? "/assets/images/solana.svg" : props.image}
+            src={props.image}
             alt="NFT image"
             className="h-full !w-[80px] object-cover rounded-[8px] aspect-square"
           />
         </div>
         <div className="px-4 w-72 left">
           <p className="text-lg semi-bold text-black truncate block capitalize">
-            {isSol
-              ? `${parseInt(props.name.split(" ")[0]) / LAMPORTS_PER_SOL} SOL`
-              : props.name}
+            {props.name}
           </p>
           <div className="flex items-center">
             {!isSol && (

@@ -14,7 +14,6 @@ import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 import { ExpectedItemProps } from "@/src/components/create-proposal/step2/types";
 import { useSelector } from "react-redux";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import { WSOL_ADDRESS } from "@/src/utils/constants";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { Col, Row } from "antd";
 
@@ -45,7 +44,11 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
    * Handle save sol value into swapItems array of redux-store
    * @param value [string]
    */
-  const handleAddSol = (value: string) => {
+  const handleAddSol = (
+    mintAccount: string,
+    value: string,
+    decimal: number
+  ) => {
     if (expectedItems[props.index]?.askingItems.length === 4) {
       return toast.warn("Only a maximum of 4 items are allowed");
     }
@@ -53,7 +56,11 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
     addExpectedItem(
-      { nft_address: WSOL_ADDRESS, assetType: SwapItemType.CURRENCY } as any,
+      {
+        nft_address: mintAccount,
+        assetType: SwapItemType.CURRENCY,
+        decimal,
+      } as any,
       AssetTypes.token,
       props.index,
       parseFloat(value)
@@ -141,9 +148,9 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                 isModalOpen={isAddSol}
                 handleCancel={() => setIsAddSol(false)}
                 addInOwner={false}
-                handleAddSol={(value) => {
+                handleAddSol={(mintAccount, value, decimal) => {
                   setIsAddSol(false);
-                  handleAddSol(value);
+                  handleAddSol(mintAccount, value, decimal);
                 }}
               />
             </div>

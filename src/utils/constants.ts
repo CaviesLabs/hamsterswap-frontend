@@ -41,3 +41,5 @@ export const SIGN_MESSAGE =
 export const DATE_TIME_FORMAT = "YYYY-MM-DD HH:mm (UTC)";
 
 export const WSOL_ADDRESS = "So11111111111111111111111111111111111111112";
+export const BONK_ADDRESS = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
+export const USDC_ADDRESS = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";

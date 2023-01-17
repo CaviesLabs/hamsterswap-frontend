@@ -3,7 +3,10 @@ module.exports = {
     "./src/pages/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
     "./src/layouts/**/*.{js,ts,jsx,tsx}",
+    "./public/**/*.html",
     "./node_modules/tw-elements/dist/js/**/*.js",
+    "./node_modules/flowbite-react/**/*.js",
+    "./node_modules/flowbite/**/*.js",
   ],
   darkMode: "class",
   purge: {
@@ -91,5 +94,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tw-elements/dist/plugin")],
+  plugins: [require("tw-elements/dist/plugin"), require("flowbite/plugin")],
 };

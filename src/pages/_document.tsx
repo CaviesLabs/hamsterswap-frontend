@@ -11,6 +11,7 @@ export default function Document() {
         <Main />
         <NextScript />
       </body>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/flowbite.min.js"></script>
     </Html>
   );
 }

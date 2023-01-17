@@ -4,6 +4,8 @@ import {
   SwapItemEntity,
   SwapItemType,
 } from "@/src/entities/proposal.entity";
+import { SUPPORTED_TOKEN } from "@/src/components/create-proposal/token-select-item";
+import UtilsProvider from "@/src/utils/utils.provider";
 
 export const parseProposal = (item: SwapItemEntity) => {
   const resp: any = {
@@ -11,10 +13,17 @@ export const parseProposal = (item: SwapItemEntity) => {
     assetType: item.type,
   };
 
+  console.log(item);
+
   if (resp.type === SwapItemType.CURRENCY) {
-    resp.name = `${item.amount} USD`;
-    resp.collection = "Stripe";
-    resp.image = "/assets/images/asset-cash.png";
+    const tokenInfo = SUPPORTED_TOKEN.find(
+      (Sitem) => Sitem.address === item.contractAddress
+    );
+    resp.name = `${UtilsProvider.formatLongNumber(
+      item.amount / Math.pow(10, tokenInfo?.decimal)
+    )} ${tokenInfo?.symbol}`;
+    resp.collection = "Currency";
+    resp.image = tokenInfo?.iconUrl;
   } else if (resp.type === SwapItemType.NFT) {
     const meta = item.nftMetadata;
     resp.name = meta?.nft_name;
@@ -38,9 +47,14 @@ export const parseOfferCreateProposal = (
     resp.collection = "Stripe";
     resp.image = "/assets/images/asset-cash.png";
   } else if (resp.assetType === SwapItemType.CURRENCY) {
-    resp.name = `${item.amount} SOL`;
-    resp.collection = "Stripe";
-    resp.image = "/assets/images/asset-cash.png";
+    const tokenInfo = SUPPORTED_TOKEN.find(
+      (item) => item.address === resp.nft_address
+    );
+    resp.name = `${UtilsProvider.formatLongNumber(item.tokenAmount)} ${
+      tokenInfo.symbol
+    }`;
+    resp.collection = "Currency";
+    resp.image = tokenInfo.iconUrl;
   } else if (resp.assetType === SwapItemType.NFT) {
     resp.name = item?.nft_name;
     resp.collection = item?.nft_collection_name;

@@ -15,6 +15,7 @@ import {
 import { SwapIdl, IDL } from "./swap.idl";
 import { InstructionProvider } from "./instruction.provider";
 import { TransactionProvider } from "./transaction.provider";
+import { WSOL_ADDRESS } from "@/src/utils/constants";
 
 export const SOLANA_DEVNET_RPC_ENDPOINT = "https://api.devnet.solana.com";
 export const SOLANA_MAINNET_RPC_RPC_ENDPOINT =
@@ -277,7 +278,11 @@ export class SwapProgramProvider {
            * @dev Handle to wrap sol to wsol if offered item is SOL currency.
            */
           const wrapSolInstructions = [];
-          if (Object.keys(item.itemType)[0] === AssetTypes.token) {
+          console.log(item.mintAccount.toBase58().toString(), WSOL_ADDRESS);
+          if (
+            Object.keys(item.itemType)[0] === AssetTypes.token &&
+            item.mintAccount.toBase58().toString() === WSOL_ADDRESS
+          ) {
             try {
               const [ins1, ins2] = await this.instructionProvider.wrapSol(
                 walletProvider.publicKey,
@@ -405,7 +410,10 @@ export class SwapProgramProvider {
           instructions.push(instruction);
 
           /** @dev Unwrap sol if item is currency. */
-          if (item.type === SwapItemType.CURRENCY) {
+          if (
+            item.type === SwapItemType.CURRENCY &&
+            item.contractAddress === WSOL_ADDRESS
+          ) {
             const inst = await this.instructionProvider.unwrapSol(
               walletProvider.publicKey
             );
@@ -480,7 +488,10 @@ export class SwapProgramProvider {
            * @dev Handle to wrap sol to wsol if offered item is SOL currency.
            */
           const wrapSolInstructions = [];
-          if (item.type.valueOf() === SwapItemType.CURRENCY.valueOf()) {
+          if (
+            item.type.valueOf() === SwapItemType.CURRENCY.valueOf() &&
+            item.contractAddress === WSOL_ADDRESS
+          ) {
             try {
               const [ins1, ins2] = await this.instructionProvider.wrapSol(
                 walletProvider.publicKey,
@@ -562,7 +573,10 @@ export class SwapProgramProvider {
           instructions.push(instruction);
 
           /** @dev Unwrap sol if item is currency. */
-          if (item.type === SwapItemType.CURRENCY) {
+          if (
+            item.type === SwapItemType.CURRENCY &&
+            item.contractAddress === WSOL_ADDRESS
+          ) {
             const inst = await this.instructionProvider.unwrapSol(
               walletProvider.publicKey
             );
@@ -663,7 +677,10 @@ export class SwapProgramProvider {
         instructions.push(instruction);
 
         /** @dev Unwrap sol if item is currency. */
-        if (item.type === SwapItemType.CURRENCY) {
+        if (
+          item.type === SwapItemType.CURRENCY &&
+          item.contractAddress === WSOL_ADDRESS
+        ) {
           const inst = await this.instructionProvider.unwrapSol(
             walletProvider.publicKey
           );

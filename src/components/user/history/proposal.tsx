@@ -5,8 +5,9 @@ import { DATE_TIME_FORMAT, solAmount, utilsProvider } from "@/src/utils";
 import { DotIcon } from "@/src/components/icons";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 import { getStatus } from "@/src/utils/proposal-status";
-import dayjs from "dayjs";
 import { useMain } from "@/src/hooks/pages/main";
+import dayjs from "dayjs";
+import { SUPPORTED_TOKEN } from "../../create-proposal/token-select-item";
 
 function Proposal(props: ProposalHistoryProps) {
   const router = useRouter();
@@ -26,11 +27,23 @@ function Proposal(props: ProposalHistoryProps) {
 
   const renderSwapItemCol = () =>
     data.offerItems.map(
-      ({ id, amount, nftMetadata: { nft_image, icon, nft_name, symbol } }) => (
+      ({
+        id,
+        contractAddress,
+        amount,
+        nftMetadata: { nft_image, icon, nft_name, symbol },
+      }) => (
         <div key={`swapItems-${id}`} className="flex items-center mb-3">
           <img className="w-10 rounded-lg" src={nft_image || icon} />
           <p className="ml-2">
-            {nft_name || (symbol && `${solAmount(amount)} ${symbol}`)}
+            {nft_name ||
+              (symbol &&
+                `${solAmount(
+                  amount,
+                  SUPPORTED_TOKEN.find(
+                    (item) => item.address === contractAddress
+                  )?.decimal
+                )} ${symbol}`)}
           </p>
         </div>
       )
@@ -38,11 +51,23 @@ function Proposal(props: ProposalHistoryProps) {
 
   const renderReceiveItemCol = () =>
     swapOption?.items.map(
-      ({ id, amount, nftMetadata: { nft_image, icon, nft_name, symbol } }) => (
+      ({
+        id,
+        contractAddress,
+        amount,
+        nftMetadata: { nft_image, icon, nft_name, symbol },
+      }) => (
         <div key={id} className="flex items-center mb-3">
           <img className="w-10 rounded-lg" src={nft_image || icon} />
           <p className="ml-2">
-            {nft_name || (symbol && `${solAmount(amount)} ${symbol}`)}
+            {nft_name ||
+              (symbol &&
+                `${solAmount(
+                  amount,
+                  SUPPORTED_TOKEN.find(
+                    (item) => item.address === contractAddress
+                  )?.decimal
+                )} ${symbol}`)}
           </p>
         </div>
       )
