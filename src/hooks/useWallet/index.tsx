@@ -17,7 +17,7 @@ import {
 import web3 from "@solana/web3.js";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
-import { getSwapProgramProvider } from "@/src/providers/swap-program";
+import { getSwapProgramProvider } from "@/src/providers/program";
 import { SwapProgramService } from "@/src/services/swap-program.service";
 import { getAuthService } from "@/src/actions/firebase.action";
 import { getWalletName } from "./utils";

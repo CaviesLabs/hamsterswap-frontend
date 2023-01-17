@@ -1,6 +1,6 @@
 import { BN } from "@project-serum/anchor";
 import { networkProvider } from "@/src/providers/network.provider";
-import { SwapProgramProvider } from "@/src/providers/swap-program";
+import { SwapProgramProvider } from "@/src/providers/program";
 import UtilsProvider from "@/src/utils/utils.provider";
 import {
   CreateProposalToServerDto,
@@ -27,6 +27,7 @@ export class SwapProgramService {
 
   /**
    * @dev Call this function to create new proposal.
+   * @param walletProvider
    * @param {CreateProposalToServerDto} createProposalDto.
    */
   public async createProposal(

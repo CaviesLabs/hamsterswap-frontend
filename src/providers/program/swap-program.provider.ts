@@ -190,6 +190,7 @@ export class SwapProgramProvider {
 
   /**
    * @dev The function to interact with blockchain to create new on-chain proposal.
+   * @param walletProvider
    * @param {CreateProposalDto} createProposalDto.
    * @returns {any}.
    */
@@ -331,7 +332,9 @@ export class SwapProgramProvider {
 
   /**
    * @dev The function to cancle proposal on-chain.
-   * @param {string} proposalId
+   * @param walletProvider
+   * @param proposal
+   * @param optionId
    */
   public async cancelProposal(
     walletProvider: WalletProvider,
@@ -428,7 +431,7 @@ export class SwapProgramProvider {
   /**
    * @dev Call the function to process transaction to wrap a proposal.
    * @param {WalletProvider} walletProvider
-   * @param {string} proposalId.
+   * @param proposal
    * @param {string} optionId.
    */
   public async swapProposal(

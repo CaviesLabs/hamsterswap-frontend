@@ -28,9 +28,9 @@ export class TransactionProvider {
 
   /**
    * @dev The function to create transaction with given instructions then sign and send to chain.
-   * @param {WalletProvider} Provider to sign transaction.
-   * @param {Transaction} @arrays instructions
    * @public
+   * @param walletProvider
+   * @param instructions
    */
   public async signAndSendTransaction(
     walletProvider: WalletProvider,
@@ -54,22 +54,4 @@ export class TransactionProvider {
     const txid = await this.connection.sendRawTransaction(rawTx.serialize());
     return txid;
   }
-
-  /**
-   * @dev Get transaction.
-   * @param {TransactionSignature} tx
-   * @returns
-   */
-  // public async getTransaction(tx: TransactionSignature) {
-  //   const transaction = await this.connection.getParsedTransaction(tx, {
-  //     commitment: "confirmed",
-  //   });
-  //   const eventParser = new EventParser(
-  //     this.program.programId,
-  //     new BorshCoder(this.program.idl)
-  //   );
-
-  //   const [event] = eventParser.parseLogs(transaction.meta.logMessages);
-  //   return JSON.stringify(event);
-  // }
 }

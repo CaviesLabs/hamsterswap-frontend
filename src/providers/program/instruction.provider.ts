@@ -119,7 +119,7 @@ export class InstructionProvider {
 
   /**
    * @dev The function to get or create a account to hold token.
-   * @param {PublicKey} proposalOwner
+   * @param publicKey
    * @param {PublicKey} mintAccount
    * @returns {PublicKey}
    */
@@ -188,7 +188,10 @@ export class InstructionProvider {
    * @param {PublicKey} proposalOwner
    * @param {PublicKey} mintAccount
    * @param {string} proposalId
+   * @param swapProposal
    * @param {PublicKey} swapItemId
+   * @param actionType
+   * @param optionId
    * @returns
    */
   public async transferTokenToVault(
@@ -249,6 +252,7 @@ export class InstructionProvider {
    * @param swapProposal
    * @param proposalId
    * @param swapItemId
+   * @param actionType
    * @returns {TransactionInstruction}
    */
   public async transferTokenFromVault(
@@ -283,8 +287,6 @@ export class InstructionProvider {
       swapTokenVaultBump,
       actionType: { [actionType]: {} },
     };
-
-    console.log({ ...params, signer: targetAccount });
 
     /**
      * @dev Call to program to create an instruction.
