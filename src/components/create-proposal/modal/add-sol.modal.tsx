@@ -20,6 +20,7 @@ import { SUPPORTED_TOKEN, TokenItem } from "../token-select-item";
 import { AddItemModalProps } from "./types";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { SwapItemType } from "@/src/entities/proposal.entity";
+import UtilsProvider from "@/src/utils/utils.provider";
 
 const decimalCount = (num: any) => {
   // Convert to String
@@ -217,7 +218,9 @@ export const AddSolModal: FC<
                     (item) => item.address === addressSelected
                   )?.icon("5")}
                 </span>
-                {myRemainCurrencyBalance}{" "}
+                {UtilsProvider.formatLongNumber(
+                  parseFloat(myRemainCurrencyBalance)
+                )}{" "}
                 {
                   SUPPORTED_TOKEN.find(
                     (item) => item.address === addressSelected

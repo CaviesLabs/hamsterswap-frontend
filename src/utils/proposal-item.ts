@@ -5,6 +5,7 @@ import {
   SwapItemType,
 } from "@/src/entities/proposal.entity";
 import { SUPPORTED_TOKEN } from "@/src/components/create-proposal/token-select-item";
+import UtilsProvider from "@/src/utils/utils.provider";
 
 export const parseProposal = (item: SwapItemEntity) => {
   const resp: any = {
@@ -18,9 +19,9 @@ export const parseProposal = (item: SwapItemEntity) => {
     const tokenInfo = SUPPORTED_TOKEN.find(
       (Sitem) => Sitem.address === item.contractAddress
     );
-    resp.name = `${item.amount / Math.pow(10, tokenInfo?.decimal)} ${
-      tokenInfo?.symbol
-    }`;
+    resp.name = `${UtilsProvider.formatLongNumber(
+      item.amount / Math.pow(10, tokenInfo?.decimal)
+    )} ${tokenInfo?.symbol}`;
     resp.collection = "Currency";
     resp.image = tokenInfo?.iconUrl;
   } else if (resp.type === SwapItemType.NFT) {
@@ -49,7 +50,9 @@ export const parseOfferCreateProposal = (
     const tokenInfo = SUPPORTED_TOKEN.find(
       (item) => item.address === resp.nft_address
     );
-    resp.name = `${item.tokenAmount} ${tokenInfo.symbol}`;
+    resp.name = `${UtilsProvider.formatLongNumber(item.tokenAmount)} ${
+      tokenInfo.symbol
+    }`;
     resp.collection = "Currency";
     resp.image = tokenInfo.iconUrl;
   } else if (resp.assetType === SwapItemType.NFT) {

@@ -4,6 +4,7 @@ import { DeleteIcon, DetailIcon, VerticalDots } from "@/src/components/icons";
 import { GameItemModal, NFTDetailsModal } from "@/src/components/modal";
 import { SwapItemType } from "@/src/entities/proposal.entity";
 import { SUPPORTED_TOKEN } from "@/src/components/create-proposal/token-select-item";
+import UtilsProvider from "@/src/utils/utils.provider";
 import classnames from "classnames";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 
@@ -63,7 +64,7 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
           <div className="px-4 w-72 left">
             <p className="semi-bold text-black truncate block capitalize">
               {assetType === SwapItemType.CURRENCY
-                ? `${props.tokenAmount} ${
+                ? `${UtilsProvider.formatLongNumber(props.tokenAmount)} ${
                     SUPPORTED_TOKEN.find(
                       (item) => item.address === props.nftAddress
                     )?.symbol

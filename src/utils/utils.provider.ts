@@ -163,6 +163,36 @@ class UtilsProvider {
     }
     return arr.splice(0, size).join("");
   }
+
+  /**
+   * @dev The function to format long number to short text
+   * @var {number} num
+   * @var {number} digits
+   */
+  static formatLongNumber(num: number) {
+    if (num <= 1000) {
+      return num.toString();
+    }
+
+    let counter = 0;
+    let arr = num.toString().split("");
+    const idxDecimal = arr.indexOf(".");
+    const decimalArr = arr.slice(idxDecimal, arr.length);
+    arr = arr.slice(0, idxDecimal > 0 ? idxDecimal : arr.length).reverse();
+    arr = arr.map((c, index) => {
+      counter += 1;
+      if (counter === 3 && index < arr.length - 1) {
+        counter = 0;
+        return "," + c;
+      }
+      return c;
+    });
+
+    return arr
+      .reverse()
+      .concat(idxDecimal > 0 ? decimalArr : [])
+      .join("");
+  }
 }
 
 export default UtilsProvider;
