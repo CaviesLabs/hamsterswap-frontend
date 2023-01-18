@@ -3,6 +3,7 @@ type allowCurrency = {
   image: string;
   name: string;
   type: string;
+  decimals: number;
 };
 export type allowNTFCollection = {
   id: string;

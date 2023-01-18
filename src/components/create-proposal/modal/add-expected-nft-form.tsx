@@ -1,6 +1,6 @@
 import Select from "@/src/components/select";
 import { Input } from "antd";
-import { allowNTFCollection } from "@/src/dto/platform-config";
+import { allowNTFCollection } from "@/src/entities/platform-config.entity";
 import { useMemo, useState } from "react";
 
 type FormProps = {

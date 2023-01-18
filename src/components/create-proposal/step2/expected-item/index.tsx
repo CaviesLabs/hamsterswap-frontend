@@ -134,7 +134,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
             />
             <div className="ml-[12px]">
               <Button
-                text="Add SOL"
+                text="Add Token"
                 className="!rounded-[100px] after:!rounded-[100px] !px-4"
                 theme={{
                   backgroundColor: "#41ADD1",

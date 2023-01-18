@@ -1,6 +1,6 @@
 import { GET_PLATFORM_CONFIG, SET_PLATFORM_CONFIG } from "@/src/redux/actions";
 import { CallBackSaga } from "@/src/redux/entities";
-import { PlatformConfigDto } from "@/src/dto/platform-config";
+import { PlatformConfigDto } from "@/src/entities/platform-config.entity";
 
 /**
  * @param callback

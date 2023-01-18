@@ -15,7 +15,7 @@ export type TokenItemEntity = {
   symbol?: string;
   iconUrl?: string;
   decimal?: number;
-  icon(size: string): ReactNode;
+  icon?(size: string): ReactNode;
 };
 
 /**
@@ -61,6 +61,7 @@ export const SUPPORTED_TOKEN: TokenItemEntity[] = [
  */
 interface TokenItemProps extends TokenItemEntity {
   onClick(address: string): void;
+  addInOwner?: boolean;
   balance: string;
   check: boolean;
 }
@@ -76,10 +77,14 @@ export const TokenItem: FC<TokenItemProps> = (props) => {
       className="flow-root items-center pb-[20px] pt-[10px] border-b-solid border-b-[1px] border-b-[#E2E8F0]"
       onClick={() => props.onClick(props.address)}
     >
-      <div className="float-left">{props.icon("48")}</div>
+      <div className="float-left">
+        <img src={props.iconUrl} alt="Icon" className="w-[48px] h-[48px]" />
+      </div>
       <div className="float-left pl-[20px]">
         <p className="text-[16px] regular-text uppercase">{props.name}</p>
-        <p className="text-[#5F6C87] text-[12px]">Balance: {props.balance}</p>
+        {props.addInOwner && (
+          <p className="text-[#5F6C87] text-[12px]">Balance: {props.balance}</p>
+        )}
       </div>
       {props.check && (
         <div className="float-right">

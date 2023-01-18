@@ -3,7 +3,7 @@ import { Modal } from "antd";
 import { AddExpectedItemModalProps } from "./types";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
 import { useSelector } from "react-redux";
-import { allowNTFCollection } from "@/src/dto/platform-config";
+import { allowNTFCollection } from "@/src/entities/platform-config.entity";
 import { AddExpectedNftForm } from "@/src/components/create-proposal/modal/add-expected-nft-form";
 import { AddExpectedNftDetail } from "@/src/components/create-proposal/modal/add-expected-nft-detail";
 import { nftService } from "@/src/redux/saga/nft/nft.service";

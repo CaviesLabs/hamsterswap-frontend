@@ -7,13 +7,15 @@ import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 import { getStatus } from "@/src/utils/proposal-status";
 import { useMain } from "@/src/hooks/pages/main";
 import dayjs from "dayjs";
-import { SUPPORTED_TOKEN } from "../../create-proposal/token-select-item";
 
 function Proposal(props: ProposalHistoryProps) {
   const router = useRouter();
   const { data } = props;
   const { status, fulfillBy } = data;
-  const { hPublicProfile } = useMain();
+  const {
+    hPublicProfile,
+    platformConfig: { allowCurrencies },
+  } = useMain();
 
   /**
    * @description
@@ -40,9 +42,8 @@ function Proposal(props: ProposalHistoryProps) {
               (symbol &&
                 `${solAmount(
                   amount,
-                  SUPPORTED_TOKEN.find(
-                    (item) => item.address === contractAddress
-                  )?.decimal
+                  allowCurrencies.find((item) => item.id === contractAddress)
+                    ?.decimals
                 )} ${symbol}`)}
           </p>
         </div>
@@ -64,9 +65,8 @@ function Proposal(props: ProposalHistoryProps) {
               (symbol &&
                 `${solAmount(
                   amount,
-                  SUPPORTED_TOKEN.find(
-                    (item) => item.address === contractAddress
-                  )?.decimal
+                  allowCurrencies.find((item) => item.id === contractAddress)
+                    ?.decimals
                 )} ${symbol}`)}
           </p>
         </div>

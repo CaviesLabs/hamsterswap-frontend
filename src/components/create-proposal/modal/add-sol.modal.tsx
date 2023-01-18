@@ -16,10 +16,11 @@ import { useWallet } from "@/src/hooks/useWallet";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { WSOL_ADDRESS } from "@/src/utils/constants";
 import { splService } from "@/src/services/spl.service";
-import { SUPPORTED_TOKEN, TokenItem } from "../token-select-item";
+import { TokenItem } from "../token-select-item";
 import { AddItemModalProps } from "./types";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { SwapItemType } from "@/src/entities/proposal.entity";
+import { useMain } from "@/src/hooks/pages/main";
 import UtilsProvider from "@/src/utils/utils.provider";
 
 const decimalCount = (num: any) => {
@@ -42,6 +43,9 @@ export const AddSolModal: FC<
   const { solBalance } = useWallet();
   const wallet = useConnectedWallet();
   const proposal = useSelector((state: any) => state.proposal);
+  const {
+    platformConfig: { allowCurrencies },
+  } = useMain();
   const [value, setValue] = useState("");
   const { offferedItems } = useCreateProposal();
 
@@ -84,7 +88,8 @@ export const AddSolModal: FC<
   const handleChangeSolValue: ChangeEventHandler<HTMLInputElement> = (e: {
     target: { value: number | SetStateAction<string> };
   }) => {
-    if (e.target.value > myRemainCurrencyBalance && props.addInOwner) return;
+    if (e.target.value > parseInt(myRemainCurrencyBalance) && props.addInOwner)
+      return;
     if (!isNaN(+e.target.value)) {
       if (decimalCount(+e.target.value) > 8) {
         const val = `${
@@ -104,14 +109,14 @@ export const AddSolModal: FC<
      * @dev Request to solana mainet to get balance of each currency.
      */
     const balances = await Promise.all(
-      SUPPORTED_TOKEN.map(async (token) => {
+      allowCurrencies.map(async (token) => {
         /**
          * @dev If token is native solana, return native balance in hook.
          */
-        if (token.address === WSOL_ADDRESS) {
+        if (token.id === WSOL_ADDRESS) {
           return {
             balance: solBalance / LAMPORTS_PER_SOL,
-            address: token.address,
+            address: token.id,
           };
         }
 
@@ -120,13 +125,13 @@ export const AddSolModal: FC<
          */
         const balance = await splService.getBalance(
           wallet?.publicKey?.toString(),
-          token.address
+          token.id
         );
 
         /**
          * @dev Return needed schema.
          */
-        return { balance, address: token.address };
+        return { balance, address: token.id };
       })
     );
 
@@ -135,6 +140,14 @@ export const AddSolModal: FC<
      */
     setBalances(balances);
   }, [wallet, solBalance]);
+
+  /**
+   * @dev Watch address changes and get token info.
+   */
+  const tokenInfo = useMemo(
+    () => allowCurrencies.find((item) => item.id === addressSelected),
+    [allowCurrencies, addressSelected]
+  );
 
   useEffect(() => {
     if (wallet?.publicKey?.toString()) {
@@ -162,9 +175,16 @@ export const AddSolModal: FC<
                 size="large"
                 className="rounded-2xl p-3 mt-2"
                 placeholder="Enter SOL amount"
-                prefix={SUPPORTED_TOKEN.find(
-                  (item) => item.address === addressSelected
-                )?.icon("10")}
+                prefix={
+                  <img
+                    className="w-10 h-10"
+                    src={
+                      allowCurrencies.find(
+                        (item) => item.id === addressSelected
+                      )?.image
+                    }
+                  />
+                }
                 type="number"
                 value={value}
                 onChange={handleChangeSolValue}
@@ -174,28 +194,25 @@ export const AddSolModal: FC<
                 style={{ zIndex: 3 }}
                 onClick={() => setDropdown(!dropDown)}
               >
-                {
-                  SUPPORTED_TOKEN.find(
-                    (item) => item.address === addressSelected
-                  )?.name
-                }
+                {tokenInfo?.name}
                 <DropdownIcon className="float-right ml-[5px]" />
               </p>
               <Dropdown
                 menu={{
-                  items: SUPPORTED_TOKEN.map((item, key) => ({
+                  items: allowCurrencies.map((item, key) => ({
                     key,
                     label: (
                       <TokenItem
                         name={item.name}
-                        icon={item.icon}
-                        address={item.address}
+                        iconUrl={item.image}
+                        address={item.id}
                         balance={balances[key]?.balance?.toString() || "0"}
+                        addInOwner={props.addInOwner}
                         onClick={(address) => {
                           setDropdown(false);
                           setAddressSelected(address);
                         }}
-                        check={item.address === addressSelected}
+                        check={item.id === addressSelected}
                       />
                     ),
                   })),
@@ -214,18 +231,20 @@ export const AddSolModal: FC<
               <div className="text-[16px] regular-text flex items-center mt-5">
                 <p>Your balance:</p>
                 <span className="ml-1 mr-1">
-                  {SUPPORTED_TOKEN.find(
-                    (item) => item.address === addressSelected
-                  )?.icon("5")}
+                  <img
+                    src={
+                      allowCurrencies.find(
+                        (item) => item.id === addressSelected
+                      )?.image
+                    }
+                    alt="Icon"
+                    className="w-5 h-5"
+                  />
                 </span>
                 {UtilsProvider.formatLongNumber(
                   parseFloat(myRemainCurrencyBalance)
                 )}{" "}
-                {
-                  SUPPORTED_TOKEN.find(
-                    (item) => item.address === addressSelected
-                  )?.symbol
-                }
+                {tokenInfo?.name}
               </div>
             )}
 
@@ -239,15 +258,21 @@ export const AddSolModal: FC<
                   (+value > +myRemainCurrencyBalance && props.addInOwner)
                 }
                 type="button"
-                onClick={() =>
+                onClick={() => {
+                  /**
+                   * @dev Reset amount input.
+                   */
+                  setValue("");
+
+                  /**
+                   * @dev Call function to add.
+                   */
                   props.handleAddSol(
                     addressSelected,
                     value,
-                    SUPPORTED_TOKEN.find(
-                      (item) => item.address === addressSelected
-                    ).decimal
-                  )
-                }
+                    tokenInfo?.decimals
+                  );
+                }}
               >
                 Add
               </button>
