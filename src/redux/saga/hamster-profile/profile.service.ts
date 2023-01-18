@@ -8,12 +8,14 @@ export class ProfileService {
       "/user/profile",
       {
         method: "GET",
+        headers: {},
       }
     );
   }
   async getPublicProfile(payload: DetailDto): Promise<hProfileDto> {
     return networkProvider.request<hProfileDto>(`/user/profile/${payload.id}`, {
       method: "GET",
+      headers: {},
     });
   }
 }

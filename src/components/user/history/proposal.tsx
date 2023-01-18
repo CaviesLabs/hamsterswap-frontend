@@ -28,55 +28,58 @@ function Proposal(props: ProposalHistoryProps) {
     (_) => _.id === data.fulfilledWithOptionId
   );
 
+  console.log(allowCurrencies);
+  console.log(data);
+
   const renderSwapItemCol = () =>
-    data.offerItems.map(
-      ({
-        id,
-        contractAddress,
-        amount,
-        nftMetadata: { nft_image, icon, nft_name, symbol },
-      }) => (
-        <div key={`swapItems-${id}`} className="flex items-center mb-3">
-          <img className="w-10 rounded-lg" src={nft_image || icon} />
-          <p className="ml-2">
-            {nft_name ||
-              (symbol &&
-                `${UtilsProvider.formatLongNumber(
-                  solAmount(
-                    amount,
-                    allowCurrencies.find((item) => item.id === contractAddress)
-                      ?.decimals
-                  )
-                )} ${symbol}`)}
-          </p>
-        </div>
-      )
-    );
+    data.offerItems.map(({ id, contractAddress, amount, nftMetadata }) => (
+      <div key={`swapItems-${id}`} className="flex items-center mb-3">
+        <img
+          className="w-10 rounded-lg"
+          src={
+            nftMetadata?.nft_image ||
+            nftMetadata?.icon ||
+            allowCurrencies.find((item) => item.id === contractAddress)?.image
+          }
+        />
+        <p className="ml-2">
+          {nftMetadata?.nft_name ||
+            (nftMetadata?.symbol &&
+              `${UtilsProvider.formatLongNumber(
+                solAmount(
+                  amount,
+                  allowCurrencies.find((item) => item.id === contractAddress)
+                    ?.decimals
+                )
+              )} ${nftMetadata?.symbol}`)}
+        </p>
+      </div>
+    ));
 
   const renderReceiveItemCol = () =>
-    swapOption?.items.map(
-      ({
-        id,
-        contractAddress,
-        amount,
-        nftMetadata: { nft_image, icon, nft_name, symbol },
-      }) => (
-        <div key={id} className="flex items-center mb-3">
-          <img className="w-10 rounded-lg" src={nft_image || icon} />
-          <p className="ml-2">
-            {nft_name ||
-              (symbol &&
-                `${UtilsProvider.formatLongNumber(
-                  solAmount(
-                    amount,
-                    allowCurrencies.find((item) => item.id === contractAddress)
-                      ?.decimals
-                  )
-                )} ${symbol}`)}
-          </p>
-        </div>
-      )
-    );
+    swapOption?.items.map(({ id, contractAddress, amount, nftMetadata }) => (
+      <div key={id} className="flex items-center mb-3">
+        <img
+          className="w-10 rounded-lg"
+          src={
+            nftMetadata?.nft_image ||
+            nftMetadata?.icon ||
+            allowCurrencies.find((item) => item.id === contractAddress)?.image
+          }
+        />
+        <p className="ml-2">
+          {nftMetadata?.nft_name ||
+            (nftMetadata?.symbol &&
+              `${UtilsProvider.formatLongNumber(
+                solAmount(
+                  amount,
+                  allowCurrencies.find((item) => item.id === contractAddress)
+                    ?.decimals
+                )
+              )} ${nftMetadata?.symbol}`)}
+        </p>
+      </div>
+    ));
 
   return (
     <div className="border border-1 border-gray rounded-3xl p-6 mb-6">
