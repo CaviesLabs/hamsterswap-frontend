@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { networkProvider } from "@/src/providers/network.provider";
 import { hProfileDto } from "@/src/dto/hProfile.dto";
 import { DetailDto } from "@/src/dto/detail.dto";
