@@ -29,7 +29,11 @@ const Layout: FC = () => {
   /**
    * @dev Import redux states
    */
-  const { hPublicProfile: profile, proposals } = useMain();
+  const {
+    hPublicProfile: profile,
+    proposals,
+    platformConfig: { allowCurrencies },
+  } = useMain();
 
   /**
    * @dev Import functions from provider
@@ -111,11 +115,14 @@ const Layout: FC = () => {
           {proposals?.map((proposal: SwapProposalEntity) => {
             const p: any = { ...proposal };
             const newOfferItems = p.offerItems.map(
-              (offerItem: SwapItemEntity) => parseProposal(offerItem)
+              (offerItem: SwapItemEntity) =>
+                parseProposal(offerItem, allowCurrencies)
             );
             const newSwapOptions = p.swapOptions.map(
               (swapOption: SwapOptionEntity) => {
-                return swapOption.items.map((_) => parseProposal(_));
+                return swapOption.items.map((_) =>
+                  parseProposal(_, allowCurrencies)
+                );
               }
             );
             p.offerItems = newOfferItems;

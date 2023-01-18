@@ -6,14 +6,15 @@ export class ProfileService {
   async getUser(): Promise<hProfileDto> {
     return networkProvider.requestWithCredentials<hProfileDto>(
       "/user/profile",
-      {}
+      {
+        method: "GET",
+      }
     );
   }
   async getPublicProfile(payload: DetailDto): Promise<hProfileDto> {
-    return networkProvider.request<hProfileDto>(
-      `/user/profile/${payload.id}`,
-      {}
-    );
+    return networkProvider.request<hProfileDto>(`/user/profile/${payload.id}`, {
+      method: "GET",
+    });
   }
 }
 

@@ -12,10 +12,14 @@ import {
   SwapProposalEntity,
 } from "@/src/entities/proposal.entity";
 import { parseProposal } from "@/src/utils";
+import { useMain } from "@/src/hooks/pages/main";
 import Filter from "@/src/components/homepage/filter";
 
 const Layout: FC = () => {
   const proposals = useSelector((state: any) => state.proposals);
+  const {
+    platformConfig: { allowCurrencies },
+  } = useMain();
 
   return (
     <MainLayout>
@@ -33,12 +37,12 @@ const Layout: FC = () => {
                         const p: any = { ...proposal };
                         const newOfferItems = p.offerItems.map(
                           (offerItem: SwapItemEntity) =>
-                            parseProposal(offerItem)
+                            parseProposal(offerItem, allowCurrencies)
                         );
                         const newSwapOptions = p.swapOptions.map(
                           (swapOption: SwapOptionEntity) => {
                             return swapOption.items.map((_) =>
-                              parseProposal(_)
+                              parseProposal(_, allowCurrencies)
                             );
                           }
                         );

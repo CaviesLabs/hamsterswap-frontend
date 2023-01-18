@@ -4,13 +4,13 @@ import {
   SwapItemEntity,
   SwapItemType,
 } from "@/src/entities/proposal.entity";
-import { useMain } from "@/src/hooks/pages/main";
+import { AllowCurrency } from "@/src/entities/platform-config.entity";
 import UtilsProvider from "@/src/utils/utils.provider";
 
-export const parseProposal = (item: SwapItemEntity) => {
-  const {
-    platformConfig: { allowCurrencies },
-  } = useMain();
+export const parseProposal = (
+  item: SwapItemEntity,
+  allowCurrencies: AllowCurrency[]
+) => {
   const resp: any = {
     ...item,
     assetType: item.type,
@@ -37,11 +37,9 @@ export const parseProposal = (item: SwapItemEntity) => {
 };
 
 export const parseOfferCreateProposal = (
-  item: OfferedItemEntity | ExpectedItemEntity
+  item: OfferedItemEntity | ExpectedItemEntity,
+  allowCurrencies: AllowCurrency[]
 ) => {
-  const {
-    platformConfig: { allowCurrencies },
-  } = useMain();
   const resp: any = {
     ...item,
   };
@@ -55,10 +53,10 @@ export const parseOfferCreateProposal = (
       (item) => item.id === resp.nft_address
     );
     resp.name = `${UtilsProvider.formatLongNumber(item.tokenAmount)} ${
-      tokenInfo?.name
+      tokenInfo.name
     }`;
     resp.collection = "Currency";
-    resp.image = tokenInfo?.image;
+    resp.image = tokenInfo.image;
   } else if (resp.assetType === SwapItemType.NFT) {
     resp.name = item?.nft_name;
     resp.collection = item?.nft_collection_name;

@@ -19,14 +19,18 @@ import {
 } from "@/src/entities/proposal.entity";
 import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
 import { useWallet } from "@/src/hooks/useWallet";
-import dayjs from "dayjs";
+import { useMain } from "@/src/hooks/pages/main";
 import { useConnectedWallet } from "@saberhq/use-solana";
+import dayjs from "dayjs";
 import BuyButton from "@/src/components/advertisment/buy-button";
 
 const Layout: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { programService, solanaWallet } = useWallet();
+  const {
+    platformConfig: { allowCurrencies },
+  } = useMain();
 
   /**
    * @dev Declare option which user chose to swap.
@@ -113,11 +117,15 @@ const Layout: FC = () => {
                 setOptionSelected(value);
               }}
               swapItems={
-                proposal?.offerItems.map((_) => parseProposal(_)) ?? []
+                proposal?.offerItems.map((_) =>
+                  parseProposal(_, allowCurrencies)
+                ) ?? []
               }
               receiveItems={
                 proposal?.swapOptions.map((swapOption: SwapOptionEntity) => {
-                  return swapOption.items.map((_) => parseProposal(_));
+                  return swapOption.items.map((_) =>
+                    parseProposal(_, allowCurrencies)
+                  );
                 }) ?? []
               }
             />
