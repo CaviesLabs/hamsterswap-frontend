@@ -27,10 +27,6 @@ function Proposal(props: ProposalHistoryProps) {
    */
   const _isBuyer = fulfillBy === hPublicProfile.walletAddress;
 
-  console.log(allowCurrencies);
-  console.log(data.offerItems);
-  console.log(data.swapOptions);
-
   const renderSwapItemCol = () =>
     data.offerItems.map(
       ({ id, contractAddress, amount, nftMetadata, type }) => (
