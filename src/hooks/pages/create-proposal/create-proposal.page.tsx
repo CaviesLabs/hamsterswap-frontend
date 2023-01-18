@@ -171,8 +171,6 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
       expiredAt: expiredTime,
     };
 
-    console.log(createdData);
-
     /**
      * @dev Create proposal
      *  - Hamster server
