@@ -6,6 +6,7 @@ import { DotIcon } from "@/src/components/icons";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 import { getStatus } from "@/src/utils/proposal-status";
 import { useMain } from "@/src/hooks/pages/main";
+import UtilsProvider from "@/src/utils/utils.provider";
 import dayjs from "dayjs";
 
 function Proposal(props: ProposalHistoryProps) {
@@ -40,10 +41,12 @@ function Proposal(props: ProposalHistoryProps) {
           <p className="ml-2">
             {nft_name ||
               (symbol &&
-                `${solAmount(
-                  amount,
-                  allowCurrencies.find((item) => item.id === contractAddress)
-                    ?.decimals
+                `${UtilsProvider.formatLongNumber(
+                  solAmount(
+                    amount,
+                    allowCurrencies.find((item) => item.id === contractAddress)
+                      ?.decimals
+                  )
                 )} ${symbol}`)}
           </p>
         </div>
@@ -63,10 +66,12 @@ function Proposal(props: ProposalHistoryProps) {
           <p className="ml-2">
             {nft_name ||
               (symbol &&
-                `${solAmount(
-                  amount,
-                  allowCurrencies.find((item) => item.id === contractAddress)
-                    ?.decimals
+                `${UtilsProvider.formatLongNumber(
+                  solAmount(
+                    amount,
+                    allowCurrencies.find((item) => item.id === contractAddress)
+                      ?.decimals
+                  )
                 )} ${symbol}`)}
           </p>
         </div>
