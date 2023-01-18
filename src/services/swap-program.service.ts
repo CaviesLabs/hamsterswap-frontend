@@ -154,7 +154,7 @@ export class SwapProgramService {
    * @returns {SwapProposalEntity}
    */
   public async getProposal(proposalId: string): Promise<SwapProposalEntity> {
-    console.log(proposalId);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     return networkProvider.requestWithCredentials<SwapProposalEntity>(
       `/proposal/${proposalId}`,
       { method: "GET" }

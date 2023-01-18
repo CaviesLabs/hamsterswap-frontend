@@ -3,7 +3,10 @@ import { Col, Row, Tag } from "antd";
 import { ProposalHistoryProps } from "@/src/components/user/types";
 import { DATE_TIME_FORMAT, solAmount, utilsProvider } from "@/src/utils";
 import { DotIcon } from "@/src/components/icons";
-import { SwapProposalStatus } from "@/src/entities/proposal.entity";
+import {
+  SwapProposalStatus,
+  SwapItemType,
+} from "@/src/entities/proposal.entity";
 import { getStatus } from "@/src/utils/proposal-status";
 import { useMain } from "@/src/hooks/pages/main";
 import UtilsProvider from "@/src/utils/utils.provider";
@@ -24,62 +27,73 @@ function Proposal(props: ProposalHistoryProps) {
    */
   const _isBuyer = fulfillBy === hPublicProfile.walletAddress;
 
-  const swapOption = data.swapOptions.find(
-    (_) => _.id === data.fulfilledWithOptionId
-  );
-
   console.log(allowCurrencies);
-  console.log(data);
+  console.log(data.offerItems);
+  console.log(data.swapOptions);
 
   const renderSwapItemCol = () =>
-    data.offerItems.map(({ id, contractAddress, amount, nftMetadata }) => (
-      <div key={`swapItems-${id}`} className="flex items-center mb-3">
-        <img
-          className="w-10 rounded-lg"
-          src={
-            nftMetadata?.nft_image ||
-            nftMetadata?.icon ||
-            allowCurrencies.find((item) => item.id === contractAddress)?.image
-          }
-        />
-        <p className="ml-2">
-          {nftMetadata?.nft_name ||
-            (nftMetadata?.symbol &&
-              `${UtilsProvider.formatLongNumber(
-                solAmount(
-                  amount,
+    data.offerItems.map(
+      ({ id, contractAddress, amount, nftMetadata, type }) => (
+        <div key={`swapItems-${id}`} className="flex items-center mb-3">
+          <img
+            className="w-10 rounded-lg"
+            src={
+              nftMetadata?.nft_image ||
+              nftMetadata?.icon ||
+              allowCurrencies.find((item) => item.id === contractAddress)?.image
+            }
+          />
+          <p className="ml-2">
+            {type === SwapItemType.CURRENCY
+              ? `${UtilsProvider.formatLongNumber(
+                  solAmount(
+                    amount,
+                    allowCurrencies.find((item) => item.id === contractAddress)
+                      ?.decimals
+                  )
+                )} ${
                   allowCurrencies.find((item) => item.id === contractAddress)
-                    ?.decimals
-                )
-              )} ${nftMetadata?.symbol}`)}
-        </p>
-      </div>
-    ));
+                    ?.name
+                }`
+              : nftMetadata?.nft_name ||
+                (nftMetadata?.symbol &&
+                  `${solAmount(amount, 9)} ${nftMetadata?.symbol}`)}
+          </p>
+        </div>
+      )
+    );
 
   const renderReceiveItemCol = () =>
-    swapOption?.items.map(({ id, contractAddress, amount, nftMetadata }) => (
-      <div key={id} className="flex items-center mb-3">
-        <img
-          className="w-10 rounded-lg"
-          src={
-            nftMetadata?.nft_image ||
-            nftMetadata?.icon ||
-            allowCurrencies.find((item) => item.id === contractAddress)?.image
-          }
-        />
-        <p className="ml-2">
-          {nftMetadata?.nft_name ||
-            (nftMetadata?.symbol &&
-              `${UtilsProvider.formatLongNumber(
-                solAmount(
-                  amount,
+    data.swapOptions
+      .find((_) => _.id === data.fulfilledWithOptionId)
+      ?.items.map(({ id, contractAddress, amount, nftMetadata, type }) => (
+        <div key={id} className="flex items-center mb-3">
+          <img
+            className="w-10 rounded-lg"
+            src={
+              nftMetadata?.nft_image ||
+              nftMetadata?.icon ||
+              allowCurrencies.find((item) => item.id === contractAddress)?.image
+            }
+          />
+          <p className="ml-2">
+            {type === SwapItemType.CURRENCY
+              ? `${UtilsProvider.formatLongNumber(
+                  solAmount(
+                    amount,
+                    allowCurrencies.find((item) => item.id === contractAddress)
+                      ?.decimals
+                  )
+                )} ${
                   allowCurrencies.find((item) => item.id === contractAddress)
-                    ?.decimals
-                )
-              )} ${nftMetadata?.symbol}`)}
-        </p>
-      </div>
-    ));
+                    ?.name
+                }`
+              : nftMetadata?.nft_name ||
+                (nftMetadata?.symbol &&
+                  `${solAmount(amount, 9)} ${nftMetadata?.symbol}`)}
+          </p>
+        </div>
+      ));
 
   return (
     <div className="border border-1 border-gray rounded-3xl p-6 mb-6">

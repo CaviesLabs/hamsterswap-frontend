@@ -15,6 +15,7 @@ export class ProposalService {
   public async getProposals(
     getProposalsDto?: GetProposalsDto
   ): Promise<SwapProposalEntity> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     return networkProvider.request<SwapProposalEntity>("/proposal", {
       method: "GET",
       params: getProposalsDto

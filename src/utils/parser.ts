@@ -15,6 +15,5 @@ export const completedOrderPercent = (completedOrders = 0, orders = 0) => {
 };
 
 export const solAmount = (amount: string | number, decimal: number) => {
-  console.log(amount, decimal);
   return parseInt(amount.toString()) / Math.pow(10, decimal);
 };
