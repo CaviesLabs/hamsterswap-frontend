@@ -88,7 +88,10 @@ export const AddSolModal: FC<
   const handleChangeSolValue: ChangeEventHandler<HTMLInputElement> = (e: {
     target: { value: number | SetStateAction<string> };
   }) => {
-    if (e.target.value > parseInt(myRemainCurrencyBalance) && props.addInOwner)
+    if (
+      e.target.value > parseFloat(myRemainCurrencyBalance) &&
+      props.addInOwner
+    )
       return;
     if (!isNaN(+e.target.value)) {
       if (decimalCount(+e.target.value) > 8) {
