@@ -124,7 +124,7 @@ export const Ref: ForwardRefRenderFunction<
           return (
             <li
               key={`stepper-${i}`}
-              className={`${styles["progress-step"]}${
+              className={`${styles["progress-step"]} ${styles[props.theme]}${
                 step.state === StepStates.COMPLETED
                   ? ` ${styles.completed}`
                   : ""
@@ -135,7 +135,9 @@ export const Ref: ForwardRefRenderFunction<
               } ${stepClass || ""}`}
             >
               {step.state === StepStates.COMPLETED && (
-                <span className={styles["step-icon"]}>
+                <span
+                  className={`${styles["step-icon"]} ${styles[props.theme]}`}
+                >
                   <svg
                     width="1.5rem"
                     viewBox="0 0 13 9"
@@ -155,7 +157,11 @@ export const Ref: ForwardRefRenderFunction<
               )}
               {step.state !== StepStates.COMPLETED &&
                 step.state !== StepStates.ERROR && (
-                  <span className={styles["step-index"]}>{i + 1}</span>
+                  <span
+                    className={`${styles["step-index"]} ${styles[props.theme]}`}
+                  >
+                    {i + 1}
+                  </span>
                 )}
               <div
                 className={`${styles["step-label"]} ${labelClass || ""} ${
@@ -177,22 +183,24 @@ export const Ref: ForwardRefRenderFunction<
           );
         })}
       </ul>
-      <div className="relative">
-        <div className="absolute w-full top-14 left-0">
-          <div className="flex">
-            {state.map((step, i) => (
-              <div className="w-1/5" key={`active-marker-${i}`}>
-                <div
-                  className={classnames(
-                    "mx-auto",
-                    step.state === StepStates.CURRENT && styles.triangleUp
-                  )}
-                />
-              </div>
-            ))}
+      {!props.hiddenContent && (
+        <div className="relative">
+          <div className="absolute w-full top-14 left-0">
+            <div className="flex">
+              {state.map((step, i) => (
+                <div className="w-1/5" key={`active-marker-${i}`}>
+                  <div
+                    className={classnames(
+                      "mx-auto",
+                      step.state === StepStates.CURRENT && styles.triangleUp
+                    )}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

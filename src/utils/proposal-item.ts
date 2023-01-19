@@ -4,26 +4,27 @@ import {
   SwapItemEntity,
   SwapItemType,
 } from "@/src/entities/proposal.entity";
-import { SUPPORTED_TOKEN } from "@/src/components/create-proposal/token-select-item";
+import { AllowCurrency } from "@/src/entities/platform-config.entity";
 import UtilsProvider from "@/src/utils/utils.provider";
 
-export const parseProposal = (item: SwapItemEntity) => {
+export const parseProposal = (
+  item: SwapItemEntity,
+  allowCurrencies: AllowCurrency[]
+) => {
   const resp: any = {
     ...item,
     assetType: item.type,
   };
 
-  console.log(item);
-
   if (resp.type === SwapItemType.CURRENCY) {
-    const tokenInfo = SUPPORTED_TOKEN.find(
-      (Sitem) => Sitem.address === item.contractAddress
+    const tokenInfo = allowCurrencies.find(
+      (Sitem) => Sitem.id === item.contractAddress
     );
     resp.name = `${UtilsProvider.formatLongNumber(
-      item.amount / Math.pow(10, tokenInfo?.decimal)
-    )} ${tokenInfo?.symbol}`;
+      item.amount / Math.pow(10, tokenInfo?.decimals)
+    )} ${tokenInfo?.name}`;
     resp.collection = "Currency";
-    resp.image = tokenInfo?.iconUrl;
+    resp.image = tokenInfo?.image;
   } else if (resp.type === SwapItemType.NFT) {
     const meta = item.nftMetadata;
     resp.name = meta?.nft_name;
@@ -36,7 +37,8 @@ export const parseProposal = (item: SwapItemEntity) => {
 };
 
 export const parseOfferCreateProposal = (
-  item: OfferedItemEntity | ExpectedItemEntity
+  item: OfferedItemEntity | ExpectedItemEntity,
+  allowCurrencies: AllowCurrency[]
 ) => {
   const resp: any = {
     ...item,
@@ -47,14 +49,14 @@ export const parseOfferCreateProposal = (
     resp.collection = "Stripe";
     resp.image = "/assets/images/asset-cash.png";
   } else if (resp.assetType === SwapItemType.CURRENCY) {
-    const tokenInfo = SUPPORTED_TOKEN.find(
-      (item) => item.address === resp.nft_address
+    const tokenInfo = allowCurrencies.find(
+      (item) => item.id === resp.nft_address
     );
     resp.name = `${UtilsProvider.formatLongNumber(item.tokenAmount)} ${
-      tokenInfo.symbol
+      tokenInfo.name
     }`;
     resp.collection = "Currency";
-    resp.image = tokenInfo.iconUrl;
+    resp.image = tokenInfo.image;
   } else if (resp.assetType === SwapItemType.NFT) {
     resp.name = item?.nft_name;
     resp.collection = item?.nft_collection_name;

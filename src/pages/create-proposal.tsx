@@ -18,6 +18,7 @@ import {
   Step4,
   Step5,
 } from "@/src/components/create-proposal";
+import { SubmitProposalModal } from "@/src/components/create-proposal/modal/submit-proposal-modal";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import classnames from "classnames";
 import { StorageProvider } from "@/src/providers/storage.provider";
@@ -68,6 +69,11 @@ const Layout: FC = () => {
    * @dev Define sate condition loading button during processing submit proposal.
    */
   const [isDuringSubmit, setIsDuringSubmit] = useState(false);
+
+  /**
+   * @dev Condition to show popup to optimize proposal and submit proposal onchain.
+   */
+  const [submitProposalOpen, setSubmitProposalOpen] = useState(false);
 
   /** @dev Initilize ref for stepper component. */
   const stepperRef = useRef<StepProgressHandle>(null);
@@ -263,6 +269,11 @@ const Layout: FC = () => {
                   loading={isDuringSubmit}
                 />
               )}
+              <SubmitProposalModal
+                isModalOpen={submitProposalOpen}
+                handleCancel={() => setSubmitProposalOpen(false)}
+                handleOk={() => setSubmitProposalOpen(false)}
+              />
             </div>
           </div>
         </LayoutSection>

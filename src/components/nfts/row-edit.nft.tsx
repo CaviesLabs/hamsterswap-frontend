@@ -3,12 +3,19 @@ import { RowNftEditItemProps } from "./types";
 import { DeleteIcon, DetailIcon, VerticalDots } from "@/src/components/icons";
 import { GameItemModal, NFTDetailsModal } from "@/src/components/modal";
 import { SwapItemType } from "@/src/entities/proposal.entity";
-import { SUPPORTED_TOKEN } from "@/src/components/create-proposal/token-select-item";
+import { useMain } from "@/src/hooks/pages/main";
 import UtilsProvider from "@/src/utils/utils.provider";
 import classnames from "classnames";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 
 export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
+  /**
+   * @dev Get cryptocurrencies which Hamster support.
+   */
+  const {
+    platformConfig: { allowCurrencies },
+  } = useMain();
+
   /**
    * @dev reference to the button
    * close the dropdown when user click outside
@@ -47,9 +54,8 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
             <img
               src={
                 assetType === SwapItemType.CURRENCY
-                  ? SUPPORTED_TOKEN.find(
-                      (item) => item.address === props.nftAddress
-                    )?.iconUrl
+                  ? allowCurrencies.find((item) => item.id === props.nftAddress)
+                      ?.image
                   : props.image
               }
               alt="NFT image"
@@ -65,9 +71,8 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
             <p className="semi-bold text-black truncate block capitalize">
               {assetType === SwapItemType.CURRENCY
                 ? `${UtilsProvider.formatLongNumber(props.tokenAmount)} ${
-                    SUPPORTED_TOKEN.find(
-                      (item) => item.address === props.nftAddress
-                    )?.symbol
+                    allowCurrencies.find((item) => item.id === props.nftAddress)
+                      ?.name
                   }`
                 : props.name}
             </p>

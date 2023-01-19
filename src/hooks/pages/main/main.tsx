@@ -1,11 +1,12 @@
-import { ReactNode, useCallback, useState } from "react";
-import { useSelector } from "react-redux";
+import { ReactNode, useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { MainContext } from "./types";
 import { NFTDetailsModal } from "@/src/components/modal";
 import { useUI } from "./useUI";
 import { useAuth } from "./useAuth";
 import { useAppState } from "./useAppState";
 import { useRouter } from "./useRouter";
+import { getPlatformConfig } from "@/src/redux/actions/platform-config/platform.action";
 import ReduxState from "@/src/redux/entities/state";
 
 export const MainProvider = (props: { children: ReactNode }) => {
@@ -13,6 +14,11 @@ export const MainProvider = (props: { children: ReactNode }) => {
    * @dev Get redux state.
    */
   const reduxState = useSelector((app: ReduxState) => app);
+
+  /**
+   * @dev The function to modify state.
+   */
+  const dispatch = useDispatch();
 
   /**
    * @dev Define condition to show Nft-detail modal.
@@ -35,6 +41,10 @@ export const MainProvider = (props: { children: ReactNode }) => {
 
   /** @dev Call hooks to detect router changes. */
   const { transitionLoading, fistLoading } = useRouter();
+
+  useEffect(() => {
+    dispatch(getPlatformConfig());
+  }, []);
 
   return (
     <MainContext.Provider

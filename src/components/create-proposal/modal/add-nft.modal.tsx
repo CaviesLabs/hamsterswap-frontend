@@ -8,7 +8,7 @@ import { useMain } from "@/src/hooks/pages/main";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { NftEntity, NftStatus } from "@/src/dto/nft.dto";
-import { allowNTFCollection } from "@/src/dto/platform-config";
+import { allowNTFCollection } from "@/src/entities/platform-config.entity";
 import { useSelector } from "react-redux";
 
 export const AddNftModal: FC<AddItemModalProps> = (props) => {

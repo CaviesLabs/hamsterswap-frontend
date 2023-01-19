@@ -36,7 +36,7 @@ const Messages: FC = () => {
   if (closed) return null;
   return (
     <StyledMessages>
-      <div className="container max-w-7xl mx-auto flex flex-row-reverse">
+      <div className="container max-w-[86rem] mx-auto flex flex-row-reverse">
         <div className="bg-purple w-[460px] rounded-t-lg">
           <UserAvatarMessage
             curScreen={curScreen}

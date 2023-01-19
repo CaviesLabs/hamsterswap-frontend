@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from "axios";
 import qs from "qs";
 import { getStorageProvider } from "./";
 
-export type RequestConfig = AxiosRequestConfig;
+export type RequestConfig = Partial<AxiosRequestConfig>;
 
 export class NetworkProvider {
   /**

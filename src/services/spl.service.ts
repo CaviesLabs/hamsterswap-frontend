@@ -32,8 +32,8 @@ export class SplServicce {
           }
         );
 
-      return response.result.value[0].account.data.parsed.info.tokenAmount
-        .uiAmount;
+      return response?.result?.value?.[0]?.account?.data?.parsed?.info
+        ?.tokenAmount?.uiAmount;
     } catch {
       return 0;
     }

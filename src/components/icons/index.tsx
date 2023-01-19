@@ -202,7 +202,7 @@ export const CheckIcon: FC<IconProps> = (props) => {
     >
       <path
         d="M1 6.14286L7.54545 13L19 1"
-        stroke="#735CF7"
+        stroke={props.color || "#735CF7"}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"

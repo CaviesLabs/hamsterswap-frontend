@@ -1,5 +1,5 @@
 import { networkProvider } from "@/src/providers/network.provider";
-import { PlatformConfigDto } from "@/src/dto/platform-config";
+import { PlatformConfigDto } from "@/src/entities/platform-config.entity";
 
 export class PlatformConfigService {
   async get(): Promise<PlatformConfigDto> {

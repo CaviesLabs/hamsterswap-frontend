@@ -3,11 +3,12 @@ import { ProposalItemsProps } from "@/src/components/proposal-item/types";
 import { Col, Row } from "antd";
 import { Button } from "@hamsterbox/ui-kit";
 import { RowNftItem } from "@/src/components/nfts";
-import classnames from "classnames";
 import { TwoWayArrowIcon } from "@/src/components/icons";
+import { CheckIcon } from "@/src/components/icons";
+import classnames from "classnames";
 
 const ProposalItems: FC<ProposalItemsProps> = (props) => {
-  const { userAssets, userLookingFor } = props;
+  const { userAssets, userLookingFor, fulfilledWithOptionId } = props;
 
   /**
    * @dev Define value to display option.
@@ -25,27 +26,41 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
             <div className="semi-bold text-[16px] leading-9">looking for</div>
             <div className="flex">
               {userLookingFor.length > 1 &&
-                userLookingFor.map((_: any, index: number) => (
-                  <div className="ml-3" key={`ml3dix-${index}`}>
-                    <Button
-                      className={classnames(
-                        "!rounded-[100px] after:!rounded-[100px] !px-5",
-                        optionSelected !== index &&
-                          "!border !border-solid !border-dark60"
-                      )}
-                      size="small"
-                      shape={optionSelected === index ? "primary" : "secondary"}
-                      text={`Option ${index + 1}`}
-                      theme={
-                        optionSelected !== index && {
-                          color: "#7886A0",
-                          backgroundColor: "transparent",
+                userLookingFor.map((_: any, index: number) => {
+                  return (
+                    <div className="ml-3 relative" key={`ml3dix-${index}`}>
+                      <Button
+                        className={classnames(
+                          "!rounded-[100px] after:!rounded-[100px] !px-5",
+                          optionSelected !== index &&
+                            "!border !border-solid !border-dark60"
+                        )}
+                        size="small"
+                        shape={
+                          optionSelected === index ? "primary" : "secondary"
                         }
-                      }
-                      onClick={() => setOptionSelected(index)}
-                    />
-                  </div>
-                ))}
+                        text={`Option ${index + 1}`}
+                        theme={
+                          optionSelected !== index && {
+                            color: "#7886A0",
+                            backgroundColor: "transparent",
+                          }
+                        }
+                        onClick={() => setOptionSelected(index)}
+                        icon
+                      />
+                      {fulfilledWithOptionId &&
+                      fulfilledWithOptionId === _?.[0]?.optionId ? (
+                        <CheckIcon
+                          className="absolute top-[10px] left-[10px] w-[15px] h-[15px]"
+                          color={
+                            optionSelected === index ? "#ffffff" : "#735CF7"
+                          }
+                        />
+                      ) : null}
+                    </div>
+                  );
+                })}
             </div>
           </div>
         </Col>
