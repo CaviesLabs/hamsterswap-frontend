@@ -120,9 +120,10 @@ const Layout: FC = () => {
             );
             const newSwapOptions = p.swapOptions.map(
               (swapOption: SwapOptionEntity) => {
-                return swapOption.items.map((_) =>
-                  parseProposal(_, allowCurrencies)
-                );
+                return swapOption.items.map((_) => ({
+                  ...parseProposal(_, allowCurrencies),
+                  optionId: swapOption.id,
+                }));
               }
             );
             p.offerItems = newOfferItems;
