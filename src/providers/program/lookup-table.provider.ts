@@ -3,6 +3,7 @@ import * as anchor from "@project-serum/anchor";
 import { SwapIdl } from "@/src/providers/program/swap.idl";
 
 import {
+  AddressLookupTableAccount,
   AddressLookupTableProgram,
   Connection,
   PublicKey,
@@ -25,7 +26,7 @@ export class LookupTableProvider {
    * @dev Get lookup table registry
    * @private
    */
-  private getLookupTableRegistry() {
+  private getLookupTableRegistryAddress() {
     /**
      * @dev Find the program address
      */
@@ -51,12 +52,12 @@ export class LookupTableProvider {
     account: PublicKey;
     instruction: TransactionInstruction;
   } | null> {
-    const lookupTableRegistryAccount = this.getLookupTableRegistry();
+    const lookupTableRegistryAddress = this.getLookupTableRegistryAddress();
 
     /**
      * @dev Return null if the account was already initialized
      */
-    if (!!(await this.connection.getAccountInfo(lookupTableRegistryAccount))) {
+    if (!!(await this.connection.getAccountInfo(lookupTableRegistryAddress))) {
       return null;
     }
 
@@ -64,15 +65,71 @@ export class LookupTableProvider {
      * @dev Return instruction if we need
      */
     return {
-      account: lookupTableRegistryAccount,
+      account: lookupTableRegistryAddress,
       instruction: await this.program.methods
         .initializeAddressLookupTable()
         .accounts({
-          lookupTableRegistry: lookupTableRegistryAccount,
+          lookupTableRegistry: lookupTableRegistryAddress,
           signer: this.program.provider.publicKey,
         })
         .instruction(),
     };
+  }
+
+  /**
+   * @dev Get lookup table account
+   * @private
+   */
+  private async getLookupTableAddress(): Promise<PublicKey | null> {
+    /**
+     * @dev Get lookup table registry
+     */
+    const lookupTableRegistryAddress = this.getLookupTableRegistryAddress();
+
+    let registryAccount;
+
+    try {
+      /**
+       * @dev Get lookup table
+       */
+      registryAccount = await this.program.account.lookupTableRegistry.fetch(
+        lookupTableRegistryAddress
+      );
+    } catch {
+      /**
+       * @dev Return null if error occurs here
+       */
+      return null;
+    }
+
+    /**
+     * @dev Get latest lookup table address
+     */
+    return registryAccount.lookupTableAddresses.reverse()[0] || null;
+  }
+
+  /**
+   * @dev Get lookup table account
+   * @param address
+   * @private
+   */
+  private getLookupTableAccount(
+    address: PublicKey
+  ): Promise<AddressLookupTableAccount> {
+    return this.connection
+      .getAddressLookupTable(address)
+      .then((res) => res.value);
+  }
+
+  /**
+   * @dev Detect whether the lookup table reached max limit
+   * @param account
+   * @private
+   */
+  private static isLookupTableReachedMaxLimit(
+    account: AddressLookupTableAccount
+  ): boolean {
+    return account.state.addresses.length === 256;
   }
 
   /**
@@ -85,7 +142,10 @@ export class LookupTableProvider {
   public async createOrExtendLookupTable(
     walletProvider: WalletProvider,
     accounts: PublicKey[]
-  ): Promise<TransactionInstruction[] | null> {
+  ): Promise<{
+    instructions: TransactionInstruction[],
+    lookupTableAddress: PublicKey
+  } | null> {
     /**
      * @dev Initializes
      */
@@ -113,27 +173,47 @@ export class LookupTableProvider {
        * @dev Push
        */
       instructions.push(createLookupTablePayload.instruction);
-
-      /**
-       * @dev Also create lookup table
-       */
-      const [lookupTableInst, altAddress] =
-        AddressLookupTableProgram.createLookupTable({
-          authority: walletProvider.publicKey,
-          payer: walletProvider.publicKey,
-          recentSlot: slot,
-        });
-
-      /**
-       * @dev Rebind the lookup table address
-       */
-      lookupTableAddress = altAddress;
-      instructions.push(lookupTableInst);
     }
 
     /**
-     * @dev Create lookup table first
+     * @dev Get lookup table address
      */
+    lookupTableAddress = await this.getLookupTableAddress();
+
+    /**
+     * @dev Detect whether the lookup table account reached limit
+     */
+    const isLookupTableReachedLimit =
+      !!lookupTableAddress &&
+      LookupTableProvider.isLookupTableReachedMaxLimit(
+        await this.getLookupTableAccount(lookupTableAddress)
+      );
+
+    if (
+      createLookupTablePayload === null ||
+      lookupTableAddress === null ||
+      isLookupTableReachedLimit
+    ) {
+      /**
+       * @dev Initializes instruction and new lookup table address
+       */
+      const [createLookupTableInx, _lookupTableAddress] =
+        AddressLookupTableProgram.createLookupTable({
+          recentSlot: slot,
+          authority: this.program.provider.publicKey,
+          payer: this.program.provider.publicKey,
+        });
+
+      /**
+       * @dev Re-bind the lookup table address
+       */
+      lookupTableAddress = _lookupTableAddress;
+
+      /**
+       * @dev Also push into the transaction instructions
+       */
+      instructions.push(createLookupTableInx);
+    }
 
     /**
      * @dev Extend instruction
@@ -153,7 +233,14 @@ export class LookupTableProvider {
      * @dev Return instructions
      */
     instructions.push(extendInstruction);
-    return instructions;
+
+    /**
+     * @dev Return
+     */
+    return {
+      instructions,
+      lookupTableAddress
+    };
   }
 
   /**
@@ -164,7 +251,7 @@ export class LookupTableProvider {
    * @return Returns null if there are no addresses need to be whitelisted,
    * returns instructions if there are addresses need to be whitelisted.
    */
-  public async extendLookupTable(
+  private async extendLookupTable(
     walletProvider: WalletProvider,
     lookupTableAddress: PublicKey,
     accounts: PublicKey[]
