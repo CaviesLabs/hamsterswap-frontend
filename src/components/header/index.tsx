@@ -130,7 +130,7 @@ const Header: FC = () => {
       id="app-header"
     >
       <div className="w-full py-[18px] md:py-[25px] flow-root">
-        <div className="lg:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="lg:max-w-[86rem] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="float-left logo-wrapper md:mt-0 mt-[0px]">
             <a className="cursor-pointer" onClick={() => router.push("/")}>
               <HamsterboxIcon

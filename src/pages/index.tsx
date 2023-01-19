@@ -27,7 +27,7 @@ const Layout: FC = () => {
       <div className={styles.container}>
         <div className="bg-white mb-10">
           <div>
-            <main className="mx-auto max-w-7xl">
+            <main className="mx-auto max-w-[86rem]">
               <section aria-labelledby="products-heading" className="pt-6">
                 <Filter />
                 <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
