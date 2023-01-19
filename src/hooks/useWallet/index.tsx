@@ -18,11 +18,13 @@ import web3 from "@solana/web3.js";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
 import { getSwapProgramProvider } from "@/src/providers/program";
+import { SwapProgramProviderV0 } from "@/src/providers/program/swap-program-v0.provider";
 import { SwapProgramService } from "@/src/services/swap-program.service";
 import { getAuthService } from "@/src/actions/firebase.action";
 import { getWalletName } from "./utils";
 import { setProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { useDispatch } from "react-redux";
+import { useRouter } from "next/router";
 
 /** @dev Define state for context. */
 export interface WalletContextState {
@@ -68,6 +70,7 @@ export const WalletContext = createContext<WalletContextState>(null);
 
 /** @dev Expose wallet provider for usage. */
 export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
+  const router = useRouter();
   /** @dev Get @var {walletProviderInfo} from @var {GokkiKit}. */
   const { walletProviderInfo } = useSaberhq();
 
@@ -183,8 +186,17 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
         /**
          * @dev Initlize swap program service with initlized programProvider.
          */
-        const program = new SwapProgramService(swapProgramProvider);
-        initProgram(program);
+        let program;
+        if (router?.query?.optimized === "true") {
+          console.log("optimized");
+          program = new SwapProgramService(
+            new SwapProgramProviderV0(solanaWallet)
+          );
+          initProgram(program);
+        } else {
+          program = new SwapProgramService(swapProgramProvider);
+          initProgram(program);
+        }
 
         /**
          * @dev update sol balance if wallet changes.
@@ -194,7 +206,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
         console.log(err.message);
       }
     }
-  }, [wallet, solanaWallet]);
+  }, [wallet, solanaWallet, router.asPath]);
 
   return (
     <WalletContext.Provider

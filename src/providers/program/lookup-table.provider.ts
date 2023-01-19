@@ -1,7 +1,6 @@
 import { Program } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { SwapIdl } from "@/src/providers/program/swap.idl";
-
 import {
   AddressLookupTableAccount,
   AddressLookupTableProgram,
@@ -143,8 +142,8 @@ export class LookupTableProvider {
     walletProvider: WalletProvider,
     accounts: PublicKey[]
   ): Promise<{
-    instructions: TransactionInstruction[],
-    lookupTableAddress: PublicKey
+    instructions: TransactionInstruction[];
+    lookupTableAddress: PublicKey;
   } | null> {
     /**
      * @dev Initializes
@@ -239,7 +238,7 @@ export class LookupTableProvider {
      */
     return {
       instructions,
-      lookupTableAddress
+      lookupTableAddress,
     };
   }
 

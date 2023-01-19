@@ -1,6 +1,7 @@
 import { BN } from "@project-serum/anchor";
 import { networkProvider } from "@/src/providers/network.provider";
 import { SwapProgramProvider } from "@/src/providers/program";
+import { SwapProgramProviderV0 } from "@/src/providers/program/swap-program-v0.provider";
 import UtilsProvider from "@/src/utils/utils.provider";
 import {
   CreateProposalToServerDto,
@@ -14,10 +15,14 @@ export class SwapProgramService {
    * @dev Program provider injected.
    * @private
    */
-  private readonly swapProgramProvider: SwapProgramProvider;
+  private readonly swapProgramProvider:
+    | SwapProgramProvider
+    | SwapProgramProviderV0;
   private readonly utilsProvider: UtilsProvider;
 
-  constructor(swapProgramProvider: SwapProgramProvider) {
+  constructor(
+    swapProgramProvider: SwapProgramProvider | SwapProgramProviderV0
+  ) {
     /**
      * @dev Import providers.
      */
