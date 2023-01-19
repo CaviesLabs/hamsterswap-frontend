@@ -55,10 +55,8 @@ export class InstructionProvider {
    * @dev Find token vault if exists in chain.
    * @param {PublicKey} pub.
    */
-  private async findTokenVaultAccount(
-    pub: PublicKey
-  ): Promise<[PublicKey, number]> {
-    return PublicKey.findProgramAddress(
+  private findTokenVaultAccount(pub: PublicKey): [PublicKey, number] {
+    return PublicKey.findProgramAddressSync(
       [
         anchor.utils.bytes.utf8.encode("SEED::SWAP::TOKEN_VAULT_SEED"),
         pub.toBytes(),
@@ -78,7 +76,7 @@ export class InstructionProvider {
     /**
      * @dev Find token vault if exists in chain.
      */
-    const [swapTokenVault] = await this.findTokenVaultAccount(pub);
+    const [swapTokenVault] = this.findTokenVaultAccount(pub);
 
     /**
      * @dev If does not find account info of token vault then create new instruction for one.
@@ -106,7 +104,7 @@ export class InstructionProvider {
     /**
      * @dev Find proposal with id.
      */
-    const [swapProposal] = await PublicKey.findProgramAddress(
+    const [swapProposal] = PublicKey.findProgramAddressSync(
       [
         anchor.utils.bytes.utf8.encode("SEED::SWAP::PROPOSAL_SEED"),
         anchor.utils.bytes.utf8.encode(pub.slice(0, 10)),
