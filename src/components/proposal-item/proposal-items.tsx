@@ -49,14 +49,15 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
                         onClick={() => setOptionSelected(index)}
                         icon
                       />
-                      {fulfilledWithOptionId === _?.[0]?.optionId && (
+                      {fulfilledWithOptionId &&
+                      fulfilledWithOptionId === _?.[0]?.optionId ? (
                         <CheckIcon
                           className="absolute top-[10px] left-[10px] w-[15px] h-[15px]"
                           color={
                             optionSelected === index ? "#ffffff" : "#735CF7"
                           }
                         />
-                      )}
+                      ) : null}
                     </div>
                   );
                 })}
