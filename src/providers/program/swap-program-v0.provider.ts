@@ -411,7 +411,7 @@ export class SwapProgramProviderV0 {
       accounts
     );
 
-    console.log(lookupData);
+    console.log({lookupData});
 
     const { instructions, lookupTableAddress } = lookupData;
 
@@ -419,7 +419,7 @@ export class SwapProgramProviderV0 {
       lookupTableAddress
     );
 
-    console.log(account);
+    console.log('account', account);
 
     const optimize = async () => {
       console.log(lookupTableAddress.toBase58().toString());

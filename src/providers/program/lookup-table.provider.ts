@@ -1,4 +1,4 @@
-import { Program } from "@project-serum/anchor";
+import { BN, Program } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { SwapIdl } from "@/src/providers/program/swap.idl";
 import {
@@ -183,7 +183,7 @@ export class LookupTableProvider {
       );
 
     if (
-      createLookupTablePayload === null ||
+      createLookupTablePayload !== null ||
       lookupTableAddress === null ||
       isLookupTableReachedLimit
     ) {
@@ -194,7 +194,7 @@ export class LookupTableProvider {
       /**
        * @dev Initializes instruction and new lookup table address
        */
-      const [createLookupTableInx, _lookupTableAddress] =
+      const [,_lookupTableAddress] =
         AddressLookupTableProgram.createLookupTable({
           recentSlot: slot,
           authority: this.program.provider.publicKey,
@@ -209,7 +209,19 @@ export class LookupTableProvider {
       /**
        * @dev Also push into the transaction instructions
        */
-      instructions.push(createLookupTableInx);
+      instructions.push(
+        await this.program.methods
+          .modifyAddressLookupTable({
+            slot: new BN(slot)
+          })
+          .accounts({
+            lookupTableRegistry: this.getLookupTableRegistryAddress(),
+            signer: this.program.provider.publicKey,
+            lookupTableAccount: lookupTableAddress,
+            lookupTableProgram: AddressLookupTableProgram.programId
+          })
+          .instruction()
+      );
     }
 
     /**
@@ -225,7 +237,6 @@ export class LookupTableProvider {
      * @dev No need to extend
      */
     if (extendInstruction === null) {
-      console.log("No extend instruction");
       return {
         instructions: [],
         lookupTableAddress,
