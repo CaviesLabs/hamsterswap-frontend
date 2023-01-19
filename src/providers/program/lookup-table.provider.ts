@@ -116,7 +116,7 @@ export class LookupTableProvider {
     address: PublicKey
   ): Promise<AddressLookupTableAccount> {
     return this.connection
-      .getAddressLookupTable(address, {commitment: "finalized"})
+      .getAddressLookupTable(address, { commitment: "finalized" })
       .then((res) => res.value);
   }
 
@@ -145,12 +145,6 @@ export class LookupTableProvider {
     instructions: TransactionInstruction[];
     lookupTableAddress: PublicKey;
   } | null> {
-    /**
-     * @dev Initializes
-     */
-    const slot = await this.connection.getSlot({
-      commitment: "finalized",
-    });
     const instructions: TransactionInstruction[] = [];
 
     /**
@@ -193,6 +187,10 @@ export class LookupTableProvider {
       lookupTableAddress === null ||
       isLookupTableReachedLimit
     ) {
+      const slot = await this.connection.getSlot({
+        commitment: "finalized",
+      });
+
       /**
        * @dev Initializes instruction and new lookup table address
        */
@@ -226,7 +224,13 @@ export class LookupTableProvider {
     /**
      * @dev No need to extend
      */
-    if (extendInstruction === null) return null;
+    if (extendInstruction === null) {
+      console.log("No extend instruction");
+      return {
+        instructions: [],
+        lookupTableAddress,
+      };
+    }
 
     /**
      * @dev Return instructions
@@ -258,7 +262,9 @@ export class LookupTableProvider {
     /**
      * @dev Check if lookup table account already existed
      */
-    const lookupTableAccount = await this.getLookupTableAccount(lookupTableAddress);
+    const lookupTableAccount = await this.getLookupTableAccount(
+      lookupTableAddress
+    );
 
     /**
      * @dev Check for whitelisted addresses

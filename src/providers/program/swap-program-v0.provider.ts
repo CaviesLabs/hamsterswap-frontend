@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Connection, Keypair, PublicKey, TransactionInstruction } from "@solana/web3.js";
+import {
+  Connection,
+  Keypair,
+  PublicKey,
+  TransactionInstruction,
+} from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
+import { createMint } from "@solana/spl-token";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
 import {
   CreateProposalDto,
@@ -15,8 +21,10 @@ import {
 import { SwapIdl, IDL } from "./swap.idl";
 import { InstructionProvider } from "./instruction.provider";
 import { TransactionProvider } from "./transaction.provider";
+import { LookupTableProvider } from "./lookup-table.provider";
 import { WSOL_ADDRESS } from "@/src/utils/constants";
 import { InstructionProviderV0 } from "./instruction-v0.provider";
+import { BN } from "bn.js";
 
 export const SOLANA_DEVNET_RPC_ENDPOINT = "https://api.devnet.solana.com";
 export const SOLANA_MAINNET_RPC_RPC_ENDPOINT =
@@ -53,6 +61,7 @@ export class SwapProgramProviderV0 {
    * @private
    */
   private transactionProvider: TransactionProvider;
+  private lookupTableProvider: LookupTableProvider;
 
   /**
    * @dev Initialize swap program provider.
@@ -113,6 +122,11 @@ export class SwapProgramProviderV0 {
        * @dev Initlize transaction provider.
        */
       this.transactionProvider = new TransactionProvider(
+        this.connection,
+        this.program
+      );
+
+      this.lookupTableProvider = new LookupTableProvider(
         this.connection,
         this.program
       );
@@ -347,18 +361,94 @@ export class SwapProgramProviderV0 {
     }
   }
 
-  public async testCreateProposal(
-    walletProvider: WalletProvider,
-    createProposalDto: CreateProposalDto
-  ) {
-    const swapProposal = Keypair.generate().publicKey;
+  public async testCreateProposal(walletProvider: WalletProvider) {
+    const generateId = () =>
+      Keypair.generate().publicKey.toBase58().toString().slice(0, 10);
+    const id = "nsdkjcndskjnckjdsdwalk".slice(10);
+    const swapProposal = await this.instructionProvider.findSwapProposal(id);
 
-    const createProposalInstruction =
+    const offeredItems = [
+      {
+        id: Keypair.generate().publicKey.toBase58().slice(0, 10),
+        mintAccount: new PublicKey(
+          "So11111111111111111111111111111111111111112"
+        ),
+        amount: new BN(anchor.web3.LAMPORTS_PER_SOL),
+        itemType: { currency: {} },
+      },
+    ];
+
+    const swapOptions = [
+      {
+        id: Keypair.generate().publicKey.toBase58().slice(0, 10),
+        askingItems: [
+          {
+            id: Keypair.generate().publicKey.toBase58().slice(0, 10),
+            mintAccount: new PublicKey(
+              "So11111111111111111111111111111111111111112"
+            ),
+            amount: new BN(anchor.web3.LAMPORTS_PER_SOL),
+            itemType: { currency: {} },
+          },
+        ],
+      },
+    ];
+
+    const { instruction, accounts } =
       await this.instructionProviderV0.createProposal(
-        createProposalDto,
+        {
+          id,
+          offeredOptions: offeredItems,
+          swapOptions: swapOptions,
+          expiredAt: new Date(),
+        },
         walletProvider.publicKey,
         swapProposal
       );
+
+    const lookupData = await this.lookupTableProvider.createOrExtendLookupTable(
+      walletProvider,
+      accounts
+    );
+
+    console.log(lookupData);
+
+    const { instructions, lookupTableAddress } = lookupData;
+
+    const account = await this.lookupTableProvider.getLookupTableAccount(
+      lookupTableAddress
+    );
+
+    console.log(account);
+
+    const optimize = async () => {
+      console.log(lookupTableAddress.toBase58().toString());
+      await this.transactionProvider.signAndSendV0Transaction(
+        walletProvider,
+        instructions,
+        []
+      );
+      console.log("Optimized ");
+    };
+
+    const confirm = async () => {
+      console.log(lookupTableAddress.toBase58().toString());
+      const account = await this.lookupTableProvider.getLookupTableAccount(
+        lookupTableAddress
+      );
+      console.log(account);
+
+      await this.transactionProvider.signAndSendV0Transaction(
+        walletProvider,
+        [instruction],
+        [account]
+      );
+    };
+
+    return {
+      optimize,
+      confirm,
+    };
   }
 
   /**

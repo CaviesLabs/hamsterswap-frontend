@@ -193,6 +193,8 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
             new SwapProgramProviderV0(solanaWallet)
           );
           initProgram(program);
+          (window as any).walletProvider = solanaWallet;
+          (window as any).program = new SwapProgramProviderV0(solanaWallet);
         } else {
           program = new SwapProgramService(swapProgramProvider);
           initProgram(program);

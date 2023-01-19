@@ -70,9 +70,10 @@ export class InstructionProviderV0 {
    * @param {PublicKey} pub.
    * @returns {TransactionInstruction}
    */
-  public async createSwapTokenVault(
-    pub: PublicKey
-  ): Promise<TransactionInstruction> {
+  public async createSwapTokenVault(pub: PublicKey): Promise<{
+    instruction: TransactionInstruction;
+    accounts: PublicKey[];
+  }> {
     /**
      * @dev Find token vault if exists in chain.
      */
@@ -82,14 +83,17 @@ export class InstructionProviderV0 {
      * @dev If does not find account info of token vault then create new instruction for one.
      */
     if (!(await this.connection.getAccountInfo(swapTokenVault))) {
-      return await this.program.methods
-        .createTokenVault()
-        .accounts({
-          mintAccount: pub,
-          swapRegistry: this.swapRegistry,
-          swapTokenVault,
-        })
-        .instruction();
+      return {
+        instruction: await this.program.methods
+          .createTokenVault()
+          .accounts({
+            mintAccount: pub,
+            swapRegistry: this.swapRegistry,
+            swapTokenVault,
+          })
+          .instruction(),
+        accounts: [pub, this.swapRegistry, swapTokenVault],
+      };
     }
 
     return null;
