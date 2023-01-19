@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { Col, Input, Row } from "antd";
 import Select from "@/src/components/select";
-import { categoryOptions } from "@/src/utils";
+// import { categoryOptions } from "@/src/utils";
 import { useDispatch } from "react-redux";
 import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
@@ -10,7 +10,7 @@ import { Button } from "@hamsterbox/ui-kit";
 
 const Filter: FC = () => {
   const [search, setSearch] = useState("");
-  const [mobileFilterDisplayed, setMobileFilterDisplayed] = useState(true);
+  // const [mobileFilterDisplayed, setMobileFilterDisplayed] = useState(true);
 
   const dispatch = useDispatch();
   const handleSearch = (_search?: string) => {
@@ -34,7 +34,7 @@ const Filter: FC = () => {
 
   return (
     <>
-      {mobileFilterDisplayed && (
+      {/* {mobileFilterDisplayed && (
         <div
           className="relative z-2000 lg:hidden"
           role="dialog"
@@ -136,7 +136,7 @@ const Filter: FC = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
       <div className="flex items-center justify-between pt-24 pb-6">
         <h1 className="text-[32px] font-bold tracking-tight text-gray-900">
           Active Swaps

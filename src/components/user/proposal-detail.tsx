@@ -138,6 +138,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
         <div className="px-24">
           <div className="pt-[120px] md:pt-[32px]">
             <UserAvatarCardItem
+              id={profile?.id}
               avatar={profile?.avatar}
               orders={profile?.ordersStat.orders}
               completion={completedOrderPercent(
