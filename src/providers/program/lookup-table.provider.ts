@@ -113,7 +113,7 @@ export class LookupTableProvider {
    * @param address
    * @private
    */
-  private getLookupTableAccount(
+  public getLookupTableAccount(
     address: PublicKey
   ): Promise<AddressLookupTableAccount> {
     return this.connection
