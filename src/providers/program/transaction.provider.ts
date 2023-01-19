@@ -1,8 +1,8 @@
 import {
+  AddressLookupTableAccount,
   Connection,
   Transaction,
-  TransactionInstruction,
-  // TransactionSignature,
+  TransactionInstruction, TransactionMessage, VersionedTransaction
 } from "@solana/web3.js";
 import { Program } from "@project-serum/anchor";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
@@ -51,7 +51,50 @@ export class TransactionProvider {
     /**
      * @dev Send a raw transaction.
      */
-    const txid = await this.connection.sendRawTransaction(rawTx.serialize());
-    return txid;
+    return this.connection.sendRawTransaction(rawTx.serialize());
+  }
+
+  /**
+   * @dev The function sign and send v0 transaction with/without address lookup table
+   * @param walletProvider
+   * @param instructions
+   * @param addressLookupTableAccounts
+   */
+  public async signAndSendV0Transaction(
+    walletProvider: WalletProvider,
+    instructions: TransactionInstruction[],
+    addressLookupTableAccounts: AddressLookupTableAccount[] = []
+  ): Promise<string> {
+    const latestBlockHash = await this.connection.getLatestBlockhash();
+
+    /**
+     * @dev Compile lookup message
+     */
+    const lookupMessage = new TransactionMessage({
+      payerKey: walletProvider.publicKey,
+      recentBlockhash: latestBlockHash.blockhash,
+      instructions: instructions,
+    }).compileToV0Message(addressLookupTableAccounts);
+
+    /**
+     * @dev Sign v0 message
+     */
+    const lookupTransaction = new VersionedTransaction(lookupMessage);
+    const tx = await walletProvider.signTransaction(lookupTransaction);
+
+    /**
+     * @dev Send a raw transaction.
+     */
+    const txId = await this.connection.sendRawTransaction(tx.serialize());
+    await this.connection.confirmTransaction(
+      {
+        signature: txId,
+        blockhash: latestBlockHash.blockhash,
+        lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+      },
+      "finalized"
+    );
+
+    return txId;
   }
 }
