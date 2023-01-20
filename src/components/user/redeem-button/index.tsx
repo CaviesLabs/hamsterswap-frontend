@@ -4,6 +4,7 @@ import { Button, toast } from "@hamsterbox/ui-kit";
 import { RedeemButtonProps } from "@/src/components/user/redeem-button/types";
 import { useProgram } from "@/src/hooks/useProgram";
 import { useProfilePage } from "@/src/hooks/pages/profile";
+import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optmize-transaction-modal";
 
 export const RedeemButton: FC<RedeemButtonProps> = (props) => {
   const { status, proposalId, isOwner } = props;
@@ -24,32 +25,65 @@ export const RedeemButton: FC<RedeemButtonProps> = (props) => {
   const { redeemProposal } = useProgram();
 
   /**
+   * @dev Condition to show popup to optimize proposal and submit proposal onchain.
+   */
+  const [optimizedProposalOpen, setOptimizedProposalOpen] = useState(false);
+
+  /**
    * @dev The function to process to redeem proposal.
    */
   const handleRedeemProposal = useCallback(async () => {
-    try {
-      setIsDuringSubmit(true);
-      await redeemProposal(proposalId);
-      toast.success("Redeem proposal was successfully!");
-    } catch (err: any) {
-      toast.error(`Redeem proposal failed. ${err.message}`);
-    } finally {
-      setIsDuringSubmit(false);
-      handleFilter();
-    }
+    setIsDuringSubmit(true);
+    setOptimizedProposalOpen(true);
+    // try {
+    //   setIsDuringSubmit(true);
+    //   await redeemProposal(proposalId);
+    //   toast.success("Redeem proposal was successfully!");
+    // } catch (err: any) {
+    //   toast.error(`Redeem proposal failed. ${err.message}`);
+    // } finally {
+    //   setIsDuringSubmit(false);
+    //   handleFilter();
+    // }
   }, [props.proposalId]);
 
   return (
     status.valueOf() === SwapProposalStatus.FULFILLED.valueOf() &&
     isOwner && (
-      <Button
-        className="border-purple text-purple !border-2 px-10 rounded-3xl !h-full"
-        loading={isDuringSubmit}
-        onClick={handleRedeemProposal}
-        size="large"
-        text="Redeem"
-        shape="secondary"
-      />
+      <>
+        <Button
+          className="border-purple text-purple !border-2 px-10 rounded-3xl !h-full"
+          loading={isDuringSubmit}
+          onClick={handleRedeemProposal}
+          size="large"
+          text="Redeem"
+          shape="secondary"
+        />
+        <OptimizeTransactionModal
+          isModalOpen={optimizedProposalOpen}
+          instructionHandler={async () =>
+            (await redeemProposal(proposalId)) as unknown as {
+              proposalId?: string;
+              fns: {
+                optimize(): Promise<void>;
+                confirm(): Promise<void>;
+              };
+            }
+          }
+          handleCancel={() => {
+            setOptimizedProposalOpen(false);
+            setIsDuringSubmit(false);
+            handleFilter();
+          }}
+          handleOk={(proposalId) => {
+            console.log(proposalId);
+            setOptimizedProposalOpen(false);
+            toast.success("Redeem proposal was successfully!");
+            setIsDuringSubmit(false);
+            handleFilter();
+          }}
+        />
+      </>
     )
   );
 };

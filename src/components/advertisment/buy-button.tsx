@@ -1,5 +1,4 @@
-import { FC, useMemo, useState, useCallback } from "react";
-import { useRouter } from "next/router";
+import { FC, useState, useCallback } from "react";
 import { Button } from "@hamsterbox/ui-kit";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useWalletKit } from "@gokiprotocol/walletkit";
@@ -23,7 +22,6 @@ const BuyButton: FC<{
    * @dev Get user wallet
    */
   const wallet = useConnectedWallet();
-  const router = useRouter();
   const { connect } = useWalletKit();
   const { programService, solanaWallet } = useWallet();
 
@@ -45,14 +43,6 @@ const BuyButton: FC<{
    * @dev Condition to show popup to optimize proposal and submit proposal onchain.
    */
   const [optimizedProposalOpen, setOptimizedProposalOpen] = useState(false);
-
-  /**
-   * @dev Condition whether user want to use with optimize option.
-   */
-  const isOptimized = useMemo(
-    () => router?.query?.optimized === "true",
-    [router]
-  );
 
   const handleSwap = useCallback(async () => {
     if (!proposal) return;

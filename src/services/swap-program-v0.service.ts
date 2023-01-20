@@ -114,15 +114,13 @@ export class SwapProgramServiceV0 {
     walletProvider: WalletProvider,
     proposalId: string
   ) {
-    /**
-     * @dev Now create redeem proposal to on-chain, wrap in sync function to sync data after done processing on-chain.
-     */
-    return this.requestAndSyncProposal(proposalId, async () => {
-      return this.swapProgramProvider.redeemProposal(
+    return {
+      proposalId,
+      fnc: await this.swapProgramProvider.redeemProposal(
         walletProvider,
         await this.getProposal(proposalId)
-      );
-    });
+      ),
+    };
   }
 
   /**
