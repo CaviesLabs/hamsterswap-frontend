@@ -188,7 +188,6 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
          */
         let program;
         if (router?.query?.optimized === "true") {
-          console.log("optimized");
           program = new SwapProgramService(
             new SwapProgramProviderV0(solanaWallet)
           );

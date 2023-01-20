@@ -4,7 +4,7 @@ import { Col, Row } from "antd";
 import { Button } from "@hamsterbox/ui-kit";
 import { RowNftItem } from "@/src/components/nfts";
 import { TwoWayArrowIcon } from "@/src/components/icons";
-import { CheckIcon } from "@/src/components/icons";
+import { CheckIconProposal } from "@/src/components/icons";
 import classnames from "classnames";
 
 const ProposalItems: FC<ProposalItemsProps> = (props) => {
@@ -51,12 +51,7 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
                       />
                       {fulfilledWithOptionId &&
                       fulfilledWithOptionId === _?.[0]?.optionId ? (
-                        <CheckIcon
-                          className="absolute top-[10px] left-[10px] w-[15px] h-[15px]"
-                          color={
-                            optionSelected === index ? "#ffffff" : "#735CF7"
-                          }
-                        />
+                        <CheckIconProposal className="absolute top-[10px] left-[10px] w-[15px] h-[15px]" />
                       ) : null}
                     </div>
                   );
