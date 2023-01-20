@@ -1,10 +1,11 @@
 import {
   AddressLookupTableAccount,
-  Connection, PublicKey,
+  Connection,
+  PublicKey,
   Transaction,
   TransactionInstruction,
   TransactionMessage,
-  VersionedTransaction
+  VersionedTransaction,
 } from "@solana/web3.js";
 import { Program } from "@project-serum/anchor";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
@@ -107,46 +108,52 @@ export class TransactionProvider {
   public async buildV0TransactionHandlers(
     walletProvider: WalletProvider,
     instructions: TransactionInstruction[],
-    accounts: PublicKey[],
+    accounts: PublicKey[]
   ): Promise<{
-    optimize: () => Promise<void> | null,
-    confirm: () => Promise<void>
+    optimize: () => Promise<void> | null;
+    confirm: () => Promise<void>;
   }> {
-
     let optimize: () => Promise<void> | null = null;
-    let confirm: () => Promise<void>;
 
     /**
      * @dev Get lookup table inx data
      */
-    const { instructions: lookupTableInstruction, lookupTableAddress } = await this.lookupTableProvider.createOrExtendLookupTable(
-      walletProvider,
-      accounts,
-    );
+    const { instructions: lookupTableInstruction, lookupTableAddress } =
+      await this.lookupTableProvider.createOrExtendLookupTable(
+        walletProvider,
+        accounts
+      );
 
     /**
      * @dev Initialize optimize callback
      */
-    if(lookupTableInstruction.length > 0) {
+    if (lookupTableInstruction.length > 0) {
       optimize = async () => {
-        await this.signAndSendV0Transaction(walletProvider, lookupTableInstruction, []);
+        await this.signAndSendV0Transaction(
+          walletProvider,
+          lookupTableInstruction,
+          []
+        );
       };
     }
 
     /**
      * @dev Initialize confirm callback
      */
-    const lookupTableAccount = await this.lookupTableProvider.getLookupTableAccount(lookupTableAddress);
-    confirm = async () => {
-      await this.signAndSendV0Transaction(walletProvider, instructions, [lookupTableAccount])
-    }
+    const lookupTableAccount =
+      await this.lookupTableProvider.getLookupTableAccount(lookupTableAddress);
+    const confirm = async () => {
+      await this.signAndSendV0Transaction(walletProvider, instructions, [
+        lookupTableAccount,
+      ]);
+    };
 
     /**
      * @dev Return callbacks
      */
     return {
       optimize,
-      confirm
-    }
+      confirm,
+    };
   }
 }

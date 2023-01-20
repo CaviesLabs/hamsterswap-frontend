@@ -25,6 +25,7 @@ import { getWalletName } from "./utils";
 import { setProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
+import { SwapProgramServiceV0 } from "@/src/services/swap-program-v0.service";
 
 /** @dev Define state for context. */
 export interface WalletContextState {
@@ -57,7 +58,7 @@ export interface WalletContextState {
   /**
    * @dev Define Program service.
    */
-  programService: SwapProgramService;
+  programService: SwapProgramServiceV0 | SwapProgramService;
 
   /**
    * @dev Sol balance of signer.
@@ -83,7 +84,9 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
   const wallet = useConnectedWallet();
 
   /** @dev Program service */
-  const [programService, initProgram] = useState<SwapProgramService>(null);
+  const [programService, initProgram] = useState<
+    SwapProgramService | SwapProgramProviderV0
+  >(null);
   const [solBalance, setSolBalance] = useState(0);
 
   /** @dev Import auth service. */
@@ -188,13 +191,10 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
          */
         let program;
         if (router?.query?.optimized === "true") {
-          console.log("optimized");
-          program = new SwapProgramService(
+          program = new SwapProgramServiceV0(
             new SwapProgramProviderV0(solanaWallet)
           );
           initProgram(program);
-          (window as any).walletProvider = solanaWallet;
-          (window as any).program = new SwapProgramProviderV0(solanaWallet);
         } else {
           program = new SwapProgramService(swapProgramProvider);
           initProgram(program);

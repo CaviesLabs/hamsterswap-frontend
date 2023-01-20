@@ -9,8 +9,7 @@ import {
   TransactionInstruction,
 } from "@solana/web3.js";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
-
-import _ from 'lodash';
+import _ from "lodash";
 
 export class LookupTableProvider {
   /**
@@ -196,7 +195,7 @@ export class LookupTableProvider {
       /**
        * @dev Initializes instruction and new lookup table address
        */
-      const [,_lookupTableAddress] =
+      const [, _lookupTableAddress] =
         AddressLookupTableProgram.createLookupTable({
           recentSlot: slot,
           authority: this.program.provider.publicKey,
@@ -214,13 +213,13 @@ export class LookupTableProvider {
       instructions.push(
         await this.program.methods
           .modifyAddressLookupTable({
-            slot: new BN(slot)
+            slot: new BN(slot),
           })
           .accounts({
             lookupTableRegistry: this.getLookupTableRegistryAddress(),
             signer: this.program.provider.publicKey,
             lookupTableAccount: lookupTableAddress,
-            lookupTableProgram: AddressLookupTableProgram.programId
+            lookupTableProgram: AddressLookupTableProgram.programId,
           })
           .instruction()
       );
@@ -272,7 +271,9 @@ export class LookupTableProvider {
     lookupTableAddress: PublicKey,
     accounts: PublicKey[]
   ): Promise<TransactionInstruction | null> {
-    const uniqueAccounts = _.uniq(accounts.map(elm => elm.toBase58())).map(elm => new PublicKey(elm));
+    const uniqueAccounts = _.uniq(accounts.map((elm) => elm.toBase58())).map(
+      (elm) => new PublicKey(elm)
+    );
 
     /**
      * @dev Check if lookup table account already existed

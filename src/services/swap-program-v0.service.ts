@@ -1,6 +1,5 @@
 import { BN } from "@project-serum/anchor";
 import { networkProvider } from "@/src/providers/network.provider";
-import { SwapProgramProvider } from "@/src/providers/program";
 import { SwapProgramProviderV0 } from "@/src/providers/program/swap-program-v0.provider";
 import UtilsProvider from "@/src/utils/utils.provider";
 import {
@@ -10,19 +9,15 @@ import {
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
 import { uuid } from "uuidv4";
 
-export class SwapProgramService {
+export class SwapProgramServiceV0 {
   /**
    * @dev Program provider injected.
    * @private
    */
-  private readonly swapProgramProvider:
-    | SwapProgramProvider
-    | SwapProgramProviderV0;
+  private readonly swapProgramProvider: SwapProgramProviderV0;
   private readonly utilsProvider: UtilsProvider;
 
-  constructor(
-    swapProgramProvider: SwapProgramProvider | SwapProgramProviderV0
-  ) {
+  constructor(swapProgramProvider: SwapProgramProviderV0) {
     /**
      * @dev Import providers.
      */
@@ -49,23 +44,17 @@ export class SwapProgramService {
       );
 
     /**
-     * @dev Now create proposal to on-chain, wrap in sync function to sync data after done processing on-chain.
+     * @dev Create on-chain.
+     * @returns {id: string, { optimize(): Promise<void>; confirm(): Promise<void> }}
      */
-    return this.requestAndSyncProposal(response.id, async () => {
-      /**
-       * @dev Create on-chain.
-       */
-      await this.swapProgramProvider.createProposal(walletProvider, {
+    return {
+      proposalId: response?.id,
+      fnc: await this.swapProgramProvider.createProposal(walletProvider, {
         id: response.id,
         expiredAt: new BN(createProposalDto.expiredAt.getTime()),
         ...createProposalDto,
-      });
-
-      /**
-       * @returns propsal id.
-       */
-      return response.id;
-    });
+      }),
+    };
   }
 
   /**
@@ -80,13 +69,15 @@ export class SwapProgramService {
   ) {
     /**
      * @dev Call to program.
+     * @returns {id: string, { optimize(): Promise<void>; confirm(): Promise<void> }}
      */
-    return this.requestAndSyncProposal(proposalId, async () => {
-      return await this.swapProgramProvider.cancelProposal(
+    return {
+      proposalId,
+      fnc: await this.swapProgramProvider.cancelProposal(
         walletProvider,
         await this.getProposal(proposalId)
-      );
-    });
+      ),
+    };
   }
 
   /**
@@ -104,13 +95,14 @@ export class SwapProgramService {
     /**
      * @dev Now create proposal to on-chain, wrap in sync function to sync data after done processing on-chain.
      */
-    return this.requestAndSyncProposal(proposalId, async () => {
-      return this.swapProgramProvider.swapProposal(
+    return {
+      proposalId,
+      fnc: await this.swapProgramProvider.swapProposal(
         walletProvider,
         await this.getProposal(proposalId),
         optionId
-      );
-    });
+      ),
+    };
   }
 
   /**

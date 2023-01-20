@@ -16,6 +16,7 @@ import { SwapIdl, IDL } from "./swap.idl";
 import { InstructionProvider } from "./instruction.provider";
 import { TransactionProvider } from "./transaction.provider";
 import { WSOL_ADDRESS } from "@/src/utils/constants";
+import { LookupTableProvider } from "./lookup-table.provider";
 
 export const SOLANA_DEVNET_RPC_ENDPOINT = "https://api.devnet.solana.com";
 export const SOLANA_MAINNET_RPC_RPC_ENDPOINT =
@@ -51,6 +52,7 @@ export class SwapProgramProvider {
    * @private
    */
   private transactionProvider: TransactionProvider;
+  private lookupTableProvider: LookupTableProvider;
 
   /**
    * @dev Initialize swap program provider.
@@ -98,11 +100,20 @@ export class SwapProgramProvider {
       );
 
       /**
+       * @dev Initilize lookup table provider
+       */
+      this.lookupTableProvider = new LookupTableProvider(
+        this.connection,
+        this.program
+      );
+
+      /**
        * @dev Initlize transaction provider.
        */
       this.transactionProvider = new TransactionProvider(
         this.connection,
-        this.program
+        this.program,
+        this.lookupTableProvider
       );
     });
   }
