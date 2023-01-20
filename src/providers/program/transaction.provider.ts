@@ -1,32 +1,32 @@
 import {
   AddressLookupTableAccount,
   Connection,
+  PublicKey,
   Transaction,
   TransactionInstruction,
   TransactionMessage,
   VersionedTransaction,
+  Commitment,
 } from "@solana/web3.js";
 import { Program } from "@project-serum/anchor";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
 import { SwapIdl } from "./swap.idl";
+import { LookupTableProvider } from "@/src/providers/program/lookup-table.provider";
 
 export class TransactionProvider {
-  /**
-   * @dev Define network connection
-   * @private
-   */
-  private readonly connection: Connection;
-
-  /**
-   * @dev This is to indicate whether the program is initialized or not.
-   * @private
-   */
-  private readonly program: Program<SwapIdl>;
-
-  constructor(connection: Connection, program: Program<SwapIdl>) {
-    this.connection = connection;
-    this.program = program;
-  }
+  constructor(
+    /**
+     * @dev Define network connection
+     * @private
+     */
+    private readonly connection: Connection,
+    /**
+     * @dev This is to indicate whether the program is initialized or not.
+     * @private
+     */
+    private readonly program: Program<SwapIdl>,
+    private readonly lookupTableProvider: LookupTableProvider
+  ) {}
 
   /**
    * @dev The function to create transaction with given instructions then sign and send to chain.
@@ -65,7 +65,8 @@ export class TransactionProvider {
   public async signAndSendV0Transaction(
     walletProvider: WalletProvider,
     instructions: TransactionInstruction[],
-    addressLookupTableAccounts: AddressLookupTableAccount[] = []
+    addressLookupTableAccounts: AddressLookupTableAccount[] = [],
+    commitment: Commitment = "processed"
   ): Promise<string> {
     const latestBlockHash = await this.connection.getLatestBlockhash();
 
@@ -94,9 +95,71 @@ export class TransactionProvider {
         blockhash: latestBlockHash.blockhash,
         lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
       },
-      "finalized"
+      commitment
     );
 
     return txId;
+  }
+
+  /**
+   * @dev Get optimization and confirmation callback
+   * @param walletProvider
+   * @param instructions
+   * @param accounts
+   */
+  public async buildV0TransactionHandlers(
+    walletProvider: WalletProvider,
+    instructions: TransactionInstruction[],
+    accounts: PublicKey[]
+  ): Promise<{
+    optimize: () => Promise<void> | null;
+    confirm: () => Promise<void>;
+  }> {
+    let optimize: () => Promise<void> | null = null;
+
+    /**
+     * @dev Get lookup table inx data
+     */
+    const { instructions: lookupTableInstruction, lookupTableAddress } =
+      await this.lookupTableProvider.createOrExtendLookupTable(
+        walletProvider,
+        accounts
+      );
+
+    /**
+     * @dev Initialize optimize callback
+     */
+    if (lookupTableInstruction.length > 0) {
+      optimize = async () => {
+        await this.signAndSendV0Transaction(
+          walletProvider,
+          lookupTableInstruction,
+          [],
+          "confirmed"
+        );
+      };
+    }
+
+    /**
+     * @dev Initialize confirm callback
+     */
+    const lookupTableAccount =
+      await this.lookupTableProvider.getLookupTableAccount(lookupTableAddress);
+    const confirm = async () => {
+      await this.signAndSendV0Transaction(
+        walletProvider,
+        instructions,
+        [lookupTableAccount],
+        "confirmed"
+      );
+    };
+
+    /**
+     * @dev Return callbacks
+     */
+    return {
+      optimize,
+      confirm,
+    };
   }
 }

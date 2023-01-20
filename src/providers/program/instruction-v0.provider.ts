@@ -70,9 +70,10 @@ export class InstructionProviderV0 {
    * @param {PublicKey} pub.
    * @returns {TransactionInstruction}
    */
-  public async createSwapTokenVault(
-    pub: PublicKey
-  ): Promise<TransactionInstruction> {
+  public async createSwapTokenVault(pub: PublicKey): Promise<{
+    instruction: TransactionInstruction;
+    accounts: PublicKey[];
+  }> {
     /**
      * @dev Find token vault if exists in chain.
      */
@@ -82,14 +83,17 @@ export class InstructionProviderV0 {
      * @dev If does not find account info of token vault then create new instruction for one.
      */
     if (!(await this.connection.getAccountInfo(swapTokenVault))) {
-      return await this.program.methods
-        .createTokenVault()
-        .accounts({
-          mintAccount: pub,
-          swapRegistry: this.swapRegistry,
-          swapTokenVault,
-        })
-        .instruction();
+      return {
+        instruction: await this.program.methods
+          .createTokenVault()
+          .accounts({
+            mintAccount: pub,
+            swapRegistry: this.swapRegistry,
+            swapTokenVault,
+          })
+          .instruction(),
+        accounts: [pub, this.swapRegistry, swapTokenVault],
+      };
     }
 
     return null;
@@ -124,13 +128,21 @@ export class InstructionProviderV0 {
   public async getOrCreateProposalTokenAccount(
     publicKey: PublicKey,
     mintAccount: PublicKey
-  ): Promise<TransactionInstruction> {
-    return getOrCreateAssociatedTokenAccount(
-      this.connection,
-      { publicKey } as any,
+  ): Promise<{ instruction: TransactionInstruction; accounts: PublicKey[] }> {
+    const associatedToken = await getAssociatedTokenAddress(
       mintAccount,
       publicKey
     );
+
+    return {
+      instruction: await getOrCreateAssociatedTokenAccount(
+        this.connection,
+        { publicKey } as any,
+        mintAccount,
+        publicKey
+      ),
+      accounts: [publicKey, mintAccount, associatedToken],
+    };
   }
 
   /**
@@ -177,14 +189,17 @@ export class InstructionProviderV0 {
     proposalId: string,
     swapProposal: PublicKey,
     proposalOwner: PublicKey
-  ): Promise<TransactionInstruction> {
-    return await this.program.methods
-      .cancelProposal({ id: proposalId.slice(0, 10) })
-      .accounts({
-        swapProposal,
-        signer: proposalOwner,
-      })
-      .instruction();
+  ): Promise<{ instruction: TransactionInstruction; accounts: PublicKey[] }> {
+    return {
+      instruction: await this.program.methods
+        .cancelProposal({ id: proposalId.slice(0, 10) })
+        .accounts({
+          swapProposal,
+          signer: proposalOwner,
+        })
+        .instruction(),
+      accounts: [swapProposal, proposalOwner],
+    };
   }
 
   /**
@@ -206,17 +221,17 @@ export class InstructionProviderV0 {
     swapItemId: string,
     actionType: SwapItemActionType,
     optionId?: string
-  ): Promise<TransactionInstruction> {
+  ): Promise<{ instruction: TransactionInstruction; accounts: PublicKey[] }> {
     /**
      * @dev Find token vault if exists in chain.
      */
     const [swapTokenVault, swapTokenVaultBump] =
-      await this.findTokenVaultAccount(mintAccount);
+      this.findTokenVaultAccount(mintAccount);
 
     /**
-     * @dev Get @var {asociatedTokenAccount} to hold mintAccount.
+     * @dev Get @var {associatedTokenAccount} to hold mintAccount.
      */
-    const asociatedTokenAccountAddress = await getAssociatedTokenAddress(
+    const associatedTokenAccountAddress = await getAssociatedTokenAddress(
       mintAccount,
       proposalOwner
     );
@@ -232,21 +247,28 @@ export class InstructionProviderV0 {
       optionId: optionId ? optionId.slice(0, 10) : "",
     };
 
-    console.log(params);
-
     /**
      * @dev Call to program to create an instruction.
      */
-    return await this.program.methods
-      .transferAssetsToVault(params)
-      .accounts({
-        signer: proposalOwner,
-        signerTokenAccount: asociatedTokenAccountAddress,
+    return {
+      instruction: await this.program.methods
+        .transferAssetsToVault(params)
+        .accounts({
+          signer: proposalOwner,
+          signerTokenAccount: associatedTokenAccountAddress,
+          swapTokenVault,
+          mintAccount,
+          swapProposal,
+        })
+        .instruction(),
+      accounts: [
+        proposalOwner,
+        associatedTokenAccountAddress,
         swapTokenVault,
         mintAccount,
         swapProposal,
-      })
-      .instruction();
+      ],
+    };
   }
 
   /**
@@ -266,17 +288,17 @@ export class InstructionProviderV0 {
     proposalId: string,
     swapItemId: string,
     actionType: SwapItemActionType
-  ): Promise<TransactionInstruction> {
+  ): Promise<{ instruction: TransactionInstruction; accounts: PublicKey[] }> {
     /**
      * @dev Find token vault if exists in chain.
      */
     const [swapTokenVault, swapTokenVaultBump] =
-      await this.findTokenVaultAccount(mintAccount);
+      this.findTokenVaultAccount(mintAccount);
 
     /**
-     * @dev Get @var {asociatedTokenAccount} to hold mintAccount.
+     * @dev Get @var {associatedTokenAccount} to hold mintAccount.
      */
-    const asociatedTokenAccountAddress = await getAssociatedTokenAddress(
+    const associatedTokenAccountAddress = await getAssociatedTokenAddress(
       mintAccount,
       targetAccount
     );
@@ -295,17 +317,27 @@ export class InstructionProviderV0 {
     /**
      * @dev Call to program to create an instruction.
      */
-    return this.program.methods
-      .transferAssetsFromVault(params)
-      .accounts({
-        signer: targetAccount,
-        signerTokenAccount: asociatedTokenAccountAddress,
+    return {
+      instruction: await this.program.methods
+        .transferAssetsFromVault(params)
+        .accounts({
+          signer: targetAccount,
+          signerTokenAccount: associatedTokenAccountAddress,
+          swapProposal,
+          swapTokenVault,
+          swapRegistry: this.swapRegistry,
+          mintAccount: mintAccount,
+        })
+        .instruction(),
+      accounts: [
+        mintAccount,
+        this.swapRegistry,
+        targetAccount,
+        associatedTokenAccountAddress,
         swapProposal,
         swapTokenVault,
-        swapRegistry: this.swapRegistry,
-        mintAccount: mintAccount,
-      })
-      .instruction();
+      ],
+    };
   }
 
   /**
@@ -317,7 +349,10 @@ export class InstructionProviderV0 {
   public async wrapSol(
     walletPublicKey: PublicKey,
     amount: anchor.BN
-  ): Promise<[TransactionInstruction, TransactionInstruction]> {
+  ): Promise<{
+    instructions: [TransactionInstruction, TransactionInstruction];
+    accounts: PublicKey[];
+  }> {
     /**
      * @dev Get token account of wSOL.
      */
@@ -340,7 +375,10 @@ export class InstructionProviderV0 {
      */
     const instruction2 = createSyncNativeInstruction(associatedTokenAccount);
 
-    return [instruction1, instruction2];
+    return {
+      instructions: [instruction1, instruction2],
+      accounts: [associatedTokenAccount, walletPublicKey, NATIVE_MINT],
+    };
   }
 
   /**
@@ -350,7 +388,7 @@ export class InstructionProviderV0 {
    */
   public async unwrapSol(
     walletPublicKey: PublicKey
-  ): Promise<TransactionInstruction> {
+  ): Promise<{ instruction: TransactionInstruction; accounts: PublicKey[] }> {
     /**
      * @dev Get token account of wSOL.
      */
@@ -359,10 +397,13 @@ export class InstructionProviderV0 {
       walletPublicKey
     );
 
-    return createCloseAccountInstruction(
-      associatedTokenAccount,
-      walletPublicKey,
-      walletPublicKey
-    );
+    return {
+      instruction: await createCloseAccountInstruction(
+        associatedTokenAccount,
+        walletPublicKey,
+        walletPublicKey
+      ),
+      accounts: [associatedTokenAccount, walletPublicKey, NATIVE_MINT],
+    };
   }
 }

@@ -144,6 +144,7 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
    * @dev Submit proposal to Hamster server and on-chain.
    */
   const submitProposal = useCallback(async () => {
+    console.log("submit", solanaWallet?.publicKey);
     if (!solanaWallet.publicKey) return;
     /**
      * @dev Initialize params to create proposal program.
@@ -171,6 +172,7 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
       expiredAt: expiredTime,
     };
 
+    console.log("expiredTime", expiredTime);
     /**
      * @dev Create proposal
      *  - Hamster server

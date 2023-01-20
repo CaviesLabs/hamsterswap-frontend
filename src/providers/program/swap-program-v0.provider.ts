@@ -7,6 +7,7 @@ import {
 } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
+import { createMint } from "@solana/spl-token";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
 import {
   CreateProposalDto,
@@ -20,8 +21,10 @@ import {
 import { SwapIdl, IDL } from "./swap.idl";
 import { InstructionProvider } from "./instruction.provider";
 import { TransactionProvider } from "./transaction.provider";
+import { LookupTableProvider } from "./lookup-table.provider";
 import { WSOL_ADDRESS } from "@/src/utils/constants";
 import { InstructionProviderV0 } from "./instruction-v0.provider";
+import { BN } from "bn.js";
 
 export const SOLANA_DEVNET_RPC_ENDPOINT = "https://api.devnet.solana.com";
 export const SOLANA_MAINNET_RPC_RPC_ENDPOINT =
@@ -50,7 +53,7 @@ export class SwapProgramProviderV0 {
    * @dev Provider to create instructions.
    * @private
    */
-  private instructionProvider: InstructionProvider;
+  // private instructionProvider: InstructionProvider;
   private instructionProviderV0: InstructionProviderV0;
 
   /**
@@ -58,6 +61,7 @@ export class SwapProgramProviderV0 {
    * @private
    */
   private transactionProvider: TransactionProvider;
+  private lookupTableProvider: LookupTableProvider;
 
   /**
    * @dev Initialize swap program provider.
@@ -94,15 +98,15 @@ export class SwapProgramProviderV0 {
       this.program = program;
       this.isProgramInitialize = true;
 
-      /**
-       * @dev Initialize instruction provider.
-       */
-      this.instructionProvider = new InstructionProvider(
-        this.connection,
-        this.program,
-        this.swapRegistry,
-        this.swapRegistryBump
-      );
+      // /**
+      //  * @dev Initialize instruction provider.
+      //  */
+      // this.instructionProvider = new InstructionProvider(
+      //   this.connection,
+      //   this.program,
+      //   this.swapRegistry,
+      //   this.swapRegistryBump
+      // );
 
       /**
        * @dev Initialize instruction provider.
@@ -114,12 +118,18 @@ export class SwapProgramProviderV0 {
         this.swapRegistryBump
       );
 
+      this.lookupTableProvider = new LookupTableProvider(
+        this.connection,
+        this.program
+      );
+
       /**
        * @dev Initlize transaction provider.
        */
       this.transactionProvider = new TransactionProvider(
         this.connection,
-        this.program
+        this.program,
+        this.lookupTableProvider
       );
     });
   }
@@ -216,12 +226,13 @@ export class SwapProgramProviderV0 {
     walletProvider: WalletProvider,
     createProposalDto: CreateProposalDto
   ) {
+    const accountList: PublicKey[] = [];
+
     try {
-      console.log(createProposalDto.id);
       /**
        * @dev Find swap program.
        */
-      const swapProposal = await this.instructionProvider.findSwapProposal(
+      const swapProposal = await this.instructionProviderV0.findSwapProposal(
         createProposalDto.id
       );
 
@@ -241,33 +252,44 @@ export class SwapProgramProviderV0 {
           /**
            * @dev Create token vaults for each swap items.
            */
-          const ins = await this.instructionProvider.createSwapTokenVault(
+          const data = await this.instructionProviderV0.createSwapTokenVault(
             item.mintAccount
           );
 
           /**
            * @dev Add to instructions if valid.
            */
-          if (!ins) return;
-          instructions.push(ins);
+          if (!data?.instruction) return;
+
+          /**
+           * @dev Update instruction list and account list
+           */
+          instructions.push(data?.instruction);
+          accountList.push(...data?.accounts);
         })
       );
 
       /**
        * @dev Call function to create proposal instruction.
        */
-      const createProposalInstruction =
-        await this.instructionProvider.createProposal(
-          createProposalDto,
-          walletProvider.publicKey,
-          swapProposal
-        );
+      const {
+        instruction: createProposalInstruction,
+        accounts: createProposalAccounts,
+      } = await this.instructionProviderV0.createProposal(
+        createProposalDto,
+        walletProvider.publicKey,
+        swapProposal
+      );
 
       /**
        * @dev Add instruction to arrays to process if valid.
        */
       if (createProposalInstruction) {
+        /**
+         * @dev Update account list and instruction
+         */
         instructions.push(createProposalInstruction);
+        accountList.push(...createProposalAccounts);
       }
 
       /**
@@ -278,36 +300,43 @@ export class SwapProgramProviderV0 {
           /**
            * @dev Instruction to create associated token account if doest exists.
            */
-          const associatedInstruction =
-            await this.instructionProvider.getOrCreateProposalTokenAccount(
-              walletProvider.publicKey,
-              item.mintAccount
-            );
+          const {
+            instruction: associatedInstruction,
+            accounts: associatedInstructionAccounts,
+          } = await this.instructionProviderV0.getOrCreateProposalTokenAccount(
+            walletProvider.publicKey,
+            item.mintAccount
+          );
 
           /**
            * @dev Add to arrays to process if valid.
            */
           if (associatedInstruction) {
             instructions.push(associatedInstruction);
+            accountList.push(...associatedInstructionAccounts);
           }
 
           /**
            * @dev Handle to wrap sol to wsol if offered item is SOL currency.
            */
           const wrapSolInstructions = [];
-          console.log(item.mintAccount.toBase58().toString(), WSOL_ADDRESS);
+
           if (
             Object.keys(item.itemType)[0] === AssetTypes.token &&
             item.mintAccount.toBase58().toString() === WSOL_ADDRESS
           ) {
             try {
-              const [ins1, ins2] = await this.instructionProvider.wrapSol(
+              const {
+                instructions: [ins1, ins2],
+                accounts: wrapSolAccounts,
+              } = await this.instructionProviderV0.wrapSol(
                 walletProvider.publicKey,
                 item.amount
               );
 
               ins1 && wrapSolInstructions.push(ins1);
               ins2 && wrapSolInstructions.push(ins2);
+              accountList.push(...wrapSolAccounts);
             } catch (err) {
               console.log("Error when wrap sol", err);
             }
@@ -316,56 +345,93 @@ export class SwapProgramProviderV0 {
           /**
            * @dev Try to create a instruction to deposit token.
            */
-          const ins = await this.instructionProvider.transferTokenToVault(
-            createProposalDto.id,
-            swapProposal,
-            walletProvider.publicKey,
-            item.mintAccount,
-            item.id,
-            SwapItemActionType.depositing
-          );
+          const { instruction: ins, accounts: transferTokenVaultAccounts } =
+            await this.instructionProviderV0.transferTokenToVault(
+              createProposalDto.id,
+              swapProposal,
+              walletProvider.publicKey,
+              item.mintAccount,
+              item.id,
+              SwapItemActionType.depositing
+            );
 
           /**
            * @dev Add to instructions if valid.
            */
           if (!ins) return;
           instructions = [...instructions, ...wrapSolInstructions, ins];
+          accountList.push(...transferTokenVaultAccounts);
         })
       );
 
-      /**
-       * @dev Sign and confirm instructions.
-       */
-      const txId = await this.transactionProvider.signAndSendTransaction(
-        walletProvider,
-        instructions
-      );
+      // setTimeout(async () => {
+      //   const [, state] = await this.getProposalState(createProposalDto.id);
+      //   console.log({ state });
+      // }, 4000);
 
-      console.log("Transaction ID: ", { txId });
-      setTimeout(async () => {
-        const [, state] = await this.getProposalState(createProposalDto.id);
-        console.log({ state });
-      }, 4000);
+      return this.transactionProvider.buildV0TransactionHandlers(
+        this.walletProvider,
+        instructions,
+        accountList
+      );
     } catch (err: any) {
       console.error("Error", err.message);
       throw err;
     }
   }
-
-  public async testCreateProposal(
-    walletProvider: WalletProvider,
-    createProposalDto: CreateProposalDto
-  ) {
-    const swapProposal = Keypair.generate().publicKey;
-
-    const createProposalInstruction =
-      await this.instructionProviderV0.createProposal(
-        createProposalDto,
-        walletProvider.publicKey,
-        swapProposal
-      );
-  }
-
+  //
+  // public async testCreateProposal(walletProvider: WalletProvider) {
+  //   const generateId = () =>
+  //     Keypair.generate().publicKey.toBase58().toString().slice(0, 10);
+  //   const id = generateId();
+  //   const swapProposal = await this.instructionProviderV0.findSwapProposal(id);
+  //
+  //   const offeredItems = [
+  //     {
+  //       id: Keypair.generate().publicKey.toBase58().slice(0, 10),
+  //       mintAccount: new PublicKey(
+  //         "So11111111111111111111111111111111111111112"
+  //       ),
+  //       amount: new BN(anchor.web3.LAMPORTS_PER_SOL),
+  //       itemType: { currency: {} },
+  //     },
+  //   ];
+  //
+  //   const swapOptions = [
+  //     {
+  //       id: Keypair.generate().publicKey.toBase58().slice(0, 10),
+  //       askingItems: [
+  //         {
+  //           id: Keypair.generate().publicKey.toBase58().slice(0, 10),
+  //           mintAccount: new PublicKey(
+  //             "So11111111111111111111111111111111111111112"
+  //           ),
+  //           amount: new BN(anchor.web3.LAMPORTS_PER_SOL),
+  //           itemType: { currency: {} },
+  //         },
+  //       ],
+  //     },
+  //   ];
+  //
+  //   const { instruction, accounts } =
+  //     await this.instructionProviderV0.createProposal(
+  //       {
+  //         id,
+  //         offeredOptions: offeredItems,
+  //         swapOptions: swapOptions,
+  //         expiredAt: new Date(),
+  //       },
+  //       walletProvider.publicKey,
+  //       swapProposal
+  //     );
+  //
+  //   return this.transactionProvider.buildV0TransactionHandlers(
+  //     this.walletProvider,
+  //     [instruction],
+  //     accounts
+  //   );
+  // }
+  //
   /**
    * @dev The function to cancle proposal on-chain.
    * @param walletProvider
@@ -377,11 +443,7 @@ export class SwapProgramProviderV0 {
     proposal: SwapProposalEntity,
     optionId?: string
   ) {
-    /**
-     * @dev Find swap program.
-     */
-    console.log(proposal.id);
-    const [swapProposal, state] = await this.getProposalState(proposal.id);
+    const accountList: PublicKey[] = [];
 
     /**
      * @dev Define @var {TransactionInstruction} @arrays instructions to process.
@@ -389,17 +451,25 @@ export class SwapProgramProviderV0 {
     const instructions: TransactionInstruction[] = [];
 
     /**
+     * @dev Find swap program.
+     */
+    const [swapProposal, state] = await this.getProposalState(proposal.id);
+
+    /**
      * Check if not cancel
      * @dev Canceling instruction.
      */
     if (state.status.valueOf() !== SwapItemStatus.CANCELED.valueOf()) {
-      instructions.push(
-        await this.instructionProvider.cancelProposal(
-          proposal.id,
-          swapProposal,
-          walletProvider.publicKey
-        )
+      const {
+        instruction: cancelProposalInstruction,
+        accounts: cancelProposalAccounts,
+      } = await this.instructionProviderV0.cancelProposal(
+        proposal.id,
+        swapProposal,
+        walletProvider.publicKey
       );
+      instructions.push(cancelProposalInstruction);
+      accountList.push(...cancelProposalAccounts);
     }
 
     /**
@@ -412,9 +482,6 @@ export class SwapProgramProviderV0 {
         ? proposal.offerItems
         : proposal.swapOptions.find((item) => item.id === optionId)?.items;
 
-    console.log(proposal);
-    console.log(widthDrawItems);
-
     /**
      * @dev Create each instruction to withdraw nft to signer.
      */
@@ -424,8 +491,8 @@ export class SwapProgramProviderV0 {
           /**
            * @dev Initilize instruction to withdraw tokens from vault account to proposal owner.
            */
-          const instruction =
-            await this.instructionProvider.transferTokenFromVault(
+          const { instruction, accounts: transferTokenFromVaultAccounts } =
+            await this.instructionProviderV0.transferTokenFromVault(
               walletProvider.publicKey,
               new PublicKey(item.contractAddress),
               swapProposal,
@@ -439,18 +506,21 @@ export class SwapProgramProviderV0 {
            */
           if (!instruction) return;
           instructions.push(instruction);
+          accountList.push(...transferTokenFromVaultAccounts);
 
           /** @dev Unwrap sol if item is currency. */
           if (
             item.type === SwapItemType.CURRENCY &&
             item.contractAddress === WSOL_ADDRESS
           ) {
-            const inst = await this.instructionProvider.unwrapSol(
-              walletProvider.publicKey
-            );
+            const { instruction: inst, accounts: unwrapSolAccounts } =
+              await this.instructionProviderV0.unwrapSol(
+                walletProvider.publicKey
+              );
 
             /** @dev Add if valid */
             instructions.push(inst);
+            accountList.push(...unwrapSolAccounts);
           }
         })
       );
@@ -459,12 +529,11 @@ export class SwapProgramProviderV0 {
     /**
      * @dev Sign and confirm instructions.
      */
-    const txId = await this.transactionProvider.signAndSendTransaction(
-      walletProvider,
-      instructions
+    return this.transactionProvider.buildV0TransactionHandlers(
+      this.walletProvider,
+      instructions,
+      accountList
     );
-
-    console.log("Cancel proposal", proposal.id.slice(0, 10), { txId });
   }
 
   /**
@@ -479,6 +548,8 @@ export class SwapProgramProviderV0 {
     optionId: string
   ) {
     try {
+      const accountList: PublicKey[] = [];
+
       /**
        * @dev Find swap program.
        */
@@ -501,18 +572,20 @@ export class SwapProgramProviderV0 {
           /**
            * @dev Instruction to create associated token account if doest exists.
            */
-          const associatedInstruction =
-            await this.instructionProvider.getOrCreateProposalTokenAccount(
-              walletProvider.publicKey,
-              new PublicKey(item.contractAddress)
-            );
+          const {
+            instruction: associatedInstruction,
+            accounts: associatedInxAccounts,
+          } = await this.instructionProviderV0.getOrCreateProposalTokenAccount(
+            walletProvider.publicKey,
+            new PublicKey(item.contractAddress)
+          );
 
           /**
            * @dev Add to arrays to process if valid.
            */
-          console.log("associatedInstruction 1", associatedInstruction);
           if (associatedInstruction) {
             instructions.push(associatedInstruction);
+            accountList.push(...associatedInxAccounts);
           }
 
           /**
@@ -524,13 +597,17 @@ export class SwapProgramProviderV0 {
             item.contractAddress === WSOL_ADDRESS
           ) {
             try {
-              const [ins1, ins2] = await this.instructionProvider.wrapSol(
+              const {
+                instructions: [ins1, ins2],
+                accounts: wrapSolAccounts,
+              } = await this.instructionProviderV0.wrapSol(
                 walletProvider.publicKey,
                 new anchor.BN(item.amount)
               );
 
               ins1 && wrapSolInstructions.push(ins1);
               ins2 && wrapSolInstructions.push(ins2);
+              accountList.push(...wrapSolAccounts);
             } catch (err) {
               console.log("Error when wrap sol", err);
             }
@@ -539,8 +616,8 @@ export class SwapProgramProviderV0 {
           /**
            * @dev Fullfiling deposit token from buyer to token vault.
            */
-          const instruction =
-            await this.instructionProvider.transferTokenToVault(
+          const { instruction, accounts: transferTokenToVaultAccounts } =
+            await this.instructionProviderV0.transferTokenToVault(
               proposal.id,
               swapProposal,
               walletProvider.publicKey,
@@ -552,6 +629,7 @@ export class SwapProgramProviderV0 {
 
           if (!instruction) return;
           instructions = [...instructions, ...wrapSolInstructions, instruction];
+          accountList.push(...transferTokenToVaultAccounts);
         })
       );
 
@@ -566,29 +644,31 @@ export class SwapProgramProviderV0 {
               (swapItem) => swapItem.contractAddress === item.contractAddress
             )
           ) {
-            console.log("created in depositing swap item");
             /**
              * @dev Instruction to create associated token account if doest exists.
              */
-            const associatedInstruction =
-              await this.instructionProvider.getOrCreateProposalTokenAccount(
-                walletProvider.publicKey,
-                new PublicKey(item.contractAddress)
-              );
+            const {
+              instruction: associatedInstruction,
+              accounts: associatedInstructionAccounts,
+            } = await this.instructionProviderV0.getOrCreateProposalTokenAccount(
+              walletProvider.publicKey,
+              new PublicKey(item.contractAddress)
+            );
 
             /**
              * @dev Add to arrays to process if valid.
              */
             if (associatedInstruction) {
               instructions.push(associatedInstruction);
+              accountList.push(...associatedInstructionAccounts);
             }
           }
 
           /**
            * @dev Fullfiling deposit token from buyer to token vault.
            */
-          const instruction =
-            await this.instructionProvider.transferTokenFromVault(
+          const { instruction, accounts: transferTokenFromVaultAccounts } =
+            await this.instructionProviderV0.transferTokenFromVault(
               walletProvider.publicKey,
               new PublicKey(item.contractAddress),
               swapProposal,
@@ -602,18 +682,21 @@ export class SwapProgramProviderV0 {
            */
           if (!instruction) return;
           instructions.push(instruction);
+          accountList.push(...transferTokenFromVaultAccounts);
 
           /** @dev Unwrap sol if item is currency. */
           if (
             item.type === SwapItemType.CURRENCY &&
             item.contractAddress === WSOL_ADDRESS
           ) {
-            const inst = await this.instructionProvider.unwrapSol(
-              walletProvider.publicKey
-            );
+            const { instruction: inst, accounts: unwrapSolAccounts } =
+              await this.instructionProviderV0.unwrapSol(
+                walletProvider.publicKey
+              );
 
             /** @dev Add if valid */
             instructions.push(inst);
+            accountList.push(...unwrapSolAccounts);
           }
         })
       );
@@ -621,14 +704,13 @@ export class SwapProgramProviderV0 {
       /**
        * @dev Sign and confirm instructions.
        */
-      const txId = await this.transactionProvider.signAndSendTransaction(
-        walletProvider,
-        instructions
+      const build = await this.transactionProvider.buildV0TransactionHandlers(
+        this.walletProvider,
+        instructions,
+        accountList
       );
-
-      console.log("Wrap proposal successfully", proposal.id.slice(0, 10), {
-        txId,
-      });
+      console.log("build", build);
+      return build;
     } catch (err: any) {
       console.error("Error when wrap proposal", err);
       throw Error(err);
@@ -667,6 +749,8 @@ export class SwapProgramProviderV0 {
      * @dev Define @var {TransactionInstruction} @arrays instructions to process.
      */
     const instructions: TransactionInstruction[] = [];
+    const accountList: PublicKey[] = [];
+
     const swapOption = proposal.swapOptions.find(
       (item) => item.id === proposal.fulfilledWithOptionId
     );
@@ -679,24 +763,27 @@ export class SwapProgramProviderV0 {
         /**
          * @dev Instruction to create associated token account if doest exists.
          */
-        const associatedInstruction =
-          await this.instructionProvider.getOrCreateProposalTokenAccount(
-            walletProvider.publicKey,
-            new PublicKey(item.contractAddress)
-          );
+        const {
+          instruction: associatedInstruction,
+          accounts: createTokenAccountInxAccounts,
+        } = await this.instructionProviderV0.getOrCreateProposalTokenAccount(
+          walletProvider.publicKey,
+          new PublicKey(item.contractAddress)
+        );
 
         /**
          * @dev Add to arrays to process if valid.
          */
         if (associatedInstruction) {
           instructions.push(associatedInstruction);
+          accountList.push(...createTokenAccountInxAccounts);
         }
 
         /**
          * @dev Fullfiling deposit token from buyer to token vault.
          */
-        const instruction =
-          await this.instructionProvider.transferTokenFromVault(
+        const { instruction, accounts: transferTokenFromVaultAccounts } =
+          await this.instructionProviderV0.transferTokenFromVault(
             new PublicKey(proposal.ownerAddress),
             new PublicKey(item.contractAddress),
             swapProposal,
@@ -706,18 +793,21 @@ export class SwapProgramProviderV0 {
           );
         if (!instruction) return;
         instructions.push(instruction);
+        accountList.push(...transferTokenFromVaultAccounts);
 
         /** @dev Unwrap sol if item is currency. */
         if (
           item.type === SwapItemType.CURRENCY &&
           item.contractAddress === WSOL_ADDRESS
         ) {
-          const inst = await this.instructionProvider.unwrapSol(
-            walletProvider.publicKey
-          );
+          const { instruction: inst, accounts: unwrapSolAccounts } =
+            await this.instructionProviderV0.unwrapSol(
+              walletProvider.publicKey
+            );
 
           /** @dev Add if valid */
           instructions.push(inst);
+          accountList.push(...unwrapSolAccounts);
         }
       })
     );
@@ -725,18 +815,10 @@ export class SwapProgramProviderV0 {
     /**
      * @dev Sign and confirm instructions.
      */
-    const txId = await this.transactionProvider.signAndSendTransaction(
-      walletProvider,
-      instructions
-    );
-
-    console.log("Claim proposal successfully!", proposal.id, {
-      txId,
-    });
-
-    console.log(
-      "Proposal state: ",
-      (await this.getProposalState(proposal.id))[1]
+    return this.transactionProvider.buildV0TransactionHandlers(
+      this.walletProvider,
+      instructions,
+      accountList
     );
   }
 
@@ -747,7 +829,7 @@ export class SwapProgramProviderV0 {
   private async getProposalState(
     id: string
   ): Promise<[PublicKey, SwapProposalEntity]> {
-    const swapProposal = await this.instructionProvider.findSwapProposal(id);
+    const swapProposal = await this.instructionProviderV0.findSwapProposal(id);
     const state = await this.program.account.swapProposal.fetch(swapProposal);
     const parseState = JSON.parse(JSON.stringify(state)) as SwapProposalEntity;
     return [swapProposal, parseState];

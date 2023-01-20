@@ -1,6 +1,6 @@
-import { FC } from "react";
-import { Button, toast } from "@hamsterbox/ui-kit";
-import { useCallback, useState } from "react";
+import { FC, useMemo, useState, useCallback } from "react";
+import { useRouter } from "next/router";
+import { Button } from "@hamsterbox/ui-kit";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useWalletKit } from "@gokiprotocol/walletkit";
 import { useWallet } from "@/src/hooks/useWallet";
@@ -10,14 +10,20 @@ import {
   WalletEmptyModal,
 } from "@/src/components/modal";
 import { useMain } from "@/src/hooks/pages/main";
+import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optmize-transaction-modal";
 
-const BuyButton: FC<{ handleSwap(): Promise<void>; optionIndex: number }> = (
-  props
-) => {
+const BuyButton: FC<{
+  handleSwap(): Promise<void | {
+    proposalId?: string;
+    fns: { optimize(): Promise<void>; confirm(): Promise<void> };
+  }>;
+  optionIndex: number;
+}> = (props) => {
   /**
    * @dev Get user wallet
    */
   const wallet = useConnectedWallet();
+  const router = useRouter();
   const { connect } = useWalletKit();
   const { programService, solanaWallet } = useWallet();
 
@@ -35,46 +41,64 @@ const BuyButton: FC<{ handleSwap(): Promise<void>; optionIndex: number }> = (
   const [isBuyButtonLoading, setIsBuyButtonLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * @dev Condition to show popup to optimize proposal and submit proposal onchain.
+   */
+  const [optimizedProposalOpen, setOptimizedProposalOpen] = useState(false);
+
+  /**
+   * @dev Condition whether user want to use with optimize option.
+   */
+  const isOptimized = useMemo(
+    () => router?.query?.optimized === "true",
+    [router]
+  );
+
   const handleSwap = useCallback(async () => {
     if (!proposal) return;
     if (!solanaWallet.publicKey) return connect();
 
-    try {
-      setIsLoading(true);
+    /**
+     * @dev Turn on loading status in buy button.
+     */
+    setIsLoading(true);
+    setIsBuyButtonLoading(true);
+    /**
+     * @dev Turn on optimized transaction modal if having optimized option.
+     */
+    setOptimizedProposalOpen(true);
+    // if (isOptimized) {
+    // } else {
+    //   try {
+    //     /**
+    //      * @dev Call function to process.
+    //      */
+    //     await props.handleSwap();
 
-      /**
-       * @dev Turn on loading status in buy button.
-       */
-      setIsBuyButtonLoading(true);
+    //     /**
+    //      * @dev Turn off confirm modal.
+    //      */
+    //     setIsDisplayConfirm(false);
 
-      /**
-       * @dev Call function to process.
-       */
-      await props.handleSwap();
-
-      /**
-       * @dev Turn off confirm modal.
-       */
-      setIsDisplayConfirm(false);
-
-      /**
-       * @dev Show confirmed modal when swap successfully.
-       */
-      setIsDisplayConfirmed(true);
-    } catch (err: any) {
-      console.log(err.message);
-      if (
-        err?.message ===
-        "WalletSignTransactionError: User rejected the request."
-      ) {
-        toast(`Buy proposal failed, user rejected the request.`);
-      } else {
-        setIsTransFailed(true);
-      }
-    } finally {
-      setIsBuyButtonLoading(false);
-      setIsLoading(false);
-    }
+    //     /**
+    //      * @dev Show confirmed modal when swap successfully.
+    //      */
+    //     setIsDisplayConfirmed(true);
+    //   } catch (err: any) {
+    //     console.log(err.message);
+    //     if (
+    //       err?.message ===
+    //       "WalletSignTransactionError: User rejected the request."
+    //     ) {
+    //       toast(`Buy proposal failed, user rejected the request.`);
+    //     } else {
+    //       setIsTransFailed(true);
+    //     }
+    //   } finally {
+    //     setIsBuyButtonLoading(false);
+    //     setIsLoading(false);
+    //   }
+    // }
   }, [wallet, programService, solanaWallet, proposal, props.optionIndex]);
 
   return (
@@ -114,6 +138,31 @@ const BuyButton: FC<{ handleSwap(): Promise<void>; optionIndex: number }> = (
         handleOk={() => setIsTransFailed(false)}
         handleCancel={() => setIsTransFailed(false)}
         isModalOpen={isTransFailed}
+      />
+      <OptimizeTransactionModal
+        isModalOpen={optimizedProposalOpen}
+        instructionHandler={async () =>
+          (await props.handleSwap()) as unknown as {
+            proposalId?: string;
+            fns: {
+              optimize(): Promise<void>;
+              confirm(): Promise<void>;
+            };
+          }
+        }
+        handleCancel={() => {
+          setOptimizedProposalOpen(false);
+          setIsBuyButtonLoading(false);
+          setIsLoading(false);
+        }}
+        handleOk={(proposalId) => {
+          console.log(proposalId);
+          setOptimizedProposalOpen(false);
+          setIsDisplayConfirm(false);
+          setIsDisplayConfirmed(true);
+          setIsBuyButtonLoading(false);
+          setIsLoading(false);
+        }}
       />
     </>
   );

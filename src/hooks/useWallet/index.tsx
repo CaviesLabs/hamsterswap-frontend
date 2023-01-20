@@ -17,7 +17,7 @@ import {
 import web3 from "@solana/web3.js";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
-import { getSwapProgramProvider } from "@/src/providers/program";
+// import { getSwapProgramProvider } from "@/src/providers/program";
 import { SwapProgramProviderV0 } from "@/src/providers/program/swap-program-v0.provider";
 import { SwapProgramService } from "@/src/services/swap-program.service";
 import { getAuthService } from "@/src/actions/firebase.action";
@@ -25,6 +25,7 @@ import { getWalletName } from "./utils";
 import { setProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
+import { SwapProgramServiceV0 } from "@/src/services/swap-program-v0.service";
 
 /** @dev Define state for context. */
 export interface WalletContextState {
@@ -57,7 +58,7 @@ export interface WalletContextState {
   /**
    * @dev Define Program service.
    */
-  programService: SwapProgramService;
+  programService: SwapProgramService | SwapProgramServiceV0;
 
   /**
    * @dev Sol balance of signer.
@@ -83,7 +84,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
   const wallet = useConnectedWallet();
 
   /** @dev Program service */
-  const [programService, initProgram] = useState<SwapProgramService>(null);
+  const [programService, initProgram] = useState<SwapProgramServiceV0>(null);
   const [solBalance, setSolBalance] = useState(0);
 
   /** @dev Import auth service. */
@@ -179,23 +180,27 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
         /**
          * @dev Initlize program provider.
          */
-        const swapProgramProvider = getSwapProgramProvider(solanaWallet, {
-          reInit: true,
-        });
+        // const swapProgramProvider = getSwapProgramProvider(solanaWallet, {
+        //   reInit: true,
+        // });
 
         /**
          * @dev Initlize swap program service with initlized programProvider.
          */
-        let program;
-        if (router?.query?.optimized === "true") {
-          program = new SwapProgramService(
-            new SwapProgramProviderV0(solanaWallet)
-          );
-          initProgram(program);
-        } else {
-          program = new SwapProgramService(swapProgramProvider);
-          initProgram(program);
-        }
+        const program = new SwapProgramServiceV0(
+          new SwapProgramProviderV0(solanaWallet)
+        );
+        initProgram(program);
+
+        // if (router?.query?.optimized === "true") {
+        //   program = new SwapProgramServiceV0(
+        //     new SwapProgramProviderV0(solanaWallet)
+        //   );
+        //   initProgram(program);
+        // } else {
+        //   program = new SwapProgramService(swapProgramProvider);
+        //   initProgram(program);
+        // }
 
         /**
          * @dev update sol balance if wallet changes.

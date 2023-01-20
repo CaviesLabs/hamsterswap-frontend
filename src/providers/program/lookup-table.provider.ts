@@ -1,4 +1,4 @@
-import { Program } from "@project-serum/anchor";
+import { BN, Program } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import { SwapIdl } from "@/src/providers/program/swap.idl";
 import {
@@ -9,6 +9,7 @@ import {
   TransactionInstruction,
 } from "@solana/web3.js";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
+import _ from "lodash";
 
 export class LookupTableProvider {
   /**
@@ -145,12 +146,6 @@ export class LookupTableProvider {
     instructions: TransactionInstruction[];
     lookupTableAddress: PublicKey;
   } | null> {
-    /**
-     * @dev Initializes
-     */
-    const slot = await this.connection.getSlot({
-      commitment: "finalized",
-    });
     const instructions: TransactionInstruction[] = [];
 
     /**
@@ -189,14 +184,18 @@ export class LookupTableProvider {
       );
 
     if (
-      createLookupTablePayload === null ||
+      createLookupTablePayload !== null ||
       lookupTableAddress === null ||
       isLookupTableReachedLimit
     ) {
+      const slot = await this.connection.getSlot({
+        commitment: "confirmed",
+      });
+
       /**
        * @dev Initializes instruction and new lookup table address
        */
-      const [createLookupTableInx, _lookupTableAddress] =
+      const [, _lookupTableAddress] =
         AddressLookupTableProgram.createLookupTable({
           recentSlot: slot,
           authority: this.program.provider.publicKey,
@@ -211,7 +210,19 @@ export class LookupTableProvider {
       /**
        * @dev Also push into the transaction instructions
        */
-      instructions.push(createLookupTableInx);
+      instructions.push(
+        await this.program.methods
+          .modifyAddressLookupTable({
+            slot: new BN(slot),
+          })
+          .accounts({
+            lookupTableRegistry: this.getLookupTableRegistryAddress(),
+            signer: this.program.provider.publicKey,
+            lookupTableAccount: lookupTableAddress,
+            lookupTableProgram: AddressLookupTableProgram.programId,
+          })
+          .instruction()
+      );
     }
 
     /**
@@ -226,7 +237,12 @@ export class LookupTableProvider {
     /**
      * @dev No need to extend
      */
-    if (extendInstruction === null) return null;
+    if (extendInstruction === null) {
+      return {
+        instructions: [],
+        lookupTableAddress,
+      };
+    }
 
     /**
      * @dev Return instructions
@@ -255,6 +271,10 @@ export class LookupTableProvider {
     lookupTableAddress: PublicKey,
     accounts: PublicKey[]
   ): Promise<TransactionInstruction | null> {
+    const uniqueAccounts = _.uniq(accounts.map((elm) => elm.toBase58())).map(
+      (elm) => new PublicKey(elm)
+    );
+
     /**
      * @dev Check if lookup table account already existed
      */
@@ -267,11 +287,11 @@ export class LookupTableProvider {
      */
     const needToWhitelistedAddresses =
       lookupTableAccount === null
-        ? accounts
-        : accounts.filter(
+        ? uniqueAccounts
+        : uniqueAccounts.filter(
             (elm) =>
               !lookupTableAccount.state.addresses.find(
-                (addr) => addr.equals(elm) === false
+                (addr) => addr.toBase58() === elm.toBase58()
               )
           );
 
