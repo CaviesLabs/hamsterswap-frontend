@@ -10,6 +10,8 @@ import {
 } from "@solana/web3.js";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
 
+import _ from 'lodash';
+
 export class LookupTableProvider {
   /**
    * @dev Constructor that initializes address lookup table provider
@@ -270,6 +272,8 @@ export class LookupTableProvider {
     lookupTableAddress: PublicKey,
     accounts: PublicKey[]
   ): Promise<TransactionInstruction | null> {
+    const uniqueAccounts = _.uniq(accounts.map(elm => elm.toBase58())).map(elm => new PublicKey(elm));
+
     /**
      * @dev Check if lookup table account already existed
      */
@@ -282,11 +286,11 @@ export class LookupTableProvider {
      */
     const needToWhitelistedAddresses =
       lookupTableAccount === null
-        ? accounts
-        : accounts.filter(
+        ? uniqueAccounts
+        : uniqueAccounts.filter(
             (elm) =>
               !lookupTableAccount.state.addresses.find(
-                (addr) => addr.equals(elm) === false
+                (addr) => addr.toBase58() === elm.toBase58()
               )
           );
 

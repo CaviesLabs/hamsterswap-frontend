@@ -1,32 +1,30 @@
 import {
   AddressLookupTableAccount,
-  Connection,
+  Connection, PublicKey,
   Transaction,
   TransactionInstruction,
   TransactionMessage,
-  VersionedTransaction,
+  VersionedTransaction
 } from "@solana/web3.js";
 import { Program } from "@project-serum/anchor";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
 import { SwapIdl } from "./swap.idl";
+import { LookupTableProvider } from "@/src/providers/program/lookup-table.provider";
 
 export class TransactionProvider {
-  /**
-   * @dev Define network connection
-   * @private
-   */
-  private readonly connection: Connection;
-
-  /**
-   * @dev This is to indicate whether the program is initialized or not.
-   * @private
-   */
-  private readonly program: Program<SwapIdl>;
-
-  constructor(connection: Connection, program: Program<SwapIdl>) {
-    this.connection = connection;
-    this.program = program;
-  }
+  constructor(
+    /**
+     * @dev Define network connection
+     * @private
+     */
+    private readonly connection: Connection,
+    /**
+     * @dev This is to indicate whether the program is initialized or not.
+     * @private
+     */
+    private readonly program: Program<SwapIdl>,
+    private readonly lookupTableProvider: LookupTableProvider
+  ) {}
 
   /**
    * @dev The function to create transaction with given instructions then sign and send to chain.
@@ -98,5 +96,57 @@ export class TransactionProvider {
     );
 
     return txId;
+  }
+
+  /**
+   * @dev Get optimization and confirmation callback
+   * @param walletProvider
+   * @param instructions
+   * @param accounts
+   */
+  public async getV0TransactionHandlers(
+    walletProvider: WalletProvider,
+    instructions: TransactionInstruction[],
+    accounts: PublicKey[],
+  ): Promise<{
+    optimize: () => Promise<void> | null,
+    confirm: () => Promise<void>
+  }> {
+
+    let optimize: () => Promise<void> | null = null;
+    let confirm: () => Promise<void>;
+
+    /**
+     * @dev Get lookup table inx data
+     */
+    const { instructions: lookupTableInstruction, lookupTableAddress } = await this.lookupTableProvider.createOrExtendLookupTable(
+      walletProvider,
+      accounts,
+    );
+
+    /**
+     * @dev Initialize optimize callback
+     */
+    if(lookupTableInstruction.length > 0) {
+      optimize = async () => {
+        await this.signAndSendV0Transaction(walletProvider, lookupTableInstruction, []);
+      };
+    }
+
+    /**
+     * @dev Initialize confirm callback
+     */
+    const lookupTableAccount = await this.lookupTableProvider.getLookupTableAccount(lookupTableAddress);
+    confirm = async () => {
+      await this.signAndSendV0Transaction(walletProvider, instructions, [lookupTableAccount])
+    }
+
+    /**
+     * @dev Return callbacks
+     */
+    return {
+      optimize,
+      confirm
+    }
   }
 }
