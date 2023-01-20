@@ -104,7 +104,7 @@ export class TransactionProvider {
    * @param instructions
    * @param accounts
    */
-  public async getV0TransactionHandlers(
+  public async buildV0TransactionHandlers(
     walletProvider: WalletProvider,
     instructions: TransactionInstruction[],
     accounts: PublicKey[],
