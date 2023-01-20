@@ -5,7 +5,7 @@ import { Col, Row } from "antd";
 import { UserAvatarCardItem } from "@/src/components/user-card";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "@/src/components/proposal-item/proposal-item.style";
-import { Button, toast } from "@hamsterbox/ui-kit";
+import { Button } from "@hamsterbox/ui-kit";
 import { CancelProposalModal } from "@/src/components/user/modal/cancel-proposal.modal";
 import { ProposalDetailProps } from "./types";
 import { CanceledProposalModal } from "@/src/components/user/modal/canceled-proposal.modal";
@@ -102,21 +102,22 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
    */
   const handleCancleProposal = useCallback(
     async (method: Method, next: () => void) => {
-      if (isOptimized) {
-        setIsDuringSubmitCancel(true);
-        setMethod(method);
-        setOptimizedProposalOpen(true);
-      } else {
-        try {
-          setIsDuringSubmitCancel(true);
-          await cancelProposal(props.proposalId);
-          next();
-        } catch (err: any) {
-          toast.error(`Failed to ${method} proposal. ${err?.message}`);
-        } finally {
-          setIsDuringSubmitCancel(false);
-        }
-      }
+      setIsDuringSubmitCancel(true);
+      setMethod(method);
+      setOptimizedProposalOpen(true);
+      return next();
+      // if (isOptimized) {
+      // } else {
+      //   try {
+      //     setIsDuringSubmitCancel(true);
+      //     await cancelProposal(props.proposalId);
+      //     next();
+      //   } catch (err: any) {
+      //     toast.error(`Failed to ${method} proposal. ${err?.message}`);
+      //   } finally {
+      //     setIsDuringSubmitCancel(false);
+      //   }
+      // }
     },
     [props.proposalId, router, isOptimized, solanaWallet, programService]
   );
@@ -310,35 +311,35 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
           </div>
         </div>
       </StyledProposalItem>
-      {isOptimized ? (
-        <OptimizeTransactionModal
-          isModalOpen={optimizedProposalOpen}
-          instructionHandler={async () =>
-            (await cancelProposal(props.proposalId)) as unknown as {
-              proposalId?: string;
-              fns: {
-                optimize(): Promise<void>;
-                confirm(): Promise<void>;
-              };
-            }
+      <OptimizeTransactionModal
+        isModalOpen={optimizedProposalOpen}
+        instructionHandler={async () =>
+          (await cancelProposal(props.proposalId)) as unknown as {
+            proposalId?: string;
+            fns: {
+              optimize(): Promise<void>;
+              confirm(): Promise<void>;
+            };
           }
-          handleCancel={() => {
-            setOptimizedProposalOpen(false);
-            setIsDuringSubmitCancel(false);
-          }}
-          handleOk={(proposalId) => {
-            console.log(proposalId);
-            setOptimizedProposalOpen(false);
-            if (method === "widthdraw") {
-              setWithdrewModal(true);
-            } else {
-              setCancelModal(false);
-              setCanceledModal(true);
-            }
-            setIsDuringSubmitCancel(false);
-          }}
-        />
-      ) : null}
+        }
+        handleCancel={() => {
+          setOptimizedProposalOpen(false);
+          setIsDuringSubmitCancel(false);
+        }}
+        handleOk={(proposalId) => {
+          console.log(proposalId);
+          setOptimizedProposalOpen(false);
+          if (method === "widthdraw") {
+            setWithdrewModal(true);
+          } else {
+            setCancelModal(false);
+            setCanceledModal(true);
+          }
+          setIsDuringSubmitCancel(false);
+        }}
+      />
+      {/* {isOptimized ? (
+      ) : null} */}
     </>
   );
 };

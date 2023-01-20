@@ -5,7 +5,7 @@ import MainLayout from "@/src/layouts/main";
 import { CreateProposalProvider } from "@/src/hooks/pages/create-proposal";
 import { LayoutSection } from "@/src/components/layout-section";
 import { BreadCrumb } from "@/src/components/bread-crumb";
-import { Button, toast } from "@hamsterbox/ui-kit";
+import { Button } from "@hamsterbox/ui-kit";
 import { StepProgressBar } from "@/src/components/stepper";
 import type { StepProgressHandle } from "@/src/components/stepper";
 import { Carousel } from "react-responsive-carousel";
@@ -143,19 +143,19 @@ const Layout: FC = () => {
   /**
    * @dev The function to create proposal without optimize option.
    */
-  const handleSubmitWithoutOptimize = async () => {
-    try {
-      setIsDuringSubmit(true);
-      const proposalId = (await submitProposal()) as string;
-      setProposalId(proposalId);
-      setModalOpened(true);
-      setIsDuringSubmit(false);
-    } catch (err: unknown) {
-      toast.error("Create proposal failed", (err as any).message);
-    } finally {
-      setIsDuringSubmit(false);
-    }
-  };
+  // const handleSubmitWithoutOptimize = async () => {
+  //   try {
+  //     setIsDuringSubmit(true);
+  //     const proposalId = (await submitProposal()) as string;
+  //     setProposalId(proposalId);
+  //     setModalOpened(true);
+  //     setIsDuringSubmit(false);
+  //   } catch (err: unknown) {
+  //     toast.error("Create proposal failed", (err as any).message);
+  //   } finally {
+  //     setIsDuringSubmit(false);
+  //   }
+  // };
 
   /**
    * @dev The function to create proposal with optimize option.
@@ -171,11 +171,11 @@ const Layout: FC = () => {
    * @dev Click submit to create proposal.
    */
   const hanndleSubmitProposal = useCallback(async () => {
-    if (router?.query?.optimized === "true") {
-      handleSubmitWithOptimize();
-    } else {
-      handleSubmitWithoutOptimize();
-    }
+    handleSubmitWithOptimize();
+    // if (router?.query?.optimized === "true") {
+    // } else {
+    //   handleSubmitWithoutOptimize();
+    // }
   }, [
     router,
     expectedItems,
@@ -304,30 +304,28 @@ const Layout: FC = () => {
                   loading={isDuringSubmit}
                 />
               )}
-              {router?.query?.optimized === "true" ? (
-                <OptimizeTransactionModal
-                  isModalOpen={optimizedProposalOpen}
-                  instructionHandler={async () =>
-                    (await submitProposal()) as unknown as {
-                      proposalId?: string;
-                      fns: {
-                        optimize(): Promise<void>;
-                        confirm(): Promise<void>;
-                      };
-                    }
+              <OptimizeTransactionModal
+                isModalOpen={optimizedProposalOpen}
+                instructionHandler={async () =>
+                  (await submitProposal()) as unknown as {
+                    proposalId?: string;
+                    fns: {
+                      optimize(): Promise<void>;
+                      confirm(): Promise<void>;
+                    };
                   }
-                  handleCancel={() => {
-                    setOptimizedProposalOpen(false);
-                    setIsDuringSubmit(false);
-                  }}
-                  handleOk={(proposalId) => {
-                    setOptimizedProposalOpen(false);
-                    setProposalId(proposalId);
-                    setModalOpened(true);
-                    setIsDuringSubmit(false);
-                  }}
-                />
-              ) : null}
+                }
+                handleCancel={() => {
+                  setOptimizedProposalOpen(false);
+                  setIsDuringSubmit(false);
+                }}
+                handleOk={(proposalId) => {
+                  setOptimizedProposalOpen(false);
+                  setProposalId(proposalId);
+                  setModalOpened(true);
+                  setIsDuringSubmit(false);
+                }}
+              />
             </div>
           </div>
         </LayoutSection>

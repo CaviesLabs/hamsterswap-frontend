@@ -6,6 +6,7 @@ import {
   TransactionInstruction,
   TransactionMessage,
   VersionedTransaction,
+  Commitment,
 } from "@solana/web3.js";
 import { Program } from "@project-serum/anchor";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
@@ -64,7 +65,8 @@ export class TransactionProvider {
   public async signAndSendV0Transaction(
     walletProvider: WalletProvider,
     instructions: TransactionInstruction[],
-    addressLookupTableAccounts: AddressLookupTableAccount[] = []
+    addressLookupTableAccounts: AddressLookupTableAccount[] = [],
+    commitment: Commitment = "processed"
   ): Promise<string> {
     const latestBlockHash = await this.connection.getLatestBlockhash();
 
@@ -93,7 +95,7 @@ export class TransactionProvider {
         blockhash: latestBlockHash.blockhash,
         lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
       },
-      "finalized"
+      commitment
     );
 
     return txId;
@@ -132,7 +134,8 @@ export class TransactionProvider {
         await this.signAndSendV0Transaction(
           walletProvider,
           lookupTableInstruction,
-          []
+          [],
+          "confirmed"
         );
       };
     }
@@ -143,9 +146,12 @@ export class TransactionProvider {
     const lookupTableAccount =
       await this.lookupTableProvider.getLookupTableAccount(lookupTableAddress);
     const confirm = async () => {
-      await this.signAndSendV0Transaction(walletProvider, instructions, [
-        lookupTableAccount,
-      ]);
+      await this.signAndSendV0Transaction(
+        walletProvider,
+        instructions,
+        [lookupTableAccount],
+        "confirmed"
+      );
     };
 
     /**
