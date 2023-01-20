@@ -116,7 +116,7 @@ export class LookupTableProvider {
     address: PublicKey
   ): Promise<AddressLookupTableAccount> {
     return this.connection
-      .getAddressLookupTable(address, {commitment: "finalized"})
+      .getAddressLookupTable(address, { commitment: "finalized" })
       .then((res) => res.value);
   }
 
@@ -258,7 +258,9 @@ export class LookupTableProvider {
     /**
      * @dev Check if lookup table account already existed
      */
-    const lookupTableAccount = await this.getLookupTableAccount(lookupTableAddress);
+    const lookupTableAccount = await this.getLookupTableAccount(
+      lookupTableAddress
+    );
 
     /**
      * @dev Check for whitelisted addresses
