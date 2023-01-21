@@ -178,14 +178,11 @@ export class InstructionProviderV0 {
         proposalOwner,
         swapProposal,
         this.swapRegistry,
-        ...createProposalDto.offeredOptions.map(elm => elm.mintAccount),
-        ...createProposalDto.swapOptions.reduce(
-          (accum, option) => {
-            accum.push(...option.askingItems.map(elm => elm.mintAccount));
-            return accum;
-          },
-          []
-        )
+        ...createProposalDto.offeredOptions.map((elm) => elm.mintAccount),
+        ...createProposalDto.swapOptions.reduce((accum, option) => {
+          accum.push(...option.askingItems.map((elm) => elm.mintAccount));
+          return accum;
+        }, []),
       ],
     };
   }
