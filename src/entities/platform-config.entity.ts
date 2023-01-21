@@ -13,7 +13,7 @@ export type AllowCurrency = {
  * @dev The interface of nft collection which hamster allow to use.
  */
 export type allowNTFCollection = {
-  id: string;
+  idList: string[];
   image: string;
   name: string;
   type: string;

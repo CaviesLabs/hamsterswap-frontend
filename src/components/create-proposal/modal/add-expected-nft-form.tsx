@@ -20,9 +20,9 @@ export const AddExpectedNftForm = (props: FormProps) => {
       .filter(
         (_) => !search || _.name.toLowerCase().includes(search.toLowerCase())
       )
-      .map((_) => ({
+      .map((_, index) => ({
         label: _.name,
-        value: _.id,
+        value: `${index}_${_.name}`,
         image: _.image,
       }));
   }, [search, allowNTFCollections]);

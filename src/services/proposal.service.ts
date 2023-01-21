@@ -22,6 +22,7 @@ export class ProposalService {
         ? {
             ownerAddresses: getProposalsDto.walletAddress,
             ...getProposalsDto.options,
+            limit: 999999,
           }
         : {},
     });
