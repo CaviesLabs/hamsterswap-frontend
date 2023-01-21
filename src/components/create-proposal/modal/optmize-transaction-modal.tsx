@@ -59,6 +59,7 @@ export const OptimizeTransactionModal: FC<
           fnc?.optimize && (await fnc?.optimize());
         } catch {
           toast("Failed to optimize transaction");
+          return;
         }
       } else {
         /**
@@ -68,6 +69,7 @@ export const OptimizeTransactionModal: FC<
           fnc?.confirm && (await fnc?.confirm());
         } catch {
           toast("Failed to confirm transaction");
+          return;
         }
 
         try {
