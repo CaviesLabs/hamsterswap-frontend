@@ -135,7 +135,7 @@ export class TransactionProvider {
           walletProvider,
           lookupTableInstruction,
           [],
-          "confirmed"
+          "finalized"
         );
       };
     }
@@ -150,7 +150,7 @@ export class TransactionProvider {
         walletProvider,
         instructions,
         [lookupTableAccount],
-        "confirmed"
+        "finalized"
       );
     };
 
