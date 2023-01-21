@@ -61,6 +61,7 @@ export class TransactionProvider {
    * @param walletProvider
    * @param instructions
    * @param addressLookupTableAccounts
+   * @param commitment
    */
   public async signAndSendV0Transaction(
     walletProvider: WalletProvider,

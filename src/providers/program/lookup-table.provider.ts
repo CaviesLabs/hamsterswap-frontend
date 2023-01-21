@@ -290,11 +290,14 @@ export class LookupTableProvider {
         ? uniqueAccounts
         : uniqueAccounts.filter(
             (elm) =>
-              !lookupTableAccount.state.addresses.find(
-                (addr) => addr.toBase58() === elm.toBase58()
-              )
+              !lookupTableAccount.state.addresses.map((addr) => addr.toBase58()).includes(elm.toBase58())
           );
 
+    console.log({
+      needToWhitelistedAddresses: needToWhitelistedAddresses.map(elm => elm.toBase58()),
+      uniqueAccounts: uniqueAccounts.map(elm => elm.toBase58()),
+      accounts: lookupTableAccount.state.addresses.map(elm => elm.toBase58())
+    })
     if (needToWhitelistedAddresses.length > 0) {
       /**
        * @dev Extend lookup table
