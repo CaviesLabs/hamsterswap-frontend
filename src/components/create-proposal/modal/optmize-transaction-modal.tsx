@@ -124,7 +124,7 @@ export const OptimizeTransactionModal: FC<
     /**
      * @dev This mean the transaction do not need to optimize, ignore optimized step.
      */
-    if (data.fnc.optimize === undefined) {
+    if (!data.fnc.optimize) {
       /**
        * @dev Update current step.
        */

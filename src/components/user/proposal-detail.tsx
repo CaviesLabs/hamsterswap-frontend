@@ -101,11 +101,10 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
    * @dev The function to handle cancling proposal
    */
   const handleCancleProposal = useCallback(
-    async (method: Method, next: () => void) => {
+    async (method: Method) => {
       setIsDuringSubmitCancel(true);
       setMethod(method);
       setOptimizedProposalOpen(true);
-      return next();
       // if (isOptimized) {
       // } else {
       //   try {
@@ -249,11 +248,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                         <>
                           <Button
                             className="border-purple text-purple !border-2 px-10 rounded-3xl !h-full"
-                            onClick={() =>
-                              handleCancleProposal("widthdraw", () =>
-                                setWithdrewModal(true)
-                              )
-                            }
+                            onClick={() => handleCancleProposal("widthdraw")}
                             size="large"
                             text="Withdraw"
                             shape="secondary"
@@ -282,12 +277,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                       <CancelProposalModal
                         isModalOpen={cancelModal}
                         handleCancel={() => setCancelModal(false)}
-                        handleOk={() =>
-                          handleCancleProposal("cancel", () => {
-                            setCancelModal(false);
-                            setCanceledModal(true);
-                          })
-                        }
+                        handleOk={() => handleCancleProposal("cancel")}
                       />
                       <CanceledProposalModal
                         isModalOpen={canceledModal}
