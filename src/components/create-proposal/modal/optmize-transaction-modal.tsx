@@ -58,8 +58,7 @@ export const OptimizeTransactionModal: FC<
         try {
           fnc?.optimize && (await fnc?.optimize());
         } catch {
-          toast("Failed to optimize transaction");
-          return;
+          return toast("Failed to optimize transaction");
         }
       } else {
         /**
@@ -68,8 +67,7 @@ export const OptimizeTransactionModal: FC<
         try {
           fnc?.confirm && (await fnc?.confirm());
         } catch {
-          toast("Failed to confirm transaction");
-          return;
+          return toast("Failed to confirm transaction");
         }
 
         try {
@@ -81,8 +79,10 @@ export const OptimizeTransactionModal: FC<
               setTimeout(async () => {
                 try {
                   await programService.syncProposal(proposalId);
-                } catch {}
-                resolve(true);
+                } catch {
+                } finally {
+                  resolve(true);
+                }
               }, 4000);
             });
           }
