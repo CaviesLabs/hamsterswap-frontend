@@ -189,7 +189,7 @@ export class LookupTableProvider {
       isLookupTableReachedLimit
     ) {
       const slot = await this.connection.getSlot({
-        commitment: "confirmed",
+        commitment: "finalized",
       });
 
       /**
