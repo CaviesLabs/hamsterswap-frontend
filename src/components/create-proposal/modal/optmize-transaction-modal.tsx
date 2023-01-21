@@ -6,6 +6,7 @@ import { StepProgressBar } from "@/src/components/stepper";
 import type { StepProgressHandle } from "@/src/components/stepper";
 import { Button } from "@hamsterbox/ui-kit";
 import { useWallet } from "@/src/hooks/useWallet";
+import { toast } from "@hamsterbox/ui-kit";
 
 export const OptimizeTransactionModal: FC<
   Omit<ModalProps, "handleOk"> & {
@@ -51,12 +52,23 @@ export const OptimizeTransactionModal: FC<
     try {
       setLoading(true);
       if (currentStep === 0) {
-        fnc?.optimize && (await fnc?.optimize());
+        /**
+         * @dev Optimize transaction
+         */
+        try {
+          fnc?.optimize && (await fnc?.optimize());
+        } catch {
+          toast("Failed to optimize transaction");
+        }
       } else {
         /**
          * @dev Call confirm function if step is confirm step
          */
-        fnc?.confirm && (await fnc?.confirm());
+        try {
+          fnc?.confirm && (await fnc?.confirm());
+        } catch {
+          toast("Failed to confirm transaction");
+        }
 
         try {
           /**
@@ -65,7 +77,9 @@ export const OptimizeTransactionModal: FC<
           if (proposalId) {
             await new Promise((resolve) => {
               setTimeout(async () => {
-                await programService.syncProposal(proposalId);
+                try {
+                  await programService.syncProposal(proposalId);
+                } catch {}
                 resolve(true);
               }, 4000);
             });
