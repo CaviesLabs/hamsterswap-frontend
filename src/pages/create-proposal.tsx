@@ -18,7 +18,7 @@ import {
   Step4,
   Step5,
 } from "@/src/components/create-proposal";
-import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optmize-transaction-modal";
+import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optimize-transaction-modal";
 import { StorageProvider } from "@/src/providers/storage.provider";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useWallet } from "@/src/hooks/useWallet";

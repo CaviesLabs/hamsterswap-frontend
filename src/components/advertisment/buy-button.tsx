@@ -9,7 +9,7 @@ import {
   WalletEmptyModal,
 } from "@/src/components/modal";
 import { useMain } from "@/src/hooks/pages/main";
-import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optmize-transaction-modal";
+import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optimize-transaction-modal";
 
 const BuyButton: FC<{
   handleSwap(): Promise<void | {
@@ -53,42 +53,11 @@ const BuyButton: FC<{
      */
     setIsLoading(true);
     setIsBuyButtonLoading(true);
+    setIsDisplayConfirm(false);
     /**
      * @dev Turn on optimized transaction modal if having optimized option.
      */
     setOptimizedProposalOpen(true);
-    // if (isOptimized) {
-    // } else {
-    //   try {
-    //     /**
-    //      * @dev Call function to process.
-    //      */
-    //     await props.handleSwap();
-
-    //     /**
-    //      * @dev Turn off confirm modal.
-    //      */
-    //     setIsDisplayConfirm(false);
-
-    //     /**
-    //      * @dev Show confirmed modal when swap successfully.
-    //      */
-    //     setIsDisplayConfirmed(true);
-    //   } catch (err: any) {
-    //     console.log(err.message);
-    //     if (
-    //       err?.message ===
-    //       "WalletSignTransactionError: User rejected the request."
-    //     ) {
-    //       toast(`Buy proposal failed, user rejected the request.`);
-    //     } else {
-    //       setIsTransFailed(true);
-    //     }
-    //   } finally {
-    //     setIsBuyButtonLoading(false);
-    //     setIsLoading(false);
-    //   }
-    // }
   }, [wallet, programService, solanaWallet, proposal, props.optionIndex]);
 
   return (

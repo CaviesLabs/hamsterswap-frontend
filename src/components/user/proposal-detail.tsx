@@ -16,7 +16,7 @@ import { useProgram } from "@/src/hooks/useProgram";
 import { useWallet } from "@/src/hooks/useWallet";
 import { RedeemButton } from "@/src/components/user/redeem-button";
 import { useProfilePage } from "@/src/hooks/pages/profile";
-import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optmize-transaction-modal";
+import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optimize-transaction-modal";
 import classnames from "classnames";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import State from "@/src/redux/entities/state";
