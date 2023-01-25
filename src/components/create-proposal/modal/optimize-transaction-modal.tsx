@@ -7,6 +7,8 @@ import type { StepProgressHandle } from "@/src/components/stepper";
 import { Button } from "@hamsterbox/ui-kit";
 import { useWallet } from "@/src/hooks/useWallet";
 import { toast } from "@hamsterbox/ui-kit";
+import animationData from "@/src/components/icons/animation-loading.json";
+import Lottie from "react-lottie";
 
 export const OptimizeTransactionModal: FC<
   Omit<ModalProps, "handleOk"> & {
@@ -19,6 +21,9 @@ export const OptimizeTransactionModal: FC<
 > = (props) => {
   /** @dev Loading UX. */
   const [loading, setLoading] = useState(false);
+
+  /** @dev Splash loading UX. */
+  const [splashLoading, setSplashLoading] = useState(true);
 
   /** @dev Proposal id. */
   const [proposalId, setProposalId] = useState("");
@@ -57,7 +62,8 @@ export const OptimizeTransactionModal: FC<
          */
         try {
           fnc?.optimize && (await fnc?.optimize());
-        } catch {
+        } catch (err) {
+          console.error(err);
           return toast("Failed to optimize transaction");
         }
       } else {
@@ -66,7 +72,8 @@ export const OptimizeTransactionModal: FC<
          */
         try {
           fnc?.confirm && (await fnc?.confirm());
-        } catch {
+        } catch (err) {
+          console.error(err);
           return toast("Failed to confirm transaction");
         }
 
@@ -116,40 +123,49 @@ export const OptimizeTransactionModal: FC<
    * @dev The function to initilize bussinness logic
    */
   const handleLogic = useCallback(async () => {
-    /**
-     * @dev Handle to process instructions.
-     */
-    const data = (await props.instructionHandler()) as unknown as {
-      proposalId: string;
-      fnc: {
-        optimize(): Promise<void>;
-        confirm(): Promise<void>;
+    try {
+      /**
+       * @dev Handle to process instructions.
+       */
+      const data = (await props.instructionHandler()) as unknown as {
+        proposalId: string;
+        fnc: {
+          optimize(): Promise<void>;
+          confirm(): Promise<void>;
+        };
       };
-    };
-
-    /**
-     * @dev Assign optimize function & confirm function.
-     */
-    setFnc(data?.fnc);
-
-    /**
-     * @dev Assign proposal id.
-     */
-    setProposalId(data?.proposalId);
-
-    /**
-     * @dev This mean the transaction do not need to optimize, ignore optimized step.
-     */
-    if (!data.fnc.optimize) {
-      /**
-       * @dev Update current step.
-       */
-      setCurrentStep((prev) => prev + 1);
 
       /**
-       * @dev Restrict slide animation to next step.
+       * @dev Assign optimize function & confirm function.
        */
-      stepperRef.current.nextHandler();
+      setFnc(data?.fnc);
+
+      /**
+       * @dev Assign proposal id.
+       */
+      setProposalId(data?.proposalId);
+
+      /**
+       * @dev This mean the transaction do not need to optimize, ignore optimized step.
+       */
+      if (!data.fnc.optimize) {
+        /**
+         * @dev Update current step.
+         */
+        setCurrentStep((prev) => prev + 1);
+
+        /**
+         * @dev Restrict slide animation to next step.
+         */
+        stepperRef.current.nextHandler();
+      }
+
+      console.log(data);
+      setSplashLoading(false);
+    } catch (err) {
+      toast("Optimize transaction error");
+    } finally {
+      setSplashLoading(false);
     }
   }, [props.instructionHandler]);
 
@@ -170,45 +186,58 @@ export const OptimizeTransactionModal: FC<
       className="hamster-modal"
     >
       <StyledModal>
-        <div className="pt-6">
-          <div>
-            <p className="text-[16px] heading-[24px]">
-              An optimization step is required to allow for swapping multiple
-              items. This utilizes Solana’s{" "}
-              <span className="underline">Versioned Transactions</span> format.
-            </p>
-          </div>
-          <div className="mx-auto items-center max-w-3xl">
-            <Button
-              onClick={handleNextStep}
-              disabled={loading}
-              loading={loading}
-              text={`${currentStep === 0 ? "Optimize" : "Confirm"} transaction`}
-              width="100%"
-            >
-              Optimize
-            </Button>
-          </div>
-          <div>
-            <StepProgressBar
-              ref={stepperRef}
-              startingStep={0}
-              onSubmit={() => false}
-              hiddenContent={true}
-              theme={"secondary"}
-              steps={[
-                {
-                  label: "Optimize transaction",
-                  name: "Optimize transaction",
-                },
-                {
-                  label: "Confirm transaction",
-                  name: "Confirm transaction",
-                },
-              ]}
+        {splashLoading ? (
+          <div className="max-w-[185px] mx-auto">
+            <Lottie
+              options={{
+                animationData,
+              }}
             />
           </div>
-        </div>
+        ) : (
+          <div className="pt-6">
+            <div>
+              <p className="text-[16px] heading-[24px]">
+                An optimization step is required to allow for swapping multiple
+                items. This utilizes Solana’s{" "}
+                <span className="underline">Versioned Transactions</span>{" "}
+                format.
+              </p>
+            </div>
+            <div className="mx-auto items-center max-w-3xl">
+              <Button
+                onClick={handleNextStep}
+                disabled={loading}
+                loading={loading}
+                text={`${
+                  currentStep === 0 ? "Optimize" : "Confirm"
+                } transaction`}
+                width="100%"
+              >
+                Optimize
+              </Button>
+            </div>
+            <div>
+              <StepProgressBar
+                ref={stepperRef}
+                startingStep={0}
+                onSubmit={() => false}
+                hiddenContent={true}
+                theme={"secondary"}
+                steps={[
+                  {
+                    label: "Optimize transaction",
+                    name: "Optimize transaction",
+                  },
+                  {
+                    label: "Confirm transaction",
+                    name: "Confirm transaction",
+                  },
+                ]}
+              />
+            </div>
+          </div>
+        )}
       </StyledModal>
     </Modal>
   );

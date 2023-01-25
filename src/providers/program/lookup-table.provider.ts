@@ -295,13 +295,18 @@ export class LookupTableProvider {
                 .includes(elm.toBase58())
           );
 
-    console.log({
-      needToWhitelistedAddresses: needToWhitelistedAddresses.map((elm) =>
-        elm.toBase58()
-      ),
-      uniqueAccounts: uniqueAccounts.map((elm) => elm.toBase58()),
-      accounts: lookupTableAccount.state.addresses.map((elm) => elm.toBase58()),
-    });
+    try {
+      console.log({
+        needToWhitelistedAddresses: needToWhitelistedAddresses.map((elm) =>
+          elm.toBase58()
+        ),
+        uniqueAccounts: uniqueAccounts.map((elm) => elm.toBase58()),
+        accounts: lookupTableAccount.state.addresses.map((elm) =>
+          elm.toBase58()
+        ),
+      });
+    } catch {}
+
     if (needToWhitelistedAddresses.length > 0) {
       /**
        * @dev Extend lookup table

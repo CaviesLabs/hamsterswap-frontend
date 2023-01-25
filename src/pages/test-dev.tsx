@@ -112,7 +112,7 @@ const TestPage: NextPage = () => {
         );
       } catch (err: any) {
         console.log("error", err);
-        toast.error("Cancel proposal failed: ", err.message);
+        toast("Cancel proposal failed: ", err.message);
       }
     },
     [wallet, programService, solanaWallet]
@@ -125,7 +125,7 @@ const TestPage: NextPage = () => {
         toast.success("Wrap proposal successfully");
       } catch (err: any) {
         console.log("error", err);
-        toast.error("Swap proposal failed!", err);
+        toast("Swap proposal failed!", err);
       }
     },
     [wallet, programService, solanaWallet]

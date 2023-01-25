@@ -4,7 +4,7 @@ import { Button, toast } from "@hamsterbox/ui-kit";
 import { RedeemButtonProps } from "@/src/components/user/redeem-button/types";
 import { useProgram } from "@/src/hooks/useProgram";
 import { useProfilePage } from "@/src/hooks/pages/profile";
-import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optmize-transaction-modal";
+import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optimize-transaction-modal";
 
 export const RedeemButton: FC<RedeemButtonProps> = (props) => {
   const { status, proposalId, isOwner } = props;
