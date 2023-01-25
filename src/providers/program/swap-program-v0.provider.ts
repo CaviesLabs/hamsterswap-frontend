@@ -489,6 +489,28 @@ export class SwapProgramProviderV0 {
       await Promise.all(
         widthDrawItems.map(async (item) => {
           /**
+           * @dev If offer items is not exist in swap option,
+           * it mean the signer not already created associated token before, then create one.
+           */
+          const {
+            instruction: associatedInstruction,
+            accounts: associatedInstructionAccounts,
+            address: associatedTokenAddress
+          } =
+            await this.instructionProviderV0.getOrCreateProposalTokenAccount(
+              walletProvider.publicKey,
+              new PublicKey(item.contractAddress)
+            );
+
+          /**
+           * @dev Add to arrays to process if valid.
+           */
+          if (associatedInstruction && !accountList.map(elm => elm.toBase58()).includes(associatedTokenAddress.toBase58())) {
+            instructions.push(associatedInstruction);
+            accountList.push(...associatedInstructionAccounts);
+          }
+
+          /**
            * @dev Initilize instruction to withdraw tokens from vault account to proposal owner.
            */
           const { instruction, accounts: transferTokenFromVaultAccounts } =

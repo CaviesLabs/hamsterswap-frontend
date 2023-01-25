@@ -14,6 +14,7 @@ import {
   getAssociatedTokenAddress,
   createSyncNativeInstruction,
   createCloseAccountInstruction,
+  getAccount,
   NATIVE_MINT,
 } from "@solana/spl-token";
 import { getOrCreateAssociatedTokenAccount } from "./getOrCreateAssociatedTokenAccount";
@@ -128,13 +129,14 @@ export class InstructionProviderV0 {
   public async getOrCreateProposalTokenAccount(
     publicKey: PublicKey,
     mintAccount: PublicKey
-  ): Promise<{ instruction: TransactionInstruction; accounts: PublicKey[] }> {
+  ): Promise<{ instruction: TransactionInstruction; accounts: PublicKey[], address: PublicKey }> {
     const associatedToken = await getAssociatedTokenAddress(
       mintAccount,
       publicKey
     );
 
     return {
+      address: associatedToken,
       instruction: await getOrCreateAssociatedTokenAccount(
         this.connection,
         { publicKey } as any,
@@ -310,6 +312,11 @@ export class InstructionProviderV0 {
     const associatedTokenAccountAddress = await getAssociatedTokenAddress(
       mintAccount,
       targetAccount
+    );
+
+    console.log(
+      'vault:' ,await getAccount(this.connection, swapTokenVault).then(res => res).catch(() => console.log('vault error', swapTokenVault.toBase58())),
+      'address:', await getAccount(this.connection, associatedTokenAccountAddress).then(res => res).catch(() => console.log('address error', associatedTokenAccountAddress.toBase58())),
     );
 
     /**
