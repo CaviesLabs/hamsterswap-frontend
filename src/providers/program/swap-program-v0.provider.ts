@@ -495,17 +495,21 @@ export class SwapProgramProviderV0 {
           const {
             instruction: associatedInstruction,
             accounts: associatedInstructionAccounts,
-            address: associatedTokenAddress
-          } =
-            await this.instructionProviderV0.getOrCreateProposalTokenAccount(
-              walletProvider.publicKey,
-              new PublicKey(item.contractAddress)
-            );
+            address: associatedTokenAddress,
+          } = await this.instructionProviderV0.getOrCreateProposalTokenAccount(
+            walletProvider.publicKey,
+            new PublicKey(item.contractAddress)
+          );
 
           /**
            * @dev Add to arrays to process if valid.
            */
-          if (associatedInstruction && !accountList.map(elm => elm.toBase58()).includes(associatedTokenAddress.toBase58())) {
+          if (
+            associatedInstruction &&
+            !accountList
+              .map((elm) => elm.toBase58())
+              .includes(associatedTokenAddress.toBase58())
+          ) {
             instructions.push(associatedInstruction);
             accountList.push(...associatedInstructionAccounts);
           }

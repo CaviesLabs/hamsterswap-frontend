@@ -129,7 +129,11 @@ export class InstructionProviderV0 {
   public async getOrCreateProposalTokenAccount(
     publicKey: PublicKey,
     mintAccount: PublicKey
-  ): Promise<{ instruction: TransactionInstruction; accounts: PublicKey[], address: PublicKey }> {
+  ): Promise<{
+    instruction: TransactionInstruction;
+    accounts: PublicKey[];
+    address: PublicKey;
+  }> {
     const associatedToken = await getAssociatedTokenAddress(
       mintAccount,
       publicKey
@@ -315,8 +319,16 @@ export class InstructionProviderV0 {
     );
 
     console.log(
-      'vault:' ,await getAccount(this.connection, swapTokenVault).then(res => res).catch(() => console.log('vault error', swapTokenVault.toBase58())),
-      'address:', await getAccount(this.connection, associatedTokenAccountAddress).then(res => res).catch(() => console.log('address error', associatedTokenAccountAddress.toBase58())),
+      "vault:",
+      await getAccount(this.connection, swapTokenVault)
+        .then((res) => res)
+        .catch(() => console.log("vault error", swapTokenVault.toBase58())),
+      "address:",
+      await getAccount(this.connection, associatedTokenAccountAddress)
+        .then((res) => res)
+        .catch(() =>
+          console.log("address error", associatedTokenAccountAddress.toBase58())
+        )
     );
 
     /**
