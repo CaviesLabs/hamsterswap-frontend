@@ -44,11 +44,6 @@ export const OptimizeTransactionModal: FC<
   }>(null);
 
   /**
-   * @dev Import functions in screen context.
-   */
-  // const { submitProposal } = useCreateProposal();
-
-  /**
    * @dev The function to process when click next.
    * @returns {Function}
    */
@@ -127,7 +122,7 @@ export const OptimizeTransactionModal: FC<
       /**
        * @dev Handle to process instructions.
        */
-      const data = (await props.instructionHandler()) as unknown as {
+      const handlers = (await props.instructionHandler()) as unknown as {
         proposalId: string;
         fnc: {
           optimize(): Promise<void>;
@@ -138,32 +133,28 @@ export const OptimizeTransactionModal: FC<
       /**
        * @dev Assign optimize function & confirm function.
        */
-      setFnc(data?.fnc);
+      setFnc(handlers?.fnc);
 
       /**
        * @dev Assign proposal id.
        */
-      setProposalId(data?.proposalId);
+      setProposalId(handlers?.proposalId);
 
       /**
        * @dev This mean the transaction do not need to optimize, ignore optimized step.
        */
-      if (!data.fnc.optimize) {
+      if (!handlers.fnc.optimize) {
         /**
          * @dev Update current step.
          */
         setCurrentStep((prev) => prev + 1);
-
-        /**
-         * @dev Restrict slide animation to next step.
-         */
         stepperRef.current.nextHandler();
       }
 
-      console.log(data);
-      setSplashLoading(false);
+      console.log("Transaction handlers data: ", handlers);
     } catch (err) {
-      toast("Optimize transaction error");
+      toast("Handle transaction error");
+      console.log(err);
     } finally {
       setSplashLoading(false);
     }
@@ -176,7 +167,11 @@ export const OptimizeTransactionModal: FC<
 
   return (
     <Modal
-      title={<p className="text-2xl">Optimize transaction</p>}
+      title={
+        <p className="text-2xl">
+          {currentStep > 0 ? "Confirm" : "Optimize"} transaction
+        </p>
+      }
       open={props.isModalOpen}
       onOk={() => props.handleOk}
       onCancel={props.handleCancel}

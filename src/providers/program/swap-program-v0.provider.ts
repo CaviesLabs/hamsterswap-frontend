@@ -7,7 +7,6 @@ import {
 } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
-import { createMint } from "@solana/spl-token";
 import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
 import {
   CreateProposalDto,
@@ -19,12 +18,10 @@ import {
   AssetTypes,
 } from "@/src/entities/proposal.entity";
 import { SwapIdl, IDL } from "./swap.idl";
-import { InstructionProvider } from "./instruction.provider";
 import { TransactionProvider } from "./transaction.provider";
 import { LookupTableProvider } from "./lookup-table.provider";
 import { WSOL_ADDRESS } from "@/src/utils/constants";
 import { InstructionProviderV0 } from "./instruction-v0.provider";
-import { BN } from "bn.js";
 
 export const SOLANA_DEVNET_RPC_ENDPOINT = "https://api.devnet.solana.com";
 export const SOLANA_MAINNET_RPC_RPC_ENDPOINT =
