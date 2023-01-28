@@ -17,7 +17,6 @@ import {
 import web3 from "@solana/web3.js";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
-// import { getSwapProgramProvider } from "@/src/providers/program";
 import { SwapProgramProviderV0 } from "@/src/providers/program/swap-program-v0.provider";
 import { SwapProgramService } from "@/src/services/swap-program.service";
 import { getAuthService } from "@/src/actions/firebase.action";
@@ -178,29 +177,16 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
     if (wallet?.publicKey?.toString()) {
       try {
         /**
-         * @dev Initlize program provider.
-         */
-        // const swapProgramProvider = getSwapProgramProvider(solanaWallet, {
-        //   reInit: true,
-        // });
-
-        /**
          * @dev Initlize swap program service with initlized programProvider.
          */
         const program = new SwapProgramServiceV0(
           new SwapProgramProviderV0(solanaWallet)
         );
-        initProgram(program);
 
-        // if (router?.query?.optimized === "true") {
-        //   program = new SwapProgramServiceV0(
-        //     new SwapProgramProviderV0(solanaWallet)
-        //   );
-        //   initProgram(program);
-        // } else {
-        //   program = new SwapProgramService(swapProgramProvider);
-        //   initProgram(program);
-        // }
+        /**
+         * @dev Init program into state for usage
+         */
+        initProgram(program);
 
         /**
          * @dev update sol balance if wallet changes.
