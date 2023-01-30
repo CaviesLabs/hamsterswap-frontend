@@ -25,7 +25,11 @@ import {
 } from "@solana/wallet-adapter-wallets";
 import { SeoComponent } from "@/src/components/seo";
 
+/**
+ * @dev Import needed third-party styled.
+ */
 import "flowbite";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const store = makeStore();
 

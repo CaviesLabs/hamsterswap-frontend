@@ -23,7 +23,6 @@ import { StorageProvider } from "@/src/providers/storage.provider";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import { useWallet } from "@/src/hooks/useWallet";
 import classnames from "classnames";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const Layout: FC = () => {
   /**
