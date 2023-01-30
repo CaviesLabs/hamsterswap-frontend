@@ -25,6 +25,7 @@ import {
 } from "@solana/wallet-adapter-wallets";
 import { SeoComponent } from "@/src/components/seo";
 
+import "antd/dist/reset.css";
 import "flowbite";
 
 const store = makeStore();
