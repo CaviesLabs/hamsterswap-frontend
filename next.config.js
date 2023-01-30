@@ -17,7 +17,10 @@ const withPWA = require("next-pwa")({
 module.exports = withPlugins([withPWA, withTM], {
   source: "/",
   reactStrictMode: true,
-  experimental: { esmExternals: true },
+  experimental: {
+    esmExternals: true,
+    transpilePackages: ["antd"],
+  },
   env: {
     ENV: NODE_ENV,
     HOST_URL: process.env.HOST_URL,

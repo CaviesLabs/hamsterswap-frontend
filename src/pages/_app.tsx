@@ -24,7 +24,6 @@ import {
   SolletWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 import { SeoComponent } from "@/src/components/seo";
-import { Layout } from "antd";
 
 import "flowbite";
 
@@ -93,9 +92,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             >
               <WalletProvider>
                 <MainProvider>
-                  <Layout>
-                    <AppComponent {...{ Component, pageProps }} />
-                  </Layout>
+                  <AppComponent {...{ Component, pageProps }} />
                 </MainProvider>
               </WalletProvider>
             </WalletKitProvider>
