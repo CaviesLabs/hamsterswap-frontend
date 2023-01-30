@@ -673,7 +673,8 @@ export class SwapProgramProviderV0 {
             const {
               instruction: associatedInstruction,
               accounts: associatedInstructionAccounts,
-            } = await this.instructionProviderV0.getOrCreateProposalTokenAccount(
+            } =
+              await this.instructionProviderV0.getOrCreateProposalTokenAccount(
               walletProvider.publicKey,
               new PublicKey(item.contractAddress)
             );
