@@ -6,6 +6,18 @@ export default function Document() {
     <Html>
       <Head>
         <SeoComponent />
+        {typeof window === "undefined" && (
+          <style
+            id="holderStyle"
+            dangerouslySetInnerHTML={{
+              __html: `
+         *, *::before, *::after {
+           transition: none!important;
+         }
+         `,
+            }}
+          />
+        )}
       </Head>
       <body>
         <Main />
