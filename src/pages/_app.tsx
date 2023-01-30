@@ -62,7 +62,10 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <Provider store={store}>
-      <StyleProvider transformers={[legacyLogicalPropertiesTransformer]}>
+      <StyleProvider
+        ssrInline={true}
+        transformers={[legacyLogicalPropertiesTransformer]}
+      >
         <SeoComponent />
         <ThemeProvider>
           {/**
