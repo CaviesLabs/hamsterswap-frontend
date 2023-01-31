@@ -10,7 +10,7 @@ import {
 import { getStatus } from "@/src/utils/proposal-status";
 import { useMain } from "@/src/hooks/pages/main";
 import UtilsProvider from "@/src/utils/utils.provider";
-import dayjs from "dayjs";
+import moment from "moment";
 
 function Proposal(props: ProposalHistoryProps) {
   const router = useRouter();
@@ -95,7 +95,7 @@ function Proposal(props: ProposalHistoryProps) {
     <div className="border border-1 border-gray rounded-3xl p-6 mb-6">
       <Row className="pt-2">
         <Col span={5} className="text-[16px] pt-2">
-          {dayjs(data.createdAt).format(DATE_TIME_FORMAT)}
+          {moment(data.createdAt).format(DATE_TIME_FORMAT)}
         </Col>
         <Col span={6} className="text-[16px]">
           {_isBuyer ? renderReceiveItemCol() : renderSwapItemCol()}

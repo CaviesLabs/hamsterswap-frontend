@@ -15,6 +15,8 @@ export const AddExpectedNftForm = (props: FormProps) => {
   const { allowNTFCollections, collection, setCollection, setNftId } = props;
   const [search, setSearch] = useState<string>("");
 
+  console.log("Nftid", props.nftId);
+
   const allowNTFCollectionsMemo = useMemo(() => {
     return allowNTFCollections
       .filter(

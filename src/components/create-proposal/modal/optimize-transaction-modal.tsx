@@ -43,6 +43,12 @@ export const OptimizeTransactionModal: FC<
     confirm(): Promise<void>;
   }>(null);
 
+  /** @dev The function to point to next slide stepper. */
+  const nextStepper = useCallback(
+    () => stepperRef.current?.nextHandler(),
+    [stepperRef]
+  );
+
   /**
    * @dev The function to process when click next.
    * @returns {Function}
@@ -106,13 +112,13 @@ export const OptimizeTransactionModal: FC<
       /**
        * @dev Restrict slide animation to next step.
        */
-      stepperRef.current.nextHandler();
+      nextStepper();
     } catch (err: any) {
       console.log(err);
     } finally {
       setLoading(false);
     }
-  }, [currentStep, fnc, proposalId]);
+  }, [currentStep, fnc, proposalId, stepperRef]);
 
   /**
    * @dev The function to initilize bussinness logic
@@ -148,7 +154,7 @@ export const OptimizeTransactionModal: FC<
          * @dev Update current step.
          */
         setCurrentStep((prev) => prev + 1);
-        stepperRef.current.nextHandler();
+        setTimeout(() => nextStepper(), 500);
       }
 
       console.log("Transaction handlers data: ", handlers);

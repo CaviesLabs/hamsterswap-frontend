@@ -103,9 +103,7 @@ const Header: FC = () => {
   useEffect(() => {
     const header = document.getElementById("app-header");
     const className = "scrolled-header";
-    console.log("fun");
     window.onscroll = () => {
-      console.log("on scroll");
       if (
         document.body.scrollTop > 120 ||
         document.documentElement.scrollTop > 120

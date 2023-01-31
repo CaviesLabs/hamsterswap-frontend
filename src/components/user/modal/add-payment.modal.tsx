@@ -15,6 +15,7 @@ export const AddPaymentModal: FC<ModalProps> = (props) => {
       onCancel={props.handleCancel}
       width={550}
       footer={null}
+      className="hamster-modal"
     >
       <div className="py-6">
         <div className="h-[500px] flex flex-col justify-between px-4 sm:px-6 lg:px-8">

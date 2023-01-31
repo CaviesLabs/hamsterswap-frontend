@@ -45,7 +45,8 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
         }
         setNft(resp);
         setStep(2);
-      });
+      })
+      .catch(() => {});
   };
 
   /**
@@ -96,6 +97,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
      * @dev Close modal.
      */
     props.handleOk();
+    setCollection([]);
     setStep(0);
   };
 

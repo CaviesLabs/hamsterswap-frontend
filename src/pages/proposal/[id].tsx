@@ -21,7 +21,7 @@ import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
 import { useWallet } from "@/src/hooks/useWallet";
 import { useMain } from "@/src/hooks/pages/main";
 import { useConnectedWallet } from "@saberhq/use-solana";
-import dayjs from "dayjs";
+import moment from "moment";
 import BuyButton from "@/src/components/advertisment/buy-button";
 
 const Layout: FC = () => {
@@ -147,7 +147,7 @@ const Layout: FC = () => {
                     ) : (
                       <>
                         Expiration date:{" "}
-                        {dayjs(proposal?.expiredAt).format(DATE_TIME_FORMAT)}
+                        {moment(proposal?.expiredAt).format(DATE_TIME_FORMAT)}
                       </>
                     )}
                   </p>

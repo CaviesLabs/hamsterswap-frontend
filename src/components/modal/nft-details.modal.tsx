@@ -25,7 +25,8 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
       .getNftDetail({
         mintAddress: data.nftAddress,
       })
-      .then((resp) => setAttributes(resp?.nft_attributes.attributes));
+      .then((resp) => setAttributes(resp?.nft_attributes.attributes))
+      .catch(() => {});
   }, [data?.nftAddress]);
 
   return (

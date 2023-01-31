@@ -37,7 +37,7 @@ const Filter: FC = () => {
         <h1 className="text-[32px] font-bold tracking-tight text-gray-900">
           Active Swaps
         </h1>
-        <div className="w-[550px] flex">
+        <div className="w-[558px] flex">
           <Input
             size="middle"
             className="!rounded-3xl"
@@ -53,6 +53,8 @@ const Filter: FC = () => {
               shape="secondary"
               size="middle"
               onClick={() => handleSearch(search)}
+              height="44px"
+              width="100px"
             />
           </div>
         </div>
@@ -72,7 +74,7 @@ const Filter: FC = () => {
         <Col span={8}>
           <Select
             mode="multiple"
-            className="text-center rounded-3xl text-sm"
+            className="text-center rounded-3xl text-sm h-[44px]"
             placeholder={
               <div className="w-full regular-text text-center">
                 Pro Advertisers
@@ -95,7 +97,7 @@ const Filter: FC = () => {
         <Col span={8}>
           <Select
             mode="multiple"
-            className="text-center rounded-3xl text-sm"
+            className="text-center rounded-3xl text-sm h-[44px]"
             placeholder={
               <div className="w-full regular-text text-center">
                 All payment type
@@ -118,7 +120,7 @@ const Filter: FC = () => {
         <Col span={8}>
           <Select
             mode="multiple"
-            className="text-center rounded-3xl text-sm"
+            className="text-center rounded-3xl text-sm h-[44px]"
             placeholder={
               <div className="w-full regular-text text-center">
                 Include warranty

@@ -31,7 +31,7 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
                     <div className="ml-3 relative" key={`ml3dix-${index}`}>
                       <Button
                         className={classnames(
-                          "!rounded-[100px] after:!rounded-[100px] !px-5",
+                          "!rounded-[100px] after:!rounded-[100px] !px-5 uppercase",
                           optionSelected !== index &&
                             "!border !border-solid !border-dark60"
                         )}
@@ -43,11 +43,11 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
                         theme={
                           optionSelected !== index && {
                             color: "#7886A0",
+                            hoverColor: "#798aaa",
                             backgroundColor: "transparent",
                           }
                         }
                         onClick={() => setOptionSelected(index)}
-                        icon
                       />
                       {fulfilledWithOptionId &&
                       fulfilledWithOptionId === _?.[0]?.optionId ? (

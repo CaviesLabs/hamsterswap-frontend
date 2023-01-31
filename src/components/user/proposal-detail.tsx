@@ -20,7 +20,7 @@ import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal
 import classnames from "classnames";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import State from "@/src/redux/entities/state";
-import dayjs from "dayjs";
+import moment from "dayjs";
 
 type Method = "cancel" | "widthdraw";
 
@@ -105,18 +105,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
       setIsDuringSubmitCancel(true);
       setMethod(method);
       setOptimizedProposalOpen(true);
-      // if (isOptimized) {
-      // } else {
-      //   try {
-      //     setIsDuringSubmitCancel(true);
-      //     await cancelProposal(props.proposalId);
-      //     next();
-      //   } catch (err: any) {
-      //     toast.error(`Failed to ${method} proposal. ${err?.message}`);
-      //   } finally {
-      //     setIsDuringSubmitCancel(false);
-      //   }
-      // }
+      setCancelModal(false);
     },
     [props.proposalId, router, isOptimized, solanaWallet, programService]
   );
@@ -196,7 +185,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                   </p>
                   <p className="mt-[12px] text-[16px] regular-text text-dark60">
                     Expiration date:{" "}
-                    {dayjs(data?.expiredAt).format(DATE_TIME_FORMAT)}
+                    {moment(data?.expiredAt).format(DATE_TIME_FORMAT)}
                   </p>
                   {statusText && (
                     <p className="mt-[12px] text-[16px] regular-text text-dark60">

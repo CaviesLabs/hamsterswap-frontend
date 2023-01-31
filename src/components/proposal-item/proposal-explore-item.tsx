@@ -7,7 +7,7 @@ import { StyledProposalItem } from "./proposal-item.style";
 import { Button } from "@hamsterbox/ui-kit";
 import classnames from "classnames";
 import { Col, Row } from "antd";
-import dayjs from "dayjs";
+import moment from "moment";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import { completedOrderPercent, DATE_TIME_FORMAT } from "@/src/utils";
 import { hProfileDto } from "@/src/dto/hProfile.dto";
@@ -72,7 +72,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
                 <p className="mt-[8px] text-[16px] regular-text">{data.note}</p>
                 <p className="mt-[16px] text-[14px] regular-text text-dark60">
                   Expiration date:{" "}
-                  {dayjs(data.expiredAt).format(DATE_TIME_FORMAT)}
+                  {moment(data.expiredAt).format(DATE_TIME_FORMAT)}
                 </p>
               </div>
             </Col>
