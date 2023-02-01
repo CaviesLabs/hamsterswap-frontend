@@ -53,7 +53,6 @@ const Filter: FC = () => {
               shape="secondary"
               size="middle"
               onClick={() => handleSearch(search)}
-              height="44px"
               width="100px"
             />
           </div>
