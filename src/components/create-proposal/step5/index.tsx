@@ -6,6 +6,8 @@ import { SummaryProps } from "@/src/components/create-proposal/step5/types";
 import { parseOfferCreateProposal } from "@/src/utils";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { useMain } from "@/src/hooks/pages/main";
+import { DATE_TIME_FORMAT } from "@/src/utils";
+import moment from "moment";
 
 export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
   /**
@@ -57,7 +59,8 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
           <p className="text-3xl">Note</p>
           <p className="text-[16px] regular-text mt-[12px] break-all">{note}</p>
           <p className="regular-text text-[14px] text-red300 mt-12">
-            Expiration date: {expiredTime && expiredTime.toLocaleString()}
+            Expiration date:{" "}
+            {expiredTime && moment(expiredTime).format(DATE_TIME_FORMAT)}
           </p>
         </Col>
         <Col
