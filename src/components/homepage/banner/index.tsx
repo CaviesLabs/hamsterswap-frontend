@@ -12,7 +12,7 @@ export function Banner() {
   const wallet = useConnectedWallet();
 
   return (
-    <div className="relative">
+    <div className="relative bg-[#1c1254] md:h-[100vh]">
       <Lottie
         options={{
           animationData,
