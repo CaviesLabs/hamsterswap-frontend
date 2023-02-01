@@ -211,8 +211,14 @@ export const OptimizeTransactionModal: FC<
                 disabled={loading}
                 loading={loading}
                 text={`${
-                  currentStep === 0 ? "Optimize" : "Confirm"
-                } transaction`}
+                  currentStep === 0
+                    ? loading
+                      ? "Optimizing"
+                      : "Optimize"
+                    : loading
+                    ? "Confirming"
+                    : "Confirm"
+                }`}
                 width="100%"
               >
                 Optimize
