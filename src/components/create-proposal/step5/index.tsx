@@ -60,7 +60,7 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
           <p className="text-[16px] regular-text mt-[12px] break-all">{note}</p>
           <p className="regular-text text-[14px] text-red300 mt-12">
             Expiration date:{" "}
-            {expiredTime && moment(expiredTime).format(DATE_TIME_FORMAT)}
+            {expiredTime && moment(expiredTime).utc().format(DATE_TIME_FORMAT)}
           </p>
         </Col>
         <Col

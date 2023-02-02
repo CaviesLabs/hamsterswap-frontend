@@ -95,7 +95,7 @@ function Proposal(props: ProposalHistoryProps) {
     <div className="border border-1 border-gray rounded-3xl p-6 mb-6">
       <Row className="pt-2">
         <Col span={5} className="text-[16px] pt-2">
-          {moment(data.createdAt).format(DATE_TIME_FORMAT)}
+          {moment(data.createdAt).utc().format(DATE_TIME_FORMAT)}
         </Col>
         <Col span={6} className="text-[16px]">
           {_isBuyer ? renderReceiveItemCol() : renderSwapItemCol()}

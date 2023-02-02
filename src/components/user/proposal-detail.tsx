@@ -20,7 +20,7 @@ import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal
 import classnames from "classnames";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import State from "@/src/redux/entities/state";
-import moment from "dayjs";
+import moment from "moment";
 
 type Method = "cancel" | "widthdraw";
 
@@ -185,7 +185,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                   </p>
                   <p className="mt-[12px] text-[16px] regular-text text-dark60">
                     Expiration date:{" "}
-                    {moment(data?.expiredAt).format(DATE_TIME_FORMAT)}
+                    {moment(data?.expiredAt).utc().format(DATE_TIME_FORMAT)}
                   </p>
                   {statusText && (
                     <p className="mt-[12px] text-[16px] regular-text text-dark60">

@@ -147,7 +147,9 @@ const Layout: FC = () => {
                     ) : (
                       <>
                         Expiration date:{" "}
-                        {moment(proposal?.expiredAt).format(DATE_TIME_FORMAT)}
+                        {moment(proposal?.expiredAt)
+                          .utc()
+                          .format(DATE_TIME_FORMAT)}
                       </>
                     )}
                   </p>

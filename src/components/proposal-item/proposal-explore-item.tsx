@@ -72,7 +72,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
                 <p className="mt-[8px] text-[16px] regular-text">{data.note}</p>
                 <p className="mt-[16px] text-[14px] regular-text text-dark60">
                   Expiration date:{" "}
-                  {moment(data.expiredAt).format(DATE_TIME_FORMAT)}
+                  {moment(data.expiredAt).utc().format(DATE_TIME_FORMAT)}
                 </p>
               </div>
             </Col>
