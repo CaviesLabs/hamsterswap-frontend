@@ -139,7 +139,8 @@ export const Ref: ForwardRefRenderFunction<
                   className={`${styles["step-icon"]} ${styles[props.theme]}`}
                 >
                   <svg
-                    width="1.5rem"
+                    width="16px"
+                    height="16px"
                     viewBox="0 0 13 9"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"

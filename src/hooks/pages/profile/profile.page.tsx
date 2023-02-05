@@ -61,11 +61,13 @@ export const ProfilePageProvider = (props: { children: ReactNode }) => {
           ]
         : [];
     _selectedStatus?.includes(sortOptions[0].value) &&
-      status.push(SwapProposalStatus.EXPIRED);
+      status.push(SwapProposalStatus.DEPOSITED);
     _selectedStatus?.includes(sortOptions[1].value) &&
-      status.push(SwapProposalStatus.REDEEMED);
+      status.push(SwapProposalStatus.EXPIRED);
     _selectedStatus?.includes(sortOptions[2].value) &&
-      status.push(SwapProposalStatus.CANCELED);
+      status.push(SwapProposalStatus.REDEEMED);
+    _selectedStatus?.includes(sortOptions[3].value) &&
+      status.push(SwapProposalStatus.WITHDRAWN);
 
     return handleSearch(searchText, status);
   };

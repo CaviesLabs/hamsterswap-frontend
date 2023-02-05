@@ -66,6 +66,7 @@ export const AddPaymentModal: FC<ModalProps> = (props) => {
               type="button"
               onClick={props.handleCancel}
               className="w-full !bg-purple !text-white border border-2 border-purple rounded-3xl text-lg font-bold py-3"
+              disabled={!method}
             >
               Add
             </button>

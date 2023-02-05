@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC, useMemo, useState } from "react";
 import { Col, Modal, Row } from "antd";
 import { toast } from "@hamsterbox/ui-kit";
 import { AddItemModalProps } from "./types";
@@ -12,6 +12,11 @@ import { allowNTFCollection } from "@/src/entities/platform-config.entity";
 import { useSelector } from "react-redux";
 
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
+  /**
+   * @dev Search state.
+   */
+  const [searchValue, setSearchValue] = useState("");
+
   /**
    * @dev Get user list nfts.
    */
@@ -84,9 +89,14 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
             <SearchInput
               className="rounded-3xl p-3"
               placeholder="Search for NFT, collection "
+              onChange={(val: any) => setSearchValue(val?.target?.value)}
+              value={searchValue}
             />
             <div className="mt-10 max-h-96 overflow-scroll">
-              {nftsMemo?.map((nftItem, i) => (
+              {(searchValue
+                ? nftsMemo.filter((item) => item.nft_name.includes(searchValue))
+                : nftsMemo
+              )?.map((nftItem, i) => (
                 <Row
                   className="bg-white rounded-lg p-4 w-full mb-4 cursor-pointer hover:bg-[#F0F3FA]"
                   key={`add-nft-item-pr-${i}`}

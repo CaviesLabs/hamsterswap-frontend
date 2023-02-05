@@ -13,6 +13,7 @@ import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { toast } from "@hamsterbox/ui-kit";
 import animationData from "@/src/components/icons/animation-loading.json";
 import Lottie from "react-lottie";
+import { isEmpty } from "lodash";
 
 export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   /**
@@ -41,6 +42,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
       })
       .then((resp) => {
         if (!resp) {
+          toast("NFT is not found with ID!");
           return setStep(0);
         }
         setNft(resp);
@@ -141,7 +143,11 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
             {step === 2 && nft && <AddExpectedNftDetail nft={nft} />}
             <div>
               {step === 0 && (
-                <button type="button" onClick={() => handleFetchNftData(nftId)}>
+                <button
+                  type="button"
+                  onClick={() => handleFetchNftData(nftId)}
+                  disabled={isEmpty(collection) || !nftId}
+                >
                   Next
                 </button>
               )}

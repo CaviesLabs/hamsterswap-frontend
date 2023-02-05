@@ -69,6 +69,7 @@ const BuyButton: FC<{
             : "Buy"
         }
         className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
+        size="large"
         onClick={() => setIsDisplayConfirm(true)}
         loading={isBuyButtonLoading}
       />
@@ -76,6 +77,7 @@ const BuyButton: FC<{
         text="Order / Bid"
         shape="secondary"
         className="!border-[1.5px] ml-[24px] !rounded-[100px] after:!rounded-[100px] float-right !w-[150px] md:!w-[200px]"
+        size="large"
         onClick={() => setIsDisplayConfirm(true)}
       />
       <ConfirmTransactionModal

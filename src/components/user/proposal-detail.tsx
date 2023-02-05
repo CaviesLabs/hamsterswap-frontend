@@ -275,15 +275,18 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                       />
                     </>
                   )}
-                  <div className="ml-4">
-                    <Button
-                      className={classnames(
-                        "!rounded-[100px] after:!rounded-[100px] !px-10 relative"
-                      )}
-                      text="View on Market"
-                      onClick={() => router.push(`/proposal/${data.id}`)}
-                    />
-                  </div>
+                  {status.valueOf() ===
+                    SwapProposalStatus.DEPOSITED.valueOf() && (
+                    <div className="ml-4">
+                      <Button
+                        className={classnames(
+                          "!rounded-[100px] after:!rounded-[100px] !px-10 relative"
+                        )}
+                        text="View on Market"
+                        onClick={() => router.push(`/proposal/${data.id}`)}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </div>

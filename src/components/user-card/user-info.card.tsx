@@ -58,7 +58,7 @@ export const UserInfoCard: FC<UserInfoCardProps> = (props) => {
               <p className="text-[24px] semi-bold text-center">
                 {profile?.ordersStat.orders || 0}
               </p>
-              <p className="text-[16px] regular-text text-center">Orders</p>
+              <p className="text-[16px] regular-text text-center">Proposals</p>
             </div>
             <div className="md:float-left px-[70px] border-r-solid md:border-r-[1px] border-r-dark30 mt-[12px] md:mt-0">
               <p className="text-[24px] semi-bold text-center">

@@ -59,7 +59,7 @@ export default function DatetimePicker(props: DatetimePickerProps) {
         size="large"
         className="rounded-[16px] px-[50px]"
         placeholder="dd/mm/yyyy"
-        // defaultValue={new Date(dateTime.date())}
+        defaultValue={dayjs(Date.now())}
         onChange={(v) => handleSelectDate(v)}
       />
       <div className="ml-[20px] relative">

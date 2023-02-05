@@ -97,7 +97,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
   return (
     <div
       className={classnames(
-        "border-solid border-[2px] border-dark10 shadow-md rounded-t-[16px] mb-[20px]",
+        "border-solid border-[2px] border-dark10 rounded-t-[16px] mb-[20px]",
         {
           "border-0 shadow-[none]": !collapse,
         }
@@ -113,7 +113,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
           onClick={() => setCollapse((prev) => !prev)}
         >
           {collapse ? "-" : "+"}
-          <span className="ml-[12px]">{optionName}</span>
+          <span className="ml-[12px] text-[20px]">{optionName}</span>
         </p>
       </div>
       <Collapse isOpened={collapse}>

@@ -277,6 +277,7 @@ const Layout: FC = () => {
                   className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right mr-[12px]"
                   shape="secondary"
                   onClick={handleBackStep}
+                  size="large"
                 />
               )}
               {currentStep < 4 ? (
@@ -294,13 +295,15 @@ const Layout: FC = () => {
                     }
                   }
                   disabled={isButtonNextDisabled}
+                  size="large"
                 />
               ) : (
                 <Button
-                  text="Confirm"
+                  text={isDuringSubmit ? "Confirming" : "Confirm"}
                   className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right"
                   onClick={hanndleSubmitProposal}
                   loading={isDuringSubmit}
+                  size="large"
                 />
               )}
               <OptimizeTransactionModal
