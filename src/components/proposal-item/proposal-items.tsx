@@ -24,14 +24,14 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
         <Col offset={4} span={10}>
           <div className="flex justify-between">
             <div className="semi-bold text-[16px] leading-9">looking for</div>
-            <div className="flex">
+            <div className="flex flex-wrap">
               {userLookingFor.length > 1 &&
                 userLookingFor.map((_: any, index: number) => {
                   return (
                     <div className="ml-3 relative" key={`ml3dix-${index}`}>
                       <Button
                         className={classnames(
-                          "!rounded-[100px] after:!rounded-[100px] !px-5 uppercase",
+                          "!rounded-[100px] after:!rounded-[100px] !px-5 uppercase mx-[5px]",
                           optionSelected !== index &&
                             "!border !border-solid !border-dark60"
                         )}
@@ -51,7 +51,7 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
                       />
                       {fulfilledWithOptionId &&
                       fulfilledWithOptionId === _?.[0]?.optionId ? (
-                        <CheckIconProposal className="absolute top-[10px] left-[10px] w-[15px] h-[15px]" />
+                        <CheckIconProposal className="absolute top-[10px] left-[12px] w-[15px] h-[15px]" />
                       ) : null}
                     </div>
                   );

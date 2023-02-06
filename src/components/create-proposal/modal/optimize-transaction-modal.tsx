@@ -179,8 +179,8 @@ export const OptimizeTransactionModal: FC<
         </p>
       }
       open={props.isModalOpen}
-      onOk={() => props.handleOk}
-      onCancel={props.handleCancel}
+      onOk={() => !loading && props.handleOk}
+      onCancel={!loading && props.handleCancel}
       width={600}
       footer={null}
       destroyOnClose={true}

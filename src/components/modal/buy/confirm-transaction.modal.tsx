@@ -3,7 +3,7 @@ import { Modal } from "antd";
 import { ConfirmModalProps } from "./types";
 import { Row, Col } from "antd";
 import { utilsProvider } from "@/src/utils/utils.provider";
-import { LoadingIcon } from "@/src/components/icons";
+import { Button } from "@hamsterbox/ui-kit";
 
 export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
   const { isLoading, buyer, seller } = props;
@@ -58,14 +58,13 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
             .
           </p>
 
-          <button
+          <Button
             type="button"
             onClick={props.handleOk}
-            className="flex justify-center items-center w-full !bg-purple text-white rounded-3xl text-lg font-bold py-3"
-          >
-            {isLoading && <LoadingIcon className="text-white" />}
-            {isLoading ? "Confirming transaction in Wallet" : "Confirm"}
-          </button>
+            text={isLoading ? "Confirming transaction in Wallet" : "Confirm"}
+            loading={isLoading}
+            width={"100%"}
+          />
         </div>
       </div>
     </Modal>
