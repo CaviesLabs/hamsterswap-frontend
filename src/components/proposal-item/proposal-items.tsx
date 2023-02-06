@@ -61,7 +61,7 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
         </Col>
       </Row>
       <Row className="mt-4">
-        <Col span={10}>
+        <Col lg={10} sm={24}>
           {userAssets.map((item, index) => (
             <div className="mb-4" key={`proposal-item-${index}`}>
               <RowNftItem
@@ -73,12 +73,10 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
             </div>
           ))}
         </Col>
-        <Col span={4} className="flex justify-center items-center">
-          <div className="rounded-full bg-white p-[18px]">
-            <TwoWayArrowIcon className="w-6" />
-          </div>
+        <Col lg={4} xs={24} className="flex justify-center items-center">
+          <TwoWayArrowIcon className="w-6" />
         </Col>
-        <Col span={10}>
+        <Col lg={10} sm={24}>
           {userLookingFor[optionSelected]?.map((item: any, index: number) => (
             <div className="mb-4" key={`swapoptions-${index}`}>
               <RowNftItem

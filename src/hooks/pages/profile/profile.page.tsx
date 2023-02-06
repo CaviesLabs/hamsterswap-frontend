@@ -61,7 +61,7 @@ export const ProfilePageProvider = (props: { children: ReactNode }) => {
           ]
         : [];
     _selectedStatus?.includes(sortOptions[0].value) &&
-      status.push(SwapProposalStatus.DEPOSITED);
+      status.push(SwapProposalStatus.ACTIVE);
     _selectedStatus?.includes(sortOptions[1].value) &&
       status.push(SwapProposalStatus.EXPIRED);
     _selectedStatus?.includes(sortOptions[2].value) &&
