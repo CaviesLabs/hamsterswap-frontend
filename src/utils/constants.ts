@@ -2,10 +2,10 @@
  * @dev Define value data to sort NFTs.
  */
 export const sortOptions = [
-  { value: "active", name: "Active" },
-  { value: "expired", name: "Expired" },
-  { value: "success", name: "Completed" },
-  { value: "cancel", name: "Withdrawn" },
+  { value: "Active", name: "Active" },
+  { value: "Expired", name: "Expired" },
+  { value: "Completed", name: "Completed" },
+  { value: "Withdrawn", name: "Withdrawn" },
 ];
 
 /**

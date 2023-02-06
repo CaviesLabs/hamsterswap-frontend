@@ -83,14 +83,18 @@ const Layout: FC = () => {
                 placeholder={
                   <>
                     <div></div>
-                    <div>All status</div>
+                    <div>
+                      {!selectedStatus.length || selectedStatus.length === 4
+                        ? "All status"
+                        : selectedStatus.join(", ")}
+                    </div>
                   </>
                 }
                 options={sortOptions.map((_) => ({
                   value: _.value,
                   label: _.name,
                 }))}
-                className="w-44 ml-6"
+                className="w-[260px] ml-6"
                 values={selectedStatus}
                 onChange={(v) => setSelectedStatus(v)}
               />
