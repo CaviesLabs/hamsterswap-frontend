@@ -6,6 +6,7 @@ export const sortOptions = [
   { value: "Expired", name: "Expired" },
   { value: "Completed", name: "Completed" },
   { value: "Withdrawn", name: "Withdrawn" },
+  { value: "Swapped", name: "Swapped" },
 ];
 
 /**

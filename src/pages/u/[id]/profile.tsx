@@ -84,7 +84,7 @@ const Layout: FC = () => {
                   <>
                     <div></div>
                     <div>
-                      {!selectedStatus.length || selectedStatus.length === 4
+                      {!selectedStatus.length || selectedStatus.length === 5
                         ? "All status"
                         : selectedStatus.join(", ")}
                     </div>
