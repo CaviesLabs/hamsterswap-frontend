@@ -92,7 +92,8 @@ export function* getExploreProposals({
          */
         if (
           item.status !== SwapProposalStatus.FULFILLED &&
-          item.status !== SwapProposalStatus.REDEEMED
+          item.status !== SwapProposalStatus.REDEEMED &&
+          !payload.options.statuses.includes(SwapProposalStatus.WITHDRAWN)
         ) {
           return new Date(item.expiredAt).getTime() > Date.now();
         }
