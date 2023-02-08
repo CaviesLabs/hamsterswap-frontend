@@ -126,7 +126,9 @@ function Proposal(props: ProposalHistoryProps) {
           </div>
         </Col>
         <Col span={3}>
-          {status === SwapProposalStatus.REDEEMED && (
+          {(status === SwapProposalStatus.REDEEMED ||
+            status === SwapProposalStatus.FULFILLED ||
+            status === SwapProposalStatus.SWAPPED) && (
             <Tag
               className="px-4 py-1 w-[120px] flex justify-center items-center capitalize bg-[#EEFFDA] border-[#EEFFDA] rounded-lg"
               icon={<DotIcon className="mr-2" />}
