@@ -53,7 +53,8 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   /** @todo Condition when proposal is expired but not canceled */
   const isExpired =
     status.valueOf() !== SwapProposalStatus.CANCELED.valueOf() &&
-    status.valueOf() !== SwapProposalStatus.FULFILLED.valueOf() &&
+    (status.valueOf() !== SwapProposalStatus.FULFILLED.valueOf() ||
+      status.valueOf() !== SwapProposalStatus.SWAPPED.valueOf()) &&
     status.valueOf() !== SwapProposalStatus.REDEEMED.valueOf() &&
     new Date(data?.expiredAt) < new Date();
 
@@ -67,6 +68,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
    */
   const statusText =
     status.valueOf() === SwapProposalStatus.FULFILLED.valueOf() ||
+    status.valueOf() === SwapProposalStatus.SWAPPED.valueOf() ||
     status.valueOf() === SwapProposalStatus.REDEEMED.valueOf()
       ? "Swap Success"
       : status.valueOf() === SwapProposalStatus.CANCELED.valueOf() ||
@@ -191,6 +193,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                     <p className="mt-[12px] text-[16px] regular-text text-dark60">
                       Status:{" "}
                       {status === SwapProposalStatus.FULFILLED.valueOf() ||
+                      status === SwapProposalStatus.SWAPPED.valueOf() ||
                       status.valueOf() ===
                         SwapProposalStatus.REDEEMED.valueOf() ? (
                         <span className="text-green font-bold">

@@ -179,6 +179,7 @@ const Layout: FC = () => {
                   proposal?.ownerAddress &&
                 !isExpired &&
                 proposal?.status !== SwapProposalStatus.FULFILLED &&
+                proposal?.status !== SwapProposalStatus.SWAPPED &&
                 proposal?.status !== SwapProposalStatus.REDEEMED && (
                   <BuyButton
                     handleSwap={handleSwap}

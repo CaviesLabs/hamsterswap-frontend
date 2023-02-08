@@ -48,7 +48,8 @@ export const RedeemButton: FC<RedeemButtonProps> = (props) => {
   }, [props.proposalId]);
 
   return (
-    status.valueOf() === SwapProposalStatus.FULFILLED.valueOf() &&
+    (status.valueOf() === SwapProposalStatus.FULFILLED.valueOf() ||
+      status.valueOf() === SwapProposalStatus.SWAPPED.valueOf()) &&
     isOwner && (
       <>
         <Button
