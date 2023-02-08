@@ -13,6 +13,6 @@ export const getStatus = (status: SwapProposalStatus) => {
     case SwapProposalStatus.CREATED:
       return "Created";
     default:
-      return "Not defined";
+      return "";
   }
 };

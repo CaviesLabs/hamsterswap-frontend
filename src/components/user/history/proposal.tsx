@@ -126,20 +126,15 @@ function Proposal(props: ProposalHistoryProps) {
           </div>
         </Col>
         <Col span={3}>
-          <Tag
-            className="px-4 py-1 w-[120px] flex justify-center items-center capitalize bg-[#EEFFDA] border-[#EEFFDA] rounded-lg"
-            icon={<DotIcon className="mr-2" />}
-            color={
-              status === SwapProposalStatus.CANCELED
-                ? "warning"
-                : status === SwapProposalStatus.FULFILLED ||
-                  status === SwapProposalStatus.REDEEMED
-                ? "success"
-                : "error"
-            }
-          >
-            <span className="text-[#353C4B]">{getStatus(status)}</span>
-          </Tag>
+          {status === SwapProposalStatus.REDEEMED && (
+            <Tag
+              className="px-4 py-1 w-[120px] flex justify-center items-center capitalize bg-[#EEFFDA] border-[#EEFFDA] rounded-lg"
+              icon={<DotIcon className="mr-2" />}
+              color="success"
+            >
+              <span className="text-[#353C4B]">{getStatus(status)}</span>
+            </Tag>
+          )}
         </Col>
       </Row>
     </div>
