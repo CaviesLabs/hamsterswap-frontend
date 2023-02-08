@@ -53,8 +53,8 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   /** @todo Condition when proposal is expired but not canceled */
   const isExpired =
     status.valueOf() !== SwapProposalStatus.CANCELED.valueOf() &&
-    (status.valueOf() !== SwapProposalStatus.FULFILLED.valueOf() ||
-      status.valueOf() !== SwapProposalStatus.SWAPPED.valueOf()) &&
+    status.valueOf() !== SwapProposalStatus.FULFILLED.valueOf() &&
+    status.valueOf() !== SwapProposalStatus.SWAPPED.valueOf() &&
     status.valueOf() !== SwapProposalStatus.REDEEMED.valueOf() &&
     new Date(data?.expiredAt) < new Date();
 

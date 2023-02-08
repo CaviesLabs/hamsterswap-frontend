@@ -640,7 +640,7 @@ export class SwapProgramProvider {
      * @dev Check status of proposal.
      */
     if (
-      proposal.status.valueOf() !== SwapProposalStatus.FULFILLED.valueOf() ||
+      proposal.status.valueOf() !== SwapProposalStatus.FULFILLED.valueOf() &&
       proposal.status.valueOf() !== SwapProposalStatus.SWAPPED.valueOf()
     ) {
       throw new Error("Proposal's status is not fulfied!");
