@@ -2,8 +2,8 @@ import { User } from "firebase/auth";
 import { UserChatEntity } from "@/src/entities/chatroom.entity";
 import { NftEntity } from "@/src/dto/nft.dto";
 import { SwapProposalEntity } from "@/src/entities/proposal.entity";
+import { PlatformConfigDto } from "@/src/entities/platform-config.entity";
 import { hProfileDto } from "@/src/dto/hProfile.dto";
-import { PlatformConfigDto } from "@/src/dto/platform-config";
 import { ProposalDto } from "@/src/dto/proposal.dto";
 
 /**

@@ -19,14 +19,18 @@ import {
 } from "@/src/entities/proposal.entity";
 import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
 import { useWallet } from "@/src/hooks/useWallet";
-import dayjs from "dayjs";
+import { useMain } from "@/src/hooks/pages/main";
 import { useConnectedWallet } from "@saberhq/use-solana";
+import moment from "moment";
 import BuyButton from "@/src/components/advertisment/buy-button";
 
 const Layout: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { programService, solanaWallet } = useWallet();
+  const {
+    platformConfig: { allowCurrencies },
+  } = useMain();
 
   /**
    * @dev Declare option which user chose to swap.
@@ -53,7 +57,7 @@ const Layout: FC = () => {
    * @dev The function to process swaping when click buy button.
    */
   const handleSwap = useCallback(async () => {
-    return programService.swapProposal(
+    return await programService.swapProposal(
       solanaWallet,
       proposal.id,
       proposal.swapOptions[optionSelected].id
@@ -113,11 +117,15 @@ const Layout: FC = () => {
                 setOptionSelected(value);
               }}
               swapItems={
-                proposal?.offerItems.map((_) => parseProposal(_)) ?? []
+                proposal?.offerItems.map((_) =>
+                  parseProposal(_, allowCurrencies)
+                ) ?? []
               }
               receiveItems={
                 proposal?.swapOptions.map((swapOption: SwapOptionEntity) => {
-                  return swapOption.items.map((_) => parseProposal(_));
+                  return swapOption.items.map((_) =>
+                    parseProposal(_, allowCurrencies)
+                  );
                 }) ?? []
               }
             />
@@ -139,7 +147,9 @@ const Layout: FC = () => {
                     ) : (
                       <>
                         Expiration date:{" "}
-                        {dayjs(proposal?.expiredAt).format(DATE_TIME_FORMAT)}
+                        {moment(proposal?.expiredAt)
+                          .utc()
+                          .format(DATE_TIME_FORMAT)}
                       </>
                     )}
                   </p>
@@ -169,6 +179,7 @@ const Layout: FC = () => {
                   proposal?.ownerAddress &&
                 !isExpired &&
                 proposal?.status !== SwapProposalStatus.FULFILLED &&
+                proposal?.status !== SwapProposalStatus.SWAPPED &&
                 proposal?.status !== SwapProposalStatus.REDEEMED && (
                   <BuyButton
                     handleSwap={handleSwap}

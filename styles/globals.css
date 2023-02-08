@@ -52,6 +52,9 @@ a {
   box-sizing: border-box;
 }
 
+.thin-text {
+  font-family: poppins-thin !important;
+}
 .regular-text {
   font-family: poppins-regular !important;
 }
@@ -108,4 +111,12 @@ input[type=number] {
 }
 .hamster-modal .ant-modal-close-icon {
   font-size: 24px;
+}
+
+.css-ul1er5 {
+  z-index: 300;
+}
+
+*, *::before, *::after {
+  transition: none!important;
 }

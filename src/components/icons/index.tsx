@@ -123,8 +123,8 @@ export const SolanaIcon: FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width={props.size || "24"}
+      height={props.size || "24"}
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -202,10 +202,30 @@ export const CheckIcon: FC<IconProps> = (props) => {
     >
       <path
         d="M1 6.14286L7.54545 13L19 1"
-        stroke="#735CF7"
+        stroke={props.color || "#735CF7"}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const CheckIconProposal: FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width={props.size || "16"}
+      height={props.size || "16"}
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8ZM12.0303 6.28033C12.3232 5.98744 12.3232 5.51256 12.0303 5.21967C11.7374 4.92678 11.2626 4.92678 10.9697 5.21967L7 9.18934L5.03033 7.21967C4.73744 6.92678 4.26256 6.92678 3.96967 7.21967C3.67678 7.51256 3.67678 7.98744 3.96967 8.28033L6.46967 10.7803C6.76256 11.0732 7.23744 11.0732 7.53033 10.7803L12.0303 6.28033Z"
+        fill={props.color || "#3CBF7C"}
       />
     </svg>
   );
@@ -332,7 +352,7 @@ export const TelegramIcon: FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
+      width={props.size || "24 "}
       height="24"
       viewBox="0 0 24 24"
       fill="none"
@@ -522,3 +542,22 @@ export const HamsterboxIcon: FC<IconProps> = (props) => {
     </svg>
   );
 };
+
+export const DropdownIcon: FC<IconProps> = (props) => (
+  <svg
+    className={props.className}
+    width={props.size || "25"}
+    height={props.size || "24"}
+    viewBox="0 0 25 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M8 10L13 14L18 10"
+      stroke="#7886A0"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);

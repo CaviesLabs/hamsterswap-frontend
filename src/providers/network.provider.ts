@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from "axios";
 import qs from "qs";
 import { getStorageProvider } from "./";
 
-export type RequestConfig = AxiosRequestConfig;
+export type RequestConfig = Partial<AxiosRequestConfig>;
 
 export class NetworkProvider {
   /**
@@ -57,7 +57,7 @@ export class NetworkProvider {
         ...this.defaultNetWorkOptions,
         ...requestConfig.headers,
       },
-    }).catch((e) => e.response);
+    } as any).catch((e) => e.response);
 
     if (!resp || resp?.status >= 400) {
       throw new Error(`Error when request server, ${resp.statusText}`);
@@ -90,8 +90,8 @@ export class NetworkProvider {
     options.headers = {
       ...options.headers,
       Authorization: `Bearer ${credential}`,
-    };
-    return this.request<RequestResponse>(url, options);
+    } as any;
+    return this.request<RequestResponse>(url, options as any);
   }
 }
 

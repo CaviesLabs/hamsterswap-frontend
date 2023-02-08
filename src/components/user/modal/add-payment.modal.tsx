@@ -15,6 +15,7 @@ export const AddPaymentModal: FC<ModalProps> = (props) => {
       onCancel={props.handleCancel}
       width={550}
       footer={null}
+      className="hamster-modal"
     >
       <div className="py-6">
         <div className="h-[500px] flex flex-col justify-between px-4 sm:px-6 lg:px-8">
@@ -65,6 +66,7 @@ export const AddPaymentModal: FC<ModalProps> = (props) => {
               type="button"
               onClick={props.handleCancel}
               className="w-full !bg-purple !text-white border border-2 border-purple rounded-3xl text-lg font-bold py-3"
+              disabled={!method}
             >
               Add
             </button>

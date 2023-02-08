@@ -16,7 +16,7 @@ const SubMenu: FC<SubMenuProps> = (props) => {
   ];
   if (userId && userId === profile?.id) {
     menus.push(
-      ["Game ID", "#"],
+      // ["Game ID", "#"],
       ["Payment", "payment"],
       ["Contacts", "contact"]
     );
@@ -31,9 +31,12 @@ const SubMenu: FC<SubMenuProps> = (props) => {
             className="px-[40px] h-[30px] cursor-pointer"
           >
             <p
-              className={classnames("px-[10px] cursor-pointer text-dark60", {
-                "!text-purple": index === curTab,
-              })}
+              className={classnames(
+                "px-[10px] cursor-pointer text-dark60 text-[20px]",
+                {
+                  "!text-purple": index === curTab,
+                }
+              )}
             >
               {item[0]}
             </p>

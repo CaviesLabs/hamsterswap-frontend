@@ -81,7 +81,7 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
                     props.receiveItems.map((_, index) => (
                       <div className="ml-3" key={`ml3dix-${index}`}>
                         <Button
-                          className="!rounded-3xl !px-4"
+                          className="!rounded-3xl !px-4 uppercase"
                           size="small"
                           shape={
                             optionSelected === index ? "primary" : "secondary"

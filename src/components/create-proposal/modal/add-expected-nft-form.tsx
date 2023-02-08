@@ -1,6 +1,6 @@
 import Select from "@/src/components/select";
 import { Input } from "antd";
-import { allowNTFCollection } from "@/src/dto/platform-config";
+import { allowNTFCollection } from "@/src/entities/platform-config.entity";
 import { useMemo, useState } from "react";
 
 type FormProps = {
@@ -20,9 +20,9 @@ export const AddExpectedNftForm = (props: FormProps) => {
       .filter(
         (_) => !search || _.name.toLowerCase().includes(search.toLowerCase())
       )
-      .map((_) => ({
+      .map((_, index) => ({
         label: _.name,
-        value: _.id,
+        value: `${index}_${_.name}`,
         image: _.image,
       }));
   }, [search, allowNTFCollections]);

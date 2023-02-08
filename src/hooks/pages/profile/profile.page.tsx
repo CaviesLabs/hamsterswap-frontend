@@ -52,20 +52,17 @@ export const ProfilePageProvider = (props: { children: ReactNode }) => {
     _selectedStatus: string[] = selectedStatus
   ) => {
     const status: SwapProposalStatus[] =
-      !_selectedStatus || _selectedStatus.length === 0
-        ? [
-            // SwapProposalStatus.DEPOSITED,
-            // SwapProposalStatus.FULFILLED,
-            // SwapProposalStatus.WITHDRAWN,
-            // SwapProposalStatus.EXPIRED,
-          ]
-        : [];
+      !_selectedStatus || _selectedStatus.length === 0 ? [] : [];
     _selectedStatus?.includes(sortOptions[0].value) &&
-      status.push(SwapProposalStatus.EXPIRED);
+      status.push(SwapProposalStatus.ACTIVE);
     _selectedStatus?.includes(sortOptions[1].value) &&
-      status.push(SwapProposalStatus.REDEEMED);
+      status.push(SwapProposalStatus.EXPIRED);
     _selectedStatus?.includes(sortOptions[2].value) &&
-      status.push(SwapProposalStatus.CANCELED);
+      status.push(SwapProposalStatus.REDEEMED);
+    _selectedStatus?.includes(sortOptions[3].value) &&
+      status.push(SwapProposalStatus.WITHDRAWN);
+    _selectedStatus?.includes(sortOptions[4].value) &&
+      status.push(SwapProposalStatus.SWAPPED);
 
     return handleSearch(searchText, status);
   };

@@ -22,7 +22,7 @@ export const useProgram = (): ProgramHookState => {
       /**
        * @dev Call service to redeem proposal.
        */
-      await programService.redeemProposal(solanaWallet, proposalId);
+      return programService.redeemProposal(solanaWallet, proposalId);
     },
     [solanaWallet, programService]
   );

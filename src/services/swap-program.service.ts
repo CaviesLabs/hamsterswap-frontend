@@ -1,6 +1,7 @@
 import { BN } from "@project-serum/anchor";
 import { networkProvider } from "@/src/providers/network.provider";
-import { SwapProgramProvider } from "@/src/providers/swap-program";
+import { SwapProgramProvider } from "@/src/providers/program";
+import { SwapProgramProviderV0 } from "@/src/providers/program/swap-program-v0.provider";
 import UtilsProvider from "@/src/utils/utils.provider";
 import {
   CreateProposalToServerDto,
@@ -14,10 +15,14 @@ export class SwapProgramService {
    * @dev Program provider injected.
    * @private
    */
-  private readonly swapProgramProvider: SwapProgramProvider;
+  private readonly swapProgramProvider:
+    | SwapProgramProvider
+    | SwapProgramProviderV0;
   private readonly utilsProvider: UtilsProvider;
 
-  constructor(swapProgramProvider: SwapProgramProvider) {
+  constructor(
+    swapProgramProvider: SwapProgramProvider | SwapProgramProviderV0
+  ) {
     /**
      * @dev Import providers.
      */
@@ -27,6 +32,7 @@ export class SwapProgramService {
 
   /**
    * @dev Call this function to create new proposal.
+   * @param walletProvider
    * @param {CreateProposalToServerDto} createProposalDto.
    */
   public async createProposal(
@@ -140,12 +146,20 @@ export class SwapProgramService {
     const data = await fn();
     return new Promise(async (resolve) =>
       setTimeout(async () => {
-        await networkProvider.request(`/proposal/${proposalId}/sync`, {
-          method: "PATCH",
-        });
+        await this.syncProposal(proposalId);
         resolve(data);
       }, 4000)
     );
+  }
+
+  /**
+   * @dev The function to sync the data of proposal
+   * @param {string} proposalId
+   */
+  public async syncProposal(proposalId: string): Promise<any> {
+    return networkProvider.request(`/proposal/${proposalId}/sync`, {
+      method: "PATCH",
+    });
   }
 
   /**
@@ -154,7 +168,7 @@ export class SwapProgramService {
    * @returns {SwapProposalEntity}
    */
   public async getProposal(proposalId: string): Promise<SwapProposalEntity> {
-    console.log(proposalId);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     return networkProvider.requestWithCredentials<SwapProposalEntity>(
       `/proposal/${proposalId}`,
       { method: "GET" }

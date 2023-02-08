@@ -16,7 +16,7 @@ export const GameItemModal: FC<NftDetailsModalProps> = (props) => {
       className="hamster-modal"
     >
       <div className="py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+        <div className="max-w-[86rem] mx-auto px-4 sm:px-6 lg:px-8 mt-6">
           <Row gutter={[16, 16]}>
             <Col span={10}>
               <div className="w-[80%] mx-auto">

@@ -23,9 +23,9 @@ export default Search;
 const StyledInput = styled.div`
   width: 100%;
   span {
-    background-color: #f8f9fe;
+    background-color: #ffffff;
     .ant-input {
-      background-color: #f8f9fe;
+      background-color: #ffffff;
     }
   }
 `;

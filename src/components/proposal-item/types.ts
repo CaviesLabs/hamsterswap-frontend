@@ -14,4 +14,5 @@ export type ProposalItemsProps = {
   className?: string;
   userAssets: any[];
   userLookingFor: any;
+  fulfilledWithOptionId?: string;
 };

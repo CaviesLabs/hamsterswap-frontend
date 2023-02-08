@@ -29,7 +29,11 @@ const Layout: FC = () => {
   /**
    * @dev Import redux states
    */
-  const { hPublicProfile: profile, proposals } = useMain();
+  const {
+    hPublicProfile: profile,
+    proposals,
+    platformConfig: { allowCurrencies },
+  } = useMain();
 
   /**
    * @dev Import functions from provider
@@ -79,14 +83,18 @@ const Layout: FC = () => {
                 placeholder={
                   <>
                     <div></div>
-                    <div>All status</div>
+                    <div>
+                      {!selectedStatus.length || selectedStatus.length === 5
+                        ? "All status"
+                        : selectedStatus.join(", ")}
+                    </div>
                   </>
                 }
                 options={sortOptions.map((_) => ({
                   value: _.value,
                   label: _.name,
                 }))}
-                className="w-44 ml-6"
+                className="w-[260px] ml-6"
                 values={selectedStatus}
                 onChange={(v) => setSelectedStatus(v)}
               />
@@ -111,11 +119,15 @@ const Layout: FC = () => {
           {proposals?.map((proposal: SwapProposalEntity) => {
             const p: any = { ...proposal };
             const newOfferItems = p.offerItems.map(
-              (offerItem: SwapItemEntity) => parseProposal(offerItem)
+              (offerItem: SwapItemEntity) =>
+                parseProposal(offerItem, allowCurrencies)
             );
             const newSwapOptions = p.swapOptions.map(
               (swapOption: SwapOptionEntity) => {
-                return swapOption.items.map((_) => parseProposal(_));
+                return swapOption.items.map((_) => ({
+                  ...parseProposal(_, allowCurrencies),
+                  optionId: swapOption.id,
+                }));
               }
             );
             p.offerItems = newOfferItems;

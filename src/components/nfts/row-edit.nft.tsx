@@ -2,12 +2,20 @@ import React, { FC, useRef, useState } from "react";
 import { RowNftEditItemProps } from "./types";
 import { DeleteIcon, DetailIcon, VerticalDots } from "@/src/components/icons";
 import { GameItemModal, NFTDetailsModal } from "@/src/components/modal";
+import { SwapItemType } from "@/src/entities/proposal.entity";
+import { useMain } from "@/src/hooks/pages/main";
+import UtilsProvider from "@/src/utils/utils.provider";
 import classnames from "classnames";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
-import { SwapItemType } from "@/src/entities/proposal.entity";
-import { WSOL_ADDRESS } from "@/src/utils/constants";
 
 export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
+  /**
+   * @dev Get cryptocurrencies which Hamster support.
+   */
+  const {
+    platformConfig: { allowCurrencies },
+  } = useMain();
+
   /**
    * @dev reference to the button
    * close the dropdown when user click outside
@@ -45,8 +53,9 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
           <div className="left pl-[2px]">
             <img
               src={
-                props.nftAddress === WSOL_ADDRESS
-                  ? "/assets/images/solana.svg"
+                assetType === SwapItemType.CURRENCY
+                  ? allowCurrencies.find((item) => item.id === props.nftAddress)
+                      ?.image
                   : props.image
               }
               alt="NFT image"
@@ -60,13 +69,16 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
           </div>
           <div className="px-4 w-72 left">
             <p className="semi-bold text-black truncate block capitalize">
-              {props.nftAddress === WSOL_ADDRESS
-                ? `${props.tokenAmount} SOL`
+              {assetType === SwapItemType.CURRENCY
+                ? `${UtilsProvider.formatLongNumber(props.tokenAmount)} ${
+                    allowCurrencies.find((item) => item.id === props.nftAddress)
+                      ?.name
+                  }`
                 : props.name}
             </p>
             <div className="flex items-center">
               <p className="text-[14px] regular-text text-purple cursor-auto mb-3">
-                {props.nftAddress !== WSOL_ADDRESS && props.collection}
+                {assetType !== SwapItemType.CURRENCY && props.collection}
               </p>
             </div>
           </div>

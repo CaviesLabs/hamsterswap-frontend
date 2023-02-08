@@ -3,10 +3,20 @@ import { ProposalItem } from "@/src/components/proposal-item";
 import { Col, Row } from "antd";
 import { ConfirmedTransactionModal } from "@/src/components/create-proposal/step5/confirmed-transaction.modal";
 import { SummaryProps } from "@/src/components/create-proposal/step5/types";
-import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { parseOfferCreateProposal } from "@/src/utils";
+import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
+import { useMain } from "@/src/hooks/pages/main";
+import { DATE_TIME_FORMAT } from "@/src/utils";
+import moment from "moment";
 
 export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
+  /**
+   * @dev Get all currencies which hamster support.
+   */
+  const {
+    platformConfig: { allowCurrencies },
+  } = useMain();
+
   /**
    * @dev Import functions from context screen.
    */
@@ -28,10 +38,16 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
       </h3>
       <div className="block mt-[60px] flex">
         <ProposalItem
-          swapItems={clonedOfferedItems.map((_) => parseOfferCreateProposal(_))}
+          swapItems={clonedOfferedItems.map((_) =>
+            parseOfferCreateProposal(_, allowCurrencies)
+          )}
           receiveItems={clonedExpectedItems
             .filter((item) => item.askingItems.length)
-            .map((_) => _.askingItems.map((p) => parseOfferCreateProposal(p)))}
+            .map((_) =>
+              _.askingItems.map((p) =>
+                parseOfferCreateProposal(p, allowCurrencies)
+              )
+            )}
           isGuaranteedPayment={isGuaranteedPayment}
         />
       </div>
@@ -43,7 +59,8 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
           <p className="text-3xl">Note</p>
           <p className="text-[16px] regular-text mt-[12px] break-all">{note}</p>
           <p className="regular-text text-[14px] text-red300 mt-12">
-            Expiration date: {expiredTime && expiredTime.toLocaleString()}
+            Expiration date:{" "}
+            {expiredTime && moment(expiredTime).utc().format(DATE_TIME_FORMAT)}
           </p>
         </Col>
         <Col

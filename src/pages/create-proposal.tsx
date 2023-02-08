@@ -5,7 +5,7 @@ import MainLayout from "@/src/layouts/main";
 import { CreateProposalProvider } from "@/src/hooks/pages/create-proposal";
 import { LayoutSection } from "@/src/components/layout-section";
 import { BreadCrumb } from "@/src/components/bread-crumb";
-import { Button, toast } from "@hamsterbox/ui-kit";
+import { Button } from "@hamsterbox/ui-kit";
 import { StepProgressBar } from "@/src/components/stepper";
 import type { StepProgressHandle } from "@/src/components/stepper";
 import { Carousel } from "react-responsive-carousel";
@@ -18,12 +18,18 @@ import {
   Step4,
   Step5,
 } from "@/src/components/create-proposal";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import classnames from "classnames";
+import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optimize-transaction-modal";
 import { StorageProvider } from "@/src/providers/storage.provider";
 import { useConnectedWallet } from "@saberhq/use-solana";
+import { useWallet } from "@/src/hooks/useWallet";
+import classnames from "classnames";
 
 const Layout: FC = () => {
+  /**
+   * @dev Get wallet.
+   */
+  const { solanaWallet } = useWallet();
+
   /**
    * @dev Use next router.
    */
@@ -68,6 +74,11 @@ const Layout: FC = () => {
    * @dev Define sate condition loading button during processing submit proposal.
    */
   const [isDuringSubmit, setIsDuringSubmit] = useState(false);
+
+  /**
+   * @dev Condition to show popup to optimize proposal and submit proposal onchain.
+   */
+  const [optimizedProposalOpen, setOptimizedProposalOpen] = useState(false);
 
   /** @dev Initilize ref for stepper component. */
   const stepperRef = useRef<StepProgressHandle>(null);
@@ -129,21 +140,50 @@ const Layout: FC = () => {
   }, [currentStep]);
 
   /**
-   * @dev Click submit to create proposal.
+   * @dev The function to create proposal without optimize option.
    */
-  const hanndleSubmitProposal = async () => {
+  // const handleSubmitWithoutOptimize = async () => {
+  //   try {
+  //     setIsDuringSubmit(true);
+  //     const proposalId = (await submitProposal()) as string;
+  //     setProposalId(proposalId);
+  //     setModalOpened(true);
+  //     setIsDuringSubmit(false);
+  //   } catch (err: unknown) {
+  //     toast.error("Create proposal failed", (err as any).message);
+  //   } finally {
+  //     setIsDuringSubmit(false);
+  //   }
+  // };
+
+  /**
+   * @dev The function to create proposal with optimize option.
+   */
+  const handleSubmitWithOptimize = async () => {
     try {
       setIsDuringSubmit(true);
-      const proposalId = await submitProposal();
-      setProposalId(proposalId);
-      setModalOpened(true);
-      setIsDuringSubmit(false);
-    } catch (err: unknown) {
-      toast.error("Create proposal failed", (err as any).message);
-    } finally {
-      setIsDuringSubmit(false);
-    }
+      setOptimizedProposalOpen(true);
+    } catch {}
   };
+
+  /**
+   * @dev Click submit to create proposal.
+   */
+  const hanndleSubmitProposal = useCallback(async () => {
+    handleSubmitWithOptimize();
+    // if (router?.query?.optimized === "true") {
+    // } else {
+    //   handleSubmitWithoutOptimize();
+    // }
+  }, [
+    router,
+    expectedItems,
+    offferedItems,
+    note,
+    expiredTime,
+    guaranteeSol,
+    solanaWallet,
+  ]);
 
   function onFormSubmit() {
     return true;
@@ -237,6 +277,7 @@ const Layout: FC = () => {
                   className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right mr-[12px]"
                   shape="secondary"
                   onClick={handleBackStep}
+                  size="large"
                 />
               )}
               {currentStep < 4 ? (
@@ -254,15 +295,39 @@ const Layout: FC = () => {
                     }
                   }
                   disabled={isButtonNextDisabled}
+                  size="large"
                 />
               ) : (
                 <Button
-                  text="Confirm"
+                  text={isDuringSubmit ? "Confirming" : "Confirm"}
                   className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px] float-right"
                   onClick={hanndleSubmitProposal}
                   loading={isDuringSubmit}
+                  size="large"
                 />
               )}
+              <OptimizeTransactionModal
+                isModalOpen={optimizedProposalOpen}
+                instructionHandler={async () =>
+                  (await submitProposal()) as unknown as {
+                    proposalId?: string;
+                    fns: {
+                      optimize(): Promise<void>;
+                      confirm(): Promise<void>;
+                    };
+                  }
+                }
+                handleCancel={() => {
+                  setOptimizedProposalOpen(false);
+                  setIsDuringSubmit(false);
+                }}
+                handleOk={(proposalId) => {
+                  setOptimizedProposalOpen(false);
+                  setProposalId(proposalId);
+                  setModalOpened(true);
+                  setIsDuringSubmit(false);
+                }}
+              />
             </div>
           </div>
         </LayoutSection>

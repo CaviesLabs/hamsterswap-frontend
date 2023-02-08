@@ -9,7 +9,7 @@ import {
 } from "@/src/entities/proposal.entity";
 import { SwapProgramService } from "@/src/services/swap-program.service";
 import { BN } from "@project-serum/anchor";
-import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import { useWallet } from "@/src/hooks/useWallet";
 import * as anchor from "@project-serum/anchor";
 
@@ -71,7 +71,9 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
               id: SwapProgramService.generateUID(),
               mintAccount: new PublicKey(item.nft_address),
               itemType: { [type]: {} },
-              amount: amount ? new BN(amount * LAMPORTS_PER_SOL) : null,
+              amount: amount
+                ? new BN(amount * Math.pow(10, item.decimal))
+                : null,
               nft_address: item.nft_address,
               tokenAmount: amount,
               ...item,
@@ -109,6 +111,7 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
     type: AssetTypes,
     amount?: number
   ) => {
+    console.log("add", amount, item.decimal);
     setOfferItems((prev) => {
       return [
         ...prev,
@@ -118,7 +121,7 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
           id: SwapProgramService.generateUID(),
           mintAccount: new PublicKey(item.nft_address),
           itemType: { [type]: {} },
-          amount: amount ? new BN(amount * LAMPORTS_PER_SOL) : null,
+          amount: amount ? new BN(amount * Math.pow(10, item.decimal)) : null,
           nft_address: item.nft_address,
           tokenAmount: amount,
           ...item,

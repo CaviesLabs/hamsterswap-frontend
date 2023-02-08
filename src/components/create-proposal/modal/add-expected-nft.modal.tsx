@@ -3,7 +3,7 @@ import { Modal } from "antd";
 import { AddExpectedItemModalProps } from "./types";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
 import { useSelector } from "react-redux";
-import { allowNTFCollection } from "@/src/dto/platform-config";
+import { allowNTFCollection } from "@/src/entities/platform-config.entity";
 import { AddExpectedNftForm } from "@/src/components/create-proposal/modal/add-expected-nft-form";
 import { AddExpectedNftDetail } from "@/src/components/create-proposal/modal/add-expected-nft-detail";
 import { nftService } from "@/src/redux/saga/nft/nft.service";
@@ -13,6 +13,7 @@ import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { toast } from "@hamsterbox/ui-kit";
 import animationData from "@/src/components/icons/animation-loading.json";
 import Lottie from "react-lottie";
+import { isEmpty } from "lodash";
 
 export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   /**
@@ -41,11 +42,13 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
       })
       .then((resp) => {
         if (!resp) {
+          toast("NFT is not found with ID!");
           return setStep(0);
         }
         setNft(resp);
         setStep(2);
-      });
+      })
+      .catch(() => {});
   };
 
   /**
@@ -96,6 +99,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
      * @dev Close modal.
      */
     props.handleOk();
+    setCollection([]);
     setStep(0);
   };
 
@@ -139,7 +143,11 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
             {step === 2 && nft && <AddExpectedNftDetail nft={nft} />}
             <div>
               {step === 0 && (
-                <button type="button" onClick={() => handleFetchNftData(nftId)}>
+                <button
+                  type="button"
+                  onClick={() => handleFetchNftData(nftId)}
+                  disabled={isEmpty(collection) || !nftId}
+                >
                   Next
                 </button>
               )}

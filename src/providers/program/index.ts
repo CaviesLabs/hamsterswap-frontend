@@ -7,6 +7,7 @@ let swapProgramProvider: SwapProgramProvider;
 /**
  * @dev Initialize @var {SwapProgramProvider}.
  * @param {Wallet} walletProvider.
+ * @param options
  * @returns {SwapProgramProvider}.
  * */
 export const getSwapProgramProvider = (

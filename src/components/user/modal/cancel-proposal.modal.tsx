@@ -1,17 +1,12 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Modal } from "antd";
 import { ModalProps } from "../../modal/types";
 import { Button } from "@hamsterbox/ui-kit";
 
 export const CancelProposalModal: FC<ModalProps> = (props) => {
-  /** @dev Condition whenter processing */
-  const [isDuringSubmit, setIsDuringSubmit] = useState(false);
-
   /** @dev Handle click to accept cancel. */
   const handleConfirmCancel = async () => {
-    setIsDuringSubmit(true);
     await props.handleOk();
-    setIsDuringSubmit(false);
   };
 
   return (
@@ -21,6 +16,7 @@ export const CancelProposalModal: FC<ModalProps> = (props) => {
       onCancel={props.handleCancel}
       width={600}
       footer={null}
+      className="hamster-modal"
     >
       <div className="py-6">
         <div className="mx-auto items-center max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
@@ -40,10 +36,9 @@ export const CancelProposalModal: FC<ModalProps> = (props) => {
             type="button"
             onClick={handleConfirmCancel}
             className="!bg-red-500 text-white rounded-3xl text-lg font-bold py-3"
-            theme={{ backgroundColor: "#EF4444", color: "white" }}
+            theme={{ backgroundColor: "#DE2C47", color: "white" }}
             width="100%"
             text="Yes, Cancel Proposal"
-            loading={isDuringSubmit}
           />
           <div className="mt-4">
             <Button

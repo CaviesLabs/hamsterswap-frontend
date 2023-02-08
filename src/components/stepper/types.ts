@@ -33,6 +33,8 @@ export interface StepProgressProps {
   onSubmit(): void;
   previousBtnName?: string;
   nextBtnName?: string;
+  hiddenContent?: boolean;
+  theme?: "primary" | "secondary";
 }
 
 /** @dev Define props interface. */

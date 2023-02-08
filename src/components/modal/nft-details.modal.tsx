@@ -25,7 +25,8 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
       .getNftDetail({
         mintAddress: data.nftAddress,
       })
-      .then((resp) => setAttributes(resp?.nft_attributes.attributes));
+      .then((resp) => setAttributes(resp?.nft_attributes.attributes))
+      .catch(() => {});
   }, [data?.nftAddress]);
 
   return (
@@ -38,7 +39,7 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
       className="hamster-modal"
     >
       <div className="py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+        <div className="max-w-[86rem] mx-auto px-4 sm:px-6 lg:px-8 mt-6">
           <div className="flex flex-col md:flex-row -mx-4 mb-10 max-h-[460px]">
             <div className="md:basis-1/3 px-8">
               <div x-data="{ image: 1 }" x-cloak="true">

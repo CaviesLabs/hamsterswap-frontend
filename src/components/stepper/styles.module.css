@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  z-index: 1;
+  z-index: 0;
 }
 .progress-step {
   list-style: none;
@@ -36,6 +36,14 @@
   background-position: right bottom;
   transition: background-position 200ms ease-in-out;
 }
+.progress-step.secondary::before {
+  transform: translateY(-50%);
+  z-index: -1;
+  background: linear-gradient(to left, #E5E0FF 50%, #735CF7 50%);
+  background-size: 200% 100%;
+  background-position: right bottom;
+  transition: background-position 200ms ease-in-out;
+}
 .progress-step:first-child::before {
   content: none;
 }
@@ -51,6 +59,11 @@
   transform-origin: center;
   align-items: center;
   justify-content: center;
+}
+.progress-step .step-index.secondary,
+.progress-step .step-icon.secondary {
+  background-color: #E5E0FF; 
+  color: #5F6C87;
 }
 .step-index, .step-icon {
   transition: background-color 250ms ease;

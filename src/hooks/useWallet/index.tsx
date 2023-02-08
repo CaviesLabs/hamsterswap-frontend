@@ -17,12 +17,14 @@ import {
 import web3 from "@solana/web3.js";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
-import { getSwapProgramProvider } from "@/src/providers/swap-program";
+import { SwapProgramProviderV0 } from "@/src/providers/program/swap-program-v0.provider";
 import { SwapProgramService } from "@/src/services/swap-program.service";
 import { getAuthService } from "@/src/actions/firebase.action";
 import { getWalletName } from "./utils";
 import { setProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { useDispatch } from "react-redux";
+import { useRouter } from "next/router";
+import { SwapProgramServiceV0 } from "@/src/services/swap-program-v0.service";
 
 /** @dev Define state for context. */
 export interface WalletContextState {
@@ -55,7 +57,7 @@ export interface WalletContextState {
   /**
    * @dev Define Program service.
    */
-  programService: SwapProgramService;
+  programService: SwapProgramService | SwapProgramServiceV0;
 
   /**
    * @dev Sol balance of signer.
@@ -68,6 +70,7 @@ export const WalletContext = createContext<WalletContextState>(null);
 
 /** @dev Expose wallet provider for usage. */
 export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
+  const router = useRouter();
   /** @dev Get @var {walletProviderInfo} from @var {GokkiKit}. */
   const { walletProviderInfo } = useSaberhq();
 
@@ -80,7 +83,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
   const wallet = useConnectedWallet();
 
   /** @dev Program service */
-  const [programService, initProgram] = useState<SwapProgramService>(null);
+  const [programService, initProgram] = useState<SwapProgramServiceV0>(null);
   const [solBalance, setSolBalance] = useState(0);
 
   /** @dev Import auth service. */
@@ -174,16 +177,15 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
     if (wallet?.publicKey?.toString()) {
       try {
         /**
-         * @dev Initlize program provider.
-         */
-        const swapProgramProvider = getSwapProgramProvider(solanaWallet, {
-          reInit: true,
-        });
-
-        /**
          * @dev Initlize swap program service with initlized programProvider.
          */
-        const program = new SwapProgramService(swapProgramProvider);
+        const program = new SwapProgramServiceV0(
+          new SwapProgramProviderV0(solanaWallet)
+        );
+
+        /**
+         * @dev Init program into state for usage
+         */
         initProgram(program);
 
         /**
@@ -194,7 +196,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
         console.log(err.message);
       }
     }
-  }, [wallet, solanaWallet]);
+  }, [wallet, solanaWallet, router.asPath]);
 
   return (
     <WalletContext.Provider

@@ -14,6 +14,7 @@ export const ConfirmedTransactionModal: FC<ModalProps> = (props) => {
       onCancel={props.handleCancel}
       width={600}
       footer={null}
+      className="hamster-modal"
     >
       <div className="py-6">
         <div className="mx-auto max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 flex flex-col justify-center">

@@ -2,9 +2,11 @@
  * @dev Define value data to sort NFTs.
  */
 export const sortOptions = [
-  { value: "expired", name: "Expired" },
-  { value: "success", name: "Successful" },
-  { value: "cancel", name: "Canceled" },
+  { value: "Active", name: "Active" },
+  { value: "Expired", name: "Expired" },
+  { value: "Completed", name: "Completed" },
+  { value: "Withdrawn", name: "Withdrawn" },
+  { value: "Swapped", name: "Swapped" },
 ];
 
 /**
@@ -38,6 +40,9 @@ export const SIGN_MESSAGE =
   "\n" +
   "Your authentication status will reset after 24 hours.";
 
-export const DATE_TIME_FORMAT = "YYYY-MM-DD HH:mm (UTC)";
+// export const DATE_TIME_FORMAT = "YYYY-MM-DD HH:mm (UTC)";
+export const DATE_TIME_FORMAT = "YYYY-MM-DD HH:mm:ss (UTC)";
 
 export const WSOL_ADDRESS = "So11111111111111111111111111111111111111112";
+export const BONK_ADDRESS = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
+export const USDC_ADDRESS = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";

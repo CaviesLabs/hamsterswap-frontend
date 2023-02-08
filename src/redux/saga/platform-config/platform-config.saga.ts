@@ -2,7 +2,7 @@ import { put, call } from "redux-saga/effects";
 import { SagaPayload } from "@/src/redux/entities";
 import { platformConfigService } from "@/src/redux/saga/platform-config/platform-config.service";
 import { setPlatformConfig } from "@/src/redux/actions/platform-config/platform.action";
-import { PlatformConfigDto } from "@/src/dto/platform-config";
+import { PlatformConfigDto } from "@/src/entities/platform-config.entity";
 
 /**
  * @param payload

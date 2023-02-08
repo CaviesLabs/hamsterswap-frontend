@@ -98,7 +98,7 @@ export class ChatService {
       await this.createUserChat({
         ...updateUserChatDto,
         displayName: updateUserChatDto.recieverId,
-        photoURL: "https://source.boringavatars.com/beam",
+        photoURL: "https://avatars.hamsterbox.xyz/api/images/beam",
       });
     }
 

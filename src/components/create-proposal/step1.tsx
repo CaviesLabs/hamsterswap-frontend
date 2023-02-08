@@ -18,7 +18,6 @@ import {
   AssetTypes,
   SwapItemType,
 } from "@/src/entities/proposal.entity";
-import { WSOL_ADDRESS } from "@/src/utils/constants";
 import { Col, Row } from "antd";
 
 export const Step1: FC = () => {
@@ -52,18 +51,31 @@ export const Step1: FC = () => {
    * Handle save sol value into swapItems array of redux-store
    * @param value [string]
    */
-  const handleAddSol = (value: string) => {
+  const handleAddSol = (
+    mintAddress: string,
+    amount: string,
+    decimal: number
+  ) => {
     if (offferedItems.length === 4) {
       return toast.warn("Only a maximum of 4 items are allowed");
     }
 
-    if (!value) return;
-    if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
+    if (!amount) return;
+    if (isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) return;
+
+    /**
+     * @dev Excute adding data here.
+     */
     addOfferItem(
-      { nft_address: WSOL_ADDRESS, assetType: SwapItemType.CURRENCY } as any,
+      {
+        nft_address: mintAddress,
+        assetType: SwapItemType.CURRENCY,
+        decimal,
+      } as any,
       AssetTypes.token,
-      parseFloat(value)
+      parseFloat(amount)
     );
+
     setIsAddSol(false);
   };
 
@@ -116,7 +128,7 @@ export const Step1: FC = () => {
         <div className="ml-[12px]">
           <Button
             size="small"
-            text="Add SOL"
+            text="Add Token"
             className="!rounded-[100px] after:!rounded-[100px] !px-4"
             theme={{
               backgroundColor: "#41ADD1",
@@ -129,9 +141,9 @@ export const Step1: FC = () => {
             isModalOpen={isAddSol}
             handleCancel={() => setIsAddSol(false)}
             addInOwner={true}
-            handleAddSol={(value) => {
+            handleAddSol={(mintAddress, value, decimal) => {
               setIsAddSol(false);
-              handleAddSol(value);
+              handleAddSol(mintAddress, value, decimal);
             }}
           />
         </div>

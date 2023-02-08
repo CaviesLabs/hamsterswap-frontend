@@ -1,25 +1,12 @@
-FROM node:lts-alpine AS deps
+FROM node:lts-alpine
 
-WORKDIR /opt/app
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+ARG NODE_ENV=prod
+ENV NODE_ENV ${NODE_ENV}
+RUN echo ${NODE_ENV}
 
-
-FROM node:lts-alpine AS builder
-
-ENV NODE_ENV=production
 WORKDIR /opt/app
 COPY . .
-COPY --from=deps /opt/app/node_modules ./node_modules
-RUN yarn build
+RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install --frozen-lockfile
+RUN yarn lint && yarn build
 
-FROM node:lts-alpine AS runner
-
-ARG X_TAG
-WORKDIR /opt/app
-ENV NODE_ENV=production
-COPY --from=builder /opt/app/next.config.js ./
-COPY --from=builder /opt/app/public ./public
-COPY --from=builder /opt/app/.next ./.next
-COPY --from=builder /opt/app/node_modules ./node_modules
 CMD ["node_modules/.bin/next", "start"]

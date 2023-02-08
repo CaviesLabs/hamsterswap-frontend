@@ -260,6 +260,65 @@ export type SwapIdl = {
           };
         }
       ];
+    },
+    {
+      name: "modifyAddressLookupTable";
+      accounts: [
+        {
+          name: "signer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "lookupTableRegistry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: "lookupTableAccount";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "lookupTableProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: "params";
+          type: {
+            defined: "CreateAddressLookupTableParams";
+          };
+        }
+      ];
+    },
+    {
+      name: "initializeAddressLookupTable";
+      accounts: [
+        {
+          name: "signer";
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: "lookupTableRegistry";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "systemProgram";
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
     }
   ];
   accounts: [
@@ -352,6 +411,28 @@ export type SwapIdl = {
           }
         ];
       };
+    },
+    {
+      name: "lookupTableRegistry";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "bump";
+            type: "u8";
+          },
+          {
+            name: "owner";
+            type: "publicKey";
+          },
+          {
+            name: "lookupTableAddresses";
+            type: {
+              vec: "publicKey";
+            };
+          }
+        ];
+      };
     }
   ];
   types: [
@@ -363,6 +444,18 @@ export type SwapIdl = {
           {
             name: "id";
             type: "string";
+          }
+        ];
+      };
+    },
+    {
+      name: "CreateAddressLookupTableParams";
+      type: {
+        kind: "struct";
+        fields: [
+          {
+            name: "slot";
+            type: "u64";
           }
         ];
       };
@@ -466,10 +559,6 @@ export type SwapIdl = {
       type: {
         kind: "struct";
         fields: [
-          {
-            name: "swapRegistryBump";
-            type: "u8";
-          },
           {
             name: "swapTokenVaultBump";
             type: "u8";
@@ -695,6 +784,12 @@ export type SwapIdl = {
           },
           {
             name: "Canceled";
+          },
+          {
+            name: "Redeemed";
+          },
+          {
+            name: "Withdrawn";
           }
         ];
       };
@@ -937,86 +1032,91 @@ export type SwapIdl = {
   errors: [
     {
       code: 6000;
+      name: "SystemError";
+      msg: "System error";
+    },
+    {
+      code: 6001;
       name: "AlreadyInitialized";
       msg: "The program was already initialized";
     },
     {
-      code: 6001;
+      code: 6002;
       name: "MintAccountExisted";
       msg: "The mint account was existed";
     },
     {
-      code: 6002;
+      code: 6003;
       name: "OnlyAdministrator";
       msg: "Only Platform Admin";
     },
     {
-      code: 6003;
+      code: 6004;
       name: "OnlyOwner";
       msg: "Only Owner";
     },
     {
-      code: 6004;
+      code: 6005;
       name: "OnlyBuyer";
       msg: "Only Buyer";
     },
     {
-      code: 6005;
+      code: 6006;
       name: "OnlySeller";
       msg: "Only Seller";
     },
     {
-      code: 6006;
+      code: 6007;
       name: "OrderExpired";
       msg: "Order expired";
     },
     {
-      code: 6007;
+      code: 6008;
       name: "InvalidOffer";
       msg: "Invalid Offer";
     },
     {
-      code: 6008;
+      code: 6009;
       name: "InvalidValue";
       msg: "Invalid value";
     },
     {
-      code: 6009;
+      code: 6010;
       name: "UnAllowedMintToken";
       msg: "Invalid value";
     },
     {
-      code: 6010;
+      code: 6011;
       name: "ProposalCannotBeCanceled";
       msg: "Proposal cannot be canceled";
     },
     {
-      code: 6011;
+      code: 6012;
       name: "WithdrawalIsNotAvailable";
       msg: "Withdrawal is not available for the proposal";
     },
     {
-      code: 6012;
+      code: 6013;
       name: "RedeemIsNotAvailable";
       msg: "Redeem is not available for the proposal";
     },
     {
-      code: 6013;
+      code: 6014;
       name: "TransferTokenFromVaultIsNotAvailable";
       msg: "Transfer token from vault is not available for the proposal";
     },
     {
-      code: 6014;
+      code: 6015;
       name: "DepositIsNotAvailable";
       msg: "Deposit is not available for the proposal";
     },
     {
-      code: 6015;
+      code: 6016;
       name: "FulfillingIsNotAvailable";
       msg: "Fulfilling is not available for the proposal";
     },
     {
-      code: 6016;
+      code: 6017;
       name: "OnlyParticipant";
       msg: "Only participants can execute this operation";
     }
@@ -1286,6 +1386,65 @@ export const IDL: SwapIdl = {
         },
       ],
     },
+    {
+      name: "modifyAddressLookupTable",
+      accounts: [
+        {
+          name: "signer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "lookupTableRegistry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: "lookupTableAccount",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "lookupTableProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: "params",
+          type: {
+            defined: "CreateAddressLookupTableParams",
+          },
+        },
+      ],
+    },
+    {
+      name: "initializeAddressLookupTable",
+      accounts: [
+        {
+          name: "signer",
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: "lookupTableRegistry",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "systemProgram",
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
   ],
   accounts: [
     {
@@ -1378,6 +1537,28 @@ export const IDL: SwapIdl = {
         ],
       },
     },
+    {
+      name: "lookupTableRegistry",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "bump",
+            type: "u8",
+          },
+          {
+            name: "owner",
+            type: "publicKey",
+          },
+          {
+            name: "lookupTableAddresses",
+            type: {
+              vec: "publicKey",
+            },
+          },
+        ],
+      },
+    },
   ],
   types: [
     {
@@ -1388,6 +1569,18 @@ export const IDL: SwapIdl = {
           {
             name: "id",
             type: "string",
+          },
+        ],
+      },
+    },
+    {
+      name: "CreateAddressLookupTableParams",
+      type: {
+        kind: "struct",
+        fields: [
+          {
+            name: "slot",
+            type: "u64",
           },
         ],
       },
@@ -1491,10 +1684,6 @@ export const IDL: SwapIdl = {
       type: {
         kind: "struct",
         fields: [
-          {
-            name: "swapRegistryBump",
-            type: "u8",
-          },
           {
             name: "swapTokenVaultBump",
             type: "u8",
@@ -1720,6 +1909,12 @@ export const IDL: SwapIdl = {
           },
           {
             name: "Canceled",
+          },
+          {
+            name: "Redeemed",
+          },
+          {
+            name: "Withdrawn",
           },
         ],
       },
@@ -1962,86 +2157,91 @@ export const IDL: SwapIdl = {
   errors: [
     {
       code: 6000,
+      name: "SystemError",
+      msg: "System error",
+    },
+    {
+      code: 6001,
       name: "AlreadyInitialized",
       msg: "The program was already initialized",
     },
     {
-      code: 6001,
+      code: 6002,
       name: "MintAccountExisted",
       msg: "The mint account was existed",
     },
     {
-      code: 6002,
+      code: 6003,
       name: "OnlyAdministrator",
       msg: "Only Platform Admin",
     },
     {
-      code: 6003,
+      code: 6004,
       name: "OnlyOwner",
       msg: "Only Owner",
     },
     {
-      code: 6004,
+      code: 6005,
       name: "OnlyBuyer",
       msg: "Only Buyer",
     },
     {
-      code: 6005,
+      code: 6006,
       name: "OnlySeller",
       msg: "Only Seller",
     },
     {
-      code: 6006,
+      code: 6007,
       name: "OrderExpired",
       msg: "Order expired",
     },
     {
-      code: 6007,
+      code: 6008,
       name: "InvalidOffer",
       msg: "Invalid Offer",
     },
     {
-      code: 6008,
+      code: 6009,
       name: "InvalidValue",
       msg: "Invalid value",
     },
     {
-      code: 6009,
+      code: 6010,
       name: "UnAllowedMintToken",
       msg: "Invalid value",
     },
     {
-      code: 6010,
+      code: 6011,
       name: "ProposalCannotBeCanceled",
       msg: "Proposal cannot be canceled",
     },
     {
-      code: 6011,
+      code: 6012,
       name: "WithdrawalIsNotAvailable",
       msg: "Withdrawal is not available for the proposal",
     },
     {
-      code: 6012,
+      code: 6013,
       name: "RedeemIsNotAvailable",
       msg: "Redeem is not available for the proposal",
     },
     {
-      code: 6013,
+      code: 6014,
       name: "TransferTokenFromVaultIsNotAvailable",
       msg: "Transfer token from vault is not available for the proposal",
     },
     {
-      code: 6014,
+      code: 6015,
       name: "DepositIsNotAvailable",
       msg: "Deposit is not available for the proposal",
     },
     {
-      code: 6015,
+      code: 6016,
       name: "FulfillingIsNotAvailable",
       msg: "Fulfilling is not available for the proposal",
     },
     {
-      code: 6016,
+      code: 6017,
       name: "OnlyParticipant",
       msg: "Only participants can execute this operation",
     },
