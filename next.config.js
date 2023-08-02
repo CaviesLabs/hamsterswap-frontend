@@ -28,6 +28,8 @@ module.exports = withPlugins([withPWA, withTM], {
     HOST_NAME: process.env.HOST_NAME,
     SWAP_PROGRAM_ADDRESS: process.env.SWAP_PROGRAM_ADDRESS,
     SOLANA_CLUSTER: process.env.SOLANA_CLUSTER,
+    ALCHEMY_ID: process.env.ALCHEMY_ID,
+    WALLET_CONNECT_PROJECT_ID: process.env.WALLET_CONNECT_PROJECT_ID,
   },
   async rewrites() {
     return [

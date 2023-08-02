@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MainContext } from "./types";
 import { NFTDetailsModal } from "@/src/components/modal";
@@ -7,51 +7,89 @@ import { useAuth } from "./useAuth";
 import { useAppState } from "./useAppState";
 import { useRouter } from "./useRouter";
 import { getPlatformConfig } from "@/src/redux/actions/platform-config/platform.action";
+import { StorageProvider } from "@/src/providers/storage.provider";
+import { ChainId, DEFAULT_CHAINS } from "@/src/entities/chain.entity";
 import ReduxState from "@/src/redux/entities/state";
 
 export const MainProvider = (props: { children: ReactNode }) => {
   /**
-   * @dev Get redux state.
+   * @dev Import needed hooks.
+   * @dev Import needed redux hooks.
+   * @dev Import needed redux actions.
    */
   const reduxState = useSelector((app: ReduxState) => app);
-
-  /**
-   * @dev The function to modify state.
-   */
   const dispatch = useDispatch();
 
   /**
-   * @dev Define condition to show Nft-detail modal.
+   * @dev Import needed hooks.
+   * @dev Import needed router hooks.
    */
+  const { transitionLoading, fistLoading } = useRouter();
   const [nftModal, setNftModal] = useState(false);
+  const [chainId, setChainId] = useState<ChainId>();
 
   /**
-   * @dev Define function to open nft-details modal.
+   * @dev The function to open NFT detail modal.
+   * @returns {void}
    */
   const openNftDetailModal = useCallback(() => setNftModal(true), [nftModal]);
 
-  /** @dev Call hook to use functions related to UI process. */
+  /**
+   * @dev Call hooks to detect router changes.
+   * @returns {void}
+   */
   useUI();
-
-  /** @dev Call hook to use functions related to User Authentication process. */
   useAuth();
-
-  /** @dev Call hook to use functions related to update main states. */
   useAppState();
 
-  /** @dev Call hooks to detect router changes. */
-  const { transitionLoading, fistLoading } = useRouter();
-
+  /**
+   * @dev Call hooks to get platform config when component mounted.
+   * @returns {void}
+   */
   useEffect(() => {
     dispatch(getPlatformConfig());
   }, []);
+
+  /**
+   * @dev Call hooks to get chain id when component mounted.
+   * @notice This is temporary solution.
+   * @notice Default chain id is solana.
+   * @returns {void}
+   */
+  useEffect(() => {
+    const chainId =
+      (new StorageProvider().getItem("CHAIN_ID") as ChainId) || ChainId.klaytn;
+    setChainId(chainId);
+  }, []);
+
+  /**
+   * @dev The function to select chain.
+   * @param {ChainId} chainId.
+   * @step1 Set chain id to state.
+   * @step2 Set chain id to local storage.
+   * @returns {void}
+   */
+  const selectChain = useCallback(
+    (chainId: ChainId) => {
+      setChainId(chainId);
+      new StorageProvider().setItem("CHAIN_ID", chainId);
+    },
+    [setChainId]
+  );
 
   return (
     <MainContext.Provider
       value={{
         openNftDetailModal,
+        selectChain,
         transitionLoading,
         fistLoading,
+        chainId,
+        defaultChains: DEFAULT_CHAINS,
+        chainInfo: useMemo(
+          () => DEFAULT_CHAINS.find((chain) => chain.chainId === chainId),
+          [chainId]
+        ),
         ...reduxState,
       }}
     >

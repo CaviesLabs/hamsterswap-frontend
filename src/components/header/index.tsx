@@ -9,6 +9,9 @@ import styles from "./index.module.scss";
 import UserProfile from "@/src/components/header/user-profile";
 import { useMain } from "@/src/hooks/pages/main";
 import { HamsterboxIcon } from "@/src/components/icons";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ChainId } from "@/src/entities/chain.entity";
+import { ChainSelect } from "./chain-select";
 import styled from "@emotion/styled";
 
 interface MenuItem {
@@ -18,10 +21,10 @@ interface MenuItem {
 }
 
 const Header: FC = () => {
-  const [curSlug, setCurSlug] = useState<string>("#about-us");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [curSlug, setCurSlug] = useState<string>("#about-us");
   const router = useRouter();
-  const { hProfile } = useMain();
+  const { hProfile, chainId } = useMain();
 
   /**
    * Check homepage and display logo on dark theme
@@ -140,16 +143,38 @@ const Header: FC = () => {
             </a>
           </div>
           <div className="relative flex items-center float-right right-[16px]">
+            <ChainSelect />
             <div className="float-right relative">
               {!hProfile ? (
                 <div className="relative">
                   {" "}
-                  <Button
-                    className="!px-8"
-                    size="small"
-                    text="Connect Wallet"
-                    onClick={connectWallet}
-                  />{" "}
+                  <ConnectButton.Custom>
+                    {({ openConnectModal, mounted }) => {
+                      return (
+                        <div
+                          {...(!mounted && {
+                            "aria-hidden": true,
+                            style: {
+                              opacity: 0,
+                              pointerEvents: "none",
+                              userSelect: "none",
+                            },
+                          })}
+                        >
+                          <Button
+                            className="!px-8"
+                            size="small"
+                            text="Connect Wallet"
+                            onClick={
+                              chainId === ChainId.solana
+                                ? connectWallet
+                                : openConnectModal
+                            }
+                          />
+                        </div>
+                      );
+                    }}
+                  </ConnectButton.Custom>{" "}
                 </div>
               ) : (
                 <UserProfile />

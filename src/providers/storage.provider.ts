@@ -1,5 +1,5 @@
 export class StorageProvider {
-  private readonly PREFIX = process.env.HOST_NAME;
+  private readonly PREFIX = "HAMSTER_SWAP";
 
   /**
    * @param key
