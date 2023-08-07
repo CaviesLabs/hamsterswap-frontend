@@ -573,7 +573,7 @@ export const DropdownArrowIcon: FC<IconProps> = (props) => (
   >
     <path
       d="M13.6566 5.66675L8.98991 10.3334L4.32324 5.66675"
-      stroke="#7886A0"
+      stroke={props.color || "#7886A0"}
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"

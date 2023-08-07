@@ -28,7 +28,7 @@ export const ChainSelect: FC = () => {
   return (
     <div
       className={classnames(
-        "relative border-solid border-[0px] border-purple300 rounded-[50px] cursor-pointer avatar-profile bg-[#242636] p-[10px] ml-[5px] mobile:mr-[20px] mobile:py-[6px] mr-[10px]",
+        "cursor-pointer avatar-profile bg-[#CCC3FF] p-[10px] ml-[5px] mobile:mr-[20px] mobile:py-[6px] mr-[10px]",
         styles["chain-select"]
       )}
       ref={ref}
@@ -38,31 +38,37 @@ export const ChainSelect: FC = () => {
         onClick={() => !walletAddress && setShow(!show)}
       >
         <img className="w-[24px] h-[24px]" src={chainInfo?.logo} />
-        <DropdownArrowIcon className="ml-2 text-dark50" />
+        <p className="text-[12px] md:text-[14px] text-[#20242D] flex items-center ml-2">
+          {chainInfo?.name}
+        </p>
+        <DropdownArrowIcon className="ml-2" color="#20242D" />
       </span>
       <ul
         style={{
           display: show ? "block" : "none",
-          bottom: `-${defaultChains.length * 45}px`,
         }}
         className={styles["toggle-container"]}
       >
         <div className={styles.container}>
           <ul>
             {defaultChains.map((item, key) => (
-              <li
-                key={`kksk-${key}`}
-                onClick={() => {
-                  selectChain(item.chainId);
-                  setShow(false);
-                }}
-                className="hover:text-purple normal-text flex items-center"
-              >
-                <img className="w-[24px] h-[24px]" src={item.logo} />
-                <p className="ml-[5px]">
-                  {(item.name || item.chainId).toUpperCase()}
-                </p>
-              </li>
+              <>
+                <li
+                  key={`kksk-${key}`}
+                  onClick={() => {
+                    selectChain(item.chainId);
+                    setShow(false);
+                  }}
+                  className="hover:bg-[#F0F3FA] normal-text flex items-center p-[10px] rounded-[12px]"
+                >
+                  <img
+                    className="w-[24px] h-[24px] rounded-[50%]"
+                    src={item.logo}
+                  />
+                  <p className="ml-[5px]">{item.name || item.chainId}</p>
+                </li>
+                <div className="divider w-full h-[1px] bg-[#E2E8F0] w-[90%] mx-auto mt-[10px]"></div>
+              </>
             ))}
           </ul>
         </div>
