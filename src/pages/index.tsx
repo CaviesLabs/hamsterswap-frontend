@@ -1,4 +1,5 @@
-import { FC } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { FC, useState } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import styles from "@/styles/Home.module.css";
@@ -15,7 +16,11 @@ import { parseProposal } from "@/src/utils";
 import { useMain } from "@/src/hooks/pages/main";
 import Filter from "@/src/components/homepage/filter";
 
+import { DUMMY_PROFILES, DUMMY_NFTS } from "@/src/utils/constants";
+import { ConfirmTransactionModal } from "../components/modal";
+
 const Layout: FC = () => {
+  const [modal, setModal] = useState(true);
   const proposals = useSelector((state: any) => state.proposals);
   const {
     platformConfig: { allowCurrencies },
@@ -66,6 +71,14 @@ const Layout: FC = () => {
           </div>
         </div>
       </div>
+      {/* <ConfirmTransactionModal
+        isModalOpen={modal}
+        handleOk={() => setModal(false)}
+        handleCancel={() => setModal(false)}
+        buyer={DUMMY_PROFILES[0]}
+        seller={DUMMY_PROFILES[1]}
+        nfts={DUMMY_NFTS}
+      /> */}
     </MainLayout>
   );
 };

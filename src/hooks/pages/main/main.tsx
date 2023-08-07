@@ -4,7 +4,6 @@ import { MainContext } from "./types";
 import { NFTDetailsModal } from "@/src/components/modal";
 import { useUI } from "./useUI";
 import { useAuth } from "./useAuth";
-import { useAppState } from "./useAppState";
 import { useRouter } from "./useRouter";
 import { getPlatformConfig } from "@/src/redux/actions/platform-config/platform.action";
 import { StorageProvider } from "@/src/providers/storage.provider";
@@ -40,7 +39,6 @@ export const MainProvider = (props: { children: ReactNode }) => {
    */
   useUI();
   useAuth();
-  useAppState();
 
   /**
    * @dev Call hooks to get platform config when component mounted.
