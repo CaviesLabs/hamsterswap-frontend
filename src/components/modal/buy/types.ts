@@ -14,5 +14,5 @@ export type BuyModalProps = ModalProps;
 export type ConfirmModalProps = ModalProps & {
   buyer: hProfileDto;
   seller: hProfileDto;
-  nfts: RowNftItemProps[];
+  nfts?: RowNftItemProps[];
 };

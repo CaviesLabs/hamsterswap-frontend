@@ -89,7 +89,8 @@ export const AddSolModal: FC<
     target: { value: number | SetStateAction<string> };
   }) => {
     if (
-      e.target.value > parseFloat(myRemainCurrencyBalance) &&
+      Number.parseFloat(e.target.value as string) >
+        parseFloat(myRemainCurrencyBalance) &&
       props.addInOwner
     )
       return;
