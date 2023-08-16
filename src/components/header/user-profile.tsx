@@ -2,18 +2,17 @@ import { utilsProvider } from "@/src/utils";
 import { useDispatch } from "react-redux";
 import { FC, useEffect } from "react";
 import { getHamsterProfile } from "@/src/redux/actions/hamster-profile/profile.action";
-import { useConnectedWallet } from "@saberhq/use-solana";
 import { useRouter } from "next/router";
-import { useWallet } from "@/src/hooks/useWallet";
 import { useMain } from "@/src/hooks/pages/main";
+import { useAppWallet, useDisconnectWallet } from "@/src/hooks/useAppWallet";
 import classnames from "classnames";
 import styles from "./index.module.scss";
 
 const UserProfile: FC = () => {
+  const { disconnect } = useDisconnectWallet();
+  const { walletAddress } = useAppWallet();
   const dispatch = useDispatch();
-  const wallet = useConnectedWallet();
   const router = useRouter();
-  const { disconnect } = useWallet();
 
   /**
    * @description
@@ -30,7 +29,7 @@ const UserProfile: FC = () => {
    */
   useEffect(() => {
     dispatch(getHamsterProfile());
-  }, [wallet]);
+  }, [walletAddress]);
 
   return (
     <div
@@ -45,7 +44,7 @@ const UserProfile: FC = () => {
         alt="Boring avatar"
       />
       <span className="text-[7px] md:text-[14px]">
-        {utilsProvider.makeShort(wallet?.publicKey?.toString(), 3)}
+        {utilsProvider.makeShort(walletAddress, 3)}
       </span>
       <ul className={styles["toggle-container"]}>
         <div className={styles.container}>
@@ -53,7 +52,12 @@ const UserProfile: FC = () => {
             <li onClick={() => router.push(`/u/${profile.id}/profile`)}>
               Profile Setting
             </li>
-            <li onClick={disconnect} className="text-red300">
+            <li
+              className="text-red300"
+              onClick={() => {
+                disconnect();
+              }}
+            >
               Disconnect
             </li>
           </ul>

@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode, FC } from "react";
-import { useWalletClient, useBalance, useAccount } from "wagmi";
+import { useWalletClient, useBalance, useAccount, useSignMessage } from "wagmi";
 
 /** @dev Initialize context. */
 export const EvmWalletContext = createContext<{
@@ -23,13 +23,24 @@ export const EvmWalletProvider: FC<{ children: ReactNode }> = (props) => {
     <EvmWalletContext.Provider
       value={{
         signer: walletClient,
-        walletAddress: ethWallet?.address?.toString(),
+        walletAddress: ethWallet?.address?.toString() || "",
         nativeBalance: parseFloat(nativeBalanceData?.formatted)?.toFixed(3),
       }}
     >
       {props.children}
     </EvmWalletContext.Provider>
   );
+};
+
+/**
+ * @dev Custom hook to sign message with evm wallet.
+ * @param {string} message The message to sign.
+ * @returns {object} The object contains sign message function.
+ */
+export const useSignEvmMessage = (message: string) => {
+  return useSignMessage({
+    message,
+  });
 };
 
 /** @dev Use context hook. */

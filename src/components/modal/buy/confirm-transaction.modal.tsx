@@ -4,9 +4,9 @@ import { ConfirmModalProps } from "./types";
 import { Row, Col } from "antd";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { Button } from "@hamsterbox/ui-kit";
-import { useMain } from "@/src/hooks/pages/main";
 import { ChainId } from "@/src/entities/chain.entity";
 import { RowNftItemProps } from "../../nfts";
+import { useSelector } from "@/src/redux";
 
 export const NftItem: FC<
   RowNftItemProps & { isApproved?: boolean; handleApprove?(): void }
@@ -72,7 +72,7 @@ export const NftItem: FC<
  */
 export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
   const { isLoading, buyer, seller } = props;
-  const { chainId } = useMain();
+  const { chainId } = useSelector();
 
   /**
    * @dev The function to format nfts.

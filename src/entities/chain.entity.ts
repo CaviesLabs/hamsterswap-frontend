@@ -10,6 +10,30 @@ export enum ChainId {
 }
 
 /**
+ * @enum IdpShortName
+ * @dev Export idp short name.
+ * @note This is the idp short name.
+ * @see src/entities/chain.entity.ts
+ */
+export enum IdpShortName {
+  EVMWallet = "evm-wallet",
+  SolanaWallet = "solana-wallet",
+  Google = "google",
+  Web3Auth = "web3-auth",
+  MagicLink = "magic-link",
+}
+
+/**
+ * @type IdpShortNameMap
+ * @dev Export idp short name map.
+ * @note This is the idp short name map.
+ * @see src/entities/chain.entity.ts
+ */
+export const IdpShortNameMap: Record<ChainId, IdpShortName> = {
+  [ChainId.solana]: IdpShortName.SolanaWallet,
+  [ChainId.klaytn]: IdpShortName.EVMWallet,
+};
+/**
  * @type ChainEntity
  * @dev Export chain entity.
  * @note This is the chain entity.

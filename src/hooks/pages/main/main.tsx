@@ -8,6 +8,7 @@ import { useRouter } from "./useRouter";
 import { getPlatformConfig } from "@/src/redux/actions/platform-config/platform.action";
 import { StorageProvider } from "@/src/providers/storage.provider";
 import { ChainId, DEFAULT_CHAINS } from "@/src/entities/chain.entity";
+import { setChainId as setReduxChainId } from "@/src/redux/actions/user/user.action";
 import ReduxState from "@/src/redux/entities/state";
 
 export const MainProvider = (props: { children: ReactNode }) => {
@@ -74,6 +75,15 @@ export const MainProvider = (props: { children: ReactNode }) => {
     },
     [setChainId]
   );
+
+  /**
+   * @dev Set chain id to redux state.
+   * @notice Watch changes of chain id and update redux state.
+   * @returns {void}
+   */
+  useEffect(() => {
+    chainId && dispatch(setReduxChainId(chainId));
+  }, [chainId, dispatch]);
 
   return (
     <MainContext.Provider

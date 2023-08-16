@@ -35,7 +35,7 @@ const Header: FC = () => {
   /**
    * @dev Import GoGi providers.
    */
-  const { connect: connectWallet } = useWalletKit();
+  const { connect: openSolConnector } = useWalletKit();
   const wallet = useConnectedWallet();
 
   /**
@@ -149,29 +149,18 @@ const Header: FC = () => {
                 <div className="relative">
                   {" "}
                   <ConnectButton.Custom>
-                    {({ openConnectModal, mounted }) => {
+                    {({ openConnectModal: openEvmConnector }) => {
                       return (
-                        <div
-                          {...(!mounted && {
-                            "aria-hidden": true,
-                            style: {
-                              opacity: 0,
-                              pointerEvents: "none",
-                              userSelect: "none",
-                            },
-                          })}
-                        >
-                          <Button
-                            className="!px-8"
-                            size="small"
-                            text="Connect Wallet"
-                            onClick={
-                              chainId === ChainId.solana
-                                ? connectWallet
-                                : openConnectModal
-                            }
-                          />
-                        </div>
+                        <Button
+                          className="!px-8"
+                          size="small"
+                          text="Connect Wallet"
+                          onClick={() => {
+                            // eslint-disable-next-line prettier/prettier
+                            if (chainId === ChainId.solana) return openSolConnector();
+                            return openEvmConnector();
+                          }}
+                        />
                       );
                     }}
                   </ConnectButton.Custom>{" "}
