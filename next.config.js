@@ -1,6 +1,5 @@
 require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
-const withTM = require("next-transpile-modules")(["@hamsterbox/ui-kit"]);
-const withPlugins = require("next-compose-plugins");
+const million = require("million/compiler");
 
 /** @dev Define NODE_ENV to next config. */
 const NODE_ENV = process.env.NODE_ENV;
@@ -14,12 +13,12 @@ const withPWA = require("next-pwa")({
 });
 
 /** @type {import('next').NextConfig} */
-module.exports = withPlugins([withPWA, withTM], {
+const config = withPWA({
   source: "/",
   reactStrictMode: true,
   experimental: {
     esmExternals: true,
-    transpilePackages: ["antd"],
+    transpilePackages: ["antd", "@hamsterbox/ui-kit"],
   },
   env: {
     ENV: NODE_ENV,
@@ -31,6 +30,14 @@ module.exports = withPlugins([withPWA, withTM], {
     ALCHEMY_ID: process.env.ALCHEMY_ID,
     WALLET_CONNECT_PROJECT_ID: process.env.WALLET_CONNECT_PROJECT_ID,
   },
+  serverRuntimeConfig: {
+    mySecret: "secret",
+    secondSecret: process.env.SECOND_SECRET,
+  },
+  publicRuntimeConfig: {},
+  devIndicators: {
+    buildActivity: false,
+  },
   async rewrites() {
     return [
       {
@@ -39,13 +46,6 @@ module.exports = withPlugins([withPWA, withTM], {
       },
     ];
   },
-  serverRuntimeConfig: {
-    // Will only be available on the server side
-    mySecret: "secret",
-    secondSecret: process.env.SECOND_SECRET, // Pass through env variables
-  },
-  publicRuntimeConfig: {},
-  devIndicators: {
-    buildActivity: false,
-  },
 });
+
+module.exports = million.next(config);

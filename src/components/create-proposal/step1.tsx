@@ -19,6 +19,7 @@ import {
   SwapItemType,
 } from "@/src/entities/proposal.entity";
 import { Col, Row } from "antd";
+import { For } from "million/react";
 
 export const Step1: FC = () => {
   const wallet = useConnectedWallet();
@@ -92,14 +93,6 @@ export const Step1: FC = () => {
     if (!value) return;
     if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
 
-    // const newSwapItems: any = swapItems;
-    // newSwapItems.push({
-    //   assetType: "usd",
-    //   name: `${value} USD`,
-    //   collection: method.toUpperCase(),
-    //   image: "/assets/images/asset-cash.png",
-    //   value,
-    // });
     addOfferItem(null, AssetTypes.token, parseFloat(value));
     setIsAddCash(false);
   };
@@ -187,34 +180,36 @@ export const Step1: FC = () => {
       <div className="block mt-[20px]">
         <div className="pt-[40px] px-10">
           <Row gutter={[139, 20]}>
-            {offferedItems.map((item: OfferedItemEntity, index) => (
-              <Col
-                span={12}
-                className="block w-full md:pl-[20px]"
-                key={`swapoptions-${index}`}
-              >
-                <div className="flex">
-                  <p className="text-[16px] text-gray-400 regular-text">
-                    Item #{index + 1}
-                  </p>
-                </div>
-                <div className="pt-[16px]">
-                  <RowEditNftItem
-                    collection={item.nft_symbol}
-                    image={item.nft_image_uri}
-                    name={item.nft_name}
-                    collectionId={item.nft_collection_id}
-                    nftId={item.id}
-                    assetType={item.assetType}
-                    nftAddress={item?.nft_address}
-                    tokenAmount={item?.tokenAmount}
-                    onDelete={() => {
-                      removeOfferItem(item.id);
-                    }}
-                  />
-                </div>
-              </Col>
-            ))}
+            <For each={offferedItems}>
+              {(item: OfferedItemEntity, index) => (
+                <Col
+                  span={12}
+                  className="block w-full md:pl-[20px]"
+                  key={`swapoptions-${index}`}
+                >
+                  <div className="flex">
+                    <p className="text-[16px] text-gray-400 regular-text">
+                      Item #{index + 1}
+                    </p>
+                  </div>
+                  <div className="pt-[16px]">
+                    <RowEditNftItem
+                      collection={item.nft_symbol}
+                      image={item.nft_image_uri}
+                      name={item.nft_name}
+                      collectionId={item.nft_collection_id}
+                      nftId={item.id}
+                      assetType={item.assetType}
+                      nftAddress={item?.nft_address}
+                      tokenAmount={item?.tokenAmount}
+                      onDelete={() => {
+                        removeOfferItem(item.id);
+                      }}
+                    />
+                  </div>
+                </Col>
+              )}
+            </For>
             <EmptyBox existsAmount={offferedItems.length} />
           </Row>
         </div>

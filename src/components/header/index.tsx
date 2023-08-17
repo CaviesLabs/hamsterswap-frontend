@@ -1,18 +1,18 @@
 import { FC, useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useWalletKit } from "@gokiprotocol/walletkit";
-import { useConnectedWallet } from "@saberhq/use-solana";
 import { Button } from "@hamsterbox/ui-kit";
 import { PURPLE_HEADER_PAGES } from "@/src/utils";
-import classnames from "classnames";
-import styles from "./index.module.scss";
-import UserProfile from "@/src/components/header/user-profile";
 import { useMain } from "@/src/hooks/pages/main";
 import { HamsterboxIcon } from "@/src/components/icons";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { ChainId } from "@/src/entities/chain.entity";
 import { ChainSelect } from "./chain-select";
+import UserProfile from "@/src/components/header/user-profile";
+import classnames from "classnames";
+import styles from "./index.module.scss";
 import styled from "@emotion/styled";
+import { useAppWallet } from "@/src/hooks/useAppWallet";
 
 interface MenuItem {
   title: string;
@@ -36,7 +36,7 @@ const Header: FC = () => {
    * @dev Import GoGi providers.
    */
   const { connect: openSolConnector } = useWalletKit();
-  const wallet = useConnectedWallet();
+  const { walletAddress } = useAppWallet();
 
   /**
    * @dev Define Menu Data.
@@ -208,7 +208,7 @@ const Header: FC = () => {
           >
             {
               <ul className="menu-container float-left">
-                {wallet && hProfile && (
+                {walletAddress && hProfile && (
                   <Button
                     className="!rounded-[100px] after:!rounded-[100px] !px-[20px]"
                     text="Create a Proposal"

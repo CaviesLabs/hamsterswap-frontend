@@ -43,7 +43,7 @@ export const ChainSelect: FC = () => {
         </p>
         <DropdownArrowIcon className="ml-2" color="#20242D" />
       </span>
-      <ul
+      <div
         style={{
           display: show ? "block" : "none",
         }}
@@ -54,7 +54,7 @@ export const ChainSelect: FC = () => {
             {defaultChains.map((item, key) => (
               <>
                 <li
-                  key={`kksk-${key}`}
+                  key={`defaultchains-${key}`}
                   onClick={() => {
                     selectChain(item.chainId);
                     setShow(false);
@@ -72,7 +72,7 @@ export const ChainSelect: FC = () => {
             ))}
           </ul>
         </div>
-      </ul>
+      </div>
     </div>
   );
 };

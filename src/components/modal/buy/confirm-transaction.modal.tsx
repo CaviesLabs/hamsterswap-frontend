@@ -37,7 +37,8 @@ export const NftItem: FC<
       <div className="flex items-center float-left">
         <img
           src={props.image}
-          alt="HamsterSwap"
+          alt="Hamster
+          \wap"
           className="w-[36px] h-[36px] rounded-[8px] float-left"
         />
         <p className="float-left text-[#20242D] text-[16px] ml-[10px]">
