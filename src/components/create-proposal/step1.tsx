@@ -12,13 +12,8 @@ import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 import { useDispatch } from "react-redux";
 import { getListNft } from "@/src/redux/actions/nft/nft.action";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import {
-  OfferedItemEntity,
-  AssetTypes,
-  SwapItemType,
-} from "@/src/entities/proposal.entity";
+import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { Col, Row } from "antd";
-import { For } from "million/react";
 import { useAppWallet } from "@/src/hooks/useAppWallet";
 import { useSelector } from "@/src/redux";
 
@@ -183,29 +178,27 @@ export const Step1: FC = () => {
       <div className="block mt-[20px]">
         <div className="pt-[40px] px-10">
           <Row gutter={[139, 20]}>
-            <For each={offferedItems}>
-              {(item: OfferedItemEntity, index) => (
-                <Col
-                  span={12}
-                  className="block w-full md:pl-[20px]"
-                  key={`swapoptions-${index}`}
-                >
-                  <div className="flex">
-                    <p className="text-[16px] text-gray-400 regular-text">
-                      Item #{index + 1}
-                    </p>
-                  </div>
-                  <div className="pt-[16px]">
-                    <RowEditNftItem
-                      {...item}
-                      onDelete={() => {
-                        removeOfferItem(item.id);
-                      }}
-                    />
-                  </div>
-                </Col>
-              )}
-            </For>
+            {offferedItems.map((item, index) => (
+              <Col
+                span={12}
+                className="block w-full md:pl-[20px]"
+                key={Math.random().toString()}
+              >
+                <div className="flex">
+                  <p className="text-[16px] text-gray-400 regular-text">
+                    Item #{index + 1}
+                  </p>
+                </div>
+                <div className="pt-[16px]">
+                  <RowEditNftItem
+                    {...item}
+                    onDelete={() => {
+                      removeOfferItem(item.id);
+                    }}
+                  />
+                </div>
+              </Col>
+            ))}
             <EmptyBox existsAmount={offferedItems.length} />
           </Row>
         </div>

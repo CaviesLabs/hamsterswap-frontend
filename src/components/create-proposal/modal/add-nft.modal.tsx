@@ -10,7 +10,6 @@ import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { NftEntity, NftStatus } from "@/src/dto/nft.dto";
 import { allowNTFCollection } from "@/src/entities/platform-config.entity";
 import { useSelector } from "react-redux";
-import { For } from "million/react";
 
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
   /**
@@ -92,30 +91,27 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
               value={searchValue}
             />
             <div className="mt-10 max-h-96 overflow-scroll">
-              <For each={nftsMemo}>
-                {(nftItem) => (
-                  <Row
-                    className="bg-white rounded-lg p-4 w-full mb-4 cursor-pointer hover:bg-[#F0F3FA]"
-                    onClick={() => handleAddNft(nftItem)}
-                  >
-                    <Col span={5}>
-                      <img
-                        className="rounded-lg bg-dark10"
-                        src={nftItem.image}
-                        alt=""
-                      />
-                    </Col>
-                    <Col span={18} className="pl-6">
-                      <p className="font-bold text-lg">{nftItem.name}</p>
-                      <p className="text-lg">
-                        <span className="text-indigo-600">
-                          {nftItem.symbol}
-                        </span>
-                      </p>
-                    </Col>
-                  </Row>
-                )}
-              </For>
+              {nftsMemo.map((nftItem) => (
+                <Row
+                  className="bg-white rounded-lg p-4 w-full mb-4 cursor-pointer hover:bg-[#F0F3FA]"
+                  key={Math.random().toString()}
+                  onClick={() => handleAddNft(nftItem)}
+                >
+                  <Col span={5}>
+                    <img
+                      className="rounded-lg bg-dark10"
+                      src={nftItem.image}
+                      alt=""
+                    />
+                  </Col>
+                  <Col span={18} className="pl-6">
+                    <p className="font-bold text-lg">{nftItem.name}</p>
+                    <p className="text-lg">
+                      <span className="text-indigo-600">{nftItem.symbol}</span>
+                    </p>
+                  </Col>
+                </Row>
+              ))}
             </div>
           </div>
         </div>

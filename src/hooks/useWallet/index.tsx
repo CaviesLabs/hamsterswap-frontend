@@ -20,6 +20,7 @@ import { getAuthService } from "@/src/actions/firebase.action";
 import { setProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { SwapProgramServiceV0 } from "@/src/services/swap-program-v0.service";
 import { WalletContext } from "./types";
+import { getWalletName } from "./utils";
 
 /** @dev Expose wallet provider for usage. */
 export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
@@ -46,6 +47,8 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
     async (message: string) => {
       console.log("Sign message solana", message);
       const data = new TextEncoder().encode(message);
+      console.log(solanaAdapter?.wallet);
+      console.log("Sign message solana", solanaAdapter?.wallet?.adapter);
       return await (
         solanaAdapter?.wallet?.adapter as MessageSignerWalletAdapter
       ).signMessage(data);
@@ -110,6 +113,19 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
       }
     }
   }, [solanaWallet, router.asPath, providerMut]);
+
+  /**
+   * @dev Watch changes in wallet adpater and update.
+   * */
+  useEffect(() => {
+    if (!walletProviderInfo) return;
+    solanaAdapter.select(getWalletName(walletProviderInfo.name));
+  }, [walletProviderInfo, solanaWallet, solanaAdapter]);
+
+  useEffect(() => {
+    if (!solanaWallet) return;
+    solanaAdapter?.wallet?.adapter?.connect();
+  }, [solanaWallet, solanaAdapter]);
 
   return (
     <WalletContext.Provider

@@ -6,16 +6,9 @@ import type { AppProps } from "next/app";
 import { FC, useMemo } from "react";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "@hamsterbox/ui-kit";
+import { WalletKitProvider } from "@gokiprotocol/walletkit";
 import { WalletProvider } from "@/src/hooks/useWallet";
 import { MainProvider } from "@/src/hooks/pages/main";
-import { WalletKitProvider } from "@gokiprotocol/walletkit";
-import { SeoComponent } from "@/src/components/seo";
-import { EvmWalletKitProvider, EvmWalletProvider } from "src/hooks/wagmi";
-import {
-  legacyLogicalPropertiesTransformer,
-  StyleProvider,
-} from "@ant-design/cssinjs";
-
 import {
   ConnectionProvider,
   WalletProvider as SolanaWalletAdapterProvider,
@@ -30,6 +23,12 @@ import {
   SolflareWalletAdapter,
   SolletWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
+import { SeoComponent } from "@/src/components/seo";
+import { EvmWalletKitProvider, EvmWalletProvider } from "src/hooks/wagmi";
+import {
+  legacyLogicalPropertiesTransformer,
+  StyleProvider,
+} from "@ant-design/cssinjs";
 
 /**
  * @dev Import needed third-party styled.
@@ -50,6 +49,8 @@ const AppComponent: FC<{ Component: any; pageProps: any }> = ({
 function MyApp({ Component, pageProps }: AppProps) {
   /** @dev Process to select blockchain network. */
   const network = process.env.SOLANA_CLUSTER as WalletAdapterNetwork;
+
+  /** @dev Initilize needed wallet adapters. */
   const walletAdapters = useMemo(() => {
     return [
       new PhantomWalletAdapter(),
@@ -78,16 +79,20 @@ function MyApp({ Component, pageProps }: AppProps) {
             integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
             crossOrigin="anonymous"
           />
-          <EvmWalletKitProvider>
-            <EvmWalletProvider>
-              <ConnectionProvider
-                endpoint={
-                  network === WalletAdapterNetwork.Mainnet
-                    ? "https://boldest-few-field.solana-mainnet.quiknode.pro/0ffa9f9f5e9141aa33a030081b78fdfe40bfbae6/"
-                    : clusterApiUrl(network)
-                }
-              >
+          <ConnectionProvider
+            endpoint={
+              network === WalletAdapterNetwork.Mainnet
+                ? "https://boldest-few-field.solana-mainnet.quiknode.pro/0ffa9f9f5e9141aa33a030081b78fdfe40bfbae6/"
+                : clusterApiUrl(network)
+            }
+          >
+            <EvmWalletKitProvider>
+              <EvmWalletProvider>
                 <SolanaWalletAdapterProvider wallets={walletAdapters}>
+                  {/**
+                   * @dev
+                   * Wrap the whole app in Goki Kit provider for use.
+                   */}
                   <WalletKitProvider
                     defaultNetwork={network}
                     app={{
@@ -108,9 +113,9 @@ function MyApp({ Component, pageProps }: AppProps) {
                     </WalletProvider>
                   </WalletKitProvider>
                 </SolanaWalletAdapterProvider>
-              </ConnectionProvider>
-            </EvmWalletProvider>
-          </EvmWalletKitProvider>
+              </EvmWalletProvider>
+            </EvmWalletKitProvider>
+          </ConnectionProvider>
         </ThemeProvider>
       </StyleProvider>
     </Provider>

@@ -1,5 +1,4 @@
 require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
-const million = require("million/compiler");
 
 /** @dev Define NODE_ENV to next config. */
 const NODE_ENV = process.env.NODE_ENV;
@@ -53,4 +52,4 @@ const config = withPWA({
   },
 });
 
-module.exports = million.next(config);
+module.exports = config;
