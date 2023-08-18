@@ -1,8 +1,9 @@
 import { networkProvider } from "@/src/providers/network.provider";
 import { GetBalanceSplResponseEntity } from "@/src/entities/spl.entity";
+import { ITokenService } from "./token.service";
 
-export class SplServicce {
-  async getBalance(
+export class SolTokenService implements ITokenService {
+  async getTokenBalanceOf(
     walletAddress: string,
     mintAccount: string
   ): Promise<number> {
@@ -39,5 +40,3 @@ export class SplServicce {
     }
   }
 }
-
-export const splService = new SplServicce();

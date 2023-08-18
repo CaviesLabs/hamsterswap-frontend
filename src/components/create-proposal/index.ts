@@ -6,5 +6,5 @@ export * from "./step5/index";
 export * from "./modal/add-cash.modal";
 export * from "./modal/add-nft.modal";
 export * from "./modal/add-game-item.modal";
-export * from "./modal/add-sol.modal";
+export * from "./modal/add-token.modal";
 export * from "./modal/add-expected-nft.modal";

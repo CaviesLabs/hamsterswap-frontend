@@ -4,7 +4,7 @@ import {
   AddCashModal,
   AddGameItemModal,
   AddNftModal,
-  AddSolModal,
+  AddTokenModal,
 } from "@/src/components/create-proposal";
 import { RowEditNftItem } from "@/src/components/nfts";
 import { FC, useEffect, useState } from "react";
@@ -128,7 +128,7 @@ export const Step1: FC = () => {
             icon={<PlusIcon />}
             onClick={() => setIsAddSol(true)}
           />
-          <AddSolModal
+          <AddTokenModal
             isModalOpen={isAddSol}
             handleCancel={() => setIsAddSol(false)}
             addInOwner={true}

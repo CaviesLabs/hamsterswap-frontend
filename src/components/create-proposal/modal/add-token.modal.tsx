@@ -9,18 +9,17 @@ import {
 } from "react";
 import { Input, Modal, Dropdown } from "antd";
 import { useSelector } from "react-redux";
-import { useConnectedWallet } from "@saberhq/use-solana";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
 import { DropdownIcon } from "@/src/components/icons";
-import { useWallet } from "@/src/hooks/useWallet";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { WSOL_ADDRESS } from "@/src/utils/constants";
-import { splService } from "@/src/services/spl.service";
 import { TokenItem } from "../token-select-item";
 import { AddItemModalProps } from "./types";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { SwapItemType } from "@/src/entities/proposal.entity";
 import { useMain } from "@/src/hooks/pages/main";
+import { useAppWallet, useNativeBalance } from "@/src/hooks/useAppWallet";
+import { TokenService } from "@/src/services/token.service";
 import UtilsProvider from "@/src/utils/utils.provider";
 
 const decimalCount = (num: any) => {
@@ -34,18 +33,19 @@ const decimalCount = (num: any) => {
   return 0;
 };
 
-export const AddSolModal: FC<
+export const AddTokenModal: FC<
   AddItemModalProps & {
     handleAddSol(mintAddress: string, value: string, decimal: number): void;
     addInOwner?: boolean | true;
   }
 > = (props) => {
-  const { solBalance } = useWallet();
-  const wallet = useConnectedWallet();
+  const nativeBalance = useNativeBalance();
   const proposal = useSelector((state: any) => state.proposal);
   const {
     platformConfig: { allowCurrencies },
+    chainId,
   } = useMain();
+  const { walletAddress } = useAppWallet();
   const [value, setValue] = useState("");
   const { offferedItems } = useCreateProposal();
 
@@ -108,56 +108,45 @@ export const AddSolModal: FC<
     }
   };
 
+  /**
+   * @dev The function to get balance of supported currency.
+   * @notice This function will be called when user change wallet address.
+   * @notice Check if token is native token, we will get balance from native balance.
+   * @returns {Promise<void>}
+   */
   const handleGetBalanceOfSupportedCurrency = useCallback(async () => {
-    /**
-     * @dev Request to solana mainet to get balance of each currency.
-     */
     const balances = await Promise.all(
-      allowCurrencies.map(async (token) => {
-        /**
-         * @dev If token is native solana, return native balance in hook.
-         */
-        if (token.id === WSOL_ADDRESS) {
-          return {
-            balance: solBalance / LAMPORTS_PER_SOL,
-            address: token.id,
-          };
-        }
-
-        /**
-         * @dev Request to mainet solana to get balance of token.
-         */
-        const balance = await splService.getBalance(
-          wallet?.publicKey?.toString(),
-          token.id
-        );
-
-        /**
-         * @dev Return needed schema.
-         */
-        return { balance, address: token.id };
-      })
+      allowCurrencies.map(async (token) => ({
+        address: token.address,
+        balance:
+          token.address === WSOL_ADDRESS
+            ? nativeBalance
+            : await TokenService.getService(chainId).getTokenBalanceOf(
+                walletAddress,
+                token.realAddress,
+                token.decimals
+              ),
+      }))
     );
 
     /**
      * @dev Update balances state.
      */
     setBalances(balances);
-  }, [wallet, solBalance]);
+  }, [walletAddress, nativeBalance, chainId, allowCurrencies]);
 
   /**
    * @dev Watch address changes and get token info.
    */
   const tokenInfo = useMemo(
-    () => allowCurrencies.find((item) => item.id === addressSelected),
+    () => allowCurrencies.find((item) => item.address === addressSelected),
     [allowCurrencies, addressSelected]
   );
 
   useEffect(() => {
-    if (wallet?.publicKey?.toString()) {
-      handleGetBalanceOfSupportedCurrency();
-    }
-  }, [wallet, solBalance]);
+    if (!walletAddress) return;
+    handleGetBalanceOfSupportedCurrency();
+  }, [walletAddress, nativeBalance, allowCurrencies]);
 
   return (
     <Modal
@@ -184,8 +173,8 @@ export const AddSolModal: FC<
                     className="w-10 h-10"
                     src={
                       allowCurrencies.find(
-                        (item) => item.id === addressSelected
-                      )?.image
+                        (item) => item.address === addressSelected
+                      )?.icon
                     }
                   />
                 }
@@ -208,15 +197,15 @@ export const AddSolModal: FC<
                     label: (
                       <TokenItem
                         name={item.name}
-                        iconUrl={item.image}
-                        address={item.id}
+                        iconUrl={item.icon}
+                        address={item.address}
                         balance={balances[key]?.balance?.toString() || "0"}
                         addInOwner={props.addInOwner}
                         onClick={(address) => {
                           setDropdown(false);
                           setAddressSelected(address);
                         }}
-                        check={item.id === addressSelected}
+                        check={item.address === addressSelected}
                       />
                     ),
                   })),
@@ -238,8 +227,8 @@ export const AddSolModal: FC<
                   <img
                     src={
                       allowCurrencies.find(
-                        (item) => item.id === addressSelected
-                      )?.image
+                        (item) => item.address === addressSelected
+                      )?.icon
                     }
                     alt="Icon"
                     className="w-5 h-5"

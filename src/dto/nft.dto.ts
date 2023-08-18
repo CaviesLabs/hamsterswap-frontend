@@ -53,16 +53,44 @@ export class NftEntity {
   address: string;
   realAddress: string;
   chainId: number;
-  collectionId: string;
-  collectionSlug: string | undefined;
+  collectionId?: string;
+  collectionSlug?: string | undefined;
+  collectionUrl?: string;
+  collectionName?: string;
   isWhiteListed: boolean;
   image: string;
   name: string;
   attributes: AttributeDto[];
   symbol?: string;
-  collectionName?: string;
   decimal: 0;
   status: NftStatus.holding;
+}
+
+/**
+ * @schema TokenEntity
+ * @notice TokenEntity represents a token entity.
+ * @property {chainId} The chain id.
+ * @property {name} The name of the token.
+ * @property {symbol} The symbol of the token.
+ * @property {decimals} The decimals of the token.
+ * @property {contractAddress} The contract address of the token.
+ * @property {isGasToken} The boolean to check if the token is a gas token.
+ * @property {recommended} The boolean to check if the token is recommended.
+ * @property {coingeckoId} The coingecko id of the token.
+ * @property {logo} The logo of the token.
+ * @property {unOfficial} The boolean to check if the token is unOfficial.
+ */
+export class TokenEntity {
+  chainId: ChainId;
+  name: string;
+  symbol: string;
+  decimals: number;
+  contractAddress: string;
+  isGasToken: boolean;
+  recommended?: boolean;
+  coingeckoId?: string;
+  logo?: string;
+  unOfficial?: true; // TODO: TEST
 }
 
 /**

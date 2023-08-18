@@ -26,9 +26,9 @@ import { getWalletName } from "./utils";
 export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { walletProviderInfo, provider, providerMut } = useSaberhq();
-  const solanaWallet = useConnectedWallet();
   const solanaAdapter = useAdapter();
+  const solanaWallet = useConnectedWallet();
+  const { walletProviderInfo, provider, providerMut } = useSaberhq();
 
   /** @dev Program service */
   const [programService, initProgram] = useState<SwapProgramServiceV0>(null);

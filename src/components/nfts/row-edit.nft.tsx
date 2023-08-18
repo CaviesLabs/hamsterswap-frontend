@@ -1,11 +1,11 @@
+import classnames from "classnames";
 import React, { FC, useRef, useState } from "react";
 import { RowNftEditItemProps } from "./types";
 import { DeleteIcon, DetailIcon, VerticalDots } from "@/src/components/icons";
 import { GameItemModal, NFTDetailsModal } from "@/src/components/modal";
 import { SwapItemType } from "@/src/entities/proposal.entity";
-import classnames from "classnames";
-import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 import { useMain } from "@/src/hooks/pages/main";
+import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 
 export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
   /** @dev Get cryptocurrencies which Hamster support. */

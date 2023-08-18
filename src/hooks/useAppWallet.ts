@@ -5,11 +5,14 @@ import { useWallet as useSolWallet } from "@/src/hooks/useWallet";
 import * as bs from "bs58";
 import { SIGN_MESSAGE } from "@/src/utils";
 import { disconnect as disconnectWagmi } from "@wagmi/core";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useEvmWallet, useSignEvmMessage } from "./wagmi";
 
 /**
  * @dev Get wallet address from useEvmWallet or useSolana
  * @notice This hook is used to get wallet address from useEvmWallet or useSolana
+ * @returns {walletAddress: string}
+ * @see src/hooks/useAppWallet.ts
  */
 export const useAppWallet = () => {
   const { chainId } = useSelector();
@@ -30,6 +33,7 @@ export const useAppWallet = () => {
  * @dev Get sign message from useEvmWallet or useSolana
  * @notice This hook is used to get sign message from useEvmWallet or useSolana
  * @returns {signMessage: Function}
+ * @see src/hooks/useAppWallet.ts
  */
 export const useIdpSignMessage = () => {
   const { chainId } = useSelector();
@@ -45,6 +49,12 @@ export const useIdpSignMessage = () => {
   };
 };
 
+/**
+ * @dev Get disconnect wallet from useEvmWallet or useSolana
+ * @notice This hook is used to get disconnect wallet from useEvmWallet or useSolana
+ * @returns {disconnect: Function}
+ * @see src/hooks/useAppWallet.ts
+ */
 export const useDisconnectWallet = () => {
   const { chainId } = useSelector();
   const { disconnect: disconnectGoki } = useSolWallet();
@@ -55,4 +65,24 @@ export const useDisconnectWallet = () => {
       return disconnectWagmi();
     }, [chainId]),
   };
+};
+
+/**
+ * @dev Get native balance from useEvmWallet or useSolana
+ * @notice This hook is used to get native balance from useEvmWallet or useSolana
+ * @returns {nativeBalance: number}
+ * @see src/hooks/useAppWallet.ts
+ */
+export const useNativeBalance = (): number => {
+  const { chainId } = useSelector();
+  const { solBalance } = useSolWallet();
+  const { nativeBalance: evmBalance } = useEvmWallet();
+
+  return useMemo(
+    () =>
+      chainId === ChainId.solana
+        ? solBalance / LAMPORTS_PER_SOL
+        : parseFloat(evmBalance),
+    [chainId, solBalance, evmBalance]
+  );
 };

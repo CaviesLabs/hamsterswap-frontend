@@ -15,7 +15,13 @@ export class EvmNftService implements INftService {
       { method: "GET" }
     );
 
-    return data.map((item) => new NftEvmProvider().parseEntity(item));
+    /**
+     * @dev Correct data to NftEntity.
+     * @notice Filter out nft which is not whitelisted.
+     */
+    return data
+      .map((item) => new NftEvmProvider().parseEntity(item))
+      .filter((item) => item.isWhiteListed);
   }
 
   /**

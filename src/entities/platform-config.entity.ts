@@ -1,22 +1,29 @@
+import { ChainId } from "./chain.entity";
+
 /**
  * @dev The interface of currency which hamster allow to use.
  */
 export type AllowCurrency = {
-  id: string;
-  image: string;
+  explorerUrl: string;
+  currencyId: string;
+  address: string;
+  icon: string;
   name: string;
-  type: string;
-  decimals: number;
+  symbol: string;
+  decimals: 9;
+  isNativeToken?: boolean;
+  realAddress?: string;
 };
 
 /**
  * @dev The interface of nft collection which hamster allow to use.
  */
 export type allowNTFCollection = {
-  idList: string[];
-  image: string;
+  addresses: string[];
+  marketUrl: string;
+  icon: string;
+  collectionId: string;
   name: string;
-  type: string;
 };
 
 /**
@@ -28,3 +35,13 @@ export class PlatformConfigDto {
   allowCurrencies: AllowCurrency[];
   allowNTFCollections: allowNTFCollection[];
 }
+
+export type PlatformConfigDtoV2 = Record<
+  ChainId,
+  {
+    maxAllowedOptions: number;
+    maxAllowedItems: number;
+    currencies: AllowCurrency[];
+    collections: allowNTFCollection[];
+  }
+>;

@@ -23,7 +23,7 @@ export const AddExpectedNftForm = (props: FormProps) => {
       .map((_, index) => ({
         label: _.name,
         value: `${index}_${_.name}`,
-        image: _.image,
+        image: _.icon,
       }));
   }, [search, allowNTFCollections]);
 

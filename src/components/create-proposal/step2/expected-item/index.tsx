@@ -7,7 +7,7 @@ import {
   AddCashModal,
   AddGameItemModal,
   AddExpectedNftModal,
-  AddSolModal,
+  AddTokenModal,
 } from "@/src/components/create-proposal";
 import classnames from "classnames";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
@@ -144,7 +144,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                 onClick={() => setIsAddSol(true)}
                 size="small"
               />
-              <AddSolModal
+              <AddTokenModal
                 isModalOpen={isAddSol}
                 handleCancel={() => setIsAddSol(false)}
                 addInOwner={false}

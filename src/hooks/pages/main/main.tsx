@@ -45,8 +45,8 @@ export const MainProvider = (props: { children: ReactNode }) => {
    * @returns {void}
    */
   useEffect(() => {
-    dispatch(getPlatformConfig());
-  }, []);
+    dispatch(getPlatformConfig(chainId));
+  }, [chainId]);
 
   /**
    * @dev Call hooks to get chain id when component mounted.

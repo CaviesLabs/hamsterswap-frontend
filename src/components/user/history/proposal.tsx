@@ -36,7 +36,8 @@ function Proposal(props: ProposalHistoryProps) {
             src={
               nftMetadata?.image ||
               nftMetadata?.icon ||
-              allowCurrencies.find((item) => item.id === contractAddress)?.image
+              allowCurrencies.find((item) => item.address === contractAddress)
+                ?.icon
             }
           />
           <p className="ml-2">
@@ -44,12 +45,14 @@ function Proposal(props: ProposalHistoryProps) {
               ? `${UtilsProvider.formatLongNumber(
                   solAmount(
                     amount,
-                    allowCurrencies.find((item) => item.id === contractAddress)
-                      ?.decimals
+                    allowCurrencies.find(
+                      (item) => item.address === contractAddress
+                    )?.decimals
                   )
                 )} ${
-                  allowCurrencies.find((item) => item.id === contractAddress)
-                    ?.name
+                  allowCurrencies.find(
+                    (item) => item.address === contractAddress
+                  )?.name
                 }`
               : nftMetadata?.name ||
                 (nftMetadata?.symbol &&
@@ -69,7 +72,8 @@ function Proposal(props: ProposalHistoryProps) {
             src={
               nftMetadata?.image ||
               nftMetadata?.icon ||
-              allowCurrencies.find((item) => item.id === contractAddress)?.image
+              allowCurrencies.find((item) => item.address === contractAddress)
+                ?.icon
             }
           />
           <p className="ml-2">
@@ -77,12 +81,14 @@ function Proposal(props: ProposalHistoryProps) {
               ? `${UtilsProvider.formatLongNumber(
                   solAmount(
                     amount,
-                    allowCurrencies.find((item) => item.id === contractAddress)
-                      ?.decimals
+                    allowCurrencies.find(
+                      (item) => item.address === contractAddress
+                    )?.decimals
                   )
                 )} ${
-                  allowCurrencies.find((item) => item.id === contractAddress)
-                    ?.name
+                  allowCurrencies.find(
+                    (item) => item.address === contractAddress
+                  )?.name
                 }`
               : nftMetadata?.name ||
                 (nftMetadata?.symbol &&

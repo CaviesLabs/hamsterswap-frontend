@@ -12,7 +12,7 @@ import UserProfile from "@/src/components/header/user-profile";
 import classnames from "classnames";
 import styles from "./index.module.scss";
 import styled from "@emotion/styled";
-import { useAppWallet } from "@/src/hooks/useAppWallet";
+import { useAppWallet, useDisconnectWallet } from "@/src/hooks/useAppWallet";
 
 interface MenuItem {
   title: string;
@@ -37,6 +37,7 @@ const Header: FC = () => {
    */
   const { connect: openSolConnector } = useWalletKit();
   const { walletAddress } = useAppWallet();
+  const { disconnect } = useDisconnectWallet();
 
   /**
    * @dev Define Menu Data.
@@ -149,15 +150,16 @@ const Header: FC = () => {
                 <div className="relative">
                   {" "}
                   <ConnectButton.Custom>
-                    {({ openConnectModal: openEvmConnector }) => {
+                    {({ openConnectModal: openEvmConnector, account }) => {
                       return (
                         <Button
                           className="!px-8"
                           size="small"
                           text="Connect Wallet"
-                          onClick={() => {
+                          onClick={async () => {
                             // eslint-disable-next-line prettier/prettier
                             if (chainId === ChainId.solana) return openSolConnector();
+                            if (account) await disconnect();
                             return openEvmConnector();
                           }}
                         />

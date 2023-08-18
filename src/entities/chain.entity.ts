@@ -43,6 +43,7 @@ export type ChainEntity = {
   chainId: ChainId;
   logo: string;
   name: string;
+  rpcUrl: string;
 };
 
 /**
@@ -56,10 +57,13 @@ export const DEFAULT_CHAINS = [
     chainId: ChainId.solana,
     logo: "https://assets.coingecko.com/coins/images/4128/small/solana.png",
     name: "SOLANA",
+    rpcUrl:
+      "https://boldest-few-field.solana-mainnet.quiknode.pro/0ffa9f9f5e9141aa33a030081b78fdfe40bfbae6",
   },
   {
     chainId: ChainId.klaytn,
     logo: "https://assets.coingecko.com/coins/images/9672/small/klaytn.png?1660288824",
     name: "KLAYTN",
+    rpcUrl: "https://klaytn.api.onfinality.io/public",
   },
 ] as ChainEntity[];

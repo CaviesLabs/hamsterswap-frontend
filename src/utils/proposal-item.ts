@@ -18,13 +18,13 @@ export const parseProposal = (
 
   if (resp.type === SwapItemType.CURRENCY) {
     const tokenInfo = allowCurrencies.find(
-      (Sitem) => Sitem.id === item.contractAddress
+      (Sitem) => Sitem.address === item.contractAddress
     );
     resp.name = `${UtilsProvider.formatLongNumber(
       item.amount / Math.pow(10, tokenInfo?.decimals)
     )} ${tokenInfo?.name}`;
     resp.collection = "Currency";
-    resp.image = tokenInfo?.image;
+    resp.image = tokenInfo?.icon;
   } else if (resp.type === SwapItemType.NFT) {
     const meta = item.nftMetadata;
     resp.name = meta?.name;
@@ -50,13 +50,13 @@ export const parseOfferCreateProposal = (
     resp.image = "/assets/images/asset-cash.png";
   } else if (resp.assetType === SwapItemType.CURRENCY) {
     const tokenInfo = allowCurrencies.find(
-      (item) => item.id === resp.nft_address
+      (item) => item.address === resp.nft_address
     );
     resp.name = `${UtilsProvider.formatLongNumber(item.tokenAmount)} ${
       tokenInfo.name
     }`;
     resp.collection = "Currency";
-    resp.image = tokenInfo.image;
+    resp.image = tokenInfo.address;
   } else if (resp.assetType === SwapItemType.NFT) {
     resp.name = item?.name;
     resp.collection = item?.collectionName;
