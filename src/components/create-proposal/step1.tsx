@@ -11,7 +11,6 @@ import { FC, useEffect, useState } from "react";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
 import { useDispatch } from "react-redux";
 import { getListNft } from "@/src/redux/actions/nft/nft.action";
-import { useConnectedWallet } from "@saberhq/use-solana";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import {
   OfferedItemEntity,
@@ -20,18 +19,17 @@ import {
 } from "@/src/entities/proposal.entity";
 import { Col, Row } from "antd";
 import { For } from "million/react";
+import { useAppWallet } from "@/src/hooks/useAppWallet";
+import { useSelector } from "@/src/redux";
 
 export const Step1: FC = () => {
-  const wallet = useConnectedWallet();
+  const { walletAddress } = useAppWallet();
+  const { chainId } = useSelector();
 
-  /**
-   * @dev Import functions in screen context.
-   */
+  /** @dev Import functions in screen context. */
   const { offferedItems, removeOfferItem, addOfferItem } = useCreateProposal();
 
-  /**
-   * @dev handle open modal by type
-   */
+  /** @dev handle open modal by type */
   const [isAddNft, setIsAddNft] = useState(false);
   const [isAddSol, setIsAddSol] = useState(false);
   const [isAddGameItem, setIsAddGameItem] = useState(false);
@@ -39,14 +37,19 @@ export const Step1: FC = () => {
 
   const dispatch = useDispatch();
 
+  /**
+   * @dev This effect will be excuted when walletAddress is changed.
+   * @notice Fetch data from each chain.
+   */
   useEffect(() => {
-    if (!wallet) return;
+    if (!walletAddress) return;
     dispatch(
       getListNft({
-        walletAddress: wallet.publicKey.toString(),
+        walletAddress,
+        chainId,
       })
     );
-  }, [wallet]);
+  }, [chainId, walletAddress]);
 
   /**
    * Handle save sol value into swapItems array of redux-store
@@ -194,14 +197,7 @@ export const Step1: FC = () => {
                   </div>
                   <div className="pt-[16px]">
                     <RowEditNftItem
-                      collection={item.nft_symbol}
-                      image={item.nft_image_uri}
-                      name={item.nft_name}
-                      collectionId={item.nft_collection_id}
-                      nftId={item.id}
-                      assetType={item.assetType}
-                      nftAddress={item?.nft_address}
-                      tokenAmount={item?.tokenAmount}
+                      {...item}
                       onDelete={() => {
                         removeOfferItem(item.id);
                       }}

@@ -2,7 +2,7 @@
 import { Connection, PublicKey, TransactionInstruction } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
 import { Program } from "@project-serum/anchor";
-import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
+import { AugmentedProvider as WalletProvider } from "@saberhq/solana-contrib";
 import {
   CreateProposalDto,
   SwapItemActionType,
@@ -136,7 +136,7 @@ export class SwapProgramProvider {
     this.connection = new Connection(this.rpcEndpoint, "finalized");
     const provider = new anchor.AnchorProvider(
       this.connection,
-      this.walletProvider,
+      this.walletProvider?.wallet,
       {
         preflightCommitment: "finalized",
         commitment: "finalized",
@@ -253,7 +253,7 @@ export class SwapProgramProvider {
       const createProposalInstruction =
         await this.instructionProvider.createProposal(
           createProposalDto,
-          walletProvider.publicKey,
+          walletProvider?.wallet?.publicKey,
           swapProposal
         );
 
@@ -274,7 +274,7 @@ export class SwapProgramProvider {
            */
           const associatedInstruction =
             await this.instructionProvider.getOrCreateProposalTokenAccount(
-              walletProvider.publicKey,
+              walletProvider?.wallet?.publicKey,
               item.mintAccount
             );
 
@@ -296,7 +296,7 @@ export class SwapProgramProvider {
           ) {
             try {
               const [ins1, ins2] = await this.instructionProvider.wrapSol(
-                walletProvider.publicKey,
+                walletProvider?.wallet?.publicKey,
                 item.amount
               );
 
@@ -313,7 +313,7 @@ export class SwapProgramProvider {
           const ins = await this.instructionProvider.transferTokenToVault(
             createProposalDto.id,
             swapProposal,
-            walletProvider.publicKey,
+            walletProvider?.wallet?.publicKey,
             item.mintAccount,
             item.id,
             SwapItemActionType.depositing
@@ -377,7 +377,7 @@ export class SwapProgramProvider {
         await this.instructionProvider.cancelProposal(
           proposal.id,
           swapProposal,
-          walletProvider.publicKey
+          walletProvider?.wallet?.publicKey
         )
       );
     }
@@ -388,7 +388,8 @@ export class SwapProgramProvider {
      * else will withdraw swap option to siger.
      */
     const widthDrawItems =
-      proposal.ownerAddress === walletProvider?.publicKey?.toBase58().toString()
+      proposal.ownerAddress ===
+      walletProvider?.wallet?.publicKey?.toBase58().toString()
         ? proposal.offerItems
         : proposal.swapOptions.find((item) => item.id === optionId)?.items;
 
@@ -406,7 +407,7 @@ export class SwapProgramProvider {
            */
           const instruction =
             await this.instructionProvider.transferTokenFromVault(
-              walletProvider.publicKey,
+              walletProvider?.wallet?.publicKey,
               new PublicKey(item.contractAddress),
               swapProposal,
               proposal.id,
@@ -426,7 +427,7 @@ export class SwapProgramProvider {
             item.contractAddress === WSOL_ADDRESS
           ) {
             const inst = await this.instructionProvider.unwrapSol(
-              walletProvider.publicKey
+              walletProvider?.wallet?.publicKey
             );
 
             /** @dev Add if valid */
@@ -483,7 +484,7 @@ export class SwapProgramProvider {
            */
           const associatedInstruction =
             await this.instructionProvider.getOrCreateProposalTokenAccount(
-              walletProvider.publicKey,
+              walletProvider?.wallet?.publicKey,
               new PublicKey(item.contractAddress)
             );
 
@@ -505,7 +506,7 @@ export class SwapProgramProvider {
           ) {
             try {
               const [ins1, ins2] = await this.instructionProvider.wrapSol(
-                walletProvider.publicKey,
+                walletProvider?.wallet?.publicKey,
                 new anchor.BN(item.amount)
               );
 
@@ -523,7 +524,7 @@ export class SwapProgramProvider {
             await this.instructionProvider.transferTokenToVault(
               proposal.id,
               swapProposal,
-              walletProvider.publicKey,
+              walletProvider?.wallet?.publicKey,
               new PublicKey(item.contractAddress),
               item.id,
               SwapItemActionType.fulfilling,
@@ -552,7 +553,7 @@ export class SwapProgramProvider {
              */
             const associatedInstruction =
               await this.instructionProvider.getOrCreateProposalTokenAccount(
-                walletProvider.publicKey,
+                walletProvider?.wallet?.publicKey,
                 new PublicKey(item.contractAddress)
               );
 
@@ -569,7 +570,7 @@ export class SwapProgramProvider {
            */
           const instruction =
             await this.instructionProvider.transferTokenFromVault(
-              walletProvider.publicKey,
+              walletProvider?.wallet?.publicKey,
               new PublicKey(item.contractAddress),
               swapProposal,
               proposal.id,
@@ -589,7 +590,7 @@ export class SwapProgramProvider {
             item.contractAddress === WSOL_ADDRESS
           ) {
             const inst = await this.instructionProvider.unwrapSol(
-              walletProvider.publicKey
+              walletProvider?.wallet?.publicKey
             );
 
             /** @dev Add if valid */
@@ -632,7 +633,9 @@ export class SwapProgramProvider {
     /**
      * @dev Check if signer is not proposal owner.
      */
-    if (state.owner !== walletProvider?.publicKey?.toBase58().toString()) {
+    if (
+      state.owner !== walletProvider?.wallet?.publicKey?.toBase58().toString()
+    ) {
       throw new Error("Signer is not proposal owner.");
     }
 
@@ -664,7 +667,7 @@ export class SwapProgramProvider {
          */
         const associatedInstruction =
           await this.instructionProvider.getOrCreateProposalTokenAccount(
-            walletProvider.publicKey,
+            walletProvider?.wallet?.publicKey,
             new PublicKey(item.contractAddress)
           );
 
@@ -696,7 +699,7 @@ export class SwapProgramProvider {
           item.contractAddress === WSOL_ADDRESS
         ) {
           const inst = await this.instructionProvider.unwrapSol(
-            walletProvider.publicKey
+            walletProvider?.wallet?.publicKey
           );
 
           /** @dev Add if valid */

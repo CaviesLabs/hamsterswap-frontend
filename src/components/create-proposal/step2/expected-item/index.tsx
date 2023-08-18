@@ -208,13 +208,8 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                   </div>
                   <div className="pt-[16px]">
                     <RowEditNftItem
-                      collection={item.nft_symbol}
-                      image={item.nft_image_uri}
-                      name={item.nft_name}
-                      collectionId={item.nft_collection_id}
-                      nftId={item.id}
+                      {...item}
                       assetType={item.assetType}
-                      nftAddress={item?.nft_address}
                       tokenAmount={item?.tokenAmount}
                       onDelete={() => {
                         removeExpectedItem(item.id);

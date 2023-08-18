@@ -27,7 +27,11 @@ import BuyButton from "@/src/components/advertisment/buy-button";
 const Layout: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { programService, solanaWallet } = useWallet();
+  const {
+    programService,
+    solanaWallet,
+    provider: solanaProvider,
+  } = useWallet();
   const {
     platformConfig: { allowCurrencies },
   } = useMain();
@@ -58,11 +62,18 @@ const Layout: FC = () => {
    */
   const handleSwap = useCallback(async () => {
     return await programService.swapProposal(
-      solanaWallet,
+      solanaProvider,
       proposal.id,
       proposal.swapOptions[optionSelected].id
     );
-  }, [wallet, programService, solanaWallet, proposal, optionSelected]);
+  }, [
+    wallet,
+    programService,
+    solanaWallet,
+    solanaProvider,
+    proposal,
+    optionSelected,
+  ]);
 
   /**
    * @dev Get proposal detail by id.
@@ -174,7 +185,7 @@ const Layout: FC = () => {
 
           <div className="mt-12">
             <Row justify="end">
-              {solanaWallet.publicKey &&
+              {solanaWallet?.publicKey &&
                 solanaWallet.publicKey?.toBase58().toString() !==
                   proposal?.ownerAddress &&
                 !isExpired &&

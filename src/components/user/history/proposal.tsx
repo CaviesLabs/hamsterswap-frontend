@@ -34,7 +34,7 @@ function Proposal(props: ProposalHistoryProps) {
           <img
             className="w-10 rounded-lg"
             src={
-              nftMetadata?.nft_image ||
+              nftMetadata?.image ||
               nftMetadata?.icon ||
               allowCurrencies.find((item) => item.id === contractAddress)?.image
             }
@@ -51,7 +51,7 @@ function Proposal(props: ProposalHistoryProps) {
                   allowCurrencies.find((item) => item.id === contractAddress)
                     ?.name
                 }`
-              : nftMetadata?.nft_name ||
+              : nftMetadata?.name ||
                 (nftMetadata?.symbol &&
                   `${solAmount(amount, 9)} ${nftMetadata?.symbol}`)}
           </p>
@@ -67,7 +67,7 @@ function Proposal(props: ProposalHistoryProps) {
           <img
             className="w-10 rounded-lg"
             src={
-              nftMetadata?.nft_image ||
+              nftMetadata?.image ||
               nftMetadata?.icon ||
               allowCurrencies.find((item) => item.id === contractAddress)?.image
             }
@@ -84,7 +84,7 @@ function Proposal(props: ProposalHistoryProps) {
                   allowCurrencies.find((item) => item.id === contractAddress)
                     ?.name
                 }`
-              : nftMetadata?.nft_name ||
+              : nftMetadata?.name ||
                 (nftMetadata?.symbol &&
                   `${solAmount(amount, 9)} ${nftMetadata?.symbol}`)}
           </p>

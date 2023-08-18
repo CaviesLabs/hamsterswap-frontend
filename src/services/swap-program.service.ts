@@ -7,7 +7,7 @@ import {
   CreateProposalToServerDto,
   SwapProposalEntity,
 } from "@/src/entities/proposal.entity";
-import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
+import { AugmentedProvider as WalletProvider } from "@saberhq/solana-contrib";
 import { uuid } from "uuidv4";
 
 export class SwapProgramService {

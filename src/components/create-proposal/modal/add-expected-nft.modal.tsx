@@ -2,18 +2,17 @@ import { FC, useState } from "react";
 import { Modal } from "antd";
 import { AddExpectedItemModalProps } from "./types";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
-import { useSelector } from "react-redux";
-import { allowNTFCollection } from "@/src/entities/platform-config.entity";
 import { AddExpectedNftForm } from "@/src/components/create-proposal/modal/add-expected-nft-form";
 import { AddExpectedNftDetail } from "@/src/components/create-proposal/modal/add-expected-nft-detail";
-import { nftService } from "@/src/redux/saga/nft/nft.service";
-import { NftDetailDto } from "@/src/dto/nft.dto";
+import { NftService } from "@/src/services/nft.service";
+import { NftEntity } from "@/src/dto/nft.dto";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { toast } from "@hamsterbox/ui-kit";
+import { isEmpty } from "lodash";
+import { useSelector } from "@/src/redux";
 import animationData from "@/src/components/icons/animation-loading.json";
 import Lottie from "react-lottie";
-import { isEmpty } from "lodash";
 
 export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   /**
@@ -26,19 +25,19 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
    */
   const [collection, setCollection] = useState<string[]>([]);
   const [nftId, setNftId] = useState<string>("");
-
-  const allowNTFCollections: allowNTFCollection[] = useSelector(
-    (state: any) => state.platformConfig?.allowNTFCollections
-  );
-
+  const [nft, setNft] = useState<NftEntity>();
   const [step, setStep] = useState(0);
+  const {
+    platformConfig: { allowNTFCollections },
+    chainId,
+  } = useSelector();
 
-  const [nft, setNft] = useState<NftDetailDto>();
   const handleFetchNftData = (_nftId: string) => {
     setStep && setStep(1);
-    nftService
+
+    NftService.getService(chainId)
       .getNftDetail({
-        mintAddress: _nftId,
+        contractAddress: _nftId,
       })
       .then((resp) => {
         if (!resp) {
@@ -55,22 +54,20 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
    * Handle save expected nfts to redux-store
    * @param nftItem
    */
-  const handleAddNft = (nftItem: NftDetailDto) => {
+  const handleAddNft = (nftItem: NftEntity) => {
     if (expectedItems[props.index]?.askingItems.length === 4) {
       return toast.warn("Only a maximum of 4 items are allowed");
     }
 
     if (
       expectedItems[props.index]?.askingItems
-        .map((_) => _.nft_address)
-        .indexOf(nftItem.nft_address) > -1
+        .map((_) => _.address)
+        .indexOf(nftItem.address) > -1
     ) {
       return toast.warn("Item is there in choice");
     }
 
-    if (
-      offferedItems.map((_) => _.nft_address).indexOf(nftItem.nft_address) > -1
-    ) {
+    if (offferedItems.map((_) => _.address).indexOf(nftItem.address) > -1) {
       return toast.warn("Item is there in your offered list");
     }
 
@@ -79,16 +76,8 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
      */
     addExpectedItem(
       {
-        nft_address: nftItem.nft_address,
-        nft_name: nftItem.nft_name,
-        nft_symbol: nftItem.nft_symbol,
-        nft_collection_id: nftItem.nft_collection_id,
-        start_holding_time: 0,
-        stop_hodling_time: 0,
-        nft_last_traded_price: 0,
-        nft_listing_price: 0,
-        nft_image_uri: nftItem.nft_image,
-        nftId: nftItem.nft_address,
+        ...nftItem,
+        nftId: nftItem.id,
         assetType: SwapItemType.NFT,
       },
       AssetTypes.nft,

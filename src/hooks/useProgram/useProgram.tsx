@@ -9,7 +9,11 @@ export const useProgram = (): ProgramHookState => {
   /**
    * @dev Import services.
    */
-  const { solanaWallet, programService } = useWallet();
+  const {
+    solanaWallet,
+    provider: solanaProvider,
+    programService,
+  } = useWallet();
 
   /**
    * @dev The function to redeem proposal.
@@ -22,9 +26,9 @@ export const useProgram = (): ProgramHookState => {
       /**
        * @dev Call service to redeem proposal.
        */
-      return programService.redeemProposal(solanaWallet, proposalId);
+      return programService.redeemProposal(solanaProvider, proposalId);
     },
-    [solanaWallet, programService]
+    [solanaWallet, programService, solanaProvider]
   );
 
   /**
@@ -39,9 +43,9 @@ export const useProgram = (): ProgramHookState => {
       /**
        * @dev Call service to cancel proposal.
        */
-      return programService.cancelProposal(solanaWallet, proposalId);
+      return programService.cancelProposal(solanaProvider, proposalId);
     },
-    [solanaWallet, programService]
+    [solanaWallet, solanaProvider, programService]
   );
 
   return {

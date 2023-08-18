@@ -17,7 +17,11 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
   /**
    * @dev Get wallet.
    */
-  const { solanaWallet, programService } = useWallet();
+  const {
+    solanaWallet,
+    provider: solanaProvider,
+    programService,
+  } = useWallet();
 
   /**
    * @dev Items which user want to swap.
@@ -69,12 +73,12 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
               nftId: item.nftId,
               assetType: item.assetType,
               id: SwapProgramService.generateUID(),
-              mintAccount: new PublicKey(item.nft_address),
+              mintAccount: new PublicKey(item.address),
               itemType: { [type]: {} },
               amount: amount
                 ? new BN(amount * Math.pow(10, item.decimal))
                 : null,
-              nft_address: item.nft_address,
+              nft_address: item.address,
               tokenAmount: amount,
               ...item,
             },
@@ -111,7 +115,6 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
     type: AssetTypes,
     amount?: number
   ) => {
-    console.log("add", amount, item.decimal);
     setOfferItems((prev) => {
       return [
         ...prev,
@@ -119,10 +122,10 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
           nftId: item?.nftId,
           assetType: item?.assetType,
           id: SwapProgramService.generateUID(),
-          mintAccount: new PublicKey(item.nft_address),
+          mintAccount: new PublicKey(item.address),
           itemType: { [type]: {} },
           amount: amount ? new BN(amount * Math.pow(10, item.decimal)) : null,
-          nft_address: item.nft_address,
+          nft_address: item.address,
           tokenAmount: amount,
           ...item,
         },
@@ -156,14 +159,14 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
         .map((item) => ({
           id: item.id,
           askingItems: item.askingItems.map((askingItem) => ({
-            mintAccount: new PublicKey(askingItem.nft_address),
+            mintAccount: new PublicKey(askingItem.address),
             id: askingItem.id,
             amount: askingItem.amount ? askingItem.amount : new anchor.BN(1),
             itemType: askingItem.itemType,
           })),
         })),
       offeredOptions: offferedItems.map((item) => ({
-        mintAccount: new PublicKey(item.nft_address),
+        mintAccount: new PublicKey(item.address),
         id: item.id,
         amount: item.amount ? item.amount : new anchor.BN(1),
         itemType: item.itemType,
@@ -176,7 +179,7 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
      *  - Hamster server
      *  - Solana chain
      */
-    return await programService.createProposal(solanaWallet, createdData);
+    return await programService.createProposal(solanaProvider, createdData);
   }, [
     expectedItems,
     offferedItems,
@@ -184,6 +187,7 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
     expiredTime,
     guaranteeSol,
     solanaWallet,
+    solanaProvider,
   ]);
 
   return (

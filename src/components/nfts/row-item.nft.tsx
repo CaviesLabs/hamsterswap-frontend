@@ -45,7 +45,7 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
           <div className="flex items-center">
             {!isSol && (
               <p className="text-[14px] regular-text text-purple cursor-auto mb-3">
-                {props.collection}
+                {props.collectionName}
               </p>
             )}
           </div>

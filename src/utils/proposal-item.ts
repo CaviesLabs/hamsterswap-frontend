@@ -27,9 +27,9 @@ export const parseProposal = (
     resp.image = tokenInfo?.image;
   } else if (resp.type === SwapItemType.NFT) {
     const meta = item.nftMetadata;
-    resp.name = meta?.nft_name;
-    resp.collection = meta?.nft_collection_name;
-    resp.image = meta?.nft_image;
+    resp.name = meta?.name;
+    resp.collection = meta?.collectionName;
+    resp.image = meta?.image;
     resp.nftAddress = item.contractAddress;
   }
 
@@ -58,10 +58,10 @@ export const parseOfferCreateProposal = (
     resp.collection = "Currency";
     resp.image = tokenInfo.image;
   } else if (resp.assetType === SwapItemType.NFT) {
-    resp.name = item?.nft_name;
-    resp.collection = item?.nft_collection_name;
-    resp.image = item?.nft_image_uri;
-    resp.nftAddress = item.nft_address;
+    resp.name = item?.name;
+    resp.collection = item?.collectionName;
+    resp.image = item?.image;
+    resp.nftAddress = item.address;
   }
 
   return resp;

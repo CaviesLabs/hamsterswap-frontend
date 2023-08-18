@@ -10,6 +10,7 @@ import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { NftEntity, NftStatus } from "@/src/dto/nft.dto";
 import { allowNTFCollection } from "@/src/entities/platform-config.entity";
 import { useSelector } from "react-redux";
+import { For } from "million/react";
 
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
   /**
@@ -35,16 +36,14 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
   const { addOfferItem, offferedItems } = useCreateProposal();
 
   const nftsMemo = useMemo<NftEntity[]>(() => {
-    return ownerNftList.filter((item) => {
-      return (
-        !offferedItems.find((s) => s.nft_address === item.nft_address) &&
-        allowNftCollections.find((s) =>
-          s.idList.includes(item.nft_collection_id)
-        ) &&
-        item.nft_status.valueOf() !== NftStatus.transfer.valueOf()
-      );
-    });
-  }, [ownerNftList, offferedItems, allowNftCollections]);
+    // allowNftCollections.find((s) => s.idList.includes(item.collectionId)) &&
+    return ownerNftList.filter(
+      (item) =>
+        !offferedItems.find((s) => s.address === item.address) &&
+        item.status.valueOf() !== NftStatus.transfer.valueOf() &&
+        item.name.includes(searchValue)
+    );
+  }, [ownerNftList, offferedItems, allowNftCollections, searchValue]);
 
   /**
    * @dev The function to handle adding nft to offered field for proposal.
@@ -61,7 +60,7 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
     addOfferItem(
       {
         ...nftItem,
-        nftId: nftItem.nft_address,
+        nftId: nftItem.id,
         assetType: SwapItemType.NFT,
       },
       AssetTypes.nft
@@ -93,32 +92,30 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
               value={searchValue}
             />
             <div className="mt-10 max-h-96 overflow-scroll">
-              {(searchValue
-                ? nftsMemo.filter((item) => item.nft_name.includes(searchValue))
-                : nftsMemo
-              )?.map((nftItem, i) => (
-                <Row
-                  className="bg-white rounded-lg p-4 w-full mb-4 cursor-pointer hover:bg-[#F0F3FA]"
-                  key={`add-nft-item-pr-${i}`}
-                  onClick={() => handleAddNft(nftItem)}
-                >
-                  <Col span={5}>
-                    <img
-                      className="rounded-lg bg-dark10"
-                      src={nftItem.nft_image_uri}
-                      alt=""
-                    />
-                  </Col>
-                  <Col span={18} className="pl-6">
-                    <p className="font-bold text-lg">{nftItem.nft_name}</p>
-                    <p className="text-lg">
-                      <span className="text-indigo-600">
-                        {nftItem.nft_symbol}
-                      </span>
-                    </p>
-                  </Col>
-                </Row>
-              ))}
+              <For each={nftsMemo}>
+                {(nftItem) => (
+                  <Row
+                    className="bg-white rounded-lg p-4 w-full mb-4 cursor-pointer hover:bg-[#F0F3FA]"
+                    onClick={() => handleAddNft(nftItem)}
+                  >
+                    <Col span={5}>
+                      <img
+                        className="rounded-lg bg-dark10"
+                        src={nftItem.image}
+                        alt=""
+                      />
+                    </Col>
+                    <Col span={18} className="pl-6">
+                      <p className="font-bold text-lg">{nftItem.name}</p>
+                      <p className="text-lg">
+                        <span className="text-indigo-600">
+                          {nftItem.symbol}
+                        </span>
+                      </p>
+                    </Col>
+                  </Row>
+                )}
+              </For>
             </div>
           </div>
         </div>

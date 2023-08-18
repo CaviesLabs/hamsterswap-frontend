@@ -2,8 +2,9 @@ import { FC, useEffect, useState } from "react";
 import { Modal } from "antd";
 import { NftDetailsModalProps } from "./types";
 import { Row, Col } from "antd";
-import { nftService } from "@/src/redux/saga/nft/nft.service";
+import { NftService } from "@/src/services/nft.service";
 import { AttributeDto } from "@/src/dto/nft.dto";
+import { useMain } from "@/src/hooks/pages/main";
 
 export const AttributeCard = (attr: AttributeDto) => (
   <div className="bg-gray-100 py-4 px-6 rounded-2xl	w-full">
@@ -14,20 +15,26 @@ export const AttributeCard = (attr: AttributeDto) => (
 
 export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
   const { data } = props;
+  const { chainId } = useMain();
+  const [attributes, setAttributes] = useState([]);
 
   /**
-   * Handle fetch metadata of NFT and set to attributes
+   * @dev Fetch nft detail when modal is open.
+   * @notice This is a temporary solution, we will refactor this later.
+   * @notice Get attributes from nft detail.
    */
-  const [attributes, setAttributes] = useState([]);
   useEffect(() => {
-    if (!data?.nftAddress) return;
-    nftService
-      .getNftDetail({
-        mintAddress: data.nftAddress,
-      })
-      .then((resp) => setAttributes(resp?.nft_attributes.attributes))
-      .catch(() => {});
-  }, [data?.nftAddress]);
+    (async () => {
+      if (!data?.address) return;
+      const nft = await NftService.getService(chainId).getNftDetail({
+        contractAddress: data.realAddress || data.address,
+        tokenId: data.id,
+        chainId: chainId,
+      });
+
+      setAttributes(nft?.attributes);
+    })();
+  }, [data, chainId]);
 
   return (
     <Modal
@@ -56,7 +63,7 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
                 {data?.name}
               </h2>
               <p className="text-gray-500 text-sm">Collection</p>
-              <div className="text-indigo-600">{data?.collection}</div>
+              <div className="text-indigo-600">{data?.collectionName}</div>
               <p className="mt-6 mb-3 text-gray-500 text-sm">Attributes</p>
               <Row gutter={[16, 16]}>
                 {attributes?.map((attr, index) => (

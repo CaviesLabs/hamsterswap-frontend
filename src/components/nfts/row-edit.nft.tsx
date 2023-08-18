@@ -3,18 +3,14 @@ import { RowNftEditItemProps } from "./types";
 import { DeleteIcon, DetailIcon, VerticalDots } from "@/src/components/icons";
 import { GameItemModal, NFTDetailsModal } from "@/src/components/modal";
 import { SwapItemType } from "@/src/entities/proposal.entity";
-import { useMain } from "@/src/hooks/pages/main";
-import UtilsProvider from "@/src/utils/utils.provider";
 import classnames from "classnames";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
+import { useMain } from "@/src/hooks/pages/main";
 
 export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
-  /**
-   * @dev Get cryptocurrencies which Hamster support.
-   */
-  const {
-    platformConfig: { allowCurrencies },
-  } = useMain();
+  /** @dev Get cryptocurrencies which Hamster support. */
+  const { platformConfig } = useMain();
+  console.log({ platformConfig });
 
   /**
    * @dev reference to the button
@@ -53,14 +49,16 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
           <div className="left pl-[2px]">
             <img
               src={
-                assetType === SwapItemType.CURRENCY
-                  ? allowCurrencies.find((item) => item.id === props.nftAddress)
-                      ?.image
-                  : props.image
+                props.image
+                // assetType === SwapItemType.CURRENCY
+                //   ? platformConfig?.allowCurrencies?.find(
+                //       (item) => item.id === props.nftAddress
+                //     )?.image
+                //   : props.image
               }
               alt="NFT image"
               className={classnames(
-                "!h-full !w-[80px] !object-cover !rounded-[8px]",
+                "!h-[50px] !w-[80px] !object-cover !rounded-[8px]",
                 (assetType === SwapItemType.NFT ||
                   assetType === SwapItemType.GAME) &&
                   "bg-dark10"
@@ -69,16 +67,20 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
           </div>
           <div className="px-4 w-72 left">
             <p className="semi-bold text-black truncate block capitalize">
-              {assetType === SwapItemType.CURRENCY
-                ? `${UtilsProvider.formatLongNumber(props.tokenAmount)} ${
-                    allowCurrencies.find((item) => item.id === props.nftAddress)
-                      ?.name
-                  }`
-                : props.name}
+              {
+                props.name
+                // assetType === SwapItemType.CURRENCY
+                // ? `${UtilsProvider.formatLongNumber(props.tokenAmount)} ${
+                //     platformConfig?.allowCurrencies?.find(
+                //       (item) => item.id === props.nftAddress
+                //     )?.name
+                //   }`
+                // :
+              }
             </p>
             <div className="flex items-center">
               <p className="text-[14px] regular-text text-purple cursor-auto mb-3">
-                {assetType !== SwapItemType.CURRENCY && props.collection}
+                {assetType !== SwapItemType.CURRENCY && props.collectionName}
               </p>
             </div>
           </div>
@@ -127,7 +129,7 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
       </div>
       {assetType === SwapItemType.NFT ? (
         <NFTDetailsModal
-          data={props}
+          data={{ ...props }}
           isModalOpen={isDetailOpen}
           handleCancel={() => setIsDetailOpen(false)}
           handleOk={() => setIsDetailOpen(false)}

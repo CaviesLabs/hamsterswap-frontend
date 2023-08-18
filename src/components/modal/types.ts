@@ -1,3 +1,4 @@
+import { NftEntity } from "@/src/dto/nft.dto";
 import { MouseEvent } from "react";
 
 export type ModalProps = {
@@ -7,7 +8,7 @@ export type ModalProps = {
 };
 
 export type NftDetailsModalProps = ModalProps & {
-  data?: any;
+  data?: NftEntity;
 };
 
 export type AttributeProps = {

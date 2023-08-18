@@ -23,7 +23,7 @@ export const ProposalItem: FC<RowNftItemProps> = (props) => {
           </p>
           <div className="flex items-center">
             <p className="text-lg font-semibold text-black cursor-auto my-3">
-              {props.collection}
+              {props.collectionName}
             </p>
           </div>
         </div>
