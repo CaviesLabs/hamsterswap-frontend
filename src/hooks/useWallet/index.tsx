@@ -45,10 +45,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
    * */
   const signMessage = useCallback(
     async (message: string) => {
-      console.log("Sign message solana", message);
       const data = new TextEncoder().encode(message);
-      console.log(solanaAdapter?.wallet);
-      console.log("Sign message solana", solanaAdapter?.wallet?.adapter);
       return await (
         solanaAdapter?.wallet?.adapter as MessageSignerWalletAdapter
       ).signMessage(data);
