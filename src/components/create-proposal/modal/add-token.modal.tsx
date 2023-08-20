@@ -47,43 +47,47 @@ export const AddTokenModal: FC<
     chainId,
   } = useMain();
   const { walletAddress } = useAppWallet();
-  const [value, setValue] = useState("");
   const { offferedItems } = useCreateProposal();
-
-  /**
-   * @dev The condition to display filter for user to select which token want to excute.
-   */
+  const [value, setValue] = useState("");
   const [dropDown, setDropdown] = useState(false);
-
-  /**
-   * @dev The token address which user select.
-   */
   const [addressSelected, setAddressSelected] = useState(WSOL_ADDRESS);
-
-  /**
-   * @dev The list contains balances of tokens which app support.
-   */
   const [balances, setBalances] = useState<
     { address: string; balance: number }[]
   >([]);
 
+  /**
+   * @dev Get token info by address which user selected.
+   * @notice Watch change of allowCurrencies and addressSelected.
+   * @returns {TokenEntity}
+   */
+  const tokenInfo = useMemo(
+    () => allowCurrencies.find((item) => item.address === addressSelected),
+    [allowCurrencies, addressSelected]
+  );
+
+  /**
+   * @dev Calculate remain currency balance.
+   * @notice Step1 - Get balance of native token of wallet.
+   * @notice Step2 - Get remain balance by subtracting balance of native token and total amount of token which user selected.
+   * @returns {string}
+   */
   const myRemainCurrencyBalance = useMemo(() => {
-    let result: number = +(
+    let balance: number = +(
       balances.find((item) => item.address === addressSelected)?.balance || 0
     );
 
-    if (!isNaN(result)) {
-      offferedItems?.forEach((i: any) => {
-        if (
-          i?.assetType === SwapItemType.CURRENCY &&
-          i?.address === addressSelected
-        ) {
-          result -= i?.tokenAmount;
-        }
+    if (!isNaN(balance) || balance === 0) return `${+balance}`;
+    offferedItems
+      .filter(
+        (item) =>
+          item.assetType === SwapItemType.CURRENCY &&
+          item.address === addressSelected
+      )
+      .forEach((item) => {
+        balance -= item.tokenAmount;
       });
-    }
 
-    return `${+result}`;
+    return `${+balance}`;
   }, [proposal, offferedItems, addressSelected, balances]);
 
   const handleChangeSolValue: ChangeEventHandler<HTMLInputElement> = (e: {
@@ -137,13 +141,10 @@ export const AddTokenModal: FC<
   }, [walletAddress, nativeBalance, chainId, allowCurrencies]);
 
   /**
-   * @dev Watch address changes and get token info.
+   * @dev Watch change of wallet address, and get balance of supported currency.
+   * @notice If wallet address is null, we will not get balance.
+   * @returns {void}
    */
-  const tokenInfo = useMemo(
-    () => allowCurrencies.find((item) => item.address === addressSelected),
-    [allowCurrencies, addressSelected]
-  );
-
   useEffect(() => {
     if (!walletAddress) return;
     handleGetBalanceOfSupportedCurrency();

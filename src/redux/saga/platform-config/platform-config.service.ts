@@ -28,6 +28,7 @@ export class PlatformConfigService {
       allowCurrencies: v2PlatformConfig[chainId].currencies.map((item) => ({
         ...item,
         decimals: 9, // Bridge solana only support 9 decimals
+        icon: item.icon || item.image,
         realDecimals: item.decimals,
         realAddress: item.address,
         address: item.isNativeToken

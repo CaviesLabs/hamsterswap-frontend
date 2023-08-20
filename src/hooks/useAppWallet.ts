@@ -33,6 +33,22 @@ export const useAppWallet = () => {
 };
 
 /**
+ * @dev Get native token from useEvmWallet or useSolana
+ * @notice This hook is used to get native token from useEvmWallet or useSolana
+ * @returns {nativeToken: TokenEntity}
+ */
+export const useNativeToken = () => {
+  const { platformConfig } = useSelector();
+  return useMemo(() => {
+    return {
+      nativeToken: platformConfig?.allowCurrencies?.find(
+        (item) => item.isNativeToken
+      ),
+    };
+  }, [platformConfig]);
+};
+
+/**
  * @dev Get sign message from useEvmWallet or useSolana
  * @notice This hook is used to get sign message from useEvmWallet or useSolana
  * @returns {signMessage: Function}

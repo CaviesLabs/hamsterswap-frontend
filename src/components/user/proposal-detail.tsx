@@ -21,6 +21,7 @@ import classnames from "classnames";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import State from "@/src/redux/entities/state";
 import moment from "moment";
+import { useNativeToken } from "@/src/hooks/useAppWallet";
 
 type Method = "cancel" | "widthdraw";
 
@@ -39,6 +40,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
 
   /** @todo Get wallet proivder */
   const { solanaWallet, programService } = useWallet();
+  const { nativeToken } = useNativeToken();
 
   /** @todo Condition when proposal is already deposited offered items */
   const isPending = status.valueOf() === SwapProposalStatus.DEPOSITED.valueOf();
@@ -216,7 +218,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                   <p className="mt-[12px] text-[16px] regular-text flex">
                     Guarantee deposit amount:
                     <img
-                      src="/assets/images/solana-icon.svg"
+                      src={nativeToken?.icon}
                       alt="Solana Icon"
                       className="h-[24px] w-[24px] mx-[12px]"
                     />

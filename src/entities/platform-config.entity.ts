@@ -8,6 +8,7 @@ export type TokenEntity = {
   currencyId: string;
   address: string;
   icon: string;
+  image?: string; // For solana schema, @todo Remove it later.
   name: string;
   symbol: string;
   isNativeToken?: boolean;

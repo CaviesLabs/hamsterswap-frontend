@@ -8,18 +8,14 @@ import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { useMain } from "@/src/hooks/pages/main";
 import { DATE_TIME_FORMAT } from "@/src/utils";
 import moment from "moment";
+import { useNativeToken } from "@/src/hooks/useAppWallet";
 
 export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
-  /**
-   * @dev Get all currencies which hamster support.
-   */
+  const { nativeToken } = useNativeToken();
   const {
     platformConfig: { allowCurrencies },
   } = useMain();
 
-  /**
-   * @dev Import functions from context screen.
-   */
   const { expectedItems, offferedItems, note, expiredTime, guaranteeSol } =
     useCreateProposal();
 
@@ -73,12 +69,12 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
               Guarantee deposit amount:
             </p>
             <img
-              src="/assets/images/solana-icon.svg"
-              alt="Solana Icon"
+              src={nativeToken?.icon}
+              alt="Native Token Icon"
               className="!w-[16px] h-[16px] ml-[12px] float-left"
             />
             <p className="ml-[12px] text-[16px] ml-[12px] float-left">
-              {guaranteeSol} SOL
+              {guaranteeSol} {nativeToken?.symbol.toUpperCase()}
             </p>
           </div>
         </Col>

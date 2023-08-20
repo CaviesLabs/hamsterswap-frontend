@@ -12,10 +12,12 @@ import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import { completedOrderPercent, DATE_TIME_FORMAT } from "@/src/utils";
 import { hProfileDto } from "@/src/dto/hProfile.dto";
 import { hProfileService } from "@/src/redux/saga/hamster-profile/profile.service";
+import { useNativeToken } from "@/src/hooks/useAppWallet";
 
 export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
   const [profile, setProfile] = useState<hProfileDto>();
   const router = useRouter();
+  const { nativeToken } = useNativeToken();
   const { data } = props;
 
   useEffect(() => {
@@ -84,7 +86,7 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
                 <p className="mt-[8px] text-[16px] regular-text flex">
                   Guarantee deposit amount:
                   <img
-                    src="/assets/images/solana-icon.svg"
+                    src={nativeToken?.icon}
                     alt="Solana Icon"
                     className="h-[24px] w-[24px] mx-[12px]"
                   />

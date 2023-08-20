@@ -56,7 +56,7 @@ export const parseOfferCreateProposal = (
       tokenInfo.name
     }`;
     resp.collection = "Currency";
-    resp.image = tokenInfo.address;
+    resp.image = tokenInfo.icon;
   } else if (resp.assetType === SwapItemType.NFT) {
     resp.name = item?.name;
     resp.collection = item?.collectionName;

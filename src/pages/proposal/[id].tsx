@@ -23,6 +23,7 @@ import { useMain } from "@/src/hooks/pages/main";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import moment from "moment";
 import BuyButton from "@/src/components/advertisment/buy-button";
+import { useNativeToken } from "@/src/hooks/useAppWallet";
 
 const Layout: FC = () => {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ const Layout: FC = () => {
   const {
     platformConfig: { allowCurrencies },
   } = useMain();
+  const { nativeToken } = useNativeToken();
 
   /**
    * @dev Declare option which user chose to swap.
@@ -173,7 +175,7 @@ const Layout: FC = () => {
                 <p className="mt-2 text-[16px] regular-text flex">
                   Guarantee deposit amount:
                   <img
-                    src="/assets/images/solana-icon.svg"
+                    src={nativeToken?.icon}
                     alt="Solana Icon"
                     className="h-[24px] w-[24px] mx-[12px]"
                   />
