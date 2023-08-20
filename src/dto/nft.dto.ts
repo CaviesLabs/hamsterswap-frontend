@@ -62,57 +62,9 @@ export class NftEntity {
   name: string;
   attributes: AttributeDto[];
   symbol?: string;
-  decimal: 0;
   status: NftStatus.holding;
+  decimal: 0;
 }
-
-/**
- * @schema TokenEntity
- * @notice TokenEntity represents a token entity.
- * @property {chainId} The chain id.
- * @property {name} The name of the token.
- * @property {symbol} The symbol of the token.
- * @property {decimals} The decimals of the token.
- * @property {contractAddress} The contract address of the token.
- * @property {isGasToken} The boolean to check if the token is a gas token.
- * @property {recommended} The boolean to check if the token is recommended.
- * @property {coingeckoId} The coingecko id of the token.
- * @property {logo} The logo of the token.
- * @property {unOfficial} The boolean to check if the token is unOfficial.
- */
-export class TokenEntity {
-  chainId: ChainId;
-  name: string;
-  symbol: string;
-  decimals: number;
-  contractAddress: string;
-  isGasToken: boolean;
-  recommended?: boolean;
-  coingeckoId?: string;
-  logo?: string;
-  unOfficial?: true; // TODO: TEST
-}
-
-/**
- * @todo Remove this class after solscan api is ready.
- * @dev Solana nft entity.
- */
-export class SolNftEntity {
-  nft_address: string;
-  nft_collection_name?: string;
-  nft_name: string;
-  nft_symbol: string;
-  nft_status?: NftStatus;
-  nft_collection_id: string;
-  start_holding_time: number;
-  stop_hodling_time: number;
-  nft_last_traded_price: number;
-  nft_listing_price: number;
-  nft_image_uri: string;
-  nft_image?: string;
-  decimal?: number;
-}
-
 export class NftDto {
   list_nfts: NftEntity[];
   num_nfts: number;

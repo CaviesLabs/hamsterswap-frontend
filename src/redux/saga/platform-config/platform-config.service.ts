@@ -27,6 +27,8 @@ export class PlatformConfigService {
       allowNTFCollections: v2PlatformConfig[chainId].collections,
       allowCurrencies: v2PlatformConfig[chainId].currencies.map((item) => ({
         ...item,
+        decimals: 9, // Bridge solana only support 9 decimals
+        realDecimals: item.decimals,
         realAddress: item.address,
         address: item.isNativeToken
           ? WSOL_ADDRESS

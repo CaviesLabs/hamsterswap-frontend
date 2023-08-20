@@ -3,16 +3,17 @@ import { ChainId } from "./chain.entity";
 /**
  * @dev The interface of currency which hamster allow to use.
  */
-export type AllowCurrency = {
+export type TokenEntity = {
   explorerUrl: string;
   currencyId: string;
   address: string;
   icon: string;
   name: string;
   symbol: string;
-  decimals: 9;
   isNativeToken?: boolean;
   realAddress?: string;
+  decimals: number;
+  realDecimals?: number;
 };
 
 /**
@@ -32,7 +33,7 @@ export type allowNTFCollection = {
 export class PlatformConfigDto {
   maxAllowedOptions: number;
   maxAllowedItems: number;
-  allowCurrencies: AllowCurrency[];
+  allowCurrencies: TokenEntity[];
   allowNTFCollections: allowNTFCollection[];
 }
 
@@ -41,7 +42,7 @@ export type PlatformConfigDtoV2 = Record<
   {
     maxAllowedOptions: number;
     maxAllowedItems: number;
-    currencies: AllowCurrency[];
+    currencies: TokenEntity[];
     collections: allowNTFCollection[];
   }
 >;

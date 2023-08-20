@@ -20,6 +20,7 @@ import { SwapItemType } from "@/src/entities/proposal.entity";
 import { useMain } from "@/src/hooks/pages/main";
 import { useAppWallet, useNativeBalance } from "@/src/hooks/useAppWallet";
 import { TokenService } from "@/src/services/token.service";
+import { TokenEntity } from "@/src/entities/platform-config.entity";
 import UtilsProvider from "@/src/utils/utils.provider";
 
 const decimalCount = (num: any) => {
@@ -35,7 +36,7 @@ const decimalCount = (num: any) => {
 
 export const AddTokenModal: FC<
   AddItemModalProps & {
-    handleAddSol(mintAddress: string, value: string, decimal: number): void;
+    handleAddToken(token: TokenEntity, amount: string): void;
     addInOwner?: boolean | true;
   }
 > = (props) => {
@@ -75,7 +76,7 @@ export const AddTokenModal: FC<
       offferedItems?.forEach((i: any) => {
         if (
           i?.assetType === SwapItemType.CURRENCY &&
-          i?.nft_address === addressSelected
+          i?.address === addressSelected
         ) {
           result -= i?.tokenAmount;
         }
@@ -198,7 +199,7 @@ export const AddTokenModal: FC<
                       <TokenItem
                         name={item.name}
                         iconUrl={item.icon}
-                        address={item.address}
+                        address={item.realAddress}
                         balance={balances[key]?.balance?.toString() || "0"}
                         addInOwner={props.addInOwner}
                         onClick={(address) => {
@@ -252,19 +253,11 @@ export const AddTokenModal: FC<
                 }
                 type="button"
                 onClick={() => {
-                  /**
-                   * @dev Reset amount input.
-                   */
+                  console.log("add token", {
+                    decimals: tokenInfo?.realDecimals || tokenInfo.decimals,
+                  });
                   setValue("");
-
-                  /**
-                   * @dev Call function to add.
-                   */
-                  props.handleAddSol(
-                    addressSelected,
-                    value,
-                    tokenInfo?.decimals
-                  );
+                  props.handleAddToken(tokenInfo, value);
                 }}
               >
                 Add

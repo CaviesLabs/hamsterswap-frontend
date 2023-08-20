@@ -4,12 +4,12 @@ import {
   SwapItemEntity,
   SwapItemType,
 } from "@/src/entities/proposal.entity";
-import { AllowCurrency } from "@/src/entities/platform-config.entity";
+import { TokenEntity } from "@/src/entities/platform-config.entity";
 import UtilsProvider from "@/src/utils/utils.provider";
 
 export const parseProposal = (
   item: SwapItemEntity,
-  allowCurrencies: AllowCurrency[]
+  allowCurrencies: TokenEntity[]
 ) => {
   const resp: any = {
     ...item,
@@ -38,7 +38,7 @@ export const parseProposal = (
 
 export const parseOfferCreateProposal = (
   item: OfferedItemEntity | ExpectedItemEntity,
-  allowCurrencies: AllowCurrency[]
+  allowCurrencies: TokenEntity[]
 ) => {
   const resp: any = {
     ...item,

@@ -57,7 +57,7 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
               }
               alt="NFT image"
               className={classnames(
-                "!h-[50px] !w-[80px] !object-cover !rounded-[8px]",
+                "h-auto !w-[80px] !object-cover !rounded-[8px]",
                 (assetType === SwapItemType.NFT ||
                   assetType === SwapItemType.GAME) &&
                   "bg-dark10"

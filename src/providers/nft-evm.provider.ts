@@ -10,9 +10,9 @@ export class NftEvmProvider {
   public parseEntity(data: NftEntity): NftEntity {
     return {
       ...data,
+      decimal: 0,
       address: Keypair.generate().publicKey.toString(),
       realAddress: data?.address,
-      decimal: 0,
       status: NftStatus.holding,
     };
   }

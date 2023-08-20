@@ -38,16 +38,8 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
     }))
   );
 
-  /**
-   * @dev Description of proposal.
-   */
   const [note, setNote] = useState("");
-
-  /**
-   * @dev Expired time of proposal, default is 7 days from now.
-   */
   const [expiredTime, setExpiredTime] = useState<Date>();
-
   const [guaranteeSol, setGuaranteeSol] = useState(0);
 
   /**
@@ -119,9 +111,9 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
       return [
         ...prev,
         {
+          id: SwapProgramService.generateUID(),
           nftId: item?.nftId,
           assetType: item?.assetType,
-          id: SwapProgramService.generateUID(),
           mintAccount: new PublicKey(item.address),
           itemType: { [type]: {} },
           amount: amount ? new BN(amount * Math.pow(10, item.decimal)) : null,

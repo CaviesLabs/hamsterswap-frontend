@@ -16,6 +16,7 @@ import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { Col, Row } from "antd";
 import { useAppWallet } from "@/src/hooks/useAppWallet";
 import { useSelector } from "@/src/redux";
+import { TokenEntity } from "@/src/entities/platform-config.entity";
 
 export const Step1: FC = () => {
   const { walletAddress } = useAppWallet();
@@ -50,11 +51,7 @@ export const Step1: FC = () => {
    * Handle save sol value into swapItems array of redux-store
    * @param value [string]
    */
-  const handleAddSol = (
-    mintAddress: string,
-    amount: string,
-    decimal: number
-  ) => {
+  const handleToken = (token: TokenEntity, amount: string) => {
     if (offferedItems.length === 4) {
       return toast.warn("Only a maximum of 4 items are allowed");
     }
@@ -62,15 +59,8 @@ export const Step1: FC = () => {
     if (!amount) return;
     if (isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) return;
 
-    /**
-     * @dev Excute adding data here.
-     */
     addOfferItem(
-      {
-        nft_address: mintAddress,
-        assetType: SwapItemType.CURRENCY,
-        decimal,
-      } as any,
+      { assetType: SwapItemType.CURRENCY, address: token.address } as any,
       AssetTypes.token,
       parseFloat(amount)
     );
@@ -132,9 +122,9 @@ export const Step1: FC = () => {
             isModalOpen={isAddSol}
             handleCancel={() => setIsAddSol(false)}
             addInOwner={true}
-            handleAddSol={(mintAddress, value, decimal) => {
+            handleAddToken={(token, amount) => {
               setIsAddSol(false);
-              handleAddSol(mintAddress, value, decimal);
+              handleToken(token, amount);
             }}
           />
         </div>
