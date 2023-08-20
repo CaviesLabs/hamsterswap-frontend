@@ -23,14 +23,15 @@ import { publicProvider } from "wagmi/providers/public";
  * @returns {void}
  * @todo Remove this when rpc url is working.
  */
+const RPC_URL = "https://klaytn.blockpi.network/v1/rpc/public";
 const klaytn: Chain = {
   ...WagmiKlaytn,
   rpcUrls: {
     default: {
-      http: ["https://klaytn.blockpi.network/v1/rpc/public"],
+      http: [RPC_URL],
     },
     public: {
-      http: ["https://klaytn.blockpi.network/v1/rpc/public"],
+      http: [RPC_URL],
     },
   },
 };
