@@ -5,8 +5,11 @@ import { useWallet as useSolWallet } from "@/src/hooks/useWallet";
 import * as bs from "bs58";
 import { SIGN_MESSAGE } from "@/src/utils";
 import { disconnect as disconnectWagmi } from "@wagmi/core";
+import { getAuthService } from "@/src/actions/auth.action";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useEvmWallet, useSignEvmMessage } from "./wagmi";
+import { useDispatch } from "react-redux";
+import { setProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 
 /**
  * @dev Get wallet address from useEvmWallet or useSolana
@@ -58,12 +61,18 @@ export const useIdpSignMessage = () => {
 export const useDisconnectWallet = () => {
   const { chainId } = useSelector();
   const { disconnect: disconnectGoki } = useSolWallet();
+  const dispatch = useDispatch();
 
   return {
     disconnect: useCallback(async () => {
-      if (chainId === ChainId.solana) return disconnectGoki();
-      return disconnectWagmi();
-    }, [chainId]),
+      await getAuthService().logout();
+      dispatch(setProfile(null));
+      if (chainId === ChainId.solana) {
+        await disconnectGoki();
+      } else {
+        await disconnectWagmi();
+      }
+    }, [chainId, dispatch]),
   };
 };
 

@@ -1,10 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getAuthService } from "@/src/actions/firebase.action";
-import {
-  getHamsterProfile,
-  setProfile,
-} from "@/src/redux/actions/hamster-profile/profile.action";
+import { getAuthService } from "@/src/actions/auth.action";
+import { getHamsterProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import {
   useAppWallet,
   useDisconnectWallet,
@@ -35,25 +32,18 @@ export const useAuth = () => {
     } catch {}
   }, [walletAddress, chainId]);
 
-  const handleLogout = useCallback(async () => {
-    await authService.logout();
-    dispatch(setProfile(null));
-  }, []);
-
   /**
    * @dev This hook is used to watch changes in wallet address and chainId.
    * @notice If wallet address is changed, it will check if user is logged in or not.
    */
   useEffect(() => {
-    if (walletAddress) {
-      dispatch(
-        getHamsterProfile(null, (user) => {
-          if (!user) return handleLogin();
-          return disconnect();
-        })
-      );
-    } else {
-      handleLogout();
-    }
-  }, [walletAddress, chainId, disconnect]);
+    if (!walletAddress) return;
+    dispatch(
+      getHamsterProfile(null, (user) => {
+        if (!user) {
+          return handleLogin();
+        }
+      })
+    );
+  }, [walletAddress, chainId, disconnect, signIdpMessage]);
 };

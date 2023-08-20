@@ -1,4 +1,3 @@
-import { User } from "firebase/auth";
 import { UserChatEntity } from "@/src/entities/chatroom.entity";
 import { NftEntity } from "@/src/dto/nft.dto";
 import { SwapProposalEntity } from "@/src/entities/proposal.entity";
@@ -11,7 +10,7 @@ import { ChainId } from "@/src/entities/chain.entity";
  * @dev Initialize app state.
  */
 export default interface State {
-  user: User;
+  user: hProfileDto;
   userChats: UserChatEntity[];
   nft: NftEntity[];
   proposal: ProposalDto;

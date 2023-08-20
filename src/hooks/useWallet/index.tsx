@@ -16,7 +16,7 @@ import {
 import { useWallet as useAdapter } from "@solana/wallet-adapter-react";
 import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
 import { SwapProgramProviderV0 } from "@/src/providers/program/swap-program-v0.provider";
-import { getAuthService } from "@/src/actions/firebase.action";
+import { getAuthService } from "@/src/actions/auth.action";
 import { setProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { SwapProgramServiceV0 } from "@/src/services/swap-program-v0.service";
 import { WalletContext } from "./types";

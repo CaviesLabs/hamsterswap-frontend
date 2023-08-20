@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import userReducer, { chainIdReducer } from "./user";
+import { chainIdReducer } from "./user";
 import userChatReducer from "./user-chat";
 import nftReducer from "./nft";
 import hProfileReducer from "./hamster-profile";
@@ -13,10 +13,10 @@ import { ChainId } from "@/src/entities/chain.entity";
  * @dev Initialize reducer for app state management.
  */
 const reducer = combineReducers<State>({
-  user: userReducer,
   userChats: userChatReducer,
   nft: nftReducer,
   platformConfig: platformConfigReducer,
+  user: hProfileReducer,
   hProfile: hProfileReducer,
   hPublicProfile: hPublicProfileReducer,
   proposals: proposalsReducer,

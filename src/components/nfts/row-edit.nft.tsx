@@ -4,13 +4,13 @@ import { RowNftEditItemProps } from "./types";
 import { DeleteIcon, DetailIcon, VerticalDots } from "@/src/components/icons";
 import { GameItemModal, NFTDetailsModal } from "@/src/components/modal";
 import { SwapItemType } from "@/src/entities/proposal.entity";
-import { useMain } from "@/src/hooks/pages/main";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
+import { useSelector } from "@/src/redux";
+import { UtilsProvider } from "@/src/utils";
 
 export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
   /** @dev Get cryptocurrencies which Hamster support. */
-  const { platformConfig } = useMain();
-  console.log({ platformConfig });
+  const { platformConfig } = useSelector();
 
   /**
    * @dev reference to the button
@@ -49,12 +49,11 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
           <div className="left pl-[2px]">
             <img
               src={
-                props.image
-                // assetType === SwapItemType.CURRENCY
-                //   ? platformConfig?.allowCurrencies?.find(
-                //       (item) => item.id === props.nftAddress
-                //     )?.image
-                //   : props.image
+                assetType === SwapItemType.CURRENCY
+                  ? platformConfig?.allowCurrencies?.find(
+                      (item) => item.address === props.address
+                    )?.icon
+                  : props.image
               }
               alt="NFT image"
               className={classnames(
@@ -67,16 +66,13 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
           </div>
           <div className="px-4 w-72 left">
             <p className="semi-bold text-black truncate block capitalize">
-              {
-                props.name
-                // assetType === SwapItemType.CURRENCY
-                // ? `${UtilsProvider.formatLongNumber(props.tokenAmount)} ${
-                //     platformConfig?.allowCurrencies?.find(
-                //       (item) => item.id === props.nftAddress
-                //     )?.name
-                //   }`
-                // :
-              }
+              {assetType === SwapItemType.CURRENCY
+                ? `${UtilsProvider.formatLongNumber(props.tokenAmount)} ${
+                    platformConfig?.allowCurrencies?.find(
+                      (item) => item.address === props.address
+                    )?.name
+                  }`
+                : props.name}
             </p>
             <div className="flex items-center">
               <p className="text-[14px] regular-text text-purple cursor-auto mb-3">

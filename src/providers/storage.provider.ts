@@ -30,13 +30,15 @@ export class StorageProvider {
 
   /**
    * @param key
-   * @returns
+   * @param withoutPredix default is false, true if you want to remove without prefix
    * @description
    * The function to remove value with an associated key
    */
-  public removeItem(key: string): void {
+  public removeItem(key: string, withoutPredix = false): void {
     if (!global.localStorage) return null;
-    return global.localStorage.removeItem(`${this.PREFIX}_${key}`);
+    return global.localStorage.removeItem(
+      withoutPredix ? key : `${this.PREFIX}_${key}`
+    );
   }
 
   /**

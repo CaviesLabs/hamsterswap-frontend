@@ -1,5 +1,4 @@
 import { createContext, useContext } from "react";
-import { User } from "firebase/auth";
 import { UserChatEntity } from "@/src/entities/chatroom.entity";
 import ReduxState from "@/src/redux/entities/state";
 import {
@@ -13,14 +12,12 @@ import {
  */
 export interface AppStateHook {
   appState: AppState;
-  updateUser: (user: User) => void;
   selectChatUser: (uid: string) => void;
 }
 
 /** @dev State interface. */
 export interface AppState {
   chats: UserChatEntity[];
-  user: User;
   chatRoomId: string;
 }
 
