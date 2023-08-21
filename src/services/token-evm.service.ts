@@ -3,6 +3,7 @@ import { ReadonlyEthersProvider } from "@/src/providers/readonly-ethers.provider
 import { AppNumber } from "@/src/providers/math/app-number.provider";
 import { ITokenService } from "./token.service";
 import { ChainId } from "../entities/chain.entity";
+import { BigNumber } from "ethers";
 
 export interface TokenInfo {
   address: string;
@@ -49,6 +50,24 @@ export class EvmTokenService implements ITokenService {
     return new AppNumber(Number(amount))
       .divide(new AppNumber(10).pow(new AppNumber(Number(decimals))))
       .toNumber();
+  }
+
+  /**
+   * @notice Convert token amount to decimal.
+   * @param amount
+   * @param decimals
+   * @returns {BigNumber}
+   */
+  public async convertTokenAmountToDecimal(
+    amount: number,
+    decimals: number
+  ): Promise<BigNumber> {
+    return BigNumber.from(
+      `0x${new AppNumber(Number(amount))
+        .multiply(new AppNumber(10).pow(new AppNumber(Number(decimals))))
+        .toNumber()
+        .toString(16)}`
+    );
   }
 
   /**

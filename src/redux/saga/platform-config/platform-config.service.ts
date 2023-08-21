@@ -22,6 +22,7 @@ export class PlatformConfigService {
     );
 
     return {
+      ...v2PlatformConfig[chainId],
       maxAllowedItems: v2PlatformConfig[chainId].maxAllowedItems,
       maxAllowedOptions: v2PlatformConfig[chainId].maxAllowedOptions,
       allowNTFCollections: v2PlatformConfig[chainId].collections,

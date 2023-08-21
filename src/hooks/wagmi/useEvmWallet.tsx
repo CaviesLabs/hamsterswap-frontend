@@ -1,5 +1,29 @@
-import { createContext, useContext, ReactNode, FC } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  createContext,
+  useContext,
+  ReactNode,
+  FC,
+  // useState,
+  // useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 import { useWalletClient, useBalance, useAccount, useSignMessage } from "wagmi";
+import {
+  Etherman,
+  Etherman__factory,
+  HamsterSwap,
+  HamsterSwap__factory,
+  Multicall3,
+  Multicall3__factory,
+} from "@/src/providers/evm-program";
+import {
+  OfferedItemEntity,
+  ExpectedOpitionEntity,
+  SwapItemType,
+} from "@/src/entities/proposal.entity";
+import { useSelector } from "@/src/redux";
 
 /** @dev Initialize context. */
 export const EvmWalletContext = createContext<{
@@ -8,13 +32,15 @@ export const EvmWalletContext = createContext<{
   signer: unknown;
 }>(null);
 
-/** @dev Expose wallet provider for usage. */
+/**
+ * @dev Provider to wrap all children components for support evm wallet.
+ * @notice This provider will be used in app.tsx.
+ * @param {ReactNode} props.children The children components.
+ * @returns {JSX.Element} The jsx element.
+ */
 export const EvmWalletProvider: FC<{ children: ReactNode }> = (props) => {
-  /** @notice Inject context of eth wallet. */
   const ethWallet = useAccount();
   const { data: walletClient } = useWalletClient();
-
-  /** @notice Get chain native token balance. */
   const { data: nativeBalanceData } = useBalance({
     address: ethWallet?.address,
   });
@@ -41,6 +67,82 @@ export const useSignEvmMessage = (message: string) => {
   return useSignMessage({
     message,
   });
+};
+
+export const useEvmHamsterSwapContract = () => {
+  const { signer } = useEvmWallet();
+  const { platformConfig } = useSelector();
+  const ethWallet = useAccount();
+
+  /**
+   * @dev Initialize contract instance.
+   * @returns {Etherman} contract instance.
+   */
+  const contract = useMemo<HamsterSwap>(() => {
+    return HamsterSwap__factory.connect(
+      platformConfig.programAddress,
+      signer as any
+    );
+  }, [signer, platformConfig]);
+
+  const multicall3Contract = useMemo<Multicall3>(() => {
+    return Multicall3__factory.connect(
+      platformConfig.multicall3Address,
+      signer as any
+    );
+  }, [signer, platformConfig]);
+
+  /**
+   * @dev The helper function to wrap native token to wSOL.
+   * @param {BigNumber} wrapTokenAmount The amount of native token to wrap.
+   * @returns {object[]} The array of transaction data.
+   */
+  const wrapNativeTokenHelper = useCallback(
+    async (wrapTokenAmount: bigint) => {
+      if (!wrapTokenAmount) return [];
+      return [
+        {
+          target: await contract.getAddress(),
+          callData: contract.interface.encodeFunctionData("wrapETH", [
+            ethWallet?.address?.toString(),
+            wrapTokenAmount,
+          ]),
+          value: wrapTokenAmount,
+          allowFailure: false,
+        },
+      ];
+    },
+    [platformConfig]
+  );
+
+  const submitProposal = useCallback(
+    async (
+      args: {
+        proposalId: string;
+        offeredItems: any[];
+        askingItems: any[];
+        expiredAt: Date;
+      },
+      wrapTokenAmount: bigint
+    ) => {
+      await multicall3Contract.aggregate3Value([
+        ...(await wrapNativeTokenHelper(wrapTokenAmount)),
+        {
+          target: await contract.getAddress(),
+          callData: contract.interface.encodeFunctionData("createProposal", [
+            args.proposalId,
+            ethWallet?.address?.toString() as string,
+            args.offeredItems,
+            args.askingItems,
+            args.expiredAt,
+          ]),
+          value: 0,
+          allowFailure: false,
+        },
+      ]);
+    },
+    [signer, ethWallet, contract, multicall3Contract]
+  );
 };
 
 /** @dev Use context hook. */

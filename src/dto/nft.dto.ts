@@ -64,6 +64,7 @@ export class NftEntity {
   symbol?: string;
   status: NftStatus.holding;
   decimal: 0;
+  realDecimals: 0;
 }
 export class NftDto {
   list_nfts: NftEntity[];

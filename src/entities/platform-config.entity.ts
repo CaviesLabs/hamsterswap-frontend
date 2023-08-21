@@ -36,6 +36,14 @@ export class PlatformConfigDto {
   maxAllowedItems: number;
   allowCurrencies: TokenEntity[];
   allowNTFCollections: allowNTFCollection[];
+  wagmiKey: string;
+  chainName: string;
+  chainIcon: string;
+  rpcUrl: string;
+  chainId: 8217;
+  programAddress: string;
+  multicall3Address: string;
+  explorerUrl: string;
 }
 
 export type PlatformConfigDtoV2 = Record<
@@ -45,5 +53,13 @@ export type PlatformConfigDtoV2 = Record<
     maxAllowedItems: number;
     currencies: TokenEntity[];
     collections: allowNTFCollection[];
+    wagmiKey: string;
+    chainName: string;
+    chainIcon: string;
+    rpcUrl: string;
+    chainId: 8217;
+    programAddress: string;
+    multicall3Address: string;
+    explorerUrl: string;
   }
 >;

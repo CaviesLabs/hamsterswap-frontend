@@ -361,11 +361,6 @@ export class SwapProgramProviderV0 {
         })
       );
 
-      // setTimeout(async () => {
-      //   const [, state] = await this.getProposalState(createProposalDto.id);
-      //   console.log({ state });
-      // }, 4000);
-
       return this.transactionProvider.buildV0TransactionHandlers(
         this.walletProvider,
         instructions,

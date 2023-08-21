@@ -1,4 +1,4 @@
-import { ReactNode, useState, useCallback } from "react";
+import { ReactNode, useCallback, useState } from "react";
 import { CreateProposalPageContext } from "./types";
 import { NftEntity } from "@/src/dto/nft.dto";
 import {
@@ -10,37 +10,26 @@ import {
 import { SwapProgramService } from "@/src/services/swap-program.service";
 import { BN } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
-import { useWallet } from "@/src/hooks/useWallet";
-import * as anchor from "@project-serum/anchor";
+import { useSelector } from "@/src/redux";
+import { ChainId } from "@/src/entities/chain.entity";
+import { useSubmitProposalSol } from "./useSubmitProposalSol";
+import { useSubmitProposalEvm } from "./useSubmitProposalEvm";
 
 export const CreateProposalProvider = (props: { children: ReactNode }) => {
   /**
-   * @dev Get wallet.
+   * @dev Initialize state for create proposal.
+   * @notice This state will be used in all steps of create proposal.
    */
-  const {
-    solanaWallet,
-    provider: solanaProvider,
-    programService,
-  } = useWallet();
-
-  /**
-   * @dev Items which user want to swap.
-   */
+  const [note, setNote] = useState("");
+  const [expiredTime, setExpiredTime] = useState<Date>();
+  const [guaranteeSol, setGuaranteeSol] = useState(0);
   const [offferedItems, setOfferItems] = useState<OfferedItemEntity[]>([]);
-
-  /**
-   * @dev Options of item which user want to recive.
-   */
   const [expectedItems, setExpectedItems] = useState<ExpectedOpitionEntity[]>(
     Array.from(Array(3).keys()).map(() => ({
       id: SwapProgramService.generateUID(),
       askingItems: [],
     }))
   );
-
-  const [note, setNote] = useState("");
-  const [expiredTime, setExpiredTime] = useState<Date>();
-  const [guaranteeSol, setGuaranteeSol] = useState(0);
 
   /**
    * @dev Add expected item.
@@ -135,53 +124,6 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
     });
   };
 
-  /**
-   * @dev Submit proposal to Hamster server and on-chain.
-   */
-  const submitProposal = useCallback(async () => {
-    if (!solanaWallet.publicKey) return;
-    /**
-     * @dev Initialize params to create proposal program.
-     */
-    const createdData = {
-      note,
-      ownerAddress: solanaWallet?.publicKey?.toString(),
-      swapOptions: expectedItems
-        .filter((item) => item.askingItems.length)
-        .map((item) => ({
-          id: item.id,
-          askingItems: item.askingItems.map((askingItem) => ({
-            mintAccount: new PublicKey(askingItem.address),
-            id: askingItem.id,
-            amount: askingItem.amount ? askingItem.amount : new anchor.BN(1),
-            itemType: askingItem.itemType,
-          })),
-        })),
-      offeredOptions: offferedItems.map((item) => ({
-        mintAccount: new PublicKey(item.address),
-        id: item.id,
-        amount: item.amount ? item.amount : new anchor.BN(1),
-        itemType: item.itemType,
-      })),
-      expiredAt: expiredTime,
-    };
-
-    /**
-     * @dev Create proposal
-     *  - Hamster server
-     *  - Solana chain
-     */
-    return await programService.createProposal(solanaProvider, createdData);
-  }, [
-    expectedItems,
-    offferedItems,
-    note,
-    expiredTime,
-    guaranteeSol,
-    solanaWallet,
-    solanaProvider,
-  ]);
-
   return (
     <CreateProposalPageContext.Provider
       value={{
@@ -197,10 +139,24 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
         setNote,
         setExpiredTime,
         setGuaranteeSol,
-        submitProposal,
       }}
     >
       {props.children}
     </CreateProposalPageContext.Provider>
   );
+};
+
+/**
+ * @dev This hook will be used in create proposal page.
+ * @returns {CreateProposalPageContext}
+ */
+export const useSubmitProposal = () => {
+  const { chainId } = useSelector();
+  return {
+    submit: useCallback(async () => {
+      // eslint-disable-next-line prettier/prettier
+      if (chainId === ChainId.solana) return await useSubmitProposalSol().submit();
+      return await useSubmitProposalEvm().submit();
+    }, [chainId]),
+  };
 };
