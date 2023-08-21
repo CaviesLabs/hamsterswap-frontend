@@ -1,12 +1,100 @@
-import { FC } from "react";
+import { FC, useState, useCallback, useMemo } from "react";
 import { Modal } from "antd";
 import { ConfirmModalProps } from "./types";
 import { Row, Col } from "antd";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { Button } from "@hamsterbox/ui-kit";
+import { ChainId } from "@/src/entities/chain.entity";
+import { RowNftItemProps } from "../../nfts";
+import { useSelector } from "@/src/redux";
 
+export const NftItem: FC<
+  RowNftItemProps & { isApproved?: boolean; handleApprove?(): void }
+> = (props) => {
+  /**
+   * @notice Define state variables present user execute approve token or not.
+   * @notice Default value is false.
+   * @notice Use this state to disable approve button or not.
+   */
+  const [approved, setApproved] = useState(false);
+
+  /**
+   * @dev The function to handle approve token.
+   * @notice This function will be called when user click approve button.
+   * @notice Call handleApprove function from props.
+   * @notice Disable approve button after user click.
+   * @returns {void}
+   */
+  const handleApprove = useCallback(() => {
+    props.handleApprove && props.handleApprove();
+    setApproved(true);
+  }, [props.handleApprove]);
+
+  console.log(props);
+
+  return (
+    <div className="flow-root mb-[10px]">
+      <div className="flex items-center float-left">
+        <img
+          src={props.image}
+          alt="Hamster
+          \wap"
+          className="w-[36px] h-[36px] rounded-[8px] float-left"
+        />
+        <p className="float-left text-[#20242D] text-[16px] ml-[10px]">
+          {props.name}
+        </p>
+      </div>
+      {props?.isApproved === false && (
+        <div className="float-right">
+          <Button
+            type="button"
+            onClick={handleApprove}
+            text="Approve"
+            disabled={approved}
+            width={"100%"}
+            {...(approved && {
+              theme: {
+                backgroundColor: "#94A3B8",
+                color: "#FFFFFF",
+              },
+            })}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+/**
+ * @dev This is the modal to confirm transaction.
+ * @param {ConfirmModalProps} props The props of modal.
+ * @returns {JSX.Element} The modal to confirm transaction.
+ */
 export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
   const { isLoading, buyer, seller } = props;
+  const { chainId } = useSelector();
+
+  /**
+   * @dev The function to format nfts.
+   * @notice If chain id is solana, return nfts.
+   * @notice If chain id is not solana, return nfts with isApproved and handleApprove.
+   * @returns {RowNftItemProps[]} The formatted nfts.
+   */
+  const formattedNfts = useMemo(
+    () =>
+      props.nfts.map((item) => {
+        if (chainId === ChainId.solana) return item;
+        return {
+          ...item,
+          isApproved: false,
+          handleApprove: () => {
+            console.log("Approve Token");
+          },
+        };
+      }),
+    [props.nfts, chainId]
+  );
 
   return (
     <Modal
@@ -48,7 +136,6 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
               </Col>
             </Row>
           </div>
-
           <h2 className="mt-10 mb-2 font-bold text-gray-800 text-2xl text-center">
             Confirm transaction
           </h2>
@@ -57,7 +144,12 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
             <strong>{utilsProvider.makeShort(seller?.walletAddress, 4)}</strong>
             .
           </p>
-
+          <div className="mt-[20px]">
+            {chainId !== ChainId.solana &&
+              formattedNfts?.map((nft, index) => (
+                <NftItem key={`pppsd${index}`} {...nft} />
+              ))}
+          </div>
           <Button
             type="button"
             onClick={props.handleOk}

@@ -1,15 +1,18 @@
 import { FC, useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useWalletKit } from "@gokiprotocol/walletkit";
-import { useConnectedWallet } from "@saberhq/use-solana";
 import { Button } from "@hamsterbox/ui-kit";
 import { PURPLE_HEADER_PAGES } from "@/src/utils";
-import classnames from "classnames";
-import styles from "./index.module.scss";
-import UserProfile from "@/src/components/header/user-profile";
 import { useMain } from "@/src/hooks/pages/main";
 import { HamsterboxIcon } from "@/src/components/icons";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ChainId } from "@/src/entities/chain.entity";
+import { ChainSelect } from "./chain-select";
+import UserProfile from "@/src/components/header/user-profile";
+import classnames from "classnames";
+import styles from "./index.module.scss";
 import styled from "@emotion/styled";
+import { useAppWallet } from "@/src/hooks/useAppWallet";
 
 interface MenuItem {
   title: string;
@@ -18,10 +21,10 @@ interface MenuItem {
 }
 
 const Header: FC = () => {
-  const [curSlug, setCurSlug] = useState<string>("#about-us");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [curSlug, setCurSlug] = useState<string>("#about-us");
   const router = useRouter();
-  const { hProfile } = useMain();
+  const { hProfile, chainId } = useMain();
 
   /**
    * Check homepage and display logo on dark theme
@@ -32,8 +35,8 @@ const Header: FC = () => {
   /**
    * @dev Import GoGi providers.
    */
-  const { connect: connectWallet } = useWalletKit();
-  const wallet = useConnectedWallet();
+  const { connect: openSolConnector } = useWalletKit();
+  const { walletAddress } = useAppWallet();
 
   /**
    * @dev Define Menu Data.
@@ -140,16 +143,27 @@ const Header: FC = () => {
             </a>
           </div>
           <div className="relative flex items-center float-right right-[16px]">
+            <ChainSelect />
             <div className="float-right relative">
               {!hProfile ? (
                 <div className="relative">
                   {" "}
-                  <Button
-                    className="!px-8"
-                    size="small"
-                    text="Connect Wallet"
-                    onClick={connectWallet}
-                  />{" "}
+                  <ConnectButton.Custom>
+                    {({ openConnectModal: openEvmConnector }) => {
+                      return (
+                        <Button
+                          className="!px-8"
+                          size="small"
+                          text="Connect Wallet"
+                          onClick={() => {
+                            // eslint-disable-next-line prettier/prettier
+                            if (chainId === ChainId.solana) return openSolConnector();
+                            return openEvmConnector();
+                          }}
+                        />
+                      );
+                    }}
+                  </ConnectButton.Custom>{" "}
                 </div>
               ) : (
                 <UserProfile />
@@ -194,7 +208,7 @@ const Header: FC = () => {
           >
             {
               <ul className="menu-container float-left">
-                {wallet && hProfile && (
+                {walletAddress && hProfile && (
                   <Button
                     className="!rounded-[100px] after:!rounded-[100px] !px-[20px]"
                     text="Create a Proposal"

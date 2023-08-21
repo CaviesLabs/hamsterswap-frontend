@@ -1,88 +1,59 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/src/redux/actions/user/user.action";
-import { useConnectedWallet } from "@saberhq/use-solana";
-import { useWallet } from "@/src/hooks/useWallet";
 import { getAuthService } from "@/src/actions/firebase.action";
-import { SIGN_MESSAGE } from "@/src/utils";
-import { getHamsterProfile } from "@/src/redux/actions/hamster-profile/profile.action";
-
-/**
- * @dev Delayed hook to check if wallet is disconnected, will reset all auth sessions
- * */
-let delayed: NodeJS.Timeout;
+import {
+  getHamsterProfile,
+  setProfile,
+} from "@/src/redux/actions/hamster-profile/profile.action";
+import {
+  useAppWallet,
+  useDisconnectWallet,
+  useIdpSignMessage,
+} from "@/src/hooks/useAppWallet";
+import { useSelector } from "@/src/redux";
 
 /** @dev Expore authenticate hook to process tasks related user authentcation */
 export const useAuth = () => {
   const dispatch = useDispatch();
-
-  /** @dev Get Wallet info from @saberhq hook. */
-  const wallet = useConnectedWallet();
-
-  /** @dev Import signMessage function to use. */
-  const { signMessage, disconnect } = useWallet();
-
-  /** @dev Import auth service. */
   const authService = getAuthService();
-
-  /** @dev The function to login. */
-  const handleLogin = async () => {
-    try {
-      /** @dev Sign message to get signature. */
-      const signature = await signMessage(SIGN_MESSAGE);
-
-      /** @dev Call function to sign message in wallet and login firebase & hamsterbox server. */
-      const user = await authService.signInWithWallet(
-        wallet?.publicKey?.toString(),
-        signature
-      );
-
-      /** @dev Get hamster profile. */
-      dispatch(getHamsterProfile());
-
-      /** @dev Update user in state. */
-      if (user) {
-        dispatch(setUser(user?.user));
-      }
-    } catch {}
-  };
-
-  /** @dev The function to handle authentication. */
-  const handleAuth = async () => {
-    /** @dev Get hamster profile. */
-    dispatch(
-      getHamsterProfile(null, (user) => {
-        if (!user) {
-          /** Throw error to next block. */
-          handleLogin();
-        }
-      })
-    );
-  };
+  const { chainId } = useSelector();
+  const { walletAddress } = useAppWallet();
+  const { disconnect } = useDisconnectWallet();
+  const { signIdpMessage } = useIdpSignMessage();
 
   /**
-   * @dev Listen wallet changes.
+   * @dev The function is used to login user with hamster api.
+   * @notice Step 1: Sign message with wallet address and get signature for each chain.
+   * @notice Step 2: Call api to login with signature.
+   * @notice Step 3: Update user profile and store in redux state.
+   */
+  const handleLogin = useCallback(async () => {
+    try {
+      const signature = await signIdpMessage();
+      await authService.loginWithHamsterApi(chainId, walletAddress, signature);
+      dispatch(getHamsterProfile());
+    } catch {}
+  }, [walletAddress, chainId]);
+
+  const handleLogout = useCallback(async () => {
+    await authService.logout();
+    dispatch(setProfile(null));
+  }, []);
+
+  /**
+   * @dev This hook is used to watch changes in wallet address and chainId.
+   * @notice If wallet address is changed, it will check if user is logged in or not.
    */
   useEffect(() => {
-    /** @dev Force to clear. */
-    delayed && clearTimeout(delayed);
-
-    /**
-     * @dev Condition to reset or login.
-     */
-    if (wallet?.publicKey?.toString()) {
-      handleAuth();
+    if (walletAddress) {
+      dispatch(
+        getHamsterProfile(null, (user) => {
+          if (!user) return handleLogin();
+          return disconnect();
+        })
+      );
     } else {
-      /**
-       * @dev Delayed checking mean when user disconnect completed from wallet, it will reset authentication session.
-       */
-      console.log("delayed");
-      delayed = setTimeout(async () => {
-        console.log("disconnect");
-        await disconnect();
-      }, 3000);
+      handleLogout();
     }
-
-    return () => delayed && clearTimeout(delayed);
-  }, [wallet]);
+  }, [walletAddress, chainId, disconnect]);
 };

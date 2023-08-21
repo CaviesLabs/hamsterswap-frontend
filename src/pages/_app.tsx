@@ -24,6 +24,7 @@ import {
   SolletWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 import { SeoComponent } from "@/src/components/seo";
+import { EvmWalletKitProvider, EvmWalletProvider } from "src/hooks/wagmi";
 import {
   legacyLogicalPropertiesTransformer,
   StyleProvider,
@@ -34,6 +35,7 @@ import {
  */
 import "flowbite";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import "@rainbow-me/rainbowkit/styles.css";
 
 const store = makeStore();
 
@@ -84,31 +86,35 @@ function MyApp({ Component, pageProps }: AppProps) {
                 : clusterApiUrl(network)
             }
           >
-            <SolanaWalletAdapterProvider wallets={walletAdapters}>
-              {/**
-               * @dev
-               * Wrap the whole app in Goki Kit provider for use.
-               */}
-              <WalletKitProvider
-                defaultNetwork={network}
-                app={{
-                  name: "Hamsterswap",
-                  icon: (
-                    <img
-                      className="bg-dark60 rounded-full"
-                      src="/assets/icons/favicon-196.png"
-                    />
-                  ),
-                }}
-                debugMode={false} // you may want to set this in REACT_APP_DEBUG_MODE
-              >
-                <WalletProvider>
-                  <MainProvider>
-                    <AppComponent {...{ Component, pageProps }} />
-                  </MainProvider>
-                </WalletProvider>
-              </WalletKitProvider>
-            </SolanaWalletAdapterProvider>
+            <EvmWalletKitProvider>
+              <EvmWalletProvider>
+                <SolanaWalletAdapterProvider wallets={walletAdapters}>
+                  {/**
+                   * @dev
+                   * Wrap the whole app in Goki Kit provider for use.
+                   */}
+                  <WalletKitProvider
+                    defaultNetwork={network}
+                    app={{
+                      name: "Hamsterswap",
+                      icon: (
+                        <img
+                          className="bg-dark60 rounded-full"
+                          src="/assets/icons/favicon-196.png"
+                        />
+                      ),
+                    }}
+                    debugMode={false} // you may want to set this in REACT_APP_DEBUG_MODE
+                  >
+                    <WalletProvider>
+                      <MainProvider>
+                        <AppComponent {...{ Component, pageProps }} />
+                      </MainProvider>
+                    </WalletProvider>
+                  </WalletKitProvider>
+                </SolanaWalletAdapterProvider>
+              </EvmWalletProvider>
+            </EvmWalletKitProvider>
           </ConnectionProvider>
         </ThemeProvider>
       </StyleProvider>

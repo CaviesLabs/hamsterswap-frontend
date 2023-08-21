@@ -673,10 +673,11 @@ export class SwapProgramProviderV0 {
             const {
               instruction: associatedInstruction,
               accounts: associatedInstructionAccounts,
-            } = await this.instructionProviderV0.getOrCreateProposalTokenAccount(
-              walletProvider.publicKey,
-              new PublicKey(item.contractAddress)
-            );
+            } =
+              await this.instructionProviderV0.getOrCreateProposalTokenAccount(
+                walletProvider.publicKey,
+                new PublicKey(item.contractAddress)
+              );
 
             /**
              * @dev Add to arrays to process if valid.

@@ -561,3 +561,22 @@ export const DropdownIcon: FC<IconProps> = (props) => (
     />
   </svg>
 );
+
+export const DropdownArrowIcon: FC<IconProps> = (props) => (
+  <svg
+    className={props.className}
+    width="17"
+    height="16"
+    viewBox="0 0 17 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M13.6566 5.66675L8.98991 10.3334L4.32324 5.66675"
+      stroke={props.color || "#7886A0"}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);

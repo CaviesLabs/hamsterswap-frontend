@@ -1,3 +1,5 @@
+export const SET_CHAIN_ID = "SET_CHAINID";
+
 export const SET_USER = "SET_USER";
 export const SET_USER_CHATS = "SET_USER_CHATS";
 export const SIGNUP_EMAIL = "SIGNUP_EMAIL";

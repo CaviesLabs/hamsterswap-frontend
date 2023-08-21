@@ -194,3 +194,42 @@ $cubic: cubic-bezier(0.4, 0.01, 0.165, 0.99);
     display: block;
   }
 }
+
+.chain-select {
+  position: relative;
+  border-radius: 100px;
+  border: 1px solid var(--secondary-purple-purple-25, #CCC3FF);
+  background: var(--secondary-purple-purple-0, #E5E0FF);
+  .toggle-container {
+    width: 160px;
+    position: absolute;
+    bottom: -155px;
+    right: 0px;
+    display: none;
+    background: #FFF;
+    padding: 20px 10px;
+    border-radius: 16px;
+    color: #20242D;
+    z-index: 200;
+    box-shadow: 0px 25px 40px -10px rgba(28, 39, 49, 0.08);
+    border: 1px solid var(--neutral-dark-10, #F0F3FA);
+
+
+    .container {
+      ul {
+        li {
+          font-size: 14px;
+          @media screen and (max-width: 768px) {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      bottom: -179px;
+      right: 0px;
+      width: 155px;
+    }
+  } 
+}

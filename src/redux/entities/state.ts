@@ -5,6 +5,7 @@ import { SwapProposalEntity } from "@/src/entities/proposal.entity";
 import { PlatformConfigDto } from "@/src/entities/platform-config.entity";
 import { hProfileDto } from "@/src/dto/hProfile.dto";
 import { ProposalDto } from "@/src/dto/proposal.dto";
+import { ChainId } from "@/src/entities/chain.entity";
 
 /**
  * @dev Initialize app state.
@@ -18,4 +19,5 @@ export default interface State {
   hProfile: hProfileDto;
   hPublicProfile: hProfileDto;
   platformConfig: PlatformConfigDto;
+  chainId: ChainId;
 }

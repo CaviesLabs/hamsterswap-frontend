@@ -2,7 +2,7 @@ import { DefaultWalletType } from "@saberhq/use-solana";
 import type { WalletName } from "@solana/wallet-adapter-base";
 import {
   PhantomWalletAdapter,
-  BraveWalletAdapter,
+  // BraveWalletAdapter,
   Coin98WalletAdapter,
   LedgerWalletAdapter,
   SolflareWalletAdapter,
@@ -14,8 +14,8 @@ export const getWalletName = (name: string): WalletName => {
   switch (name) {
     case DefaultWalletType.Phantom:
       return new PhantomWalletAdapter().name as WalletName;
-    case DefaultWalletType.BraveWallet:
-      return new BraveWalletAdapter().name as WalletName;
+    // case DefaultWalletType.:
+    //   return new BraveWalletAdapter().name as WalletName;
     case DefaultWalletType.Coin98:
       return new Coin98WalletAdapter().name as WalletName;
     case DefaultWalletType.Ledger:
