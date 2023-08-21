@@ -22,9 +22,8 @@ import { ConfirmTransactionModal } from "../components/modal";
 const Layout: FC = () => {
   const [modal, setModal] = useState(true);
   const proposals = useSelector((state: any) => state.proposals);
-  const {
-    platformConfig: { allowCurrencies },
-  } = useMain();
+  const { platformConfig } = useMain();
+  const allowCurrencies = platformConfig?.allowCurrencies;
 
   return (
     <MainLayout>

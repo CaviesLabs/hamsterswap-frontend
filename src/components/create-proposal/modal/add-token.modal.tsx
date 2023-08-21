@@ -42,10 +42,7 @@ export const AddTokenModal: FC<
 > = (props) => {
   const nativeBalance = useNativeBalance();
   const proposal = useSelector((state: any) => state.proposal);
-  const {
-    platformConfig: { allowCurrencies },
-    chainId,
-  } = useMain();
+  const { platformConfig, chainId } = useMain();
   const { walletAddress } = useAppWallet();
   const { offferedItems } = useCreateProposal();
   const [value, setValue] = useState("");
@@ -61,8 +58,11 @@ export const AddTokenModal: FC<
    * @returns {TokenEntity}
    */
   const tokenInfo = useMemo(
-    () => allowCurrencies.find((item) => item.address === addressSelected),
-    [allowCurrencies, addressSelected]
+    () =>
+      platformConfig?.allowCurrencies.find(
+        (item) => item.address === addressSelected
+      ),
+    [platformConfig, addressSelected]
   );
 
   /**
@@ -121,7 +121,7 @@ export const AddTokenModal: FC<
    */
   const handleGetBalanceOfSupportedCurrency = useCallback(async () => {
     const balances = await Promise.all(
-      allowCurrencies.map(async (token) => ({
+      platformConfig?.allowCurrencies.map(async (token) => ({
         address: token.address,
         balance:
           token.address === WSOL_ADDRESS
@@ -138,7 +138,7 @@ export const AddTokenModal: FC<
      * @dev Update balances state.
      */
     setBalances(balances);
-  }, [walletAddress, nativeBalance, chainId, allowCurrencies]);
+  }, [walletAddress, nativeBalance, chainId, platformConfig?.allowCurrencies]);
 
   /**
    * @dev Watch change of wallet address, and get balance of supported currency.
@@ -148,7 +148,7 @@ export const AddTokenModal: FC<
   useEffect(() => {
     if (!walletAddress) return;
     handleGetBalanceOfSupportedCurrency();
-  }, [walletAddress, nativeBalance, allowCurrencies]);
+  }, [walletAddress, nativeBalance, platformConfig]);
 
   return (
     <Modal
@@ -174,7 +174,7 @@ export const AddTokenModal: FC<
                   <img
                     className="w-10 h-10"
                     src={
-                      allowCurrencies.find(
+                      platformConfig?.allowCurrencies.find(
                         (item) => item.address === addressSelected
                       )?.icon
                     }
@@ -194,7 +194,7 @@ export const AddTokenModal: FC<
               </p>
               <Dropdown
                 menu={{
-                  items: allowCurrencies.map((item, key) => ({
+                  items: platformConfig?.allowCurrencies.map((item, key) => ({
                     key,
                     label: (
                       <TokenItem
@@ -228,7 +228,7 @@ export const AddTokenModal: FC<
                 <span className="ml-1 mr-1">
                   <img
                     src={
-                      allowCurrencies.find(
+                      platformConfig?.allowCurrencies.find(
                         (item) => item.address === addressSelected
                       )?.icon
                     }

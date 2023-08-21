@@ -12,9 +12,8 @@ import { useNativeToken } from "@/src/hooks/useAppWallet";
 
 export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
   const { nativeToken } = useNativeToken();
-  const {
-    platformConfig: { allowCurrencies },
-  } = useMain();
+  const { platformConfig } = useMain();
+  const allowCurrencies = platformConfig?.allowCurrencies;
 
   const { expectedItems, offferedItems, note, expiredTime, guaranteeSol } =
     useCreateProposal();

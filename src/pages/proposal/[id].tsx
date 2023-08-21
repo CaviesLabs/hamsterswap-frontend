@@ -33,9 +33,8 @@ const Layout: FC = () => {
     solanaWallet,
     provider: solanaProvider,
   } = useWallet();
-  const {
-    platformConfig: { allowCurrencies },
-  } = useMain();
+  const { platformConfig } = useMain();
+  const allowCurrencies = platformConfig?.allowCurrencies;
   const { nativeToken } = useNativeToken();
 
   /**

@@ -29,11 +29,8 @@ const Layout: FC = () => {
   /**
    * @dev Import redux states
    */
-  const {
-    hPublicProfile: profile,
-    proposals,
-    platformConfig: { allowCurrencies },
-  } = useMain();
+  const { hPublicProfile: profile, proposals, platformConfig } = useMain();
+  const allowCurrencies = platformConfig?.allowCurrencies;
 
   /**
    * @dev Import functions from provider

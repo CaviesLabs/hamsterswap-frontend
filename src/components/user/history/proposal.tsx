@@ -16,10 +16,8 @@ function Proposal(props: ProposalHistoryProps) {
   const router = useRouter();
   const { data } = props;
   const { status, fulfillBy } = data;
-  const {
-    hPublicProfile,
-    platformConfig: { allowCurrencies },
-  } = useMain();
+  const { hPublicProfile, platformConfig } = useMain();
+  const allowCurrencies = platformConfig?.allowCurrencies;
 
   /**
    * @description

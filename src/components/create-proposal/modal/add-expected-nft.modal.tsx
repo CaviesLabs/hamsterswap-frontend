@@ -27,10 +27,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   const [nftId, setNftId] = useState<string>("");
   const [nft, setNft] = useState<NftEntity>();
   const [step, setStep] = useState(0);
-  const {
-    platformConfig: { allowNTFCollections },
-    chainId,
-  } = useSelector();
+  const { platformConfig, chainId } = useSelector();
 
   const handleFetchNftData = (_nftId: string) => {
     setStep && setStep(1);
@@ -117,7 +114,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
                 setCollection={setCollection}
                 nftId={nftId}
                 setNftId={setNftId}
-                allowNTFCollections={allowNTFCollections}
+                allowNTFCollections={platformConfig?.allowNTFCollections}
               />
             )}
             {step === 1 && (
