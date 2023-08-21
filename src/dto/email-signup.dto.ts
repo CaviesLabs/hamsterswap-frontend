@@ -1,2 +1,1 @@
-import { CreateUserDto } from "./create-user.dto";
-export class EmailSignUpDto extends CreateUserDto {}
+export class EmailSignUpDto {}

@@ -2,7 +2,10 @@ import { FC, useMemo, useCallback, useRef, useState, useEffect } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import MainLayout from "@/src/layouts/main";
-import { CreateProposalProvider } from "@/src/hooks/pages/create-proposal";
+import {
+  CreateProposalProvider,
+  useSubmitProposal,
+} from "@/src/hooks/pages/create-proposal";
 import { LayoutSection } from "@/src/components/layout-section";
 import { BreadCrumb } from "@/src/components/bread-crumb";
 import { Button } from "@hamsterbox/ui-kit";
@@ -20,32 +23,15 @@ import {
 } from "@/src/components/create-proposal";
 import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optimize-transaction-modal";
 import { StorageProvider } from "@/src/providers/storage.provider";
-import { useConnectedWallet } from "@saberhq/use-solana";
-import { useWallet } from "@/src/hooks/useWallet";
+import { useAppWallet } from "@/src/hooks/useAppWallet";
 import classnames from "classnames";
 
 const Layout: FC = () => {
-  /**
-   * @dev Get wallet.
-   */
-  const { solanaWallet } = useWallet();
-
-  /**
-   * @dev Use next router.
-   */
   const router = useRouter();
-
-  /**
-   * @dev Import functions in screen context.
-   */
-  const {
-    offferedItems,
-    expectedItems,
-    note,
-    expiredTime,
-    guaranteeSol,
-    submitProposal,
-  } = useCreateProposal();
+  const { walletAddress } = useAppWallet();
+  const { submit: submitProposal } = useSubmitProposal();
+  const { offferedItems, expectedItems, note, expiredTime, guaranteeSol } =
+    useCreateProposal();
 
   /**
    * @dev Define proposal form, that include:
@@ -56,31 +42,19 @@ const Layout: FC = () => {
   const [formProposal] = Form.useForm();
 
   /**
-   * @dev Define step state.
+   * @dev Initilize state for control stepper
+   * @field currentStep
+   * @field modalOpened
+   * @field proposalId
+   * @field isDuringSubmit
+   * @field optimizedProposalOpen - open modal to optimize transaction (only for solana)
+   * @field stepperRef - ref to stepper component
    */
   const [currentStep, setCurrentStep] = useState(0);
-
-  /**
-   * @dev display modal when user confirm transaction successfully
-   */
   const [modalOpened, setModalOpened] = useState(false);
-
-  /**
-   * @dev Modal id.
-   */
   const [proposalId, setProposalId] = useState("");
-
-  /**
-   * @dev Define sate condition loading button during processing submit proposal.
-   */
   const [isDuringSubmit, setIsDuringSubmit] = useState(false);
-
-  /**
-   * @dev Condition to show popup to optimize proposal and submit proposal onchain.
-   */
   const [optimizedProposalOpen, setOptimizedProposalOpen] = useState(false);
-
-  /** @dev Initilize ref for stepper component. */
   const stepperRef = useRef<StepProgressHandle>(null);
 
   /**
@@ -140,23 +114,6 @@ const Layout: FC = () => {
   }, [currentStep]);
 
   /**
-   * @dev The function to create proposal without optimize option.
-   */
-  // const handleSubmitWithoutOptimize = async () => {
-  //   try {
-  //     setIsDuringSubmit(true);
-  //     const proposalId = (await submitProposal()) as string;
-  //     setProposalId(proposalId);
-  //     setModalOpened(true);
-  //     setIsDuringSubmit(false);
-  //   } catch (err: unknown) {
-  //     toast.error("Create proposal failed", (err as any).message);
-  //   } finally {
-  //     setIsDuringSubmit(false);
-  //   }
-  // };
-
-  /**
    * @dev The function to create proposal with optimize option.
    */
   const handleSubmitWithOptimize = async () => {
@@ -182,7 +139,7 @@ const Layout: FC = () => {
     note,
     expiredTime,
     guaranteeSol,
-    solanaWallet,
+    walletAddress,
   ]);
 
   function onFormSubmit() {
@@ -196,14 +153,13 @@ const Layout: FC = () => {
    * trigger wallet when user disconnected with
    * need stop to wait local storage remove access token
    */
-  const wallet = useConnectedWallet();
   useEffect(() => {
     setTimeout(() => {
       const storageProvider = new StorageProvider();
       const authen = storageProvider.getItem("hAccessToken");
       if (!authen) router.push("/");
     }, 500);
-  }, [wallet]);
+  }, [walletAddress]);
 
   return (
     <MainLayout>

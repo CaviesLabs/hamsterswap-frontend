@@ -97,10 +97,10 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
    * @notice Step 3. Get wallet name.
    * */
   useEffect(() => {
-    if (solanaWallet?.publicKey?.toString()) {
+    if (solanaWallet?.publicKey?.toString() && providerMut !== null) {
       try {
         const program = new SwapProgramServiceV0(
-          new SwapProgramProviderV0(providerMut)
+          new SwapProgramProviderV0(providerMut as any)
         );
 
         initProgram(program);
@@ -133,7 +133,7 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
         solanaWallet,
         programService,
         solBalance,
-        provider: providerMut,
+        provider: providerMut as any,
       }}
     >
       {props.children}

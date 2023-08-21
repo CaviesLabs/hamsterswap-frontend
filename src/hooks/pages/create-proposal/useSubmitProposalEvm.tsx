@@ -5,6 +5,9 @@ import { useAppWallet, useNativeToken } from "@/src/hooks/useAppWallet";
 import { useCreateProposal } from "./types";
 import { useSelector } from "@/src/redux";
 import { EvmTokenService } from "@/src/services/token-evm.service";
+import { useEvmHamsterSwapContract } from "@/src/hooks/wagmi";
+import { SwapProposalEntity } from "@/src/entities/proposal.entity";
+import { networkProvider } from "@/src/providers/network.provider";
 
 export const useSubmitProposalEvm = (): {
   submit(): Promise<void>;
@@ -12,6 +15,7 @@ export const useSubmitProposalEvm = (): {
   const { chainId } = useSelector();
   const { walletAddress } = useAppWallet();
   const { nativeToken } = useNativeToken();
+  const { submitProposal } = useEvmHamsterSwapContract();
   const { note, offferedItems, expectedItems, expiredTime } =
     useCreateProposal();
 
@@ -20,7 +24,7 @@ export const useSubmitProposalEvm = (): {
    * @param {BN} source The amount value in sol.
    * @param {number} decimals The decimals of token.
    * @param {number} realDecimals The real decimals of token.
-   * @returns {BigNumber} The amount value in evm.
+   * @returns {BigInt} The amount value in evm.
    */
   const convertSolAmountToEvmAmount = (
     source: BN,
@@ -54,7 +58,7 @@ export const useSubmitProposalEvm = (): {
                   askingItem.decimal,
                   askingItem.realDecimals
                 )
-              : 1,
+              : BigInt(1),
           })),
         })),
     [expectedItems, convertSolAmountToEvmAmount]
@@ -77,7 +81,7 @@ export const useSubmitProposalEvm = (): {
               item.decimal,
               item.realDecimals
             )
-          : 1,
+          : BigInt(1),
       })),
     [offferedItems, convertSolAmountToEvmAmount]
   );
@@ -96,15 +100,28 @@ export const useSubmitProposalEvm = (): {
   return {
     submit: useCallback(async () => {
       if (!walletAddress) return;
-      const createdData = {
-        note,
-        seller: walletAddress,
-        swapOptions: convertSwapOptionsHelper(),
-        offeredOptions: convertOfferedItemsHelper(),
-        expiredAt: expiredTime,
-      };
+      const response =
+        await networkProvider.requestWithCredentials<SwapProposalEntity>(
+          "/proposal",
+          {
+            method: "POST",
+            data: {
+              expiredAt: expiredTime,
+              chainId,
+              note,
+            },
+          }
+        );
 
-      console.log(createdData, getWrapTokenAmount());
+      await submitProposal(
+        {
+          proposalId: response.id,
+          offeredItems: convertSwapOptionsHelper(),
+          askingItems: convertOfferedItemsHelper(),
+          expiredAt: BigInt(expiredTime.getTime() / 1000),
+        },
+        await getWrapTokenAmount()
+      );
     }, [note, offferedItems, expectedItems, expiredTime]),
   };
 };

@@ -36,12 +36,7 @@ export const initState: State = {
   proposal: null,
   hProfile: null,
   hPublicProfile: null,
-  platformConfig: {
-    maxAllowedOptions: 0,
-    maxAllowedItems: 0,
-    allowCurrencies: [],
-    allowNTFCollections: [],
-  },
+  platformConfig: null,
 };
 
 export default reducer;

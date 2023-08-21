@@ -121,11 +121,11 @@ export const useEvmHamsterSwapContract = () => {
         proposalId: string;
         offeredItems: any[];
         askingItems: any[];
-        expiredAt: Date;
+        expiredAt: bigint;
       },
       wrapTokenAmount: bigint
     ) => {
-      await multicall3Contract.aggregate3Value([
+      return await multicall3Contract.aggregate3Value([
         ...(await wrapNativeTokenHelper(wrapTokenAmount)),
         {
           target: await contract.getAddress(),
@@ -143,6 +143,10 @@ export const useEvmHamsterSwapContract = () => {
     },
     [signer, ethWallet, contract, multicall3Contract]
   );
+
+  return {
+    submitProposal,
+  };
 };
 
 /** @dev Use context hook. */
