@@ -6,14 +6,13 @@ import styles from "@/styles/Home.module.css";
 import { DashboardPageProvider } from "@/src/hooks/pages/dashboard";
 import { ProposalExploreItem } from "@/src/components/proposal-item";
 import { Banner } from "@/src/components/homepage";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/src/redux";
 import {
   SwapItemEntity,
   SwapOptionEntity,
   SwapProposalEntity,
 } from "@/src/entities/proposal.entity";
 import { parseProposal } from "@/src/utils";
-import { useMain } from "@/src/hooks/pages/main";
 import Filter from "@/src/components/homepage/filter";
 
 import { DUMMY_PROFILES, DUMMY_NFTS } from "@/src/utils/constants";
@@ -21,8 +20,7 @@ import { ConfirmTransactionModal } from "../components/modal";
 
 const Layout: FC = () => {
   const [modal, setModal] = useState(true);
-  const proposals = useSelector((state: any) => state.proposals);
-  const { platformConfig } = useMain();
+  const { platformConfig, proposals } = useSelector();
   const allowCurrencies = platformConfig?.allowCurrencies;
 
   return (

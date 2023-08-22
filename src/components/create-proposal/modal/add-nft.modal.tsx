@@ -4,30 +4,17 @@ import { toast } from "@hamsterbox/ui-kit";
 import { AddItemModalProps } from "./types";
 import SearchInput from "../../search";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
-import { useMain } from "@/src/hooks/pages/main";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { NftEntity, NftStatus } from "@/src/dto/nft.dto";
-import { allowNTFCollection } from "@/src/entities/platform-config.entity";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/src/redux";
 
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
   /**
    * @dev Search state.
    */
   const [searchValue, setSearchValue] = useState("");
-
-  /**
-   * @dev Get user list nfts.
-   */
-  const { nft: ownerNftList } = useMain();
-
-  /**
-   * @dev get allowed NFTs from hamster config
-   */
-  const allowNftCollections: allowNTFCollection[] = useSelector(
-    (state: any) => state.platformConfig?.allowNTFCollections
-  );
+  const { nft: ownerNftList, platformConfig } = useSelector();
 
   /**
    * @dev Import functions in screen context.
@@ -35,14 +22,19 @@ export const AddNftModal: FC<AddItemModalProps> = (props) => {
   const { addOfferItem, offferedItems } = useCreateProposal();
 
   const nftsMemo = useMemo<NftEntity[]>(() => {
-    // allowNftCollections.find((s) => s.idList.includes(item.collectionId)) &&
+    // platformConfig?.allowNTFCollections.find((s) => s.idList.includes(item.collectionId)) &&
     return ownerNftList.filter(
       (item) =>
         !offferedItems.find((s) => s.address === item.address) &&
         item.status.valueOf() !== NftStatus.transfer.valueOf() &&
         item.name.includes(searchValue)
     );
-  }, [ownerNftList, offferedItems, allowNftCollections, searchValue]);
+  }, [
+    platformConfig?.allowNTFCollections,
+    ownerNftList,
+    offferedItems,
+    searchValue,
+  ]);
 
   /**
    * @dev The function to handle adding nft to offered field for proposal.

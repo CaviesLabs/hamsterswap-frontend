@@ -1,13 +1,13 @@
 import { ReactNode, useState } from "react";
 import { useDispatch } from "react-redux";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
-import { useMain } from "@/src/hooks/pages/main";
 import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
 import { sortOptions } from "@/src/utils";
 import { ProfilePageContext } from "./types";
+import { useSelector } from "@/src/redux";
 
 export const ProfilePageProvider = (props: { children: ReactNode }) => {
-  const { hPublicProfile: profile } = useMain();
+  const { hPublicProfile: profile } = useSelector();
 
   /**
    * @description

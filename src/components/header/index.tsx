@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useWalletKit } from "@gokiprotocol/walletkit";
 import { Button } from "@hamsterbox/ui-kit";
 import { PURPLE_HEADER_PAGES } from "@/src/utils";
-import { useMain } from "@/src/hooks/pages/main";
 import { HamsterboxIcon } from "@/src/components/icons";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { ChainId } from "@/src/entities/chain.entity";
@@ -13,6 +12,7 @@ import classnames from "classnames";
 import styles from "./index.module.scss";
 import styled from "@emotion/styled";
 import { useAppWallet, useDisconnectWallet } from "@/src/hooks/useAppWallet";
+import { useSelector } from "@/src/redux";
 
 interface MenuItem {
   title: string;
@@ -24,7 +24,7 @@ const Header: FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [curSlug, setCurSlug] = useState<string>("#about-us");
   const router = useRouter();
-  const { hProfile, chainId } = useMain();
+  const { hProfile, chainId } = useSelector();
 
   /**
    * Check homepage and display logo on dark theme

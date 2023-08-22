@@ -19,11 +19,11 @@ import {
 } from "@/src/entities/proposal.entity";
 import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
 import { useWallet } from "@/src/hooks/useWallet";
-import { useMain } from "@/src/hooks/pages/main";
 import { useConnectedWallet } from "@saberhq/use-solana";
 import moment from "moment";
 import BuyButton from "@/src/components/advertisment/buy-button";
 import { useNativeToken } from "@/src/hooks/useAppWallet";
+import { useSelector } from "@/src/redux";
 
 const Layout: FC = () => {
   const dispatch = useDispatch();
@@ -33,9 +33,9 @@ const Layout: FC = () => {
     solanaWallet,
     provider: solanaProvider,
   } = useWallet();
-  const { platformConfig } = useMain();
-  const allowCurrencies = platformConfig?.allowCurrencies;
   const { nativeToken } = useNativeToken();
+  const { platformConfig } = useSelector();
+  const allowCurrencies = platformConfig?.allowCurrencies;
 
   /**
    * @dev Declare option which user chose to swap.

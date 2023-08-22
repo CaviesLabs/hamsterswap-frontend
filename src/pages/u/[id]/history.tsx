@@ -7,16 +7,16 @@ import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
-import { useMain } from "@/src/hooks/pages/main";
 import MainLayout from "@/src/layouts/main";
 import Breadcrumb from "@/src/components/user/breadcrumb";
 import SubMenu from "@/src/components/user/sub-menu";
 import Title from "@/src/components/user/history/title";
 import Proposal from "@/src/components/user/history/proposal";
+import { useSelector } from "@/src/redux";
 
 const Layout: FC = () => {
   const router = useRouter();
-  const { hPublicProfile: profile, proposals } = useMain();
+  const { hPublicProfile: profile, proposals } = useSelector();
 
   /**
    * Fetch proposal by user id

@@ -5,14 +5,14 @@ import { ConfirmedTransactionModal } from "@/src/components/create-proposal/step
 import { SummaryProps } from "@/src/components/create-proposal/step5/types";
 import { parseOfferCreateProposal } from "@/src/utils";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import { useMain } from "@/src/hooks/pages/main";
 import { DATE_TIME_FORMAT } from "@/src/utils";
 import moment from "moment";
 import { useNativeToken } from "@/src/hooks/useAppWallet";
+import { useSelector } from "@/src/redux";
 
 export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
   const { nativeToken } = useNativeToken();
-  const { platformConfig } = useMain();
+  const { platformConfig } = useSelector();
   const allowCurrencies = platformConfig?.allowCurrencies;
 
   const { expectedItems, offferedItems, note, expiredTime, guaranteeSol } =

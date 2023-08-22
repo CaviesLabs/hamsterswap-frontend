@@ -8,8 +8,8 @@ import {
   ConfirmTransactionModal,
   WalletEmptyModal,
 } from "@/src/components/modal";
-import { useMain } from "@/src/hooks/pages/main";
 import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optimize-transaction-modal";
+import { useSelector } from "@/src/redux";
 
 const BuyButton: FC<{
   handleSwap(): Promise<void | {
@@ -28,7 +28,7 @@ const BuyButton: FC<{
   /**
    * @dev Import redux states.
    */
-  const { proposal, hPublicProfile: seller, hProfile: buyer } = useMain();
+  const { proposal, hPublicProfile: seller, hProfile: buyer } = useSelector();
 
   /**
    * States to handle display modal component

@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { Input, Modal, Dropdown } from "antd";
-import { useSelector } from "react-redux";
+import { useSelector } from "@/src/redux";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
 import { DropdownIcon } from "@/src/components/icons";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
@@ -17,7 +17,6 @@ import { TokenItem } from "../token-select-item";
 import { AddItemModalProps } from "./types";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { SwapItemType } from "@/src/entities/proposal.entity";
-import { useMain } from "@/src/hooks/pages/main";
 import { useAppWallet, useNativeBalance } from "@/src/hooks/useAppWallet";
 import { TokenService } from "@/src/services/token.service";
 import { TokenEntity } from "@/src/entities/platform-config.entity";
@@ -41,8 +40,7 @@ export const AddTokenModal: FC<
   }
 > = (props) => {
   const nativeBalance = useNativeBalance();
-  const proposal = useSelector((state: any) => state.proposal);
-  const { platformConfig, chainId } = useMain();
+  const { platformConfig, chainId, proposal } = useSelector();
   const { walletAddress } = useAppWallet();
   const { offferedItems } = useCreateProposal();
   const [value, setValue] = useState("");

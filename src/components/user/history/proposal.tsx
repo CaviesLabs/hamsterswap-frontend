@@ -8,15 +8,15 @@ import {
   SwapItemType,
 } from "@/src/entities/proposal.entity";
 import { getStatus } from "@/src/utils/proposal-status";
-import { useMain } from "@/src/hooks/pages/main";
 import UtilsProvider from "@/src/utils/utils.provider";
 import moment from "moment";
+import { useSelector } from "@/src/redux";
 
 function Proposal(props: ProposalHistoryProps) {
   const router = useRouter();
   const { data } = props;
   const { status, fulfillBy } = data;
-  const { hPublicProfile, platformConfig } = useMain();
+  const { hPublicProfile, platformConfig } = useSelector();
   const allowCurrencies = platformConfig?.allowCurrencies;
 
   /**

@@ -18,7 +18,7 @@ import {
   SwapProposalEntity,
 } from "@/src/entities/proposal.entity";
 import { useProfilePage } from "@/src/hooks/pages/profile";
-import { useMain } from "@/src/hooks/pages/main";
+import { useSelector } from "@/src/redux";
 
 const Layout: FC = () => {
   /**
@@ -29,7 +29,7 @@ const Layout: FC = () => {
   /**
    * @dev Import redux states
    */
-  const { hPublicProfile: profile, proposals, platformConfig } = useMain();
+  const { hPublicProfile: profile, proposals, platformConfig } = useSelector();
   const allowCurrencies = platformConfig?.allowCurrencies;
 
   /**
