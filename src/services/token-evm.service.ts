@@ -57,10 +57,7 @@ export class EvmTokenService implements ITokenService {
    * @param decimals
    * @returns {BigNumber}
    */
-  public async convertTokenAmountToDecimal(
-    amount: number,
-    decimals: number
-  ): Promise<bigint> {
+  public convertTokenAmountToDecimal(amount: number, decimals: number): bigint {
     return BigInt(
       `0x${new AppNumber(Number(amount))
         .multiply(new AppNumber(10).pow(new AppNumber(Number(decimals))))

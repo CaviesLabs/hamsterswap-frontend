@@ -9,9 +9,7 @@ import { useEvmHamsterSwapContract } from "@/src/hooks/wagmi";
 import { SwapProposalEntity } from "@/src/entities/proposal.entity";
 import { networkProvider } from "@/src/providers/network.provider";
 
-export const useSubmitProposalEvm = (): {
-  submit(): Promise<void>;
-} => {
+export const useSubmitProposalEvm = () => {
   const { chainId } = useSelector();
   const { walletAddress } = useAppWallet();
   const { nativeToken } = useNativeToken();
@@ -98,6 +96,7 @@ export const useSubmitProposalEvm = (): {
   }, [nativeToken, convertOfferedItemsHelper]);
 
   return {
+    convertOfferedItemsHelper,
     submit: useCallback(async () => {
       if (!walletAddress) return;
       const response =

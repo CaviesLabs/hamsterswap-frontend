@@ -22,12 +22,16 @@ import {
   Step5,
 } from "@/src/components/create-proposal";
 import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optimize-transaction-modal";
+import { SubmitProposalEvmModal } from "@/src/components/create-proposal/modal/submit-proposal-evm.modal";
 import { StorageProvider } from "@/src/providers/storage.provider";
 import { useAppWallet } from "@/src/hooks/useAppWallet";
 import classnames from "classnames";
+import { useSelector } from "@/src/redux";
+import { ChainId } from "../entities/chain.entity";
 
 const Layout: FC = () => {
   const router = useRouter();
+  const { chainId } = useSelector();
   const { walletAddress } = useAppWallet();
   const { submit: submitProposal } = useSubmitProposal();
   const { offferedItems, expectedItems, note, expiredTime, guaranteeSol } =
@@ -54,7 +58,7 @@ const Layout: FC = () => {
   const [modalOpened, setModalOpened] = useState(false);
   const [proposalId, setProposalId] = useState("");
   const [isDuringSubmit, setIsDuringSubmit] = useState(false);
-  const [optimizedProposalOpen, setOptimizedProposalOpen] = useState(false);
+  const [submitModalOpen, setSubmitModalOpen] = useState(false);
   const stepperRef = useRef<StepProgressHandle>(null);
 
   /**
@@ -119,7 +123,7 @@ const Layout: FC = () => {
   const handleSubmitWithOptimize = async () => {
     try {
       setIsDuringSubmit(true);
-      setOptimizedProposalOpen(true);
+      setSubmitModalOpen(true);
     } catch {}
   };
 
@@ -262,28 +266,43 @@ const Layout: FC = () => {
                   size="large"
                 />
               )}
-              <OptimizeTransactionModal
-                isModalOpen={optimizedProposalOpen}
-                instructionHandler={async () =>
-                  (await submitProposal()) as unknown as {
-                    proposalId?: string;
-                    fns: {
-                      optimize(): Promise<void>;
-                      confirm(): Promise<void>;
-                    };
+              {chainId === ChainId.solana ? (
+                <OptimizeTransactionModal
+                  isModalOpen={submitModalOpen}
+                  instructionHandler={async () =>
+                    (await submitProposal()) as unknown as {
+                      proposalId?: string;
+                      fns: {
+                        optimize(): Promise<void>;
+                        confirm(): Promise<void>;
+                      };
+                    }
                   }
-                }
-                handleCancel={() => {
-                  setOptimizedProposalOpen(false);
-                  setIsDuringSubmit(false);
-                }}
-                handleOk={(proposalId) => {
-                  setOptimizedProposalOpen(false);
-                  setProposalId(proposalId);
-                  setModalOpened(true);
-                  setIsDuringSubmit(false);
-                }}
-              />
+                  handleCancel={() => {
+                    setSubmitModalOpen(false);
+                    setIsDuringSubmit(false);
+                  }}
+                  handleOk={(proposalId) => {
+                    setSubmitModalOpen(false);
+                    setProposalId(proposalId);
+                    setModalOpened(true);
+                    setIsDuringSubmit(false);
+                  }}
+                />
+              ) : (
+                <SubmitProposalEvmModal
+                  isModalOpen={submitModalOpen}
+                  handleCancel={() => {
+                    setSubmitModalOpen(false);
+                    setIsDuringSubmit(false);
+                  }}
+                  handleOk={() => {
+                    setSubmitModalOpen(false);
+                    setModalOpened(true);
+                    setIsDuringSubmit(false);
+                  }}
+                />
+              )}
             </div>
           </div>
         </LayoutSection>
