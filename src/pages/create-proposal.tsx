@@ -118,24 +118,11 @@ const Layout: FC = () => {
   }, [currentStep]);
 
   /**
-   * @dev The function to create proposal with optimize option.
-   */
-  const handleSubmitWithOptimize = async () => {
-    try {
-      setIsDuringSubmit(true);
-      setSubmitModalOpen(true);
-    } catch {}
-  };
-
-  /**
    * @dev Click submit to create proposal.
    */
   const hanndleSubmitProposal = useCallback(async () => {
-    handleSubmitWithOptimize();
-    // if (router?.query?.optimized === "true") {
-    // } else {
-    //   handleSubmitWithoutOptimize();
-    // }
+    setIsDuringSubmit(true);
+    setSubmitModalOpen(true);
   }, [
     router,
     expectedItems,
