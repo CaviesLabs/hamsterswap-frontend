@@ -60,7 +60,12 @@ export const Step1: FC = () => {
     if (isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) return;
 
     addOfferItem(
-      { assetType: SwapItemType.CURRENCY, address: token.address } as any,
+      {
+        ...token,
+        image: token?.icon,
+        assetType: SwapItemType.CURRENCY,
+        address: token.address,
+      } as any,
       AssetTypes.token,
       parseFloat(amount)
     );

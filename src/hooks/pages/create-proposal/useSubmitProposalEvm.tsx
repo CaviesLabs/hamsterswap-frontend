@@ -5,15 +5,16 @@ import { useAppWallet, useNativeToken } from "@/src/hooks/useAppWallet";
 import { useCreateProposal } from "./types";
 import { useSelector } from "@/src/redux";
 import { EvmTokenService } from "@/src/services/token-evm.service";
-import { useEvmHamsterSwapContract } from "@/src/hooks/wagmi";
+import { useEvmHamsterSwapContract, useEvmWallet } from "@/src/hooks/wagmi";
 import { SwapProposalEntity } from "@/src/entities/proposal.entity";
 import { networkProvider } from "@/src/providers/network.provider";
 
 export const useSubmitProposalEvm = () => {
-  const { chainId } = useSelector();
+  const { chainId, nft: ownerNfts, platformConfig } = useSelector();
   const { walletAddress } = useAppWallet();
   const { nativeToken } = useNativeToken();
   const { submitProposal } = useEvmHamsterSwapContract();
+  const { signer } = useEvmWallet();
   const { note, offferedItems, expectedItems, expiredTime } =
     useCreateProposal();
 
@@ -29,11 +30,25 @@ export const useSubmitProposalEvm = () => {
     decimals: number,
     realDecimals: number
   ) => {
+    console.log(source, decimals, realDecimals);
     return new EvmTokenService(chainId).convertTokenAmountToDecimal(
       source.toNumber() / Math.pow(10, decimals),
       realDecimals
     );
   };
+
+  const getRealAddress = useCallback(
+    (address: string, assetTpe: SwapItemType) => {
+      if (assetTpe === SwapItemType.CURRENCY) {
+        return platformConfig?.allowCurrencies?.find(
+          (item) => item.address === address
+        )?.realAddress;
+      } else {
+        return ownerNfts?.find((item) => item.address === address)?.realAddress;
+      }
+    },
+    [ownerNfts, platformConfig]
+  );
 
   /**
    * @dev The function to convert swap options to evm swap options.
@@ -48,12 +63,19 @@ export const useSubmitProposalEvm = () => {
           id: item.id,
           askingItems: item.askingItems.map((askingItem) => ({
             id: askingItem.id,
-            contractAddress: askingItem.address,
-            tokenId: askingItem.assetType === SwapItemType.CURRENCY ? 1 : 2,
+            itemType: askingItem.assetType === SwapItemType.CURRENCY ? 0 : 1,
+            tokenId:
+              askingItem.assetType === SwapItemType.CURRENCY
+                ? 0
+                : askingItem.tokenId,
+            contractAddress: getRealAddress(
+              askingItem.address,
+              askingItem.assetType
+            ),
             amount: askingItem.amount
               ? convertSolAmountToEvmAmount(
                   askingItem.amount,
-                  askingItem.decimal,
+                  askingItem.decimals,
                   askingItem.realDecimals
                 )
               : BigInt(1),
@@ -71,12 +93,13 @@ export const useSubmitProposalEvm = () => {
     () =>
       offferedItems.map((item) => ({
         id: item.id,
-        contractAddress: item.address,
-        tokenId: item.assetType === SwapItemType.CURRENCY ? 1 : 2,
+        itemType: item.assetType === SwapItemType.CURRENCY ? 0 : 1,
+        contractAddress: getRealAddress(item.address, item.assetType),
+        tokenId: item.assetType === SwapItemType.CURRENCY ? 0 : item.tokenId,
         amount: item.amount
           ? convertSolAmountToEvmAmount(
               item.amount,
-              item.decimal,
+              item.decimals,
               item.realDecimals
             )
           : BigInt(1),
@@ -91,8 +114,9 @@ export const useSubmitProposalEvm = () => {
    */
   const getWrapTokenAmount = useCallback(() => {
     return convertOfferedItemsHelper()
-      .filter((item) => item.tokenId === 1)
-      .find((item) => item.contractAddress === nativeToken?.address).amount;
+      .filter((item) => !item.tokenId)
+      .find((item) => item.contractAddress === nativeToken?.realAddress)
+      ?.amount;
   }, [nativeToken, convertOfferedItemsHelper]);
 
   return {
@@ -105,22 +129,31 @@ export const useSubmitProposalEvm = () => {
           {
             method: "POST",
             data: {
-              expiredAt: expiredTime,
+              expiredAt: expiredTime.toISOString(),
               chainId,
               note,
             },
           }
         );
 
+      console.log(expiredTime, expiredTime.getTime());
       await submitProposal(
         {
           proposalId: response.id,
-          offeredItems: convertSwapOptionsHelper(),
-          askingItems: convertOfferedItemsHelper(),
-          expiredAt: BigInt(expiredTime.getTime() / 1000),
+          offeredItems: convertOfferedItemsHelper(),
+          swapOptions: convertSwapOptionsHelper(),
+          expiredAt: BigInt((expiredTime.getTime() / 1000).toFixed(0)),
         },
         await getWrapTokenAmount()
       );
-    }, [note, offferedItems, expectedItems, expiredTime]),
+    }, [
+      note,
+      offferedItems,
+      expectedItems,
+      expiredTime,
+      walletAddress,
+      platformConfig,
+      signer,
+    ]),
   };
 };

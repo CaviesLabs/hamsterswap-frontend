@@ -10,7 +10,7 @@ export class NftEvmProvider {
   public parseEntity(data: NftEntity): NftEntity {
     return {
       ...data,
-      decimal: 0,
+      decimals: 0,
       address: Keypair.generate().publicKey.toString(),
       realAddress: data?.address,
       status: NftStatus.holding,

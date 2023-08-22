@@ -63,8 +63,9 @@ export class NftEntity {
   attributes: AttributeDto[];
   symbol?: string;
   status: NftStatus.holding;
-  decimal: 0;
+  decimals: 0;
   realDecimals: 0;
+  tokenId?: number;
 }
 export class NftDto {
   list_nfts: NftEntity[];

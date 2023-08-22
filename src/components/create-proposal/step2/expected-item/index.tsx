@@ -54,7 +54,11 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
       if (!amount) return;
       if (isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) return;
       addExpectedItem(
-        { assetType: SwapItemType.CURRENCY, address: token.address } as any,
+        {
+          ...token,
+          assetType: SwapItemType.CURRENCY,
+          address: token.address,
+        } as any,
         AssetTypes.token,
         props?.index,
         parseFloat(amount)

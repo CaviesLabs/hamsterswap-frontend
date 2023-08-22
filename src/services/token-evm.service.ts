@@ -58,6 +58,7 @@ export class EvmTokenService implements ITokenService {
    * @returns {BigNumber}
    */
   public convertTokenAmountToDecimal(amount: number, decimals: number): bigint {
+    console.log(amount);
     return BigInt(
       `0x${new AppNumber(Number(amount))
         .multiply(new AppNumber(10).pow(new AppNumber(Number(decimals))))

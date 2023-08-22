@@ -118,8 +118,9 @@ export const AddTokenModal: FC<
    * @returns {Promise<void>}
    */
   const handleGetBalanceOfSupportedCurrency = useCallback(async () => {
+    if (!platformConfig?.allowCurrencies) return;
     const balances = await Promise.all(
-      platformConfig?.allowCurrencies.map(async (token) => ({
+      platformConfig?.allowCurrencies?.map(async (token) => ({
         address: token.address,
         balance:
           token.address === WSOL_ADDRESS

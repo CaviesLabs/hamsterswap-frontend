@@ -99,6 +99,10 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
       )
     );
 
+    console.log(
+      "Check all",
+      isAllApproved.every((item) => item)
+    );
     setAllApproved(isAllApproved.every((item) => item));
   }, [convertOfferedItemsHelper]);
 
@@ -110,7 +114,7 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
     () =>
       convertOfferedItemsHelper().map((item) => {
         const tokenInfo = offferedItems.find(
-          (offItem) => offItem.address === item.contractAddress
+          (offItem) => offItem.id === item.id
         );
 
         return {
@@ -130,6 +134,10 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
       }),
     [convertOfferedItemsHelper, offferedItems, chainId]
   );
+
+  useEffect(() => {
+    handleCheckAllApproved();
+  }, [props.isModalOpen]);
 
   return (
     <Modal
@@ -162,6 +170,12 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
           <Button
             type="button"
             disabled={!allApproved}
+            theme={
+              !allApproved && {
+                color: "white",
+                backgroundColor: "#94A3B8",
+              }
+            }
             onClick={props.handleOk}
             loading={isLoading}
             width={"100%"}

@@ -283,10 +283,11 @@ const Layout: FC = () => {
                     setSubmitModalOpen(false);
                     setIsDuringSubmit(false);
                   }}
-                  handleOk={() => {
-                    setSubmitModalOpen(false);
-                    setModalOpened(true);
-                    setIsDuringSubmit(false);
+                  handleOk={async () => {
+                    await submitProposal();
+                    // setSubmitModalOpen(false);
+                    // setModalOpened(true);
+                    // setIsDuringSubmit(false);
                   }}
                 />
               )}

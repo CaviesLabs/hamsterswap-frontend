@@ -28,8 +28,8 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
       if (!data?.address) return;
       const nft = await NftService.getService(chainId).getNftDetail({
         contractAddress: data.realAddress || data.address,
-        tokenId: data.id,
         chainId: chainId,
+        tokenId: data.tokenId.toString(),
       });
 
       setAttributes(nft?.attributes);

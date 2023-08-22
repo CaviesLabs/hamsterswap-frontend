@@ -9,7 +9,13 @@ import {
   useMemo,
   useCallback,
 } from "react";
-import { useWalletClient, useBalance, useAccount, useSignMessage } from "wagmi";
+import {
+  useWalletClient,
+  useBalance,
+  useAccount,
+  useSignMessage,
+  type WalletClient,
+} from "wagmi";
 import {
   ERC20,
   ERC20__factory,
@@ -20,12 +26,11 @@ import {
   Multicall3,
   Multicall3__factory,
 } from "@/src/providers/evm-program";
-import {
-  OfferedItemEntity,
-  ExpectedOpitionEntity,
-  SwapItemType,
-} from "@/src/entities/proposal.entity";
+import { getEvmContractService } from "@/src/services/evm-contract.service";
+
+import { BrowserProvider, JsonRpcSigner, MaxUint256 } from "ethers";
 import { useSelector } from "@/src/redux";
+import { platform } from "os";
 
 /** @dev Initialize context. */
 export const EvmWalletContext = createContext<{
@@ -33,6 +38,27 @@ export const EvmWalletContext = createContext<{
   walletAddress: string;
   signer: unknown;
 }>(null);
+
+export function walletClientToSigner(walletClient: WalletClient) {
+  const { account, chain, transport } = walletClient;
+  const network = {
+    chainId: chain.id,
+    name: chain.name,
+    ensAddress: chain.contracts?.ensRegistry?.address,
+  };
+  const provider = new BrowserProvider(transport as any, network);
+  const signer = new JsonRpcSigner(provider, account.address);
+  return signer;
+}
+
+/** Hook to convert a viem Wallet Client to an ethers.js Signer. */
+export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
+  const { data: walletClient } = useWalletClient({ chainId });
+  return useMemo(
+    () => (walletClient ? walletClientToSigner(walletClient) : undefined),
+    [walletClient]
+  );
+}
 
 /**
  * @dev Provider to wrap all children components for support evm wallet.
@@ -42,7 +68,7 @@ export const EvmWalletContext = createContext<{
  */
 export const EvmWalletProvider: FC<{ children: ReactNode }> = (props) => {
   const ethWallet = useAccount();
-  const { data: walletClient } = useWalletClient();
+  const walletClient = useEthersSigner();
   const { data: nativeBalanceData } = useBalance({
     address: ethWallet?.address,
   });
@@ -71,96 +97,67 @@ export const useSignEvmMessage = (message: string) => {
   });
 };
 
+export const useEvmContractService = () => {
+  const { signer } = useEvmWallet();
+  const { platformConfig } = useSelector();
+  return useMemo(
+    () =>
+      platformConfig?.programAddress && platformConfig?.multicall3Address
+        ? getEvmContractService(signer, platformConfig)
+        : null,
+    [signer, platformConfig]
+  );
+};
+
 export const useEvmHamsterSwapContract = () => {
   const { signer } = useEvmWallet();
   const { platformConfig } = useSelector();
   const ethWallet = useAccount();
-
-  /**
-   * @dev Initialize contract instance.
-   * @returns {HamsterSwap} contract instance.
-   */
-  const contract = useMemo<HamsterSwap>(() => {
-    return HamsterSwap__factory.connect(
-      platformConfig.programAddress,
-      signer as any
-    );
-  }, [signer, platformConfig]);
-
-  /**
-   * @dev Initialize Multicall3 contract instance.
-   * @returns {Multicall3} contract instance.
-   */
-  const multicall3Contract = useMemo<Multicall3>(() => {
-    return Multicall3__factory.connect(
-      platformConfig.multicall3Address,
-      signer as any
-    );
-  }, [signer, platformConfig]);
-
-  /**
-   * @dev The helper function to wrap native token to wSOL.
-   * @param {BigNumber} wrapTokenAmount The amount of native token to wrap.
-   * @returns {object[]} The array of transaction data.
-   */
-  const wrapNativeTokenHelper = useCallback(
-    async (wrapTokenAmount: bigint) => {
-      if (!wrapTokenAmount) return [];
-      return [
-        {
-          target: await contract.getAddress(),
-          callData: contract.interface.encodeFunctionData("wrapETH", [
-            ethWallet?.address?.toString(),
-            wrapTokenAmount,
-          ]),
-          value: wrapTokenAmount,
-          allowFailure: false,
-        },
-      ];
-    },
-    [platformConfig]
-  );
 
   const submitProposal = useCallback(
     async (
       args: {
         proposalId: string;
         offeredItems: any[];
-        askingItems: any[];
+        swapOptions: any[];
         expiredAt: bigint;
       },
       wrapTokenAmount: bigint
     ) => {
-      return await multicall3Contract.aggregate3Value([
-        ...(await wrapNativeTokenHelper(wrapTokenAmount)),
-        {
-          target: await contract.getAddress(),
-          callData: contract.interface.encodeFunctionData("createProposal", [
-            args.proposalId,
-            ethWallet?.address?.toString() as string,
-            args.offeredItems,
-            args.askingItems,
-            args.expiredAt,
-          ]),
-          value: 0,
-          allowFailure: false,
-        },
-      ]);
+      console.log(platformConfig);
+      if (!platformConfig?.programAddress || !platformConfig?.multicall3Address)
+        return;
+      return await getEvmContractService(
+        signer,
+        platformConfig
+      )?.submitProposal(
+        ethWallet?.address?.toString(),
+        args.proposalId,
+        args.offeredItems,
+        args.swapOptions,
+        args.expiredAt,
+        wrapTokenAmount
+      );
     },
-    [signer, ethWallet, contract, multicall3Contract]
+    [ethWallet, signer, platformConfig]
   );
 
-  return {
-    contract,
-    multicall3Contract,
-    submitProposal,
-  };
+  return useMemo(() => {
+    return {
+      submitProposal,
+    };
+  }, [ethWallet, signer, platformConfig]);
 };
 
 export const useEvmToken = () => {
-  const { contract } = useEvmHamsterSwapContract();
   const { signer } = useEvmWallet();
+  const { platformConfig } = useSelector();
+  const evmContractService = useEvmContractService();
   const ethWallet = useAccount();
+  const contract = useMemo(
+    () => evmContractService?.hamsterContract,
+    [signer, evmContractService]
+  );
 
   /**
    * @dev Initialize token contract instance.
@@ -179,6 +176,7 @@ export const useEvmToken = () => {
    */
   const getNftContract = useCallback<(tokenAddress: string) => ERC721>(
     (tokenAddress) => {
+      console.log({ tokenAddress, signer });
       return ERC721__factory.connect(tokenAddress, signer as any);
     },
     [signer]
@@ -195,18 +193,18 @@ export const useEvmToken = () => {
       tokenId: number
     ): Promise<boolean> => {
       switch (tokenId) {
-        case 1:
+        case 0:
           return (
             (await getTokenContract(tokenAddress).allowance(
               ethWallet?.address,
-              contract.getAddress()
+              await contract.getAddress()
             )) >= amount
           );
         case 2:
         default:
           return await getNftContract(tokenAddress).isApprovedForAll(
-            contract.getAddress(),
-            contract.getAddress()
+            ethWallet?.address,
+            await contract.getAddress()
           );
       }
     },
@@ -221,9 +219,9 @@ export const useEvmToken = () => {
   const approveToken = useCallback(
     async (tokenAddress: string, amount: bigint, tokenId: number) => {
       // eslint-disable-next-line prettier/prettier
-      if (tokenId === 1) return await getTokenContract(tokenAddress).approve(contract.getAddress(),amount);
+      if (!tokenId) return await getTokenContract(tokenAddress).approve(await contract.getAddress(), MaxUint256);
       return await getNftContract(tokenAddress).setApprovalForAll(
-        contract.getAddress(),
+        await contract.getAddress(),
         true
       );
     },

@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { CreateProposalPageContext } from "./types";
 import { NftEntity } from "@/src/dto/nft.dto";
 import {
@@ -51,17 +51,17 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
           askingItems: [
             ...opinion.askingItems,
             {
+              ...item,
               nftId: item.nftId,
               assetType: item.assetType,
               id: SwapProgramService.generateUID(),
               mintAccount: new PublicKey(item.address),
               itemType: { [type]: {} },
               amount: amount
-                ? new BN(amount * Math.pow(10, item.decimal))
+                ? new BN(amount * Math.pow(10, item.decimals))
                 : null,
               nft_address: item.address,
               tokenAmount: amount,
-              ...item,
             },
           ],
         };
@@ -100,15 +100,15 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
       return [
         ...prev,
         {
+          ...item,
           id: SwapProgramService.generateUID(),
           nftId: item?.nftId,
           assetType: item?.assetType,
           mintAccount: new PublicKey(item.address),
           itemType: { [type]: {} },
-          amount: amount ? new BN(amount * Math.pow(10, item.decimal)) : null,
+          amount: amount ? new BN(amount * Math.pow(10, item.decimals)) : null,
           nft_address: item.address,
           tokenAmount: amount,
-          ...item,
         },
       ];
     });
@@ -152,11 +152,16 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
  */
 export const useSubmitProposal = () => {
   const { chainId } = useSelector();
-  return {
-    submit: useCallback(async () => {
-      // eslint-disable-next-line prettier/prettier
-      if (chainId === ChainId.solana) return await useSubmitProposalSol().submit();
-      return await useSubmitProposalEvm().submit();
-    }, [chainId]),
-  };
+  const { submit: submitSol } = useSubmitProposalSol();
+  const { submit: submitEvm } = useSubmitProposalEvm();
+
+  return useMemo(() => {
+    return {
+      submit: async () => {
+        // eslint-disable-next-line prettier/prettier
+        if (chainId === ChainId.solana) return await submitSol();
+        return await submitEvm();
+      },
+    };
+  }, [chainId, submitSol, submitEvm]);
 };
