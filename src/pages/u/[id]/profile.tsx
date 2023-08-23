@@ -1,5 +1,5 @@
-import { FC, useEffect, useMemo } from "react";
-import type { NextPage } from "next";
+import { FC, useEffect, useMemo, useCallback, useState } from "react";
+import { type NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import { ProfilePageProvider } from "@/src/hooks/pages/profile";
 import { LayoutSection } from "@/src/components/layout-section";
@@ -18,39 +18,47 @@ import {
   SwapProposalEntity,
 } from "@/src/entities/proposal.entity";
 import { useProfilePage } from "@/src/hooks/pages/profile";
-import { useSelector } from "@/src/redux";
+import { RefreshButton } from "@/src/components/refresh-button";
+import { getProposalService } from "@/src/services/proposal.service";
+import { useMain } from "@/src/hooks/pages/main";
 
 const Layout: FC = () => {
-  /**
-   * @dev Get router
-   */
   const router = useRouter();
+  const {
+    hPublicProfile: profile,
+    proposals,
+    platformConfig,
+    chainId,
+  } = useMain();
 
-  /**
-   * @dev Import redux states
-   */
-  const { hPublicProfile: profile, proposals, platformConfig } = useSelector();
-  const allowCurrencies = platformConfig?.allowCurrencies;
-
-  /**
-   * @dev Import functions from provider
-   */
   const { selectedStatus, search, setSelectedStatus, setSearch, handleFilter } =
     useProfilePage();
 
-  /**
-   * @description
-   * Fetch proposal by user id
-   */
-  useEffect(() => {
-    if (!profile || !profile.walletAddress) return;
-    handleFilter();
-  }, [profile]);
+  const [refreshing, setRefreshing] = useState(false);
 
   /**
-   * @dev Reset data when status filter change.
+   * @dev Handle refresh proposals.
+   * @note This is a temporary solution.
    */
-  useEffect(() => handleFilter(search, selectedStatus), [selectedStatus]);
+  const handleRefreshProposals = useCallback(async () => {
+    if (!profile) return;
+    setRefreshing(true);
+    await getProposalService().syncWalletProposals(
+      chainId,
+      profile?.walletAddress
+    );
+    handleFilter(search, selectedStatus);
+    setRefreshing(false);
+  }, [profile, search, selectedStatus, setRefreshing]);
+
+  /**
+   * @dev Watch changes of selected status to filter proposals.
+   * @note This is a temporary solution.
+   */
+  useEffect(
+    () => handleFilter(search, selectedStatus),
+    [selectedStatus, profile]
+  );
 
   return (
     <MainLayout>
@@ -64,14 +72,20 @@ const Layout: FC = () => {
                   <UserInfoCard userId={router.query.id as string} />
                 )
               );
-            }, [router.query])}
+            }, [router.query, profile])}
           </div>
         </div>
         <SubMenu curTab={0} />
         <div className="mb-4 mt-10">
-          <h3 className="text-2xl font-bold tracking-tight text-gray-900">
-            Your Proposal
-          </h3>
+          <div className="flex items-center">
+            <h3 className="text-2xl font-bold tracking-tight text-gray-900 mr-[20px]">
+              Your Proposal
+            </h3>
+            <RefreshButton
+              loading={refreshing}
+              handleClick={handleRefreshProposals}
+            />
+          </div>
           <div className="block py-[50px]">
             <div className="md:flex items-center">
               <p>Filter by</p>
@@ -114,28 +128,27 @@ const Layout: FC = () => {
             </div>
           </div>
           {proposals?.map((proposal: SwapProposalEntity) => {
-            const p: any = { ...proposal };
-            const newOfferItems = p.offerItems.map(
-              (offerItem: SwapItemEntity) =>
-                parseProposal(offerItem, allowCurrencies)
-            );
-            const newSwapOptions = p.swapOptions.map(
-              (swapOption: SwapOptionEntity) => {
-                return swapOption.items.map((_) => ({
-                  ...parseProposal(_, allowCurrencies),
-                  optionId: swapOption.id,
-                }));
-              }
-            );
-            p.offerItems = newOfferItems;
-            p.swapOptions = newSwapOptions;
             return (
               <ProposalDetail
-                key={p.id}
-                data={p}
-                status={p.status}
+                key={proposal.id}
+                data={proposal}
+                status={proposal.status}
                 proposalId={proposal.id}
-                proposalOwner={proposal.ownerAddress || proposal.owner}
+                proposalOwner={proposal.ownerAddress}
+                swapItems={proposal.offerItems.map(
+                  (offerItem: SwapItemEntity) =>
+                    parseProposal(offerItem, platformConfig?.allowCurrencies)
+                )}
+                receiveItems={proposal.swapOptions.map(
+                  (swapOption: SwapOptionEntity) => {
+                    return {
+                      ...swapOption,
+                      items: swapOption.items.map((item) =>
+                        parseProposal(item, platformConfig?.allowCurrencies)
+                      ),
+                    };
+                  }
+                )}
               />
             );
           })}

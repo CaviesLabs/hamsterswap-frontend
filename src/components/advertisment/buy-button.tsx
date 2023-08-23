@@ -14,7 +14,7 @@ import { useSelector } from "@/src/redux";
 const BuyButton: FC<{
   handleSwap(): Promise<void | {
     proposalId?: string;
-    fns: { optimize(): Promise<void>; confirm(): Promise<void> };
+    fnc: { optimize(): Promise<void>; confirm(): Promise<void> };
   }>;
   optionIndex: number;
 }> = (props) => {
@@ -105,7 +105,7 @@ const BuyButton: FC<{
         instructionHandler={async () =>
           (await props.handleSwap()) as unknown as {
             proposalId?: string;
-            fns: {
+            fnc: {
               optimize(): Promise<void>;
               confirm(): Promise<void>;
             };

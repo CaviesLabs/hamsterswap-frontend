@@ -17,8 +17,8 @@ const reducer = combineReducers<State>({
   nft: nftReducer,
   platformConfig: platformConfigReducer,
   user: hProfileReducer,
-  hProfile: hProfileReducer,
   hPublicProfile: hPublicProfileReducer,
+  hProfile: hProfileReducer,
   proposals: proposalsReducer,
   proposal: proposalReducer,
   chainId: chainIdReducer,
@@ -28,7 +28,7 @@ const reducer = combineReducers<State>({
  * @dev Declare default state for app.
  */
 export const initState: State = {
-  chainId: ChainId.solana,
+  chainId: ChainId.klaytn,
   user: null,
   userChats: [],
   nft: [],

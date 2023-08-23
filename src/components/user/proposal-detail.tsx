@@ -21,7 +21,7 @@ import classnames from "classnames";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import State from "@/src/redux/entities/state";
 import moment from "moment";
-import { useNativeToken } from "@/src/hooks/useAppWallet";
+import { useAppWallet, useNativeToken } from "@/src/hooks/useAppWallet";
 
 type Method = "cancel" | "widthdraw";
 
@@ -39,7 +39,8 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   const [isDuringSubmitCancel, setIsDuringSubmitCancel] = useState(false);
 
   /** @todo Get wallet proivder */
-  const { solanaWallet, programService } = useWallet();
+  const { programService } = useWallet();
+  const { walletAddress } = useAppWallet();
   const { nativeToken } = useNativeToken();
 
   /** @todo Condition when proposal is already deposited offered items */
@@ -47,9 +48,8 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
 
   /** @todo Condition when proposal belong to signer */
   const isOwner = useMemo(
-    () =>
-      solanaWallet?.publicKey?.toBase58().toString() === props.proposalOwner,
-    [props.proposalOwner, solanaWallet]
+    () => walletAddress === props.proposalOwner,
+    [props.proposalOwner, walletAddress]
   );
 
   /** @todo Condition when proposal is expired but not canceled */
@@ -111,7 +111,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
       setOptimizedProposalOpen(true);
       setCancelModal(false);
     },
-    [props.proposalId, router, isOptimized, solanaWallet, programService]
+    [props.proposalId, router, isOptimized, walletAddress, programService]
   );
 
   /**
@@ -174,8 +174,8 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
               />
             </div>
             <ProposalItems
-              userAssets={data.offerItems}
-              userLookingFor={data.swapOptions}
+              userAssets={props.swapItems}
+              userLookingFor={props.receiveItems}
               fulfilledWithOptionId={data.fulfilledWithOptionId}
             />
             <Row className="mt-4">
@@ -303,7 +303,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
         instructionHandler={async () =>
           (await cancelProposal(props.proposalId)) as unknown as {
             proposalId?: string;
-            fns: {
+            fnc: {
               optimize(): Promise<void>;
               confirm(): Promise<void>;
             };

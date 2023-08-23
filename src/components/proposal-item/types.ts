@@ -1,18 +1,20 @@
-import { SwapProposalEntity } from "@/src/entities/proposal.entity";
-import { RowNftItemProps } from "@/src/components/nfts";
+import {
+  SwapProposalEntity,
+  SwapItemInfo,
+} from "@/src/entities/proposal.entity";
 
 export type ProposalItemProps = {
+  changeOption?: (value: number) => void;
   className?: string;
   isGuaranteedPayment?: boolean | false;
-  swapItems?: RowNftItemProps[];
-  receiveItems?: RowNftItemProps[][];
   data?: SwapProposalEntity;
-  changeOption?: (value: number) => void;
+  swapItems?: SwapItemInfo[]; // Item of user.
+  receiveItems?: { id: string; items: SwapItemInfo[] }[];
 };
 
 export type ProposalItemsProps = {
   className?: string;
-  userAssets: any[];
-  userLookingFor: any;
+  userAssets: SwapItemInfo[];
+  userLookingFor: { id: string; items: SwapItemInfo[] }[];
   fulfilledWithOptionId?: string;
 };

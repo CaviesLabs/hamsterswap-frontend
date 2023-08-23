@@ -86,6 +86,7 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
   const { offferedItems } = useCreateProposal();
   const { convertOfferedItemsHelper } = useSubmitProposalEvm();
   const { checkIsApproved, approveToken } = useEvmToken();
+  const [processingLoading, setProcessingLoading] = useState(false);
   const [allApproved, setAllApproved] = useState(false);
 
   /**
@@ -93,17 +94,21 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
    * @notice This function will be called when user click approve button.
    */
   const handleCheckAllApproved = useCallback(async () => {
-    const isAllApproved = await Promise.all(
-      convertOfferedItemsHelper().map((item) =>
-        checkIsApproved(item.contractAddress, item.amount, item.tokenId)
-      )
-    );
+    setProcessingLoading(true);
+    setTimeout(async () => {
+      const isAllApproved = await Promise.all(
+        convertOfferedItemsHelper().map((item) =>
+          checkIsApproved(item.contractAddress, item.amount, item.tokenId)
+        )
+      );
 
-    console.log(
-      "Check all",
-      isAllApproved.every((item) => item)
-    );
-    setAllApproved(isAllApproved.every((item) => item));
+      console.log(
+        "Check all",
+        isAllApproved.every((item) => item)
+      );
+      setAllApproved(isAllApproved.every((item) => item));
+      setProcessingLoading(false);
+    }, 4000);
   }, [convertOfferedItemsHelper]);
 
   /**
@@ -169,7 +174,7 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
           </div>
           <Button
             type="button"
-            disabled={!allApproved}
+            disabled={!allApproved || processingLoading}
             theme={
               !allApproved && {
                 color: "white",
@@ -177,7 +182,7 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
               }
             }
             onClick={props.handleOk}
-            loading={isLoading}
+            loading={processingLoading || isLoading}
             width={"100%"}
             text={
               isLoading ? "Confirming transaction in Wallet" : "Create Proposal"

@@ -50,7 +50,9 @@ export class NetworkProvider {
       baseURL: `${this.BASE_URL}/api`,
       paramsSerializer: {
         serialize: (params: any) => {
-          return qs.stringify(params, { arrayFormat: "repeat" });
+          return qs.stringify(params, {
+            arrayFormat: "repeat",
+          });
         },
       },
       headers: {

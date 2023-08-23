@@ -11,9 +11,9 @@ export class NftEvmProvider {
     return {
       ...data,
       decimals: 0,
+      status: NftStatus.holding,
       address: Keypair.generate().publicKey.toString(),
       realAddress: data?.address,
-      status: NftStatus.holding,
     };
   }
 }

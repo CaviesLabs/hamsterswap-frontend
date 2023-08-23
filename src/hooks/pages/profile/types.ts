@@ -39,7 +39,7 @@ export const ProfilePageContext = createContext<ProfilePageContextState>(null);
 export const useProfilePage = () => {
   const context = useContext(ProfilePageContext);
   if (context === undefined) {
-    throw new Error("Muse be in context provider");
+    return null;
   }
   return context;
 };

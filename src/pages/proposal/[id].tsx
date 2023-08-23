@@ -135,9 +135,12 @@ const Layout: FC = () => {
               }
               receiveItems={
                 proposal?.swapOptions.map((swapOption: SwapOptionEntity) => {
-                  return swapOption.items.map((_) =>
-                    parseProposal(_, allowCurrencies)
-                  );
+                  return {
+                    ...swapOption,
+                    items: swapOption.items.map((_) =>
+                      parseProposal(_, allowCurrencies)
+                    ),
+                  };
                 }) ?? []
               }
             />

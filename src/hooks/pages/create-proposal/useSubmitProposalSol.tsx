@@ -18,28 +18,32 @@ export const useSubmitProposalSol = (): {
   return {
     submit: useCallback(async () => {
       if (!walletAddress) return;
-      return await programService.createProposal(solanaProvider, {
-        note,
-        ownerAddress: walletAddress,
-        swapOptions: expectedItems
-          .filter((item) => item.askingItems.length)
-          .map((item) => ({
-            id: item.id,
-            askingItems: item.askingItems.map((askingItem) => ({
-              mintAccount: new PublicKey(askingItem.address),
-              id: askingItem.id,
-              amount: askingItem.amount ? askingItem.amount : new anchor.BN(1),
-              itemType: askingItem.itemType,
+      return (
+        await programService.createProposal(solanaProvider, {
+          note,
+          ownerAddress: walletAddress,
+          swapOptions: expectedItems
+            .filter((item) => item.askingItems.length)
+            .map((item) => ({
+              id: item.id,
+              askingItems: item.askingItems.map((askingItem) => ({
+                mintAccount: new PublicKey(askingItem.address),
+                id: askingItem.id,
+                amount: askingItem.amount
+                  ? askingItem.amount
+                  : new anchor.BN(1),
+                itemType: askingItem.itemType,
+              })),
             })),
+          offeredOptions: offferedItems.map((item) => ({
+            mintAccount: new PublicKey(item.address),
+            id: item.id,
+            amount: item.amount ? item.amount : new anchor.BN(1),
+            itemType: item.itemType,
           })),
-        offeredOptions: offferedItems.map((item) => ({
-          mintAccount: new PublicKey(item.address),
-          id: item.id,
-          amount: item.amount ? item.amount : new anchor.BN(1),
-          itemType: item.itemType,
-        })),
-        expiredAt: expiredTime,
-      });
+          expiredAt: expiredTime,
+        })
+      ).fnc;
     }, [note, offferedItems, expectedItems, expiredTime]),
   };
 };

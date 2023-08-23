@@ -1,7 +1,8 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Col, Input, Row } from "antd";
 import Select from "@/src/components/select";
 import { useDispatch } from "react-redux";
+import { useSelector } from "@/src/redux";
 import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 import { SearchIcon } from "@/src/components/icons";
@@ -9,27 +10,24 @@ import { Button } from "@hamsterbox/ui-kit";
 
 const Filter: FC = () => {
   const [search, setSearch] = useState("");
-  // const [mobileFilterDisplayed, setMobileFilterDisplayed] = useState(true);
-
+  const { chainId } = useSelector();
   const dispatch = useDispatch();
-  const handleSearch = (_search?: string) => {
+
+  const handleSearch = useCallback(() => {
     dispatch(
       getExploreProposals({
         options: {
-          statuses: [SwapProposalStatus.ACTIVE],
-          search: _search,
+          statuses: [SwapProposalStatus.ACTIVE, SwapProposalStatus.EXPIRED],
+          search,
+          chainId,
         },
       })
     );
-  };
+  }, [chainId]);
 
   useEffect(() => {
     handleSearch();
-  }, []);
-
-  const handleReset = () => {
-    setSearch("");
-  };
+  }, [chainId, search]);
 
   return (
     <>
@@ -52,7 +50,7 @@ const Filter: FC = () => {
               text="Search"
               shape="secondary"
               size="middle"
-              onClick={() => handleSearch(search)}
+              onClick={() => handleSearch()}
               width="100px"
             />
           </div>
@@ -63,7 +61,7 @@ const Filter: FC = () => {
         <span className="font-bold mr-4">Filter</span>
         <span
           className="regular-text text-indigo-600 cursor-pointer"
-          onClick={() => handleReset()}
+          onClick={() => setSearch("")}
         >
           Reset
         </span>

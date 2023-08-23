@@ -15,7 +15,7 @@ export const OptimizeTransactionModal: FC<
     handleOk(proposalId?: string): void;
     instructionHandler(): Promise<{
       proposalId?: string;
-      fns: { optimize(): Promise<void>; confirm(): Promise<void> };
+      fnc: { optimize(): Promise<void>; confirm(): Promise<void> };
     }>;
   }
 > = (props) => {

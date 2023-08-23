@@ -64,8 +64,8 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
             walletAddress={utilsProvider.makeShort(data.ownerAddress, 4)}
           />
           <ProposalItems
-            userAssets={data.offerItems}
-            userLookingFor={data.swapOptions}
+            userAssets={props.swapItems}
+            userLookingFor={props.receiveItems}
           />
           <Row className="pt-8">
             <Col span={10}>

@@ -236,9 +236,18 @@ export const useEvmToken = () => {
 
 /** @dev Use context hook. */
 export const useEvmWallet = () => {
-  const context = useContext(EvmWalletContext);
-  if (!context) {
-    throw new Error("Must be in provider");
-  }
-  return context;
+  const ethWallet = useAccount();
+  const walletClient = useEthersSigner();
+  const { data: nativeBalanceData } = useBalance({
+    address: ethWallet?.address,
+  });
+
+  return useMemo(
+    () => ({
+      signer: walletClient,
+      walletAddress: ethWallet?.address?.toString() || "",
+      nativeBalance: parseFloat(nativeBalanceData?.formatted)?.toFixed(3),
+    }),
+    [ethWallet, walletClient, nativeBalanceData]
+  );
 };

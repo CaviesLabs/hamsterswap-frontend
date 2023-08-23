@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { FC, useState } from "react";
+import { FC } from "react";
 import type { NextPage } from "next";
 import MainLayout from "@/src/layouts/main";
 import styles from "@/styles/Home.module.css";
@@ -15,13 +15,8 @@ import {
 import { parseProposal } from "@/src/utils";
 import Filter from "@/src/components/homepage/filter";
 
-import { DUMMY_PROFILES, DUMMY_NFTS } from "@/src/utils/constants";
-import { ConfirmTransactionModal } from "../components/modal";
-
 const Layout: FC = () => {
-  const [modal, setModal] = useState(true);
   const { platformConfig, proposals } = useSelector();
-  const allowCurrencies = platformConfig?.allowCurrencies;
 
   return (
     <MainLayout>
@@ -36,27 +31,31 @@ const Layout: FC = () => {
                   <div className="lg:col-span-8">
                     <div className="rounded-lg  lg:h-full px-[10px] py-[20px]">
                       {proposals?.map((proposal: SwapProposalEntity) => {
-                        const p: any = { ...proposal };
-                        const newOfferItems = p.offerItems.map(
-                          (offerItem: SwapItemEntity) =>
-                            parseProposal(offerItem, allowCurrencies)
-                        );
-                        const newSwapOptions = p.swapOptions.map(
-                          (swapOption: SwapOptionEntity) => {
-                            return swapOption.items.map((_) =>
-                              parseProposal(_, allowCurrencies)
-                            );
-                          }
-                        );
-                        p.offerItems = newOfferItems;
-                        p.swapOptions = newSwapOptions;
                         return (
                           <ProposalExploreItem
-                            key={p.id}
-                            data={p}
-                            receiveItems={p.offerItems}
-                            swapItems={p.swapOptions}
+                            key={proposal.id}
+                            data={proposal}
                             isGuaranteedPayment
+                            swapItems={proposal.offerItems.map(
+                              (offerItem: SwapItemEntity) =>
+                                parseProposal(
+                                  offerItem,
+                                  platformConfig?.allowCurrencies
+                                )
+                            )}
+                            receiveItems={proposal.swapOptions.map(
+                              (swapOption: SwapOptionEntity) => {
+                                return {
+                                  ...swapOption,
+                                  items: swapOption.items.map((item) =>
+                                    parseProposal(
+                                      item,
+                                      platformConfig?.allowCurrencies
+                                    )
+                                  ),
+                                };
+                              }
+                            )}
                           />
                         );
                       })}

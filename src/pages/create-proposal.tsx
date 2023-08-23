@@ -259,7 +259,7 @@ const Layout: FC = () => {
                   instructionHandler={async () =>
                     (await submitProposal()) as unknown as {
                       proposalId?: string;
-                      fns: {
+                      fnc: {
                         optimize(): Promise<void>;
                         confirm(): Promise<void>;
                       };

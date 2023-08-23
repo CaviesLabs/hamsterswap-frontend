@@ -5,18 +5,12 @@ export const SET_USER_CHATS = "SET_USER_CHATS";
 export const SIGNUP_EMAIL = "SIGNUP_EMAIL";
 
 /**
- * Actions for proposal service
- */
-export const GET_PROPOSALS = "GET_PROPOSALS";
-export const SET_PROPOSALS = "SET_PROPOSALS";
-
-/**
  * Actions for modify user proposals state.
  */
+export const SET_PROPOSALS = "SET_PROPOSALS";
+export const GET_PROPOSALS = "GET_PROPOSALS";
 export const SET_PROPOSAL = "SET_PROPOSAL";
 export const GET_PROPOSAL = "GET_PROPOSAL";
-export const SET_PROPSALS = "SET_PROPOSALS";
-export const GET_PROPSALS = "GET_PROPSALS";
 export const GET_EXPLORE_PROPOSALS = "GET_EXPLORE_PROPOSALS";
 
 /**

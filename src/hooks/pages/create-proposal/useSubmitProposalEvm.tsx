@@ -8,6 +8,7 @@ import { EvmTokenService } from "@/src/services/token-evm.service";
 import { useEvmHamsterSwapContract, useEvmWallet } from "@/src/hooks/wagmi";
 import { SwapProposalEntity } from "@/src/entities/proposal.entity";
 import { networkProvider } from "@/src/providers/network.provider";
+import { uuid } from "uuidv4";
 
 export const useSubmitProposalEvm = () => {
   const { chainId, nft: ownerNfts, platformConfig } = useSelector();
@@ -30,7 +31,6 @@ export const useSubmitProposalEvm = () => {
     decimals: number,
     realDecimals: number
   ) => {
-    console.log(source, decimals, realDecimals);
     return new EvmTokenService(chainId).convertTokenAmountToDecimal(
       source.toNumber() / Math.pow(10, decimals),
       realDecimals
@@ -60,10 +60,10 @@ export const useSubmitProposalEvm = () => {
       expectedItems
         .filter((item) => item.askingItems.length)
         .map((item) => ({
-          id: item.id,
+          id: uuid(),
           askingItems: item.askingItems.map((askingItem) => ({
             id: askingItem.id,
-            itemType: askingItem.assetType === SwapItemType.CURRENCY ? 0 : 1,
+            itemType: askingItem.assetType === SwapItemType.NFT ? 0 : 1,
             tokenId:
               askingItem.assetType === SwapItemType.CURRENCY
                 ? 0
@@ -92,8 +92,8 @@ export const useSubmitProposalEvm = () => {
   const convertOfferedItemsHelper = useCallback(
     () =>
       offferedItems.map((item) => ({
-        id: item.id,
-        itemType: item.assetType === SwapItemType.CURRENCY ? 0 : 1,
+        id: uuid(),
+        itemType: item.assetType === SwapItemType.NFT ? 0 : 1,
         contractAddress: getRealAddress(item.address, item.assetType),
         tokenId: item.assetType === SwapItemType.CURRENCY ? 0 : item.tokenId,
         amount: item.amount

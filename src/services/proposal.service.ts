@@ -5,6 +5,7 @@ import {
 } from "@/src/entities/proposal.entity";
 import { DetailDto } from "@/src/dto/detail.dto";
 import { CreateProposalDto, ProposalDto } from "@/src/dto/proposal.dto";
+import { ChainId } from "../entities/chain.entity";
 
 export class ProposalService {
   /**
@@ -56,6 +57,22 @@ export class ProposalService {
       data: payload,
     });
   }
+
+  /**
+   * @dev Update proposal.
+   * @param {ChainId} chainId.
+   * @param {string} walletAddress.
+   * @returns {ProposalDto}
+   */
+  syncWalletProposals(chainId: ChainId, walletAddress: string): Promise<void> {
+    return networkProvider.request<void>(
+      `/proposal/${chainId}/${walletAddress}/sync`,
+      {
+        method: "POST",
+      }
+    );
+  }
 }
 
 export const proposalService = new ProposalService();
+export const getProposalService = () => new ProposalService();

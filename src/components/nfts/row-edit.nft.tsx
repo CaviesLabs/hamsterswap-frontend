@@ -2,16 +2,13 @@ import classnames from "classnames";
 import React, { FC, useRef, useState } from "react";
 import { RowNftEditItemProps } from "./types";
 import { DeleteIcon, DetailIcon, VerticalDots } from "@/src/components/icons";
-import { GameItemModal, NFTDetailsModal } from "@/src/components/modal";
+import { NFTDetailsModal } from "@/src/components/modal";
 import { SwapItemType } from "@/src/entities/proposal.entity";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
 import { useSelector } from "@/src/redux";
 import { UtilsProvider } from "@/src/utils";
 
 export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
-  /** @dev Get cryptocurrencies which Hamster support. */
-  const { platformConfig } = useSelector();
-
   /**
    * @dev reference to the button
    * close the dropdown when user click outside
@@ -21,15 +18,10 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
     setCollapse(false);
   });
 
+  const { platformConfig } = useSelector();
   const { assetType } = props;
-  /**
-   * @dev handle open option list
-   */
-  const [collapse, setCollapse] = useState(false);
 
-  /**
-   * @dev handle open modal by asset type
-   */
+  const [collapse, setCollapse] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const handleShowViewDetail = () => {
@@ -123,21 +115,14 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
           </div>
         </div>
       </div>
-      {assetType === SwapItemType.NFT ? (
+      {assetType === SwapItemType.NFT && (
         <NFTDetailsModal
-          data={{ ...props }}
+          address={props?.realAddress}
+          tokenId={props?.tokenId}
           isModalOpen={isDetailOpen}
           handleCancel={() => setIsDetailOpen(false)}
           handleOk={() => setIsDetailOpen(false)}
         />
-      ) : (
-        assetType === SwapItemType.GAME && (
-          <GameItemModal
-            isModalOpen={isDetailOpen}
-            handleCancel={() => setIsDetailOpen(false)}
-            handleOk={() => setIsDetailOpen(false)}
-          />
-        )
       )}
     </>
   );

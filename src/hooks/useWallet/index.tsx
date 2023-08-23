@@ -1,11 +1,4 @@
-import {
-  useContext,
-  useCallback,
-  useEffect,
-  useState,
-  ReactNode,
-  FC,
-} from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import web3, { Connection } from "@solana/web3.js";
@@ -19,11 +12,10 @@ import { SwapProgramProviderV0 } from "@/src/providers/program/swap-program-v0.p
 import { getAuthService } from "@/src/actions/auth.action";
 import { setProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { SwapProgramServiceV0 } from "@/src/services/swap-program-v0.service";
-import { WalletContext } from "./types";
 import { getWalletName } from "./utils";
 
 /** @dev Expose wallet provider for usage. */
-export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
+export const useWallet = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const solanaAdapter = useAdapter();
@@ -124,28 +116,27 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
     solanaAdapter?.wallet?.adapter?.connect();
   }, [solanaWallet, solanaAdapter]);
 
-  return (
-    <WalletContext.Provider
-      value={{
-        signMessage,
-        disconnect,
-        getSolBalance,
-        solanaWallet,
-        programService,
-        solBalance,
-        provider: providerMut as any,
-      }}
-    >
-      {props.children}
-    </WalletContext.Provider>
+  return useMemo(
+    () => ({
+      signMessage,
+      disconnect,
+      getSolBalance,
+      solanaWallet,
+      programService,
+      solBalance,
+      provider: providerMut as any,
+    }),
+    [
+      signMessage,
+      disconnect,
+      getSolBalance,
+      solanaWallet,
+      programService,
+      solBalance,
+      providerMut as any,
+      router,
+      solanaWallet,
+      walletProviderInfo,
+    ]
   );
-};
-
-/** @dev Use context hook. */
-export const useWallet = () => {
-  const context = useContext(WalletContext);
-  if (!context) {
-    throw new Error("Must be in provider");
-  }
-  return context;
 };
