@@ -8,7 +8,7 @@ import {
 } from "@/src/hooks/pages/create-proposal";
 import { LayoutSection } from "@/src/components/layout-section";
 import { BreadCrumb } from "@/src/components/bread-crumb";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { StepProgressBar } from "@/src/components/stepper";
 import type { StepProgressHandle } from "@/src/components/stepper";
 import { Carousel } from "react-responsive-carousel";
@@ -26,12 +26,12 @@ import { SubmitProposalEvmModal } from "@/src/components/create-proposal/modal/s
 import { StorageProvider } from "@/src/providers/storage.provider";
 import { useAppWallet } from "@/src/hooks/useAppWallet";
 import classnames from "classnames";
-import { useSelector } from "@/src/redux";
 import { ChainId } from "../entities/chain.entity";
+import { useMain } from "@/src/hooks/pages/main";
 
 const Layout: FC = () => {
   const router = useRouter();
-  const { chainId } = useSelector();
+  const { chainId } = useMain();
   const { walletAddress } = useAppWallet();
   const { submit: submitProposal } = useSubmitProposal();
   const { offferedItems, expectedItems, note, expiredTime, guaranteeSol } =
@@ -131,6 +131,7 @@ const Layout: FC = () => {
     expiredTime,
     guaranteeSol,
     walletAddress,
+    chainId,
   ]);
 
   function onFormSubmit() {
@@ -284,10 +285,20 @@ const Layout: FC = () => {
                     setIsDuringSubmit(false);
                   }}
                   handleOk={async () => {
-                    await submitProposal();
-                    // setSubmitModalOpen(false);
-                    // setModalOpened(true);
-                    // setIsDuringSubmit(false);
+                    try {
+                      const result = (await submitProposal()) as {
+                        proposalId: string;
+                        fnc: any;
+                      };
+                      setModalOpened(true);
+                      setSubmitModalOpen(false);
+                      setProposalId(result.proposalId);
+                      setModalOpened(true);
+                      setIsDuringSubmit(false);
+                    } catch (err) {
+                      console.error("ERROR_CREATE_PROPOSAL: ", err);
+                      toast.error("Create proposal failed, please try again.");
+                    }
                   }}
                 />
               )}

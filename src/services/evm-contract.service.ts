@@ -1,8 +1,8 @@
 import {
-  // ERC20,
-  // ERC20__factory,
-  // ERC721,
-  // ERC721__factory,
+  ERC20,
+  ERC20__factory,
+  ERC721,
+  ERC721__factory,
   HamsterSwap,
   HamsterSwap__factory,
   Multicall3,
@@ -18,21 +18,61 @@ export class EvmContractService {
     private readonly signer: unknown,
     private readonly platformConfig: PlatformConfigDto
   ) {
+    /**
+     * @dev Initialize HamsterSwap contract.
+     * @private
+     */
     this._hamsterContract = HamsterSwap__factory.connect(
       platformConfig.programAddress,
       signer as any
     );
 
+    /**
+     * @dev Initialize multicall3 contract.
+     * @private
+     */
     this.multical3Contract = Multicall3__factory.connect(
       platformConfig.multicall3Address,
       signer as any
     );
   }
 
+  /**
+   * @dev Get HamsterSwap contract.
+   * @returns {HamsterSwap}
+   */
   public get hamsterContract(): HamsterSwap {
     return this._hamsterContract;
   }
 
+  /**
+   * @dev Get ERC721 contract.
+   * @param {string} address
+   * @returns {ERC721}
+   */
+  public getNftContract(address: string): ERC721 {
+    return ERC721__factory.connect(address, this.signer as any);
+  }
+
+  /**
+   * @dev Get ERC20 contract.
+   * @param {string} address
+   * @returns {ERC20}
+   */
+  public getTokenContract(address: string): ERC20 {
+    return ERC20__factory.connect(address, this.signer as any);
+  }
+
+  /**
+   * @dev The function to prepare data to submit proposal on-chain.
+   * @param {string} walletAddress
+   * @param {string} proposalId
+   * @param {any[]} offeredItems
+   * @param {any[]} swapOptions
+   * @param {bigint} expiredAt
+   * @param {bigint} wrapTokenAmount
+   * @returns {Promise<any>}
+   */
   async submitProposal(
     walletAddress: string,
     proposalId: string,
@@ -41,41 +81,89 @@ export class EvmContractService {
     expiredAt: bigint,
     wrapTokenAmount: bigint
   ) {
-    console.log({ multical3Contract: this.multical3Contract });
-    console.log({
+    return await this.multical3Contract.aggregate3Value(
+      [
+        ...(wrapTokenAmount
+          ? [
+              {
+                target: await this.hamsterContract.getAddress(),
+                callData: this.hamsterContract.interface.encodeFunctionData(
+                  "wrapETH",
+                  [walletAddress, wrapTokenAmount]
+                ),
+                value: wrapTokenAmount,
+                allowFailure: false,
+              },
+            ]
+          : []),
+        {
+          target: await this.hamsterContract.getAddress(),
+          callData: this.hamsterContract.interface.encodeFunctionData(
+            "createProposal",
+            [proposalId, walletAddress, offeredItems, swapOptions, expiredAt]
+          ),
+          value: 0,
+          allowFailure: false,
+        },
+      ],
+      wrapTokenAmount ? { value: wrapTokenAmount } : {}
+    );
+  }
+
+  /**
+   * @dev The function to prepare data to cancel proposal on-chain.
+   * @param {string} proposalId
+   * @returns {Promise<any>}
+   */
+  public async cancelProposal(proposalId: string) {
+    return await this.hamsterContract.cancelProposal(proposalId);
+  }
+
+  /**
+   * @dev The function to prepare data to swap proposal on-chain.
+   * @param {string} proposalId
+   * @param {string} optionId
+   * @returns {Promise<any>}
+   */
+  public async fullFillProposal(
+    walletAddress: string,
+    proposalId: string,
+    optionId: string,
+    wrapTokenAmount: bigint
+  ) {
+    console.log("fullFillProposal", {
       walletAddress,
       proposalId,
-      offeredItems,
-      swapOptions,
-      expiredAt,
+      optionId,
       wrapTokenAmount,
     });
-    console.log({ programAddress: await this.hamsterContract.getAddress() });
-
-    return await this.multical3Contract.aggregate3Value([
-      ...(wrapTokenAmount
-        ? [
-            {
-              target: await this.hamsterContract.getAddress(),
-              callData: this.hamsterContract.interface.encodeFunctionData(
-                "wrapETH",
-                [walletAddress, wrapTokenAmount]
-              ),
-              value: wrapTokenAmount,
-              allowFailure: false,
-            },
-          ]
-        : []),
-      {
-        target: await this.hamsterContract.getAddress(),
-        callData: this.hamsterContract.interface.encodeFunctionData(
-          "createProposal",
-          [proposalId, walletAddress, offeredItems, swapOptions, expiredAt]
-        ),
-        value: 0,
-        allowFailure: false,
-      },
-    ]);
+    return await this.multical3Contract.aggregate3Value(
+      [
+        ...(wrapTokenAmount
+          ? [
+              {
+                target: await this.hamsterContract.getAddress(),
+                callData: this.hamsterContract.interface.encodeFunctionData(
+                  "wrapETH",
+                  [walletAddress, wrapTokenAmount]
+                ),
+                value: wrapTokenAmount,
+                allowFailure: false,
+              },
+            ]
+          : []),
+        {
+          target: await this.hamsterContract.getAddress(),
+          callData: this.hamsterContract.interface.encodeFunctionData(
+            "fulfillProposal",
+            [proposalId, optionId, walletAddress]
+          ),
+          value: 0,
+          allowFailure: false,
+        },
+      ],
+      wrapTokenAmount ? { value: wrapTokenAmount } : {}
+    );
   }
 }
 

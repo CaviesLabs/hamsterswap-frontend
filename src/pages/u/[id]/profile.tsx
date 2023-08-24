@@ -55,10 +55,14 @@ const Layout: FC = () => {
    * @dev Watch changes of selected status to filter proposals.
    * @note This is a temporary solution.
    */
-  useEffect(
-    () => handleFilter(search, selectedStatus),
-    [selectedStatus, profile]
-  );
+  useEffect(() => {
+    handleFilter(search, selectedStatus);
+  }, [selectedStatus, profile]);
+
+  console.log({ profile });
+  useEffect(() => {
+    console.log(proposals);
+  }, [proposals, profile]);
 
   return (
     <MainLayout>

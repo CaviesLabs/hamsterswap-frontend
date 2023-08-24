@@ -10,10 +10,10 @@ import {
 import { SwapProgramService } from "@/src/services/swap-program.service";
 import { BN } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
-import { useSelector } from "@/src/redux";
 import { ChainId } from "@/src/entities/chain.entity";
 import { useSubmitProposalSol } from "./useSubmitProposalSol";
 import { useSubmitProposalEvm } from "./useSubmitProposalEvm";
+import { useMain } from "../main";
 
 export const CreateProposalProvider = (props: { children: ReactNode }) => {
   /**
@@ -151,7 +151,7 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
  * @returns {CreateProposalPageContext}
  */
 export const useSubmitProposal = () => {
-  const { chainId } = useSelector();
+  const { chainId } = useMain();
   const { submit: submitSol } = useSubmitProposalSol();
   const { submit: submitEvm } = useSubmitProposalEvm();
 

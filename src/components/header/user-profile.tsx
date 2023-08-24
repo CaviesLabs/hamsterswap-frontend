@@ -4,9 +4,9 @@ import { FC, useEffect } from "react";
 import { useRouter } from "next/router";
 import { getHamsterProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { useAppWallet, useDisconnectWallet } from "@/src/hooks/useAppWallet";
-import { useSelector } from "@/src/redux";
 import classnames from "classnames";
 import styles from "./index.module.scss";
+import { useMain } from "@/src/hooks/pages/main";
 
 const UserProfile: FC = () => {
   const { disconnect } = useDisconnectWallet();
@@ -22,7 +22,7 @@ const UserProfile: FC = () => {
    * + walletAddress
    * and save it into redux-store
    */
-  const { hProfile: profile } = useSelector();
+  const { hProfile: profile } = useMain();
 
   /**
    * @dev Watch changes in wallet and get hamster profile

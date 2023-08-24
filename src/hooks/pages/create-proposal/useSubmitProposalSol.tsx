@@ -7,7 +7,11 @@ import * as anchor from "@project-serum/anchor";
 
 export const useSubmitProposalSol = (): {
   submit(): Promise<
-    string | { optimize(): Promise<void>; confirm(): Promise<void> }
+    | string
+    | {
+        proposalId: string;
+        fnc: { optimize(): Promise<void>; confirm(): Promise<void> };
+      }
   >;
 } => {
   const { walletAddress } = useAppWallet();
@@ -18,32 +22,28 @@ export const useSubmitProposalSol = (): {
   return {
     submit: useCallback(async () => {
       if (!walletAddress) return;
-      return (
-        await programService.createProposal(solanaProvider, {
-          note,
-          ownerAddress: walletAddress,
-          swapOptions: expectedItems
-            .filter((item) => item.askingItems.length)
-            .map((item) => ({
-              id: item.id,
-              askingItems: item.askingItems.map((askingItem) => ({
-                mintAccount: new PublicKey(askingItem.address),
-                id: askingItem.id,
-                amount: askingItem.amount
-                  ? askingItem.amount
-                  : new anchor.BN(1),
-                itemType: askingItem.itemType,
-              })),
+      return await programService.createProposal(solanaProvider, {
+        note,
+        ownerAddress: walletAddress,
+        swapOptions: expectedItems
+          .filter((item) => item.askingItems.length)
+          .map((item) => ({
+            id: item.id.slice(0, 10),
+            askingItems: item.askingItems.map((askingItem) => ({
+              id: askingItem.id.slice(0, 10),
+              mintAccount: new PublicKey(askingItem.address),
+              amount: askingItem.amount ? askingItem.amount : new anchor.BN(1),
+              itemType: askingItem.itemType,
             })),
-          offeredOptions: offferedItems.map((item) => ({
-            mintAccount: new PublicKey(item.address),
-            id: item.id,
-            amount: item.amount ? item.amount : new anchor.BN(1),
-            itemType: item.itemType,
           })),
-          expiredAt: expiredTime,
-        })
-      ).fnc;
+        offeredOptions: offferedItems.map((item) => ({
+          id: item.id.slice(0, 10),
+          mintAccount: new PublicKey(item.address),
+          amount: item.amount ? item.amount : new anchor.BN(1),
+          itemType: item.itemType,
+        })),
+        expiredAt: expiredTime,
+      });
     }, [note, offferedItems, expectedItems, expiredTime]),
   };
 };

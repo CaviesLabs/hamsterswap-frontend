@@ -15,12 +15,12 @@ import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { Col, Row } from "antd";
 import { useAppWallet } from "@/src/hooks/useAppWallet";
-import { useSelector } from "@/src/redux";
 import { TokenEntity } from "@/src/entities/platform-config.entity";
+import { useMain } from "@/src/hooks/pages/main";
 
 export const Step1: FC = () => {
   const { walletAddress } = useAppWallet();
-  const { chainId } = useSelector();
+  const { chainId } = useMain();
 
   /** @dev Import functions in screen context. */
   const { offferedItems, removeOfferItem, addOfferItem } = useCreateProposal();

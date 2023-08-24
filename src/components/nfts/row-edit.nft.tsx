@@ -5,8 +5,8 @@ import { DeleteIcon, DetailIcon, VerticalDots } from "@/src/components/icons";
 import { NFTDetailsModal } from "@/src/components/modal";
 import { SwapItemType } from "@/src/entities/proposal.entity";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
-import { useSelector } from "@/src/redux";
 import { UtilsProvider } from "@/src/utils";
+import { useMain } from "@/src/hooks/pages/main";
 
 export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
   /**
@@ -18,7 +18,7 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
     setCollapse(false);
   });
 
-  const { platformConfig } = useSelector();
+  const { platformConfig } = useMain();
   const { assetType } = props;
 
   const [collapse, setCollapse] = useState(false);

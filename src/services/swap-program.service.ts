@@ -181,6 +181,6 @@ export class SwapProgramService {
    * @returns {string}
    */
   public static generateUID() {
-    return uuid().slice(0, 10);
+    return uuid();
   }
 }

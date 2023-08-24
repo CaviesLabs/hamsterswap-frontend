@@ -10,9 +10,9 @@ import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { toast } from "@hamsterbox/ui-kit";
 import { isEmpty } from "lodash";
-import { useSelector } from "@/src/redux";
 import animationData from "@/src/components/icons/animation-loading.json";
 import Lottie from "react-lottie";
+import { useMain } from "@/src/hooks/pages/main";
 
 export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   /**
@@ -27,7 +27,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   const [nftId, setNftId] = useState<string>("");
   const [nft, setNft] = useState<NftEntity>();
   const [step, setStep] = useState(0);
-  const { platformConfig, chainId } = useSelector();
+  const { platformConfig, chainId } = useMain();
 
   const handleFetchNftData = (_nftId: string) => {
     setStep && setStep(1);

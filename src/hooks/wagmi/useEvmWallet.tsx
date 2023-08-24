@@ -1,14 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  createContext,
-  useContext,
-  ReactNode,
-  FC,
-  // useState,
-  // useEffect,
-  useMemo,
-  useCallback,
-} from "react";
+import { createContext, useMemo, useCallback } from "react";
 import {
   useWalletClient,
   useBalance,
@@ -16,21 +6,9 @@ import {
   useSignMessage,
   type WalletClient,
 } from "wagmi";
-import {
-  ERC20,
-  ERC20__factory,
-  ERC721,
-  ERC721__factory,
-  HamsterSwap,
-  HamsterSwap__factory,
-  Multicall3,
-  Multicall3__factory,
-} from "@/src/providers/evm-program";
 import { getEvmContractService } from "@/src/services/evm-contract.service";
-
 import { BrowserProvider, JsonRpcSigner, MaxUint256 } from "ethers";
-import { useSelector } from "@/src/redux";
-import { platform } from "os";
+import { useMain } from "@/src/hooks/pages/main";
 
 /** @dev Initialize context. */
 export const EvmWalletContext = createContext<{
@@ -61,32 +39,6 @@ export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
 }
 
 /**
- * @dev Provider to wrap all children components for support evm wallet.
- * @notice This provider will be used in app.tsx.
- * @param {ReactNode} props.children The children components.
- * @returns {JSX.Element} The jsx element.
- */
-export const EvmWalletProvider: FC<{ children: ReactNode }> = (props) => {
-  const ethWallet = useAccount();
-  const walletClient = useEthersSigner();
-  const { data: nativeBalanceData } = useBalance({
-    address: ethWallet?.address,
-  });
-
-  return (
-    <EvmWalletContext.Provider
-      value={{
-        signer: walletClient,
-        walletAddress: ethWallet?.address?.toString() || "",
-        nativeBalance: parseFloat(nativeBalanceData?.formatted)?.toFixed(3),
-      }}
-    >
-      {props.children}
-    </EvmWalletContext.Provider>
-  );
-};
-
-/**
  * @dev Custom hook to sign message with evm wallet.
  * @param {string} message The message to sign.
  * @returns {object} The object contains sign message function.
@@ -99,7 +51,7 @@ export const useSignEvmMessage = (message: string) => {
 
 export const useEvmContractService = () => {
   const { signer } = useEvmWallet();
-  const { platformConfig } = useSelector();
+  const { platformConfig } = useMain();
   return useMemo(
     () =>
       platformConfig?.programAddress && platformConfig?.multicall3Address
@@ -111,9 +63,14 @@ export const useEvmContractService = () => {
 
 export const useEvmHamsterSwapContract = () => {
   const { signer } = useEvmWallet();
-  const { platformConfig } = useSelector();
+  const { platformConfig } = useMain();
   const ethWallet = useAccount();
 
+  /**
+   * @dev The function to submit proposal.
+   * @returns {Promise<void>} The promise object.
+   * @notice This function will be used in submit proposal.
+   */
   const submitProposal = useCallback(
     async (
       args: {
@@ -124,7 +81,6 @@ export const useEvmHamsterSwapContract = () => {
       },
       wrapTokenAmount: bigint
     ) => {
-      console.log(platformConfig);
       if (!platformConfig?.programAddress || !platformConfig?.multicall3Address)
         return;
       return await getEvmContractService(
@@ -142,44 +98,73 @@ export const useEvmHamsterSwapContract = () => {
     [ethWallet, signer, platformConfig]
   );
 
-  return useMemo(() => {
-    return {
+  /**
+   * @dev The function to full fill proposal.
+   * @returns {Promise<void>} The promise object.
+   */
+  const fullFillProposal = useCallback(
+    async (args: {
+      proposalId: string;
+      optionId: string;
+      wrappedTokenAmount: bigint;
+    }) => {
+      if (!platformConfig?.programAddress || !platformConfig?.multicall3Address)
+        return;
+      return await getEvmContractService(
+        signer,
+        platformConfig
+      )?.fullFillProposal(
+        ethWallet?.address?.toString(),
+        args.proposalId,
+        args.optionId,
+        args.wrappedTokenAmount
+      );
+    },
+    [ethWallet, signer, platformConfig]
+  );
+
+  /**
+   * @dev The function to cancel proposal.
+   * @returns {Promise<void>} The promise object.
+   * @notice This function will be used in submit proposal.
+   */
+  const cancelProposal = useCallback(
+    async (args: { proposalId: string }) => {
+      if (!platformConfig?.programAddress || !platformConfig?.multicall3Address)
+        return;
+      return await getEvmContractService(
+        signer,
+        platformConfig
+      )?.cancelProposal(args.proposalId);
+    },
+    [ethWallet, signer, platformConfig]
+  );
+
+  return useMemo(
+    () => ({
       submitProposal,
-    };
-  }, [ethWallet, signer, platformConfig]);
+      fullFillProposal,
+      cancelProposal,
+    }),
+    [
+      ethWallet,
+      signer,
+      platformConfig,
+      submitProposal,
+      fullFillProposal,
+      cancelProposal,
+    ]
+  );
 };
 
 export const useEvmToken = () => {
   const { signer } = useEvmWallet();
-  const { platformConfig } = useSelector();
+  const { platformConfig } = useMain();
   const evmContractService = useEvmContractService();
   const ethWallet = useAccount();
   const contract = useMemo(
     () => evmContractService?.hamsterContract,
     [signer, evmContractService]
-  );
-
-  /**
-   * @dev Initialize token contract instance.
-   * @returns {ERC20} contract instance.
-   */
-  const getTokenContract = useCallback<(tokenAddress: string) => ERC20>(
-    (tokenAddress) => {
-      return ERC20__factory.connect(tokenAddress, signer as any);
-    },
-    [signer]
-  );
-
-  /**
-   * @dev Initialize nft contract instance.
-   * @returns {ERC721} contract instance.
-   */
-  const getNftContract = useCallback<(tokenAddress: string) => ERC721>(
-    (tokenAddress) => {
-      console.log({ tokenAddress, signer });
-      return ERC721__factory.connect(tokenAddress, signer as any);
-    },
-    [signer]
   );
 
   /**
@@ -190,25 +175,27 @@ export const useEvmToken = () => {
     async (
       tokenAddress: string,
       amount: bigint,
-      tokenId: number
+      tokenType: number
     ): Promise<boolean> => {
-      switch (tokenId) {
-        case 0:
+      console.log({ signer });
+      if (!platformConfig?.programAddress || !platformConfig?.multicall3Address)
+        return;
+      switch (tokenType) {
+        case 1:
           return (
-            (await getTokenContract(tokenAddress).allowance(
-              ethWallet?.address,
-              await contract.getAddress()
-            )) >= amount
+            (await getEvmContractService(signer, platformConfig)
+              .getTokenContract(tokenAddress)
+              .allowance(ethWallet?.address, await contract.getAddress())) >=
+            amount
           );
-        case 2:
+        case 0:
         default:
-          return await getNftContract(tokenAddress).isApprovedForAll(
-            ethWallet?.address,
-            await contract.getAddress()
-          );
+          return await getEvmContractService(signer, platformConfig)
+            .getNftContract(tokenAddress)
+            .isApprovedForAll(ethWallet?.address, await contract.getAddress());
       }
     },
-    [getTokenContract, getNftContract, contract, ethWallet]
+    [platformConfig, contract, ethWallet, signer]
   );
 
   /**
@@ -217,21 +204,25 @@ export const useEvmToken = () => {
    * @notice This function will be used in submit proposal.
    */
   const approveToken = useCallback(
-    async (tokenAddress: string, amount: bigint, tokenId: number) => {
+    async (tokenAddress: string, tokenId: number) => {
+      if (!platformConfig?.programAddress || !platformConfig?.multicall3Address)
+        return;
       // eslint-disable-next-line prettier/prettier
-      if (!tokenId) return await getTokenContract(tokenAddress).approve(await contract.getAddress(), MaxUint256);
-      return await getNftContract(tokenAddress).setApprovalForAll(
-        await contract.getAddress(),
-        true
-      );
+      if (!tokenId) return await getEvmContractService(signer, platformConfig).getTokenContract(tokenAddress).approve(await contract.getAddress(), MaxUint256);
+      return await getEvmContractService(signer, platformConfig)
+        .getNftContract(tokenAddress)
+        .setApprovalForAll(await contract.getAddress(), true);
     },
-    [getTokenContract, getNftContract, contract, ethWallet]
+    [platformConfig, contract, ethWallet, signer]
   );
 
-  return {
-    checkIsApproved,
-    approveToken,
-  };
+  return useMemo(
+    () => ({
+      checkIsApproved,
+      approveToken,
+    }),
+    [platformConfig, contract, ethWallet, signer]
+  );
 };
 
 /** @dev Use context hook. */

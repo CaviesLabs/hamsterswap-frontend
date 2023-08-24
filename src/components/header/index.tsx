@@ -12,7 +12,7 @@ import classnames from "classnames";
 import styles from "./index.module.scss";
 import styled from "@emotion/styled";
 import { useAppWallet, useDisconnectWallet } from "@/src/hooks/useAppWallet";
-import { useSelector } from "@/src/redux";
+import { useMain } from "@/src/hooks/pages/main";
 
 interface MenuItem {
   title: string;
@@ -24,7 +24,7 @@ const Header: FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [curSlug, setCurSlug] = useState<string>("#about-us");
   const router = useRouter();
-  const { hProfile, chainId } = useSelector();
+  const { hProfile, chainId } = useMain();
 
   /**
    * Check homepage and display logo on dark theme

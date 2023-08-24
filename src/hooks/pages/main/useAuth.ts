@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getAuthService } from "@/src/actions/auth.action";
 import { getHamsterProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import {
@@ -7,13 +7,13 @@ import {
   useDisconnectWallet,
   useIdpSignMessage,
 } from "@/src/hooks/useAppWallet";
-import { useSelector } from "@/src/redux";
+import State from "@/src/redux/entities/state";
 
 /** @dev Expore authenticate hook to process tasks related user authentcation */
 export const useAuth = () => {
   const dispatch = useDispatch();
   const authService = getAuthService();
-  const { chainId } = useSelector();
+  const { chainId } = useSelector((state: State) => state);
   const { walletAddress } = useAppWallet();
   const { disconnect } = useDisconnectWallet();
   const { signIdpMessage } = useIdpSignMessage();

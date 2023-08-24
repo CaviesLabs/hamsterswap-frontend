@@ -3,15 +3,13 @@ import { SwapItemType } from "@/src/entities/proposal.entity";
 import { BN } from "@project-serum/anchor";
 import { useAppWallet, useNativeToken } from "@/src/hooks/useAppWallet";
 import { useCreateProposal } from "./types";
-import { useSelector } from "@/src/redux";
 import { EvmTokenService } from "@/src/services/token-evm.service";
 import { useEvmHamsterSwapContract, useEvmWallet } from "@/src/hooks/wagmi";
-import { SwapProposalEntity } from "@/src/entities/proposal.entity";
-import { networkProvider } from "@/src/providers/network.provider";
-import { uuid } from "uuidv4";
+import { getProposalService } from "@/src/services/proposal.service";
+import { useMain } from "@/src/hooks/pages/main";
 
 export const useSubmitProposalEvm = () => {
-  const { chainId, nft: ownerNfts, platformConfig } = useSelector();
+  const { chainId, nft: ownerNfts, platformConfig } = useMain();
   const { walletAddress } = useAppWallet();
   const { nativeToken } = useNativeToken();
   const { submitProposal } = useEvmHamsterSwapContract();
@@ -60,7 +58,7 @@ export const useSubmitProposalEvm = () => {
       expectedItems
         .filter((item) => item.askingItems.length)
         .map((item) => ({
-          id: uuid(),
+          id: item.id,
           askingItems: item.askingItems.map((askingItem) => ({
             id: askingItem.id,
             itemType: askingItem.assetType === SwapItemType.NFT ? 0 : 1,
@@ -92,7 +90,7 @@ export const useSubmitProposalEvm = () => {
   const convertOfferedItemsHelper = useCallback(
     () =>
       offferedItems.map((item) => ({
-        id: uuid(),
+        id: item.id,
         itemType: item.assetType === SwapItemType.NFT ? 0 : 1,
         contractAddress: getRealAddress(item.address, item.assetType),
         tokenId: item.assetType === SwapItemType.CURRENCY ? 0 : item.tokenId,
@@ -123,21 +121,15 @@ export const useSubmitProposalEvm = () => {
     convertOfferedItemsHelper,
     submit: useCallback(async () => {
       if (!walletAddress) return;
-      const response =
-        await networkProvider.requestWithCredentials<SwapProposalEntity>(
-          "/proposal",
-          {
-            method: "POST",
-            data: {
-              expiredAt: expiredTime.toISOString(),
-              chainId,
-              note,
-            },
-          }
-        );
+      const proposalService = getProposalService();
 
-      console.log(expiredTime, expiredTime.getTime());
-      await submitProposal(
+      const response = await proposalService.createProposal({
+        expiredAt: expiredTime.toISOString(),
+        chainId,
+        note,
+      });
+
+      const fnc = await submitProposal(
         {
           proposalId: response.id,
           offeredItems: convertOfferedItemsHelper(),
@@ -146,6 +138,17 @@ export const useSubmitProposalEvm = () => {
         },
         await getWrapTokenAmount()
       );
+
+      // Delay to sync proposal after create.
+      setTimeout(
+        async () => await proposalService.syncProposal(response.id),
+        4000
+      );
+
+      return {
+        proposalId: response.id,
+        fnc: fnc,
+      };
     }, [
       note,
       offferedItems,

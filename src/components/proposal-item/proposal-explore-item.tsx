@@ -20,6 +20,11 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
   const { nativeToken } = useNativeToken();
   const { data } = props;
 
+  /**
+   * Get profile
+   * @note This is a temporary solution.
+   * @todo Get profile from redux-store.
+   */
   useEffect(() => {
     hProfileService
       .getPublicProfile({ id: data.ownerId })

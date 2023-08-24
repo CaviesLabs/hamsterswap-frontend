@@ -5,9 +5,9 @@ import { ReputationCard } from "./repuation.card";
 import { useDispatch } from "react-redux";
 import { getHamsterPublicProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { useRouter } from "next/router";
-import { useSelector } from "@/src/redux";
 import styled from "@emotion/styled";
 import CopyText from "@/src/components/copy-text";
+import { useMain } from "@/src/hooks/pages/main";
 
 /** @dev Define styled component. */
 export const StyledUserInfoCard = styled.div`
@@ -21,7 +21,7 @@ export const StyledUserInfoCard = styled.div`
 export const UserInfoCard: FC<UserInfoCardProps> = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { hPublicProfile: profile } = useSelector();
+  const { hPublicProfile: profile } = useMain();
 
   useEffect(() => {
     if (!props.userId) return;

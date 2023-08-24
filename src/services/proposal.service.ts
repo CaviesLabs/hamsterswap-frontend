@@ -4,7 +4,7 @@ import {
   GetProposalsDto,
 } from "@/src/entities/proposal.entity";
 import { DetailDto } from "@/src/dto/detail.dto";
-import { CreateProposalDto, ProposalDto } from "@/src/dto/proposal.dto";
+import { ProposalDto } from "@/src/dto/proposal.dto";
 import { ChainId } from "../entities/chain.entity";
 
 export class ProposalService {
@@ -48,13 +48,30 @@ export class ProposalService {
 
   /**
    * @dev Create proposal.
-   * @param {CreateProposalDto} payload.
-   * @returns {ProposalDto}
+   * @param {SwapProposalEntity} payload
+   * @returns {SwapProposalEntity}
    */
-  createProposal(payload: CreateProposalDto): Promise<ProposalDto> {
-    return networkProvider.request<ProposalDto>(`/proposal/`, {
-      method: "POST",
-      data: payload,
+  createProposal(payload: {
+    expiredAt: string;
+    chainId: string;
+    note: string;
+  }): Promise<SwapProposalEntity> {
+    return networkProvider.requestWithCredentials<SwapProposalEntity>(
+      `/proposal`,
+      {
+        method: "POST",
+        data: payload,
+      }
+    );
+  }
+
+  /**
+   * @dev The function to sync the data of proposal
+   * @param {string} proposalId
+   */
+  public async syncProposal(proposalId: string): Promise<any> {
+    return networkProvider.request(`/proposal/evm/${proposalId}/sync`, {
+      method: "PATCH",
     });
   }
 

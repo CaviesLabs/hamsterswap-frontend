@@ -7,14 +7,14 @@ import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styl
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { NftEntity, NftStatus } from "@/src/dto/nft.dto";
-import { useSelector } from "@/src/redux";
+import { useMain } from "@/src/hooks/pages/main";
 
 export const AddNftModal: FC<AddItemModalProps> = (props) => {
   /**
    * @dev Search state.
    */
   const [searchValue, setSearchValue] = useState("");
-  const { nft: ownerNftList, platformConfig } = useSelector();
+  const { nft: ownerNftList, platformConfig } = useMain();
 
   /**
    * @dev Import functions in screen context.

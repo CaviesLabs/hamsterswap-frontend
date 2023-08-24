@@ -1,12 +1,12 @@
 import { FC, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { ExpectedItem } from "@/src/components/create-proposal/step2/expected-item";
-import { useSelector } from "@/src/redux";
 import { getPlatformConfig } from "@/src/redux/actions/platform-config/platform.action";
+import { useMain } from "@/src/hooks/pages/main";
 
 export const Step2: FC = () => {
   const dispatch = useDispatch();
-  const { chainId } = useSelector();
+  const { chainId } = useMain();
 
   useEffect(() => {
     dispatch(getPlatformConfig(chainId));

@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from "react";
-import { useSelector } from "@/src/redux";
 import { ChainId } from "@/src/entities/chain.entity";
 import { useWallet as useSolWallet } from "@/src/hooks/useWallet";
 import * as bs from "bs58";
@@ -8,8 +7,12 @@ import { disconnect as disconnectWagmi } from "@wagmi/core";
 import { getAuthService } from "@/src/actions/auth.action";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useEvmWallet, useSignEvmMessage } from "./wagmi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setProfile } from "@/src/redux/actions/hamster-profile/profile.action";
+import { useWalletKit } from "@gokiprotocol/walletkit";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useMain } from "./pages/main";
+import State from "@/src/redux/entities/state";
 
 /**
  * @dev Get wallet address from useEvmWallet or useSolana
@@ -18,7 +21,7 @@ import { setProfile } from "@/src/redux/actions/hamster-profile/profile.action";
  * @see src/hooks/useAppWallet.ts
  */
 export const useAppWallet = () => {
-  const { chainId } = useSelector();
+  const { chainId } = useSelector((state: State) => state);
   const { walletAddress: evmAddress } = useEvmWallet();
   const { solanaWallet } = useSolWallet();
 
@@ -38,7 +41,7 @@ export const useAppWallet = () => {
  * @returns {nativeToken: TokenEntity}
  */
 export const useNativeToken = () => {
-  const { platformConfig } = useSelector();
+  const { platformConfig } = useMain();
   return useMemo(() => {
     return {
       nativeToken: platformConfig?.allowCurrencies?.find(
@@ -55,7 +58,7 @@ export const useNativeToken = () => {
  * @see src/hooks/useAppWallet.ts
  */
 export const useIdpSignMessage = () => {
-  const { chainId } = useSelector();
+  const { chainId } = useSelector((state: State) => state);
   const { signMessageAsync } = useSignEvmMessage(SIGN_MESSAGE);
   const { signMessage } = useSolWallet();
 
@@ -75,7 +78,7 @@ export const useIdpSignMessage = () => {
  * @see src/hooks/useAppWallet.ts
  */
 export const useDisconnectWallet = () => {
-  const { chainId } = useSelector();
+  const { chainId } = useSelector((state: State) => state);
   const { disconnect: disconnectGoki } = useSolWallet();
   const dispatch = useDispatch();
 
@@ -99,7 +102,7 @@ export const useDisconnectWallet = () => {
  * @see src/hooks/useAppWallet.ts
  */
 export const useNativeBalance = (): number => {
-  const { chainId } = useSelector();
+  const { chainId } = useSelector((state: State) => state);
   const { solBalance } = useSolWallet();
   const { nativeBalance: evmBalance } = useEvmWallet();
 
@@ -110,4 +113,16 @@ export const useNativeBalance = (): number => {
         : parseFloat(evmBalance),
     [chainId, solBalance, evmBalance]
   );
+};
+
+export const useConnect = () => {
+  const { chainId } = useSelector((state: State) => state);
+  const { connect: connectSol } = useWalletKit();
+  const { openConnectModal: connectEvm } = useConnectModal();
+
+  return useMemo(() => {
+    return {
+      connect: chainId === ChainId.solana ? connectSol : connectEvm,
+    };
+  }, [chainId, connectSol, connectEvm]);
 };

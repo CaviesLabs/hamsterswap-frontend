@@ -13,6 +13,7 @@ export const proposalsReducer = (
   action: Action
 ) => {
   if (action.type === SET_PROPOSALS) {
+    console.log("Set proposal in state", action.payload);
     return action.payload;
   }
   return state;

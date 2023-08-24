@@ -110,6 +110,7 @@ export function* getExploreProposals({
       .filter((item) => item.offerItems.length)
       .filter((item) => item.swapOptions.length);
 
+    console.log("conduct saga to get proposal", payload, swapProposals);
     yield put(setProposals(swapProposals));
     callback && callback(swapProposals);
   } catch (err) {

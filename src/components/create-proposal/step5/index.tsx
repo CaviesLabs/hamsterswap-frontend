@@ -8,11 +8,11 @@ import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { DATE_TIME_FORMAT } from "@/src/utils";
 import moment from "moment";
 import { useNativeToken } from "@/src/hooks/useAppWallet";
-import { useSelector } from "@/src/redux";
+import { useMain } from "@/src/hooks/pages/main";
 
 export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
   const { nativeToken } = useNativeToken();
-  const { platformConfig } = useSelector();
+  const { platformConfig } = useMain();
   const allowCurrencies = platformConfig?.allowCurrencies;
 
   const { expectedItems, offferedItems, note, expiredTime, guaranteeSol } =
@@ -38,11 +38,12 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
           )}
           receiveItems={clonedExpectedItems
             .filter((item) => item.askingItems.length)
-            .map((_) =>
-              _.askingItems.map((p) =>
+            .map((_) => ({
+              ..._,
+              items: _.askingItems.map((p) =>
                 parseOfferCreateProposal(p, allowCurrencies)
-              )
-            )}
+              ),
+            }))}
           isGuaranteedPayment={isGuaranteedPayment}
         />
       </div>

@@ -12,11 +12,11 @@ import Breadcrumb from "@/src/components/user/breadcrumb";
 import SubMenu from "@/src/components/user/sub-menu";
 import Title from "@/src/components/user/history/title";
 import Proposal from "@/src/components/user/history/proposal";
-import { useSelector } from "@/src/redux";
+import { useMain } from "@/src/hooks/pages/main";
 
 const Layout: FC = () => {
   const router = useRouter();
-  const { hPublicProfile: profile, proposals } = useSelector();
+  const { hPublicProfile: profile, proposals } = useMain();
 
   /**
    * Fetch proposal by user id

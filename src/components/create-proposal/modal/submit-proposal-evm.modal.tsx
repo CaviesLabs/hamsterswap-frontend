@@ -2,10 +2,10 @@ import { FC, useState, useCallback, useEffect } from "react";
 import { Modal } from "antd";
 import { ModalProps } from "./types";
 import { Button } from "@hamsterbox/ui-kit";
-import { useSelector } from "@/src/redux";
 import { useEvmToken } from "@/src/hooks/wagmi";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { useSubmitProposalEvm } from "@/src/hooks/pages/create-proposal/useSubmitProposalEvm";
+import { useMain } from "@/src/hooks/pages/main";
 
 export const ExecuteItem: FC<{
   name: string;
@@ -82,7 +82,7 @@ export const ExecuteItem: FC<{
  */
 export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
   const { isLoading } = props;
-  const { chainId } = useSelector();
+  const { chainId } = useMain();
   const { offferedItems } = useCreateProposal();
   const { convertOfferedItemsHelper } = useSubmitProposalEvm();
   const { checkIsApproved, approveToken } = useEvmToken();
@@ -102,10 +102,6 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
         )
       );
 
-      console.log(
-        "Check all",
-        isAllApproved.every((item) => item)
-      );
       setAllApproved(isAllApproved.every((item) => item));
       setProcessingLoading(false);
     }, 4000);
@@ -126,7 +122,7 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
           name: tokenInfo?.name,
           image: tokenInfo?.image,
           handleApprove: async () => {
-            await approveToken(item.contractAddress, item.amount, item.tokenId);
+            await approveToken(item.contractAddress, item.tokenId);
             handleCheckAllApproved();
           },
           isApproved: async () =>
@@ -153,42 +149,40 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
       footer={null}
       className="hamster-modal"
     >
-      <div className="py-6">
-        <div className="mx-auto items-center max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-          <h2 className="mt-10 mb-2 font-bold text-gray-800 text-2xl text-center">
-            Confirm transaction
-          </h2>
-          <p className="mb-9 text-lg text-center">
-            Confirm the transaction in your wallet to create proposal.
-          </p>
-          <div className="mt-[20px]">
-            {getExecutedItems().map((item) => (
-              <ExecuteItem
-                name={item.name}
-                image={item.image}
-                isApproved={item.isApproved}
-                handleApprove={item.handleApprove}
-                key={Math.random().toString()}
-              />
-            ))}
-          </div>
-          <Button
-            type="button"
-            disabled={!allApproved || processingLoading}
-            theme={
-              !allApproved && {
-                color: "white",
-                backgroundColor: "#94A3B8",
-              }
-            }
-            onClick={props.handleOk}
-            loading={processingLoading || isLoading}
-            width={"100%"}
-            text={
-              isLoading ? "Confirming transaction in Wallet" : "Create Proposal"
-            }
-          />
+      <div className="mx-auto items-center max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="mb-2 font-bold text-gray-800 text-[25px] text-center">
+          Confirm transaction
+        </h2>
+        <p className="mb-9 text-[18px] text-center">
+          Confirm the transaction in your wallet to create proposal.
+        </p>
+        <div className="my-[40px]">
+          {getExecutedItems().map((item) => (
+            <ExecuteItem
+              name={item.name}
+              image={item.image}
+              isApproved={item.isApproved}
+              handleApprove={item.handleApprove}
+              key={Math.random().toString()}
+            />
+          ))}
         </div>
+        <Button
+          type="button"
+          disabled={!allApproved || processingLoading}
+          theme={
+            !allApproved && {
+              color: "white",
+              backgroundColor: "#94A3B8",
+            }
+          }
+          onClick={props.handleOk}
+          loading={processingLoading || isLoading}
+          width={"100%"}
+          text={
+            isLoading ? "Confirming transaction in Wallet" : "Create Proposal"
+          }
+        />
       </div>
     </Modal>
   );

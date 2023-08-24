@@ -2,15 +2,15 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { Col, Input, Row } from "antd";
 import Select from "@/src/components/select";
 import { useDispatch } from "react-redux";
-import { useSelector } from "@/src/redux";
 import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 import { SearchIcon } from "@/src/components/icons";
 import { Button } from "@hamsterbox/ui-kit";
+import { useMain } from "@/src/hooks/pages/main";
 
 const Filter: FC = () => {
   const [search, setSearch] = useState("");
-  const { chainId } = useSelector();
+  const { chainId } = useMain();
   const dispatch = useDispatch();
 
   const handleSearch = useCallback(() => {

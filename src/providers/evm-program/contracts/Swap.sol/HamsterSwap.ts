@@ -166,7 +166,7 @@ export interface HamsterSwapInterface extends Interface {
   encodeFunctionData(functionFragment: "etherman", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "fulfillProposal",
-    values: [string, string]
+    values: [string, string, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "getProposalItemsAndOptions",
@@ -607,7 +607,7 @@ export interface HamsterSwap extends BaseContract {
   etherman: TypedContractMethod<[], [string], "view">;
 
   fulfillProposal: TypedContractMethod<
-    [proposalId: string, optionId: string],
+    [proposalId: string, optionId: string, buyer: AddressLike],
     [void],
     "nonpayable"
   >;
@@ -718,7 +718,7 @@ export interface HamsterSwap extends BaseContract {
   getFunction(
     nameOrSignature: "fulfillProposal"
   ): TypedContractMethod<
-    [proposalId: string, optionId: string],
+    [proposalId: string, optionId: string, buyer: AddressLike],
     [void],
     "nonpayable"
   >;

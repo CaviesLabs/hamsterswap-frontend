@@ -8,7 +8,6 @@ import {
   useState,
 } from "react";
 import { Input, Modal, Dropdown } from "antd";
-import { useSelector } from "@/src/redux";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
 import { DropdownIcon } from "@/src/components/icons";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
@@ -21,6 +20,7 @@ import { useAppWallet, useNativeBalance } from "@/src/hooks/useAppWallet";
 import { TokenService } from "@/src/services/token.service";
 import { TokenEntity } from "@/src/entities/platform-config.entity";
 import UtilsProvider from "@/src/utils/utils.provider";
+import { useMain } from "@/src/hooks/pages/main";
 
 const decimalCount = (num: any) => {
   // Convert to String
@@ -40,7 +40,7 @@ export const AddTokenModal: FC<
   }
 > = (props) => {
   const nativeBalance = useNativeBalance();
-  const { platformConfig, chainId, proposal } = useSelector();
+  const { platformConfig, chainId, proposal } = useMain();
   const { walletAddress } = useAppWallet();
   const { offferedItems } = useCreateProposal();
   const [value, setValue] = useState("");

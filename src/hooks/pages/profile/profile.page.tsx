@@ -18,6 +18,8 @@ export const ProfilePageProvider = (props: { children: ReactNode }) => {
    */
   const handleFilter = useCallback(
     (searchText: string = search, statuses: string[] = selectedStatus) => {
+      if (!profile?.walletAddress) return;
+
       const status: SwapProposalStatus[] =
         !statuses || statuses.length === 0 ? [] : [];
       statuses?.includes(sortOptions[0].value) &&

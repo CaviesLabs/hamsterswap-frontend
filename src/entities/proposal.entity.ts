@@ -222,6 +222,7 @@ export class SwapItemEntity {
       symbol: string;
       collectionName?: string;
       image?: string;
+      tokenId?: number;
     };
   };
 }

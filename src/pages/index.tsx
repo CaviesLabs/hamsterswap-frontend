@@ -6,7 +6,6 @@ import styles from "@/styles/Home.module.css";
 import { DashboardPageProvider } from "@/src/hooks/pages/dashboard";
 import { ProposalExploreItem } from "@/src/components/proposal-item";
 import { Banner } from "@/src/components/homepage";
-import { useSelector } from "@/src/redux";
 import {
   SwapItemEntity,
   SwapOptionEntity,
@@ -14,9 +13,12 @@ import {
 } from "@/src/entities/proposal.entity";
 import { parseProposal } from "@/src/utils";
 import Filter from "@/src/components/homepage/filter";
+import { useMain } from "@/src/hooks/pages/main";
 
 const Layout: FC = () => {
-  const { platformConfig, proposals } = useSelector();
+  const { platformConfig, proposals } = useMain();
+
+  console.log({ proposals });
 
   return (
     <MainLayout>

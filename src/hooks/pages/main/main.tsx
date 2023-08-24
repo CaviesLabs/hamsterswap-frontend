@@ -19,6 +19,8 @@ export const MainProvider = (props: { children: ReactNode }) => {
   const reduxState = useSelector((app: ReduxState) => app);
   const dispatch = useDispatch();
 
+  console.log({ proposals: reduxState });
+
   /**
    * @dev Import needed hooks.
    * @dev Import needed router hooks.

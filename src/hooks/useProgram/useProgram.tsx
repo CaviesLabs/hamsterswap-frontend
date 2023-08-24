@@ -1,19 +1,20 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useWallet } from "@/src/hooks/useWallet";
-import { ProgramHookState } from "./types";
+import { useEvmHamsterSwapContract } from "@/src/hooks/wagmi/useEvmWallet";
+import { ChainId } from "@/src/entities/chain.entity";
+import { useMain } from "@/src/hooks/pages/main";
 
 /**
  * @dev Export hook to use.
  */
-export const useProgram = (): ProgramHookState => {
-  /**
-   * @dev Import services.
-   */
+export const useProgram = () => {
+  const { chainId } = useMain();
+  const { provider: solanaProvider, programService } = useWallet();
+
   const {
-    solanaWallet,
-    provider: solanaProvider,
-    programService,
-  } = useWallet();
+    cancelProposal: cancelProposalEvm,
+    fullFillProposal: swapProposalEvm,
+  } = useEvmHamsterSwapContract();
 
   /**
    * @dev The function to redeem proposal.
@@ -21,14 +22,10 @@ export const useProgram = (): ProgramHookState => {
    */
   const redeemProposal = useCallback(
     async (proposalId: string) => {
-      if (!solanaWallet.publicKey || !programService) return;
-
-      /**
-       * @dev Call service to redeem proposal.
-       */
-      return programService.redeemProposal(solanaProvider, proposalId);
+      // eslint-disable-next-line prettier/prettier
+      if (chainId === ChainId.solana) return programService.redeemProposal(solanaProvider, proposalId);
     },
-    [solanaWallet, programService, solanaProvider]
+    [programService, solanaProvider, chainId]
   );
 
   /**
@@ -37,19 +34,54 @@ export const useProgram = (): ProgramHookState => {
    */
   const cancelProposal = useCallback(
     async (proposalId: string) => {
-      console.log(solanaWallet.publicKey, programService);
-      if (!solanaWallet.publicKey || !programService)
-        throw new Error("Wallet not connected");
-      /**
-       * @dev Call service to cancel proposal.
-       */
-      return programService.cancelProposal(solanaProvider, proposalId);
+      // eslint-disable-next-line prettier/prettier
+      if (chainId === ChainId.solana) return programService.cancelProposal(solanaProvider, proposalId);
+      return await cancelProposalEvm({ proposalId });
     },
-    [solanaWallet, solanaProvider, programService]
+    [solanaProvider, programService, chainId]
   );
 
-  return {
-    redeemProposal,
-    cancelProposal,
-  };
+  /**
+   * @dev The function to swap proposal.
+   * @param {string} proposalId
+   * @param {string} optionId
+   * @returns {Promise<void>}
+   */
+  const swapProposal = useCallback(
+    async (
+      proposalId: string,
+      optionId: string,
+      wrappedTokenAmount: bigint
+    ) => {
+      if (chainId === ChainId.solana)
+        return programService.swapProposal(
+          solanaProvider,
+          proposalId,
+          optionId
+        );
+      return await swapProposalEvm({
+        proposalId,
+        optionId,
+        wrappedTokenAmount,
+      });
+    },
+    [solanaProvider, programService, chainId, swapProposalEvm]
+  );
+
+  return useMemo(
+    () => ({
+      redeemProposal,
+      cancelProposal,
+      swapProposal,
+    }),
+    [
+      redeemProposal,
+      cancelProposal,
+      swapProposalEvm,
+      cancelProposalEvm,
+      solanaProvider,
+      programService,
+      chainId,
+    ]
+  );
 };

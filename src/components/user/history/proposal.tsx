@@ -10,13 +10,13 @@ import {
 import { getStatus } from "@/src/utils/proposal-status";
 import UtilsProvider from "@/src/utils/utils.provider";
 import moment from "moment";
-import { useSelector } from "@/src/redux";
+import { useMain } from "@/src/hooks/pages/main";
 
 function Proposal(props: ProposalHistoryProps) {
   const router = useRouter();
   const { data } = props;
   const { status, fulfillBy } = data;
-  const { hPublicProfile, platformConfig } = useSelector();
+  const { hPublicProfile, platformConfig } = useMain();
   const allowCurrencies = platformConfig?.allowCurrencies;
 
   /**
@@ -32,8 +32,8 @@ function Proposal(props: ProposalHistoryProps) {
           <img
             className="w-10 rounded-lg"
             src={
-              nftMetadata?.image ||
-              nftMetadata?.icon ||
+              nftMetadata?.metadata?.image ||
+              nftMetadata?.metadata?.icon ||
               allowCurrencies.find((item) => item.address === contractAddress)
                 ?.icon
             }
@@ -52,9 +52,9 @@ function Proposal(props: ProposalHistoryProps) {
                     (item) => item.address === contractAddress
                   )?.name
                 }`
-              : nftMetadata?.name ||
-                (nftMetadata?.symbol &&
-                  `${solAmount(amount, 9)} ${nftMetadata?.symbol}`)}
+              : nftMetadata?.metadata?.name ||
+                (nftMetadata?.metadata?.symbol &&
+                  `${solAmount(amount, 9)} ${nftMetadata?.metadata?.symbol}`)}
           </p>
         </div>
       )
@@ -68,8 +68,8 @@ function Proposal(props: ProposalHistoryProps) {
           <img
             className="w-10 rounded-lg"
             src={
-              nftMetadata?.image ||
-              nftMetadata?.icon ||
+              nftMetadata?.metadata?.image ||
+              nftMetadata?.metadata?.icon ||
               allowCurrencies.find((item) => item.address === contractAddress)
                 ?.icon
             }
@@ -88,9 +88,9 @@ function Proposal(props: ProposalHistoryProps) {
                     (item) => item.address === contractAddress
                   )?.name
                 }`
-              : nftMetadata?.name ||
-                (nftMetadata?.symbol &&
-                  `${solAmount(amount, 9)} ${nftMetadata?.symbol}`)}
+              : nftMetadata?.metadata?.name ||
+                (nftMetadata?.metadata?.symbol &&
+                  `${solAmount(amount, 9)} ${nftMetadata?.metadata?.symbol}`)}
           </p>
         </div>
       ));
