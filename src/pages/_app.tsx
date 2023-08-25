@@ -5,7 +5,6 @@ import makeStore from "@/src/redux";
 import type { AppProps } from "next/app";
 import { FC, useMemo } from "react";
 import { Provider } from "react-redux";
-import { ThemeProvider } from "@hamsterbox/ui-kit";
 import { WalletKitProvider } from "@gokiprotocol/walletkit";
 import { MainProvider } from "@/src/hooks/pages/main";
 import {
@@ -24,10 +23,6 @@ import {
 } from "@solana/wallet-adapter-wallets";
 import { SeoComponent } from "@/src/components/seo";
 import { EvmWalletKitProvider } from "src/hooks/wagmi";
-import {
-  legacyLogicalPropertiesTransformer,
-  StyleProvider,
-} from "@ant-design/cssinjs";
 
 /**
  * @dev Import needed third-party styled.
