@@ -71,7 +71,6 @@ export const MainProvider = (props: { children: ReactNode }) => {
     (chainId: ChainId) => {
       setChainId(chainId);
       new StorageProvider().setItem("CHAIN_ID", chainId);
-      dispatch(setReduxChainId(chainId));
     },
     [setChainId]
   );
@@ -92,6 +91,7 @@ export const MainProvider = (props: { children: ReactNode }) => {
         selectChain,
         transitionLoading,
         fistLoading,
+        chainId,
         defaultChains: DEFAULT_CHAINS,
         chainInfo: useMemo(
           () => DEFAULT_CHAINS.find((chain) => chain.chainId === chainId),

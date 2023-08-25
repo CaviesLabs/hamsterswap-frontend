@@ -81,16 +81,6 @@ export class EvmContractService {
     expiredAt: bigint,
     wrapTokenAmount: bigint
   ) {
-    console.log({
-      walletAddress,
-      proposalId,
-      offeredItems,
-      swapOptions,
-      expiredAt,
-      wrapTokenAmount,
-      address: await this.hamsterContract.getAddress(),
-    });
-
     return await this.multical3Contract.aggregate3Value(
       [
         ...(wrapTokenAmount
@@ -139,14 +129,9 @@ export class EvmContractService {
     walletAddress: string,
     proposalId: string,
     optionId: string,
-    wrapTokenAmount: bigint
+    wrapTokenAmount: bigint,
+    wrapRecipientTokenAmount?: bigint
   ) {
-    console.log("fullFillProposal", {
-      walletAddress,
-      proposalId,
-      optionId,
-      wrapTokenAmount,
-    });
     return await this.multical3Contract.aggregate3Value(
       [
         ...(wrapTokenAmount
@@ -171,6 +156,17 @@ export class EvmContractService {
           value: 0,
           allowFailure: false,
         },
+        ...(wrapRecipientTokenAmount && [
+          {
+            target: await this.hamsterContract.getAddress(),
+            callData: this.hamsterContract.interface.encodeFunctionData(
+              "unwrapETH",
+              [walletAddress]
+            ),
+            value: 0,
+            allowFailure: false,
+          },
+        ]),
       ],
       wrapTokenAmount ? { value: wrapTokenAmount } : {}
     );

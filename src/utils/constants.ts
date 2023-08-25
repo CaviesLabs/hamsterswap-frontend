@@ -1,16 +1,17 @@
 import { hProfileDto } from "@/src/dto/hProfile.dto";
 import { RowNftItemProps } from "../components/nfts";
+import { SwapProposalStatus } from "../entities/proposal.entity";
 // import { SwapItemType } from "../entities/proposal.entity";
 
 /**
  * @dev Define value data to sort NFTs.
  */
 export const sortOptions = [
-  { value: "Active", name: "Active" },
-  { value: "Expired", name: "Expired" },
-  { value: "Completed", name: "Completed" },
-  { value: "Withdrawn", name: "Withdrawn" },
-  { value: "Swapped", name: "Swapped" },
+  { value: SwapProposalStatus.ACTIVE, name: "Active" },
+  { value: SwapProposalStatus.EXPIRED, name: "Expired" },
+  { value: SwapProposalStatus.REDEEMED, name: "Completed" },
+  { value: SwapProposalStatus.WITHDRAWN, name: "Withdrawn" },
+  { value: SwapProposalStatus.SWAPPED, name: "Swapped" },
 ];
 
 /**

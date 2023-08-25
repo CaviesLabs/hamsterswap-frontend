@@ -51,7 +51,8 @@ export const useProgram = () => {
     async (
       proposalId: string,
       optionId: string,
-      wrappedTokenAmount: bigint
+      wrappedTokenAmount: bigint,
+      wrappedRecipientTokenAmount?: bigint
     ) => {
       if (chainId === ChainId.solana)
         return programService.swapProposal(
@@ -63,6 +64,7 @@ export const useProgram = () => {
         proposalId,
         optionId,
         wrappedTokenAmount,
+        wrappedRecipientTokenAmount,
       });
     },
     [solanaProvider, programService, chainId, swapProposalEvm]

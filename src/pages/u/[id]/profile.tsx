@@ -59,11 +59,6 @@ const Layout: FC = () => {
     handleFilter(search, selectedStatus);
   }, [selectedStatus, profile]);
 
-  console.log({ profile });
-  useEffect(() => {
-    console.log(proposals);
-  }, [proposals, profile]);
-
   return (
     <MainLayout>
       <Breadcrumb title="Profile" />

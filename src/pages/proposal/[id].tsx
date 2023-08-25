@@ -1,6 +1,11 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
-import type { NextPage } from "next";
+import { Col, Row } from "antd";
 import dynamic from "next/dynamic";
+import moment from "moment";
+import type { NextPage } from "next";
+import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+
 import MainLayout from "@/src/layouts/main";
 import { ProposalItem } from "@/src/components/proposal-item";
 import { StyledProposalDetailPage } from "@/src/styled/proposal-detail-page.style";
@@ -8,21 +13,17 @@ import { LayoutSection } from "@/src/components/layout-section";
 import { GuaranteedCard } from "@/src/components/guaranteed.card";
 import { UserInfoCard } from "@/src/components/user-card";
 import { BreadCrumb } from "@/src/components/bread-crumb";
-import { Col, Row } from "antd";
-import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
 import { getProposal } from "@/src/redux/actions/proposal/proposal.action";
 import {
   SwapItemType,
   SwapOptionEntity,
-  // SwapProposalEntity,
   SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
 import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
-import moment from "moment";
 import { useAppWallet, useNativeToken } from "@/src/hooks/useAppWallet";
 import { useProgram } from "@/src/hooks/useProgram";
 import { useMain } from "@/src/hooks/pages/main";
+
 const BuyButton = dynamic(import("@/src/components/advertisment/buy-button"), {
   ssr: false,
 });
@@ -38,22 +39,43 @@ const ProposalDetailPage: NextPage = () => {
   const [isExpired, setIsExpired] = useState(false);
 
   /**
-   * @dev The function to process swaping when click buy button.
+   * @dev The function handle swap proposal.
+   * @notice If proposal require user deposit native token to swap, then user need to approve first.
+   * @notice If proposal require user recive native token after swap, then user need to approve first.
+   * @returns {Promise<void>}
    */
   const handleSwap = useCallback(async () => {
+    /**
+     * @dev Find if proposal require user deposit native token to swap.
+     * @notice If not, set nativeToken to null.
+     */
     const nativeToken = proposal?.swapOptions[optionSelected].items
       .filter((item) => item.type === SwapItemType.CURRENCY)
       .find((item) =>
         platformConfig.allowCurrencies.find(
-          (token) =>
-            token.realAddress === item.contractAddress && token.isNativeToken
+          // eslint-disable-next-line prettier/prettier
+          (token) => token.realAddress === item.contractAddress && token.isNativeToken
+        )
+      );
+
+    /**
+     * @dev Find if user recive native token after swap, then unwrap it.
+     * @notice If not, set recipientNativeToken to null.
+     */
+    const recipientNativeToken = proposal?.offerItems
+      .filter((item) => item.type === SwapItemType.CURRENCY)
+      .find((item) =>
+        platformConfig.allowCurrencies.find(
+          // eslint-disable-next-line prettier/prettier
+          (token) => token.realAddress === item.contractAddress && token.isNativeToken
         )
       );
 
     return await swapProposal(
       proposal.id,
       proposal.swapOptions[optionSelected].id,
-      nativeToken ? BigInt(nativeToken.amount) : null
+      nativeToken ? BigInt(nativeToken.amount) : null,
+      recipientNativeToken ? BigInt(recipientNativeToken.amount) : null
     );
   }, [walletAddress, proposal, optionSelected, swapProposal]);
 

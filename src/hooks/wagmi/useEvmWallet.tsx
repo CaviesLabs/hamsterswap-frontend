@@ -111,6 +111,7 @@ export const useEvmHamsterSwapContract = () => {
       proposalId: string;
       optionId: string;
       wrappedTokenAmount: bigint;
+      wrappedRecipientTokenAmount?: bigint;
     }) => {
       if (
         !platformConfig?.programAddress ||
@@ -125,7 +126,8 @@ export const useEvmHamsterSwapContract = () => {
         ethWallet?.address?.toString(),
         args.proposalId,
         args.optionId,
-        args.wrappedTokenAmount
+        args.wrappedTokenAmount,
+        args.wrappedRecipientTokenAmount
       );
     },
     [ethWallet, signer, platformConfig]
