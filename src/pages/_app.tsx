@@ -24,10 +24,6 @@ import {
 } from "@solana/wallet-adapter-wallets";
 import { SeoComponent } from "@/src/components/seo";
 import { EvmWalletKitProvider } from "src/hooks/wagmi";
-import {
-  legacyLogicalPropertiesTransformer,
-  StyleProvider,
-} from "@ant-design/cssinjs";
 
 /**
  * @dev Import needed third-party styled.
