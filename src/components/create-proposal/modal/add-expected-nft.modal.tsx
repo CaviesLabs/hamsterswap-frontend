@@ -106,7 +106,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
       }}
       width={560}
       bodyStyle={{
-        height: 290,
+        height: "auto",
       }}
       footer={null}
       className="hamster-modal"
@@ -142,7 +142,8 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
                   onClick={() => handleFetchNftData(nftId)}
                   disabled={
                     isEmpty(collection) ||
-                    (chainId === ChainId.solana && !nftId)
+                    (chainId === ChainId.solana && !nftId) ||
+                    (chainId !== ChainId.solana && !tokenId)
                   }
                 >
                   Next

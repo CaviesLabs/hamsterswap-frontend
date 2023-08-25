@@ -11,7 +11,7 @@ export const AddExpectedNftDetail: FC<DetailProps> = (props) => {
   const { nft } = props;
 
   return (
-    <div className="overflow-scroll h-52">
+    <div className="overflow-scroll">
       <div className="flex justify-between items-center">
         <div className="">
           <p className="text-dark60">NFT Name</p>
@@ -25,8 +25,8 @@ export const AddExpectedNftDetail: FC<DetailProps> = (props) => {
           <img className="aspect-square rounded-2xl" src={nft.image} />
         </div>
       </div>
-      <p className="mt-6 text-dark60">Attributes</p>
-      <Row gutter={[16, 16]}>
+      <p className="mt-[20px] text-dark60">Attributes</p>
+      <Row gutter={[16, 16]} className="mt-[10px]">
         {nft.attributes.map((attr, index) => (
           <Col span={12} key={`attr-item-${index}`}>
             <AttributeCard {...attr} />

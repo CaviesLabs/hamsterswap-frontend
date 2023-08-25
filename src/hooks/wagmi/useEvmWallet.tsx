@@ -189,9 +189,12 @@ export const useEvmToken = () => {
       amount: bigint,
       tokenType: number
     ): Promise<boolean> => {
-      console.log({ signer });
-      if (!platformConfig?.programAddress || !platformConfig?.multicall3Address)
-        return;
+      if (
+        !platformConfig?.programAddress ||
+        !platformConfig?.multicall3Address ||
+        !signer
+      )
+        throw new Error("Missing required modules.");
       switch (tokenType) {
         case 1:
           return (
@@ -217,8 +220,12 @@ export const useEvmToken = () => {
    */
   const approveToken = useCallback(
     async (tokenAddress: string, tokenId: number) => {
-      if (!platformConfig?.programAddress || !platformConfig?.multicall3Address)
-        return;
+      if (
+        !platformConfig?.programAddress ||
+        !platformConfig?.multicall3Address ||
+        !signer
+      )
+        throw new Error("Missing required modules.");
       // eslint-disable-next-line prettier/prettier
       if (!tokenId) return await getEvmContractService(signer, platformConfig).getTokenContract(tokenAddress).approve(await contract.getAddress(), MaxUint256);
       return await getEvmContractService(signer, platformConfig)

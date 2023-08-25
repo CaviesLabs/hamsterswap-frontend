@@ -1,7 +1,7 @@
 import { FC, useState, useCallback, useEffect } from "react";
 import { Modal } from "antd";
 import { ModalProps } from "./types";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { useEvmToken } from "@/src/hooks/wagmi";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { useSubmitProposalEvm } from "@/src/hooks/pages/create-proposal/useSubmitProposalEvm";
@@ -97,9 +97,20 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
     setProcessingLoading(true);
     setTimeout(async () => {
       const isAllApproved = await Promise.all(
-        convertOfferedItemsHelper().map((item) =>
-          checkIsApproved(item.contractAddress, item.amount, item.tokenId)
-        )
+        convertOfferedItemsHelper().map((item) => {
+          console.log({ itemType: item?.itemType });
+          try {
+            const isApproved = checkIsApproved(
+              item.contractAddress,
+              BigInt(item.amount),
+              item?.itemType
+            );
+            return isApproved;
+          } catch (err) {
+            console.error("ERROR_CHECK_APPROVE", err);
+            return false;
+          }
+        })
       );
 
       setAllApproved(isAllApproved.every((item) => item));
@@ -122,14 +133,19 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
           name: tokenInfo?.name,
           image: tokenInfo?.image,
           handleApprove: async () => {
-            await approveToken(item.contractAddress, item.tokenId);
-            handleCheckAllApproved();
+            try {
+              await approveToken(item.contractAddress, item.tokenId);
+              handleCheckAllApproved();
+            } catch (err) {
+              toast.error("Approve token failed, please try again later.");
+              console.error("ERROR_APPROVE_TOKEN", err);
+            }
           },
           isApproved: async () =>
             await checkIsApproved(
               item.contractAddress,
-              item.amount,
-              item.tokenId
+              BigInt(item.amount),
+              item.itemType
             ),
         };
       }),

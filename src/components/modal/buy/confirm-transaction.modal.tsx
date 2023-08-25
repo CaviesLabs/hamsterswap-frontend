@@ -3,7 +3,7 @@ import { Modal } from "antd";
 import { ConfirmModalProps } from "./types";
 import { Row, Col } from "antd";
 import { utilsProvider } from "@/src/utils/utils.provider";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { ChainId } from "@/src/entities/chain.entity";
 import { useEvmToken } from "@/src/hooks/wagmi";
 import { SwapItemType } from "@/src/entities/proposal.entity";
@@ -100,16 +100,17 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
     setTimeout(async () => {
       const isAllApproved = await Promise.all(
         swapItems?.map((item) => {
-          return checkIsApproved(
-            item.contractAddress,
-            BigInt(`0x${item.amount.toString(16)}`),
-            item?.type === SwapItemType.NFT ? 0 : 1
-          );
-          // } catch (err) {
-          //   try {
-          //   console.log(err);
-          //   return false;
-          // }
+          try {
+            const isApproved = checkIsApproved(
+              item.contractAddress,
+              BigInt(item.amount),
+              item?.type === SwapItemType.NFT ? 0 : 1
+            );
+            return isApproved;
+          } catch (err) {
+            console.error("ERROR_CHECK_APPROVE", err);
+            return false;
+          }
         })
       );
 
@@ -131,11 +132,16 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
           item?.nftMetadata.metadata.image || item?.nftMetadata.metadata.icon,
         handleApprove: async () => {
           try {
-            await approveToken(
-              item.contractAddress,
-              item?.nftMetadata?.metadata?.tokenId
-            );
-            handleCheckAllApproved();
+            try {
+              await approveToken(
+                item.contractAddress,
+                item?.nftMetadata?.metadata?.tokenId
+              );
+              handleCheckAllApproved();
+            } catch (err) {
+              toast.error("Approve token failed, please try again later.");
+              console.error("ERROR_APPROVE_TOKEN", err);
+            }
           } catch (err) {
             console.log("error when approve token", err);
           }
@@ -143,7 +149,7 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
         isApproved: async () =>
           await checkIsApproved(
             item.contractAddress,
-            BigInt(`0x${item.amount.toString(16)}`),
+            BigInt(item.amount),
             item?.type === SwapItemType.NFT ? 0 : 1
           ),
       };
@@ -225,7 +231,7 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
             type="button"
             onClick={props.handleOk}
             text={isLoading ? "Confirming transaction in Wallet" : "Confirm"}
-            loading={isLoading}
+            loading={isLoading || processingLoading}
             width={"100%"}
             theme={
               (processingLoading ||
