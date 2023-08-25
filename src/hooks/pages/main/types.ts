@@ -36,13 +36,6 @@ export interface MainContextState extends ReduxState {
   fistLoading: boolean;
 
   /**
-   * @dev Chain id.
-   * @see src/entities/chain.entity.ts
-   * @note This is the chain id of the current chain.
-   */
-  chainId: ChainId;
-
-  /**
    * @dev Chain info.
    * @see src/entities/chain.entity.ts
    * @note This is the chain info of the current chain.

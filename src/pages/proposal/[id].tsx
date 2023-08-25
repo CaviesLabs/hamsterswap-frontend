@@ -15,7 +15,7 @@ import { getProposal } from "@/src/redux/actions/proposal/proposal.action";
 import {
   SwapItemType,
   SwapOptionEntity,
-  SwapProposalEntity,
+  // SwapProposalEntity,
   SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
 import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
@@ -32,15 +32,10 @@ const ProposalDetailPage: NextPage = () => {
   const router = useRouter();
   const { swapProposal } = useProgram();
   const { nativeToken } = useNativeToken();
-  const { platformConfig } = useMain();
+  const { platformConfig, proposal } = useMain();
   const { walletAddress } = useAppWallet();
   const [optionSelected, setOptionSelected] = useState(0);
   const [isExpired, setIsExpired] = useState(false);
-
-  /**
-   * @dev Proposal state.
-   */
-  const [proposal, setProposal] = useState<SwapProposalEntity>();
 
   /**
    * @dev The function to process swaping when click buy button.
@@ -58,7 +53,7 @@ const ProposalDetailPage: NextPage = () => {
     return await swapProposal(
       proposal.id,
       proposal.swapOptions[optionSelected].id,
-      nativeToken ? BigInt(`0x${nativeToken.amount.toString(16)}`) : null
+      nativeToken ? BigInt(nativeToken.amount) : null
     );
   }, [walletAddress, proposal, optionSelected, swapProposal]);
 
@@ -72,11 +67,7 @@ const ProposalDetailPage: NextPage = () => {
    */
   useEffect(() => {
     if (!router.query.id) return;
-    dispatch(
-      getProposal({ id: router.query.id as string }, (data) =>
-        setProposal(data)
-      )
-    );
+    dispatch(getProposal({ id: router.query.id as string }));
   }, [router.query.id]);
 
   /**

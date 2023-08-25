@@ -66,10 +66,10 @@ export const useSubmitProposalEvm = () => {
               askingItem.assetType === SwapItemType.CURRENCY
                 ? 0
                 : askingItem.tokenId,
-            contractAddress: getRealAddress(
-              askingItem.address,
-              askingItem.assetType
-            ),
+            contractAddress:
+              askingItem.assetType === SwapItemType.NFT
+                ? askingItem.realAddress
+                : getRealAddress(askingItem.address, askingItem.assetType),
             amount: askingItem.amount
               ? convertSolAmountToEvmAmount(
                   askingItem.amount,

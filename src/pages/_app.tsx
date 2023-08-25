@@ -63,49 +63,56 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <Provider store={store}>
-      <SeoComponent />
-      {/**
-       * @dev
-       * NextJs recommend do only add stylesheets in SEO component
-       */}
-      <Script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
-        crossOrigin="anonymous"
-      />
-      <ConnectionProvider
-        endpoint={
-          network === WalletAdapterNetwork.Mainnet
-            ? "https://boldest-few-field.solana-mainnet.quiknode.pro/0ffa9f9f5e9141aa33a030081b78fdfe40bfbae6/"
-            : clusterApiUrl(network)
-        }
+      <StyleProvider
+        ssrInline={true}
+        transformers={[legacyLogicalPropertiesTransformer]}
       >
-        <EvmWalletKitProvider>
-          <SolanaWalletAdapterProvider wallets={walletAdapters}>
-            {/**
-             * @dev
-             * Wrap the whole app in Goki Kit provider for use.
-             */}
-            <WalletKitProvider
-              defaultNetwork={network}
-              app={{
-                name: "Hamsterswap",
-                icon: (
-                  <img
-                    className="bg-dark60 rounded-full"
-                    src="/assets/icons/favicon-196.png"
-                  />
-                ),
-              }}
-              debugMode={false} // you may want to set this in REACT_APP_DEBUG_MODE
-            >
-              <MainProvider>
-                <AppComponent {...{ Component, pageProps }} />
-              </MainProvider>
-            </WalletKitProvider>
-          </SolanaWalletAdapterProvider>
-        </EvmWalletKitProvider>
-      </ConnectionProvider>
+        <SeoComponent />
+        <ThemeProvider>
+          {/**
+           * @dev
+           * NextJs recommend do only add stylesheets in SEO component
+           */}
+          <Script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+            crossOrigin="anonymous"
+          />
+          <ConnectionProvider
+            endpoint={
+              network === WalletAdapterNetwork.Mainnet
+                ? "https://boldest-few-field.solana-mainnet.quiknode.pro/0ffa9f9f5e9141aa33a030081b78fdfe40bfbae6/"
+                : clusterApiUrl(network)
+            }
+          >
+            <EvmWalletKitProvider>
+              <SolanaWalletAdapterProvider wallets={walletAdapters}>
+                {/**
+                 * @dev
+                 * Wrap the whole app in Goki Kit provider for use.
+                 */}
+                <WalletKitProvider
+                  defaultNetwork={network}
+                  app={{
+                    name: "Hamsterswap",
+                    icon: (
+                      <img
+                        className="bg-dark60 rounded-full"
+                        src="/assets/icons/favicon-196.png"
+                      />
+                    ),
+                  }}
+                  debugMode={false} // you may want to set this in REACT_APP_DEBUG_MODE
+                >
+                  <MainProvider>
+                    <AppComponent {...{ Component, pageProps }} />
+                  </MainProvider>
+                </WalletKitProvider>
+              </SolanaWalletAdapterProvider>
+            </EvmWalletKitProvider>
+          </ConnectionProvider>
+        </ThemeProvider>
+      </StyleProvider>
     </Provider>
   );
 }

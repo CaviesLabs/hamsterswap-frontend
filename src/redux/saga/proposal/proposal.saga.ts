@@ -1,7 +1,6 @@
 import { put, call } from "redux-saga/effects";
 import { SagaPayload } from "@/src/redux/entities";
 import { proposalService } from "@/src/services/proposal.service";
-import { ProposalItem } from "@/src/components/user/types";
 import {
   setProposal,
   setProposals,
@@ -21,9 +20,9 @@ import {
 export function* getProposal({
   payload,
   callback,
-}: SagaPayload<DetailDto, ProposalItem>) {
+}: SagaPayload<DetailDto, SwapProposalEntity>) {
   try {
-    const proposal: ProposalItem = yield call(
+    const proposal: SwapProposalEntity = yield call(
       proposalService.getProposal,
       payload
     );
@@ -110,7 +109,6 @@ export function* getExploreProposals({
       .filter((item) => item.offerItems.length)
       .filter((item) => item.swapOptions.length);
 
-    console.log("conduct saga to get proposal", payload, swapProposals);
     yield put(setProposals(swapProposals));
     callback && callback(swapProposals);
   } catch (err) {

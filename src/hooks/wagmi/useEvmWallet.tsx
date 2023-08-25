@@ -81,8 +81,12 @@ export const useEvmHamsterSwapContract = () => {
       },
       wrapTokenAmount: bigint
     ) => {
-      if (!platformConfig?.programAddress || !platformConfig?.multicall3Address)
-        return;
+      if (
+        !platformConfig?.programAddress ||
+        !platformConfig?.multicall3Address ||
+        !signer
+      )
+        throw new Error("Missing required modules.");
       return await getEvmContractService(
         signer,
         platformConfig
@@ -108,8 +112,12 @@ export const useEvmHamsterSwapContract = () => {
       optionId: string;
       wrappedTokenAmount: bigint;
     }) => {
-      if (!platformConfig?.programAddress || !platformConfig?.multicall3Address)
-        return;
+      if (
+        !platformConfig?.programAddress ||
+        !platformConfig?.multicall3Address ||
+        !signer
+      )
+        throw new Error("Missing required modules.");
       return await getEvmContractService(
         signer,
         platformConfig
@@ -130,8 +138,12 @@ export const useEvmHamsterSwapContract = () => {
    */
   const cancelProposal = useCallback(
     async (args: { proposalId: string }) => {
-      if (!platformConfig?.programAddress || !platformConfig?.multicall3Address)
-        return;
+      if (
+        !platformConfig?.programAddress ||
+        !platformConfig?.multicall3Address ||
+        !signer
+      )
+        throw new Error("Missing required modules.");
       return await getEvmContractService(
         signer,
         platformConfig

@@ -1,5 +1,5 @@
 import { FC, useState, useCallback } from "react";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 // import { useConnectedWallet } from "@saberhq/use-solana";
 // import { useWalletKit } from "@gokiprotocol/walletkit";
 // import { useWallet } from "@/src/hooks/useWallet";
@@ -13,6 +13,7 @@ import { useAppWallet, useConnect } from "@/src/hooks/useAppWallet";
 import { SwapItemEntity } from "@/src/entities/proposal.entity";
 import { ChainId } from "@/src/entities/chain.entity";
 import { useMain } from "@/src/hooks/pages/main";
+import { getProposalService } from "@/src/services/proposal.service";
 
 const BuyButton: FC<{
   handleSwap(): Promise<
@@ -69,11 +70,20 @@ const BuyButton: FC<{
     if (chainId === ChainId.solana) {
       setOptimizedProposalOpen(true);
     } else {
-      await props.handleSwap();
-      setIsDisplayConfirm(false);
-      setIsDisplayConfirmed(true);
-      setIsBuyButtonLoading(false);
-      setIsLoading(false);
+      try {
+        await props.handleSwap();
+        setTimeout(() => {
+          getProposalService().syncProposal(proposal.id);
+        }, 2000);
+        setIsDisplayConfirmed(true);
+      } catch (err) {
+        toast.error("Create proposal failed, please try again later.");
+        console.error("ERROR_SUBMIT_PROPOSAL", err);
+      } finally {
+        setIsDisplayConfirm(false);
+        setIsBuyButtonLoading(false);
+        setIsLoading(false);
+      }
     }
   }, [walletAddress, proposal, props.optionIndex, chainId]);
 

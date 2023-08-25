@@ -18,8 +18,6 @@ import { useMain } from "@/src/hooks/pages/main";
 const Layout: FC = () => {
   const { platformConfig, proposals } = useMain();
 
-  console.log({ proposals });
-
   return (
     <MainLayout>
       <Banner />

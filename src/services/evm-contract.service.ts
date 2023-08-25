@@ -81,6 +81,16 @@ export class EvmContractService {
     expiredAt: bigint,
     wrapTokenAmount: bigint
   ) {
+    console.log({
+      walletAddress,
+      proposalId,
+      offeredItems,
+      swapOptions,
+      expiredAt,
+      wrapTokenAmount,
+      address: await this.hamsterContract.getAddress(),
+    });
+
     return await this.multical3Contract.aggregate3Value(
       [
         ...(wrapTokenAmount

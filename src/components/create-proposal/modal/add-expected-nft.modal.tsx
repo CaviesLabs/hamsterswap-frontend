@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useCallback, useState } from "react";
 import { Modal } from "antd";
 import { AddExpectedItemModalProps } from "./types";
 import { StyledModal } from "@/src/components/create-proposal/modal/add-nft.styled";
@@ -13,6 +13,7 @@ import { isEmpty } from "lodash";
 import animationData from "@/src/components/icons/animation-loading.json";
 import Lottie from "react-lottie";
 import { useMain } from "@/src/hooks/pages/main";
+import { ChainId } from "@/src/entities/chain.entity";
 
 export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   /**
@@ -25,27 +26,32 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
    */
   const [collection, setCollection] = useState<string[]>([]);
   const [nftId, setNftId] = useState<string>("");
+  const [tokenId, setTokenId] = useState<string>("");
   const [nft, setNft] = useState<NftEntity>();
   const [step, setStep] = useState(0);
   const { platformConfig, chainId } = useMain();
 
-  const handleFetchNftData = (_nftId: string) => {
-    setStep && setStep(1);
-
-    NftService.getService(chainId)
-      .getNftDetail({
-        contractAddress: _nftId,
-      })
-      .then((resp) => {
-        if (!resp) {
-          toast("NFT is not found with ID!");
-          return setStep(0);
-        }
-        setNft(resp);
-        setStep(2);
-      })
-      .catch(() => {});
-  };
+  const handleFetchNftData = useCallback(
+    (nftId: string) => {
+      setStep && setStep(1);
+      NftService.getService(chainId)
+        .getNftDetail({
+          contractAddress: chainId === ChainId.solana ? nftId : collection?.[0],
+          tokenId,
+          chainId,
+        })
+        .then((resp) => {
+          if (!resp) {
+            toast("NFT is not found with ID!");
+            return setStep(0);
+          }
+          setNft(resp);
+          setStep(2);
+        })
+        .catch(() => {});
+    },
+    [tokenId, chainId, collection]
+  );
 
   /**
    * Handle save expected nfts to redux-store
@@ -113,7 +119,9 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
                 collection={collection}
                 setCollection={setCollection}
                 nftId={nftId}
+                tokenId={tokenId}
                 setNftId={setNftId}
+                setTokenId={setTokenId}
                 allowNTFCollections={platformConfig?.allowNTFCollections}
               />
             )}
@@ -132,7 +140,10 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
                 <button
                   type="button"
                   onClick={() => handleFetchNftData(nftId)}
-                  disabled={isEmpty(collection) || !nftId}
+                  disabled={
+                    isEmpty(collection) ||
+                    (chainId === ChainId.solana && !nftId)
+                  }
                 >
                   Next
                 </button>

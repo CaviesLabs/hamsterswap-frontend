@@ -42,8 +42,11 @@ export class ProposalService {
    * @param {DetailDto} payload
    * @returns {ProposalDto}
    */
-  getProposal(payload: DetailDto): Promise<ProposalDto> {
-    return networkProvider.request<ProposalDto>(`/proposal/${payload.id}`, {});
+  getProposal(payload: DetailDto): Promise<SwapProposalEntity> {
+    return networkProvider.request<SwapProposalEntity>(
+      `/proposal/${payload.id}`,
+      {}
+    );
   }
 
   /**
