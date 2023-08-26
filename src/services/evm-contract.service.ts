@@ -130,6 +130,7 @@ export class EvmContractService {
     proposalId: string,
     optionId: string,
     wrapTokenAmount: bigint,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     wrapRecipientTokenAmount?: bigint
   ) {
     return await this.multical3Contract.aggregate3Value(
@@ -156,17 +157,17 @@ export class EvmContractService {
           value: 0,
           allowFailure: false,
         },
-        ...(wrapRecipientTokenAmount && [
-          {
-            target: await this.hamsterContract.getAddress(),
-            callData: this.hamsterContract.interface.encodeFunctionData(
-              "unwrapETH",
-              [walletAddress]
-            ),
-            value: 0,
-            allowFailure: false,
-          },
-        ]),
+        // ...(wrapRecipientTokenAmount && [
+        //   {
+        //     target: await this.hamsterContract.getAddress(),
+        //     callData: this.hamsterContract.interface.encodeFunctionData(
+        //       "unwrapETH",
+        //       [walletAddress]
+        //     ),
+        //     value: 0,
+        //     allowFailure: false,
+        //   },
+        // ]),
       ],
       wrapTokenAmount ? { value: wrapTokenAmount } : {}
     );
