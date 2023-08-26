@@ -31,6 +31,11 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
   const [step, setStep] = useState(0);
   const { platformConfig, chainId } = useMain();
 
+  /**
+   * @dev The function to fetch nft data from api
+   * @param {string} nftId
+   * @returns
+   */
   const handleFetchNftData = useCallback(
     (nftId: string) => {
       setStep && setStep(1);
@@ -48,7 +53,9 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
           setNft(resp);
           setStep(2);
         })
-        .catch(() => {});
+        .catch(() => {
+          setStep(4);
+        });
     },
     [tokenId, chainId, collection]
   );
@@ -135,6 +142,19 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
               </div>
             )}
             {step === 2 && nft && <AddExpectedNftDetail nft={nft} />}
+            {step === 4 && (
+              <div className="text-center">
+                <img
+                  src="https://pocket.hamsterbox.xyz/assets/images/empty-icon.png"
+                  alt="NFT Not Found"
+                  className="mx-auto w-[200px] h-[200px]"
+                />
+                <p className="text-center text-[20px]">
+                  The NFT associated with the provided ID and Collection Name
+                  cannot be located !.
+                </p>
+              </div>
+            )}
             <div>
               {step === 0 && (
                 <button

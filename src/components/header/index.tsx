@@ -23,8 +23,8 @@ interface MenuItem {
 const Header: FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [curSlug, setCurSlug] = useState<string>("#about-us");
-  const router = useRouter();
   const { hProfile, chainId } = useMain();
+  const router = useRouter();
 
   /**
    * Check homepage and display logo on dark theme

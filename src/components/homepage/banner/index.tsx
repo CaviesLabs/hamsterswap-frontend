@@ -1,15 +1,14 @@
 import { Button } from "@hamsterbox/ui-kit";
 import { useRouter } from "next/router";
 import classnames from "classnames";
-import { useWalletKit } from "@gokiprotocol/walletkit";
-import { useConnectedWallet } from "@saberhq/use-solana";
 import Lottie from "react-lottie";
 import animationData from "./animationData.json";
+import { useAppWallet, useConnect } from "@/src/hooks/useAppWallet";
 
 export function Banner() {
   const router = useRouter();
-  const { connect } = useWalletKit();
-  const wallet = useConnectedWallet();
+  const { walletAddress } = useAppWallet();
+  const { connect } = useConnect();
 
   return (
     <div className="relative bg-[#1c1254] md:h-[100vh]">
@@ -31,7 +30,7 @@ export function Banner() {
             size="large"
             shape="secondary"
             onClick={() =>
-              wallet ? router.push("create-proposal") : connect()
+              walletAddress ? router.push("create-proposal") : connect()
             }
             theme={{
               backgroundColor: "transparent",

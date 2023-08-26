@@ -25,14 +25,18 @@ export const AddExpectedNftDetail: FC<DetailProps> = (props) => {
           <img className="aspect-square rounded-2xl" src={nft.image} />
         </div>
       </div>
-      <p className="mt-[20px] text-dark60">Attributes</p>
-      <Row gutter={[16, 16]} className="mt-[10px]">
-        {nft.attributes.map((attr, index) => (
-          <Col span={12} key={`attr-item-${index}`}>
-            <AttributeCard {...attr} />
-          </Col>
-        ))}
-      </Row>
+      {nft?.attributes?.length && (
+        <>
+          <p className="mt-[20px] text-dark60">Attributes</p>
+          <Row gutter={[16, 16]} className="mt-[10px]">
+            {nft?.attributes?.map((attr, index) => (
+              <Col span={12} key={`attr-item-${index}`}>
+                <AttributeCard {...attr} />
+              </Col>
+            ))}
+          </Row>
+        </>
+      )}
     </div>
   );
 };

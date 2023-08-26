@@ -115,14 +115,21 @@ export const useNativeBalance = (): number => {
   );
 };
 
+/**
+ * @dev Get connect wallet from useEvmWallet or useSolana
+ * @notice This hook is used to get connect wallet from useEvmWallet or useSolana
+ * @returns {connect: Function}
+ * @see src/hooks/useAppWallet.ts
+ */
 export const useConnect = () => {
   const { chainId } = useSelector((state: State) => state);
   const { connect: connectSol } = useWalletKit();
   const { openConnectModal: connectEvm } = useConnectModal();
 
-  return useMemo(() => {
-    return {
+  return useMemo(
+    () => ({
       connect: chainId === ChainId.solana ? connectSol : connectEvm,
-    };
-  }, [chainId, connectSol, connectEvm]);
+    }),
+    [chainId, connectSol, connectEvm]
+  );
 };
