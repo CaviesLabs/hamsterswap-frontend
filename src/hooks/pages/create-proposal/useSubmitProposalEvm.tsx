@@ -35,6 +35,12 @@ export const useSubmitProposalEvm = () => {
     );
   };
 
+  /**
+   * @dev The function to get real address of each item in offer array.
+   * @param {string} address Address value in Solana.
+   * @param {SwapItemType} assetType Type of item.
+   * @returns {string} Real address.
+   */
   const getRealAddress = useCallback(
     (address: string, assetTpe: SwapItemType) => {
       if (assetTpe === SwapItemType.CURRENCY) {
@@ -119,6 +125,7 @@ export const useSubmitProposalEvm = () => {
 
   return {
     convertOfferedItemsHelper,
+    getRealAddress,
     submit: useCallback(async () => {
       if (!walletAddress) return;
       const proposalService = getProposalService();

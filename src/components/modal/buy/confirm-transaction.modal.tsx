@@ -12,11 +12,13 @@ import { useMain } from "@/src/hooks/pages/main";
 export const ExecuteItem: FC<{
   name: string;
   image: string;
-  isApproved(): Promise<boolean>;
+  isLoading: boolean;
+  isApprove: boolean;
   handleApprove(): Promise<void>;
+  handleCheckApproveAll(delay: number): Promise<void>;
 }> = (props) => {
-  const [approved, setApproved] = useState(true);
   const [approveSuccess, setApproveSuccess] = useState(false);
+  const [processingLoading, setProcessingLoading] = useState(false);
 
   /**
    * @dev The function to handle approve token.
@@ -26,22 +28,18 @@ export const ExecuteItem: FC<{
    * @returns {void}
    */
   const handleApprove = useCallback(async () => {
-    await props.handleApprove();
-    setApproveSuccess(true);
+    try {
+      setProcessingLoading(true);
+      await props.handleApprove();
+      setApproveSuccess(true);
+      await props.handleCheckApproveAll(7000);
+    } catch (err) {
+      toast.error("Approve token failed, please try again later.");
+      console.error("ERROR_APPROVE_TOKEN", err);
+    } finally {
+      setProcessingLoading(false);
+    }
   }, [props.handleApprove]);
-
-  /**
-   * @dev The function to check is approved.
-   * @notice This function will be called when component mounted.
-   * @notice Call isApproved function from props.
-   * @returns {void}
-   */
-  useEffect(() => {
-    (async function () {
-      const isApproved = await props.isApproved();
-      setApproved(isApproved);
-    })();
-  }, []);
 
   return (
     <div className="flow-root mb-[10px]">
@@ -56,14 +54,23 @@ export const ExecuteItem: FC<{
           {props.name}
         </p>
       </div>
-      {!approved && (
+      {!props.isApprove && !approveSuccess && (
         <div className="float-right">
           <Button
             type="button"
             onClick={handleApprove}
-            disabled={approveSuccess}
+            disabled={approveSuccess || props.isLoading}
+            loading={processingLoading || props.isLoading}
             width={"100%"}
-            text={approveSuccess ? "Approved" : "Approve"}
+            text={
+              props.isLoading
+                ? "Loading..."
+                : processingLoading
+                ? "Approving"
+                : approveSuccess
+                ? "Approved"
+                : "Approve"
+            }
             {...(approveSuccess && {
               theme: {
                 backgroundColor: "#94A3B8",
@@ -89,62 +96,57 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
   const { checkIsApproved, approveToken } = useEvmToken();
   const [processingLoading, setProcessingLoading] = useState(false);
   const [allApproved, setAllApproved] = useState(false);
+  const [approvedList, setApprovedList] = useState<boolean[]>([]);
 
   /**
    * @dev The function to handle check all approved.
    * @notice This function will be called when user click approve button.
    */
-  const handleCheckAllApproved = useCallback(async () => {
-    setProcessingLoading(true);
-    if (!swapItems) return setProcessingLoading(false);
-    setTimeout(async () => {
-      const isAllApproved = await Promise.all(
-        swapItems?.map((item) => {
-          try {
-            const isApproved = checkIsApproved(
-              item.contractAddress,
-              BigInt(item.amount),
-              item?.type === SwapItemType.NFT ? 0 : 1
-            );
-            return isApproved;
-          } catch (err) {
-            console.error("ERROR_CHECK_APPROVE", err);
-            return false;
-          }
-        })
-      );
+  const handleCheckAllApproved = useCallback(
+    async (delay = 0) => {
+      setProcessingLoading(true);
+      if (!swapItems) return setProcessingLoading(false);
+      setTimeout(async () => {
+        const isAllApproved = await Promise.all(
+          swapItems?.map((item) => {
+            try {
+              const isApproved = checkIsApproved(
+                item.contractAddress,
+                BigInt(item.amount),
+                item?.type === SwapItemType.NFT ? 0 : 1
+              );
+              return isApproved;
+            } catch (err) {
+              console.error("ERROR_CHECK_APPROVE", err);
+              return false;
+            }
+          })
+        );
 
-      console.log({ isAllApproved: isAllApproved.every((item) => item) });
-      setAllApproved(isAllApproved.every((item) => item));
-      setProcessingLoading(false);
-    }, 4000);
-  }, [swapItems, checkIsApproved]);
+        setApprovedList(isAllApproved);
+        setAllApproved(isAllApproved.every((item) => item));
+        setProcessingLoading(false);
+      }, delay);
+    },
+    [swapItems, checkIsApproved]
+  );
 
   /**
    * @dev The function to get executed items.
    * @returns {Array<JSX.Element>} The array of executed items.
    */
   const getExecutedItems = useCallback(() => {
-    return swapItems?.map((item) => {
+    return swapItems?.map((item, index) => {
       return {
         name: item?.nftMetadata.metadata.name,
         image:
           item?.nftMetadata.metadata.image || item?.nftMetadata.metadata.icon,
+        isApprove: approvedList?.[index] || false,
         handleApprove: async () => {
-          try {
-            try {
-              await approveToken(
-                item.contractAddress,
-                item?.nftMetadata?.metadata?.tokenId
-              );
-              handleCheckAllApproved();
-            } catch (err) {
-              toast.error("Approve token failed, please try again later.");
-              console.error("ERROR_APPROVE_TOKEN", err);
-            }
-          } catch (err) {
-            console.log("error when approve token", err);
-          }
+          await approveToken(
+            item.contractAddress,
+            item?.nftMetadata?.metadata?.tokenId
+          );
         },
         isApproved: async () =>
           await checkIsApproved(
@@ -157,13 +159,14 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
   }, [
     swapItems,
     chainId,
+    approvedList,
     checkIsApproved,
     handleCheckAllApproved,
     approveToken,
   ]);
 
   useEffect(() => {
-    if (chainId !== ChainId.solana) handleCheckAllApproved();
+    if (chainId !== ChainId.solana) handleCheckAllApproved(0);
   }, [props.isModalOpen, chainId]);
 
   return (
@@ -220,9 +223,11 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
                 <ExecuteItem
                   name={item.name}
                   image={item.image}
-                  isApproved={item.isApproved}
+                  isApprove={item.isApprove}
                   handleApprove={item.handleApprove}
                   key={Math.random().toString()}
+                  handleCheckApproveAll={handleCheckAllApproved}
+                  isLoading={processingLoading}
                 />
               ))}
             </div>

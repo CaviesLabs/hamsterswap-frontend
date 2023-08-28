@@ -70,6 +70,14 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
     }
 
     if (
+      offferedItems.find((item) => nftItem.realAddress === item.realAddress)
+    ) {
+      return toast.error(
+        "Please note that items selected in the offer tab are non-reselectable. Kindly choose differently."
+      );
+    }
+
+    if (
       expectedItems[props.index]?.askingItems
         .map((_) => _.address)
         .indexOf(nftItem.address) > -1

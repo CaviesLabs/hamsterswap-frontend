@@ -62,8 +62,8 @@ export const useEvmContractService = () => {
 };
 
 export const useEvmHamsterSwapContract = () => {
-  const { signer } = useEvmWallet();
   const { platformConfig } = useMain();
+  const { signer } = useEvmWallet();
   const ethWallet = useAccount();
 
   /**
@@ -113,6 +113,11 @@ export const useEvmHamsterSwapContract = () => {
       wrappedTokenAmount: bigint;
       wrappedRecipientTokenAmount?: bigint;
     }) => {
+      console.log(
+        platformConfig?.programAddress,
+        platformConfig?.multicall3Address,
+        signer
+      );
       if (
         !platformConfig?.programAddress ||
         !platformConfig?.multicall3Address ||

@@ -96,7 +96,12 @@ const Layout: FC = () => {
                     <div>
                       {!selectedStatus.length || selectedStatus.length === 5
                         ? "All status"
-                        : selectedStatus.join(", ")}
+                        : selectedStatus
+                            ?.map(
+                              (item) =>
+                                sortOptions.find((s) => s.value === item).name
+                            )
+                            ?.join(", ")}
                     </div>
                   </>
                 }

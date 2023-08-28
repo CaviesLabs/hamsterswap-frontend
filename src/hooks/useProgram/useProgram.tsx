@@ -1,6 +1,9 @@
 import { useCallback, useMemo } from "react";
 import { useWallet } from "@/src/hooks/useWallet";
-import { useEvmHamsterSwapContract } from "@/src/hooks/wagmi/useEvmWallet";
+import {
+  useEvmHamsterSwapContract,
+  useEvmWallet,
+} from "@/src/hooks/wagmi/useEvmWallet";
 import { ChainId } from "@/src/entities/chain.entity";
 import { useMain } from "@/src/hooks/pages/main";
 
@@ -10,6 +13,7 @@ import { useMain } from "@/src/hooks/pages/main";
 export const useProgram = () => {
   const { chainId } = useMain();
   const { provider: solanaProvider, programService } = useWallet();
+  const { signer } = useEvmWallet();
 
   const {
     cancelProposal: cancelProposalEvm,
@@ -67,7 +71,7 @@ export const useProgram = () => {
         wrappedRecipientTokenAmount,
       });
     },
-    [solanaProvider, programService, chainId, swapProposalEvm]
+    [solanaProvider, programService, chainId, signer, swapProposalEvm]
   );
 
   return useMemo(
@@ -84,6 +88,7 @@ export const useProgram = () => {
       solanaProvider,
       programService,
       chainId,
+      signer,
     ]
   );
 };

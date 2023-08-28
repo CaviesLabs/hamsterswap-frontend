@@ -46,7 +46,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
    * @param value [string]
    */
   const handleAddToken = useCallback(
-    (token: TokenEntity, amount: string) => {
+    async (token: TokenEntity, amount: string) => {
       if (expectedItems[props.index]?.askingItems.length === 4) {
         return toast.warn("Only a maximum of 4 items are allowed");
       }

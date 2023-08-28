@@ -128,7 +128,7 @@ export const AddTokenModal: FC<
             : await TokenService.getService(chainId).getTokenBalanceOf(
                 walletAddress,
                 token.realAddress,
-                token.decimals
+                token.realDecimals
               ),
       }))
     );
@@ -168,7 +168,7 @@ export const AddTokenModal: FC<
                 data-dropdown-toggle="dropdown"
                 size="large"
                 className="rounded-2xl p-3 mt-2"
-                placeholder="Enter SOL amount"
+                placeholder={`Enter ${tokenInfo?.symbol} amount`}
                 prefix={
                   <img
                     className="w-10 h-10"
@@ -199,7 +199,7 @@ export const AddTokenModal: FC<
                       <TokenItem
                         name={item.name}
                         iconUrl={item.icon}
-                        address={item.realAddress}
+                        address={item.address}
                         balance={balances[key]?.balance?.toString() || "0"}
                         addInOwner={props.addInOwner}
                         onClick={(address) => {

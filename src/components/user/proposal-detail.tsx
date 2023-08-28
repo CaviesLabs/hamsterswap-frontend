@@ -113,8 +113,8 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
         setCancelModal(false);
       } else {
         try {
-          setIsDuringSubmitCancel(true);
           await cancelProposal(props.proposalId);
+          setCancelModal(false);
           setCanceledModal(true);
           handleFilter();
         } catch (err) {
@@ -290,6 +290,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                         Cancel Proposal
                       </button>
                       <CancelProposalModal
+                        isLoading={isDuringSubmitCancel}
                         isModalOpen={cancelModal}
                         handleCancel={() => setCancelModal(false)}
                         handleOk={() => handleCancleProposal("cancel")}
