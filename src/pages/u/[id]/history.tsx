@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { ProfilePageProvider } from "@/src/hooks/pages/profile";
 import { LayoutSection } from "@/src/components/layout-section";
@@ -13,10 +13,28 @@ import SubMenu from "@/src/components/user/sub-menu";
 import Title from "@/src/components/user/history/title";
 import Proposal from "@/src/components/user/history/proposal";
 import { useMain } from "@/src/hooks/pages/main";
+import { RefreshButton } from "@/src/components/refresh-button";
+import { getProposalService } from "@/src/services/proposal.service";
 
 const Layout: FC = () => {
   const router = useRouter();
-  const { hPublicProfile: profile, proposals } = useMain();
+  const { hPublicProfile: profile, proposals, chainId } = useMain();
+  const [refreshing, setRefreshing] = useState(false);
+
+  /**
+   * @dev Handle refresh proposals.
+   * @note This is a temporary solution.
+   */
+  const handleRefreshProposals = useCallback(async () => {
+    if (!profile) return;
+    setRefreshing(true);
+    await getProposalService().syncWalletProposals(
+      chainId,
+      profile?.walletAddress
+    );
+    handleSearch();
+    setRefreshing(false);
+  }, [profile, chainId, setRefreshing]);
 
   /**
    * Fetch proposal by user id
@@ -52,9 +70,15 @@ const Layout: FC = () => {
         </div>
         <SubMenu curTab={1} />
         <div className="mt-10">
-          <h3 className="text-2xl font-bold tracking-tight text-gray-900">
-            History
-          </h3>
+          <div className="flex items-center">
+            <h3 className="text-2xl font-bold tracking-tight text-gray-900">
+              History
+            </h3>
+            <RefreshButton
+              loading={refreshing}
+              handleClick={handleRefreshProposals}
+            />
+          </div>
           <Title />
           {proposals.map((_) => (
             <Proposal key={`proposal-${_.id}`} data={_} />

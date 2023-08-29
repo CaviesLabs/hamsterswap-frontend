@@ -49,7 +49,7 @@ const Layout: FC = () => {
     );
     handleFilter(search, selectedStatus);
     setRefreshing(false);
-  }, [profile, search, selectedStatus, setRefreshing]);
+  }, [chainId, profile, search, selectedStatus, setRefreshing]);
 
   /**
    * @dev Watch changes of selected status to filter proposals.
