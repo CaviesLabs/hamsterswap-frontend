@@ -98,7 +98,7 @@ const ProposalDetailPage: NextPage = () => {
   }, [proposal]);
 
   const renderProposalStatus = useMemo(() => {
-    switch (proposal.status) {
+    switch (proposal?.status) {
       case SwapProposalStatus.FULFILLED:
       case SwapProposalStatus.REDEEMED:
         <p className="regular-text text-[14px] text-green mb-10">
