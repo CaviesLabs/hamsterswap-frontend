@@ -77,7 +77,7 @@ const BuyButton: FC<{
         toast.error(
           "“Please ensure that your wallet is equipped with the necessary items."
         );
-        console.error("ERROR_SUBMIT_PROPOSAL", err);
+        console.error("ERROR_SWAP_PROPOSAL", err);
       } finally {
         setIsDisplayConfirm(false);
         setIsBuyButtonLoading(false);

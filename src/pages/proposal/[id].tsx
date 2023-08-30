@@ -47,6 +47,7 @@ const ProposalDetailPage: NextPage = () => {
   const handleRefreshProposals = useCallback(async () => {
     setRefreshing(true);
     await getProposalService().syncProposal(proposal?.id);
+    dispatch(getProposal({ id: router.query.id as string }));
     setRefreshing(false);
   }, [proposal, setRefreshing]);
 
@@ -64,7 +65,7 @@ const ProposalDetailPage: NextPage = () => {
     const nativeToken = proposal?.swapOptions[optionSelected].items
       .filter((item) => item.type === SwapItemType.CURRENCY)
       .find((item) =>
-        platformConfig.allowCurrencies.find(
+        platformConfig?.allowCurrencies.find(
           // eslint-disable-next-line prettier/prettier
           (token) => token.realAddress === item.contractAddress && token.isNativeToken
         )
@@ -77,7 +78,7 @@ const ProposalDetailPage: NextPage = () => {
     const recipientNativeToken = proposal?.offerItems
       .filter((item) => item.type === SwapItemType.CURRENCY)
       .find((item) =>
-        platformConfig.allowCurrencies.find(
+        platformConfig?.allowCurrencies.find(
           // eslint-disable-next-line prettier/prettier
           (token) => token.realAddress === item.contractAddress && token.isNativeToken
         )
@@ -89,7 +90,7 @@ const ProposalDetailPage: NextPage = () => {
       nativeToken ? BigInt(nativeToken.amount) : null,
       recipientNativeToken ? BigInt(recipientNativeToken.amount) : null
     );
-  }, [walletAddress, proposal, optionSelected, swapProposal]);
+  }, [walletAddress, proposal, optionSelected, platformConfig, swapProposal]);
 
   const expiredText = useMemo(() => {
     if (!proposal?.expiredAt) return "";

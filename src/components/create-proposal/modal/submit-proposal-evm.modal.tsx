@@ -11,7 +11,7 @@ import { UtilsProvider } from "@/src/utils";
 export const ExecuteItem: FC<{
   name: string;
   image: string;
-  amount: number;
+  amount: string;
   isLoading: boolean;
   isApprove: boolean;
   handleApprove(): Promise<void>;
@@ -51,7 +51,7 @@ export const ExecuteItem: FC<{
           className="w-[36px] h-[36px] rounded-[8px] float-left"
         />
         <p className="float-left text-[#20242D] text-[16px] ml-[10px]">
-          {props.amount !== 0 && props.amount} {props.name}
+          {props.amount !== "" && props.amount} {props.name}
         </p>
       </div>
       {!props.isApprove && !approveSuccess && (
@@ -147,10 +147,8 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
           image: tokenInfo?.image,
           isApprove: approvedList?.[index] || false,
           amount: offferedItems[index].tokenAmount
-            ? parseInt(
-                UtilsProvider.formatLongNumber(offferedItems[index].tokenAmount)
-              )
-            : 0,
+            ? UtilsProvider.formatLongNumber(offferedItems[index].tokenAmount)
+            : "",
           handleApprove: async () => {
             await approveToken(item.contractAddress, item.tokenId);
           },
