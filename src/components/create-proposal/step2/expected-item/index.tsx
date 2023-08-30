@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FC, useCallback, useState } from "react";
 import { Collapse } from "react-collapse";
 import { RowEditNftItem } from "@/src/components/nfts";
@@ -154,7 +155,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                 }}
               />
             </div>
-            <div className="ml-[12px]">
+            {/* <div className="ml-[12px]">
               <Button
                 text="Add in-game item"
                 className="!rounded-[100px] after:!rounded-[100px] !px-4"
@@ -191,7 +192,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                 }
                 handleCancel={() => setIsAddCash(false)}
               />
-            </div>
+            </div> */}
           </div>
           <div className="block py-5">
             <Row gutter={[139, 20]}>

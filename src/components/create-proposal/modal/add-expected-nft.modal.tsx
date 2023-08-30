@@ -69,9 +69,7 @@ export const AddExpectedNftModal: FC<AddExpectedItemModalProps> = (props) => {
       return toast.warn("Only a maximum of 4 items are allowed");
     }
 
-    if (
-      offferedItems.find((item) => nftItem.realAddress === item.realAddress)
-    ) {
+    if (offferedItems.find((item) => nftItem.tokenId === item.tokenId)) {
       return toast.error(
         "Please note that items selected in the offer tab are non-reselectable. Kindly choose differently."
       );

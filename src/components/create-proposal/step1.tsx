@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button, toast } from "@hamsterbox/ui-kit";
 import { PlusIcon } from "@/src/components/icons";
 import {
@@ -133,7 +134,7 @@ export const Step1: FC = () => {
             }}
           />
         </div>
-        <div className="ml-[12px]">
+        {/* <div className="ml-[12px]">
           <Button
             size="small"
             text="Add in-game item"
@@ -168,7 +169,7 @@ export const Step1: FC = () => {
             handleOk={(value: string) => handleAddCash(value)}
             handleCancel={() => setIsAddCash(false)}
           />
-        </div>
+        </div> */}
       </div>
       <div className="block mt-[20px]">
         <div className="pt-[40px] px-10">

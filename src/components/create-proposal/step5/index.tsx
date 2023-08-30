@@ -7,11 +7,9 @@ import { parseOfferCreateProposal } from "@/src/utils";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { DATE_TIME_FORMAT } from "@/src/utils";
 import moment from "moment";
-import { useNativeToken } from "@/src/hooks/useAppWallet";
 import { useMain } from "@/src/hooks/pages/main";
 
 export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
-  const { nativeToken } = useNativeToken();
   const { platformConfig } = useMain();
   const allowCurrencies = platformConfig?.allowCurrencies;
 
@@ -58,25 +56,6 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
             Expiration date:{" "}
             {expiredTime && moment(expiredTime).utc().format(DATE_TIME_FORMAT)}
           </p>
-        </Col>
-        <Col
-          span={isGuaranteedPayment ? 12 : 0}
-          className="float-left w-full pl=[20px]"
-        >
-          <p className="text-3xl">Warranty</p>
-          <div className="mt-[12px] flex items-center">
-            <p className="regular-text text-[16px] float-left">
-              Guarantee deposit amount:
-            </p>
-            <img
-              src={nativeToken?.icon}
-              alt="Native Token Icon"
-              className="!w-[16px] h-[16px] ml-[12px] float-left"
-            />
-            <p className="ml-[12px] text-[16px] ml-[12px] float-left">
-              {guaranteeSol} {nativeToken?.symbol.toUpperCase()}
-            </p>
-          </div>
         </Col>
       </Row>
       <ConfirmedTransactionModal

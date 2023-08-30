@@ -81,7 +81,7 @@ export class EvmContractService {
     expiredAt: bigint,
     wrapTokenAmount: bigint
   ) {
-    return await this.multical3Contract.aggregate3Value(
+    const tx = await this.multical3Contract.aggregate3Value(
       [
         ...(wrapTokenAmount
           ? [
@@ -108,6 +108,10 @@ export class EvmContractService {
       ],
       wrapTokenAmount ? { value: wrapTokenAmount } : {}
     );
+
+    // TODO: Adjust for other blockchain later.
+    await tx.wait(5);
+    return tx;
   }
 
   /**
@@ -116,7 +120,9 @@ export class EvmContractService {
    * @returns {Promise<any>}
    */
   public async cancelProposal(proposalId: string) {
-    return await this.hamsterContract.cancelProposal(proposalId);
+    const tx = await this.hamsterContract.cancelProposal(proposalId);
+    await tx.wait(5);
+    return tx;
   }
 
   /**
@@ -133,7 +139,7 @@ export class EvmContractService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     wrapRecipientTokenAmount?: bigint
   ) {
-    return await this.multical3Contract.aggregate3Value(
+    const tx = await this.multical3Contract.aggregate3Value(
       [
         ...(wrapTokenAmount
           ? [
@@ -171,6 +177,8 @@ export class EvmContractService {
       ],
       wrapTokenAmount ? { value: wrapTokenAmount } : {}
     );
+    tx.wait(5);
+    return tx;
   }
 }
 

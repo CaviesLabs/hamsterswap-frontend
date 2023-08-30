@@ -14,13 +14,7 @@ import type { StepProgressHandle } from "@/src/components/stepper";
 import { Carousel } from "react-responsive-carousel";
 import { Form } from "antd";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import {
-  Step1,
-  Step2,
-  Step3,
-  Step4,
-  Step5,
-} from "@/src/components/create-proposal";
+import { Step1, Step2, Step3, Step5 } from "@/src/components/create-proposal";
 import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optimize-transaction-modal";
 import { SubmitProposalEvmModal } from "@/src/components/create-proposal/modal/submit-proposal-evm.modal";
 import { StorageProvider } from "@/src/providers/storage.provider";
@@ -76,8 +70,6 @@ const Layout: FC = () => {
         );
       case 2:
         return !note || !expiredTime;
-      case 3:
-        return guaranteeSol <= 0;
       default:
         return true;
     }
@@ -181,10 +173,6 @@ const Layout: FC = () => {
                     name: "Additional info",
                   },
                   {
-                    label: "Warranty",
-                    name: "Warranty",
-                  },
-                  {
                     label: "Confirm",
                     name: "Confirm",
                   },
@@ -205,7 +193,6 @@ const Layout: FC = () => {
                   <Step1 />
                   <Step2 />
                   <Step3 form={formProposal} />
-                  <Step4 />
                   <Step5
                     modalOpened={modalOpened}
                     setModalOpened={(v) => {
@@ -228,7 +215,7 @@ const Layout: FC = () => {
                   size="large"
                 />
               )}
-              {currentStep < 4 ? (
+              {currentStep < 3 ? (
                 <Button
                   text="Next"
                   className={classnames(
@@ -286,12 +273,12 @@ const Layout: FC = () => {
                   }}
                   handleOk={async () => {
                     try {
+                      setSubmitModalOpen(false);
                       const result = (await submitProposal()) as {
                         proposalId: string;
                         fnc: any;
                       };
                       setModalOpened(true);
-                      setSubmitModalOpen(false);
                       setProposalId(result.proposalId);
                       setModalOpened(true);
                       setIsDuringSubmit(false);

@@ -12,12 +12,10 @@ import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import { completedOrderPercent, DATE_TIME_FORMAT } from "@/src/utils";
 import { hProfileDto } from "@/src/dto/hProfile.dto";
 import { hProfileService } from "@/src/redux/saga/hamster-profile/profile.service";
-import { useNativeToken } from "@/src/hooks/useAppWallet";
 
 export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
   const [profile, setProfile] = useState<hProfileDto>();
   const router = useRouter();
-  const { nativeToken } = useNativeToken();
   const { data } = props;
 
   /**
@@ -80,22 +78,6 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
                 <p className="mt-[16px] text-[14px] regular-text text-dark60">
                   Expiration date:{" "}
                   {moment(data.expiredAt).utc().format(DATE_TIME_FORMAT)}
-                </p>
-              </div>
-            </Col>
-            <Col offset={4} span={10}>
-              <div className="md:left">
-                <p className="semi-bold text-[16px] h-[36px] leading-9">
-                  Warranty
-                </p>
-                <p className="mt-[8px] text-[16px] regular-text flex">
-                  Guarantee deposit amount:
-                  <img
-                    src={nativeToken?.icon}
-                    alt="Solana Icon"
-                    className="h-[24px] w-[24px] mx-[12px]"
-                  />
-                  <span className="semi-bold">300.00 SOL</span>
                 </p>
               </div>
             </Col>

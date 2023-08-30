@@ -6,10 +6,12 @@ import { useEvmToken } from "@/src/hooks/wagmi";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { useSubmitProposalEvm } from "@/src/hooks/pages/create-proposal/useSubmitProposalEvm";
 import { useMain } from "@/src/hooks/pages/main";
+import { UtilsProvider } from "@/src/utils";
 
 export const ExecuteItem: FC<{
   name: string;
   image: string;
+  amount: number;
   isLoading: boolean;
   isApprove: boolean;
   handleApprove(): Promise<void>;
@@ -49,7 +51,7 @@ export const ExecuteItem: FC<{
           className="w-[36px] h-[36px] rounded-[8px] float-left"
         />
         <p className="float-left text-[#20242D] text-[16px] ml-[10px]">
-          {props.name}
+          {props.amount !== 0 && props.amount} {props.name}
         </p>
       </div>
       {!props.isApprove && !approveSuccess && (
@@ -89,7 +91,7 @@ export const ExecuteItem: FC<{
  */
 export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
   const { isLoading } = props;
-  const { chainId } = useMain();
+  const { chainId, platformConfig } = useMain();
   const { offferedItems } = useCreateProposal();
   const { convertOfferedItemsHelper } = useSubmitProposalEvm();
   const { checkIsApproved, approveToken } = useEvmToken();
@@ -144,12 +146,23 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
           name: tokenInfo?.name,
           image: tokenInfo?.image,
           isApprove: approvedList?.[index] || false,
+          amount: offferedItems[index].tokenAmount
+            ? parseInt(
+                UtilsProvider.formatLongNumber(offferedItems[index].tokenAmount)
+              )
+            : 0,
           handleApprove: async () => {
             await approveToken(item.contractAddress, item.tokenId);
           },
         };
       }),
-    [convertOfferedItemsHelper, offferedItems, chainId, approvedList]
+    [
+      convertOfferedItemsHelper,
+      platformConfig,
+      offferedItems,
+      chainId,
+      approvedList,
+    ]
   );
 
   useEffect(() => {
@@ -178,6 +191,7 @@ export const SubmitProposalEvmModal: FC<ModalProps> = (props) => {
               name={item.name}
               image={item.image}
               isApprove={item.isApprove}
+              amount={item.amount}
               handleApprove={item.handleApprove}
               key={Math.random().toString()}
               handleCheckApproveAll={handleCheckAllApproved}

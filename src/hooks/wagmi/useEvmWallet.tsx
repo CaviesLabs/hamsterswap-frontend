@@ -234,10 +234,18 @@ export const useEvmToken = () => {
       )
         throw new Error("Missing required modules.");
       // eslint-disable-next-line prettier/prettier
-      if (!tokenId) return await getEvmContractService(signer, platformConfig).getTokenContract(tokenAddress).approve(await contract.getAddress(), MaxUint256);
-      return await getEvmContractService(signer, platformConfig)
+      if (!tokenId) {
+        const tx = await getEvmContractService(signer, platformConfig)
+          .getTokenContract(tokenAddress)
+          .approve(await contract.getAddress(), MaxUint256);
+        await tx.wait(5);
+        return tx;
+      }
+      const tx = await getEvmContractService(signer, platformConfig)
         .getNftContract(tokenAddress)
         .setApprovalForAll(await contract.getAddress(), true);
+      await tx.wait(5);
+      return tx;
     },
     [platformConfig, contract, ethWallet, signer]
   );

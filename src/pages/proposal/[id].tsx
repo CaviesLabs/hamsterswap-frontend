@@ -20,9 +20,11 @@ import {
   SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
 import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
-import { useAppWallet, useNativeToken } from "@/src/hooks/useAppWallet";
+import { useAppWallet } from "@/src/hooks/useAppWallet";
 import { useProgram } from "@/src/hooks/useProgram";
 import { useMain } from "@/src/hooks/pages/main";
+import { RefreshButton } from "@/src/components/refresh-button";
+import { getProposalService } from "@/src/services/proposal.service";
 
 const BuyButton = dynamic(import("@/src/components/advertisment/buy-button"), {
   ssr: false,
@@ -32,11 +34,21 @@ const ProposalDetailPage: NextPage = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { swapProposal } = useProgram();
-  const { nativeToken } = useNativeToken();
   const { platformConfig, proposal } = useMain();
   const { walletAddress } = useAppWallet();
   const [optionSelected, setOptionSelected] = useState(0);
   const [isExpired, setIsExpired] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  /**
+   * @dev Handle refresh proposals.
+   * @note This is a temporary solution.
+   */
+  const handleRefreshProposals = useCallback(async () => {
+    setRefreshing(true);
+    await getProposalService().syncProposal(proposal?.id);
+    setRefreshing(false);
+  }, [proposal, setRefreshing]);
 
   /**
    * @dev The function handle swap proposal.
@@ -123,9 +135,15 @@ const ProposalDetailPage: NextPage = () => {
           </LayoutSection>
         </div>
         <LayoutSection className="relative">
-          <h3 className="mt-[60px] semi-bold text-2xl font-bold tracking-tight text-gray-900">
-            Active Swaps
-          </h3>
+          <div className="flex items-center mt-[60px] ">
+            <h3 className="semi-bold text-2xl font-bold tracking-tight text-gray-900">
+              Active Swaps
+            </h3>
+            <RefreshButton
+              loading={refreshing}
+              handleClick={handleRefreshProposals}
+            />
+          </div>
           <div className="block mt-[20px]">
             <ProposalItem
               data={proposal}
@@ -167,20 +185,6 @@ const ProposalDetailPage: NextPage = () => {
                     )}
                   </p>
                 </div>
-              </Col>
-              <Col offset={4} span={10}>
-                <div className="text-2xl semi-bold tracking-tight text-gray-900">
-                  Warranty
-                </div>
-                <p className="mt-2 text-[16px] regular-text flex">
-                  Guarantee deposit amount:
-                  <img
-                    src={nativeToken?.icon}
-                    alt="Solana Icon"
-                    className="h-[24px] w-[24px] mx-[12px]"
-                  />
-                  <span className="semi-bold">300.00 SOL</span>
-                </p>
               </Col>
             </Row>
           </div>

@@ -19,7 +19,7 @@ import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal
 import classnames from "classnames";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
 import moment from "moment";
-import { useAppWallet, useNativeToken } from "@/src/hooks/useAppWallet";
+import { useAppWallet } from "@/src/hooks/useAppWallet";
 import { ChainId } from "@/src/entities/chain.entity";
 import { useMain } from "@/src/hooks/pages/main";
 
@@ -41,7 +41,6 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   /** @todo Get wallet proivder */
   const { programService } = useWallet();
   const { walletAddress } = useAppWallet();
-  const { nativeToken } = useNativeToken();
 
   /** @todo Condition when proposal is already deposited offered items */
   const isPending = status.valueOf() === SwapProposalStatus.DEPOSITED.valueOf();
@@ -229,22 +228,6 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                       )}
                     </p>
                   )}
-                </div>
-              </Col>
-              <Col offset={4} span={isPending ? 10 : 0}>
-                <div className="md:left">
-                  <p className="semi-bold text-[16px] h-[36px] leading-9">
-                    Warranty
-                  </p>
-                  <p className="mt-[12px] text-[16px] regular-text flex">
-                    Guarantee deposit amount:
-                    <img
-                      src={nativeToken?.icon}
-                      alt="Solana Icon"
-                      className="h-[24px] w-[24px] mx-[12px]"
-                    />
-                    <span className="semi-bold">2.0 SOL</span>
-                  </p>
                 </div>
               </Col>
             </Row>

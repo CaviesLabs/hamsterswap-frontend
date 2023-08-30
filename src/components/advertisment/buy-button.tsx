@@ -74,7 +74,9 @@ const BuyButton: FC<{
         }, 2000);
         setIsDisplayConfirmed(true);
       } catch (err) {
-        toast.error("Create proposal failed, please try again later.");
+        toast.error(
+          "“Please ensure that your wallet is equipped with the necessary items."
+        );
         console.error("ERROR_SUBMIT_PROPOSAL", err);
       } finally {
         setIsDisplayConfirm(false);
