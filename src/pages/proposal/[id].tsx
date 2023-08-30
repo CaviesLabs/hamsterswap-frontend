@@ -47,7 +47,7 @@ const ProposalDetailPage: NextPage = () => {
   const handleRefreshProposals = useCallback(async () => {
     setRefreshing(true);
     await getProposalService().syncProposal(proposal?.id);
-    dispatch(getProposal({ id: router.query.id as string }));
+    dispatch(getProposal({ id: proposal?.id }));
     setRefreshing(false);
   }, [proposal, setRefreshing]);
 
