@@ -24,7 +24,7 @@ const Filter: FC = () => {
         },
       })
     );
-  }, [chainId]);
+  }, [chainId, search]);
 
   useEffect(() => {
     handleSearch();
