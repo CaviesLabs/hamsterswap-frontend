@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FC, useCallback, useEffect, useState } from "react";
 import { Col, Input, Row } from "antd";
 import Select from "@/src/components/select";
@@ -57,7 +58,7 @@ const Filter: FC = () => {
         </div>
       </div>
 
-      <div className="flex">
+      {/* <div className="flex">
         <span className="font-bold mr-4">Filter</span>
         <span
           className="regular-text text-indigo-600 cursor-pointer"
@@ -134,7 +135,7 @@ const Filter: FC = () => {
             ]}
           ></Select>
         </Col>
-      </Row>
+      </Row> */}
     </>
   );
 };

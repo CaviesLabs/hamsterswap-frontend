@@ -14,6 +14,7 @@ export const ExecuteItem: FC<{
   image: string;
   isLoading: boolean;
   isApprove: boolean;
+  amount: number;
   handleApprove(): Promise<void>;
   handleCheckApproveAll(delay: number): Promise<void>;
 }> = (props) => {
@@ -51,7 +52,7 @@ export const ExecuteItem: FC<{
           className="w-[36px] h-[36px] rounded-[8px] float-left"
         />
         <p className="float-left text-[#20242D] text-[16px] ml-[10px]">
-          {props.name}
+          {props.amount !== 0 && props.amount} {props.name}
         </p>
       </div>
       {!props.isApprove && !approveSuccess && (
@@ -142,6 +143,10 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
         image:
           item?.nftMetadata.metadata.image || item?.nftMetadata.metadata.icon,
         isApprove: approvedList?.[index] || false,
+        amount:
+          item?.type === SwapItemType.CURRENCY
+            ? item?.amount / Math.pow(10, item?.nftMetadata?.metadata?.decimals)
+            : 0,
         handleApprove: async () => {
           await approveToken(
             item.contractAddress,
@@ -224,6 +229,7 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
                   name={item.name}
                   image={item.image}
                   isApprove={item.isApprove}
+                  amount={item.amount}
                   handleApprove={item.handleApprove}
                   key={Math.random().toString()}
                   handleCheckApproveAll={handleCheckAllApproved}
