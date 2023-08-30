@@ -101,13 +101,19 @@ const ProposalDetailPage: NextPage = () => {
     switch (proposal?.status) {
       case SwapProposalStatus.FULFILLED:
       case SwapProposalStatus.REDEEMED:
-        <p className="regular-text text-[14px] text-green mb-10">
-          Swap Success
-        </p>;
-      default:
-        return "";
+        return (
+          <p className="regular-text text-[14px] text-green mt-10">
+            Swap Success
+          </p>
+        );
     }
-  }, [proposal]);
+
+    return (
+      <p className="regular-text text-[14px] text-red300 mt-10">
+        {isExpired ? "Expired" : <>Expiration date: {expiredText}</>}
+      </p>
+    );
+  }, [proposal, isExpired]);
 
   /**
    * @dev Get proposal detail by id.
@@ -187,17 +193,10 @@ const ProposalDetailPage: NextPage = () => {
                   Note
                 </div>
                 <div className="block mt-2">
-                  {renderProposalStatus}
                   <p className="regular-text text-[16px] break-all">
                     {proposal?.note}
                   </p>
-                  <p className="regular-text text-[14px] text-red300 mt-10">
-                    {isExpired ? (
-                      "Expired"
-                    ) : (
-                      <>Expiration date: {expiredText}</>
-                    )}
-                  </p>
+                  {renderProposalStatus}
                 </div>
               </Col>
             </Row>
