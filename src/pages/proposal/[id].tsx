@@ -97,6 +97,18 @@ const ProposalDetailPage: NextPage = () => {
     return moment(proposal?.expiredAt).utc().format(DATE_TIME_FORMAT);
   }, [proposal]);
 
+  const renderProposalStatus = useMemo(() => {
+    switch (proposal.status) {
+      case SwapProposalStatus.FULFILLED:
+      case SwapProposalStatus.REDEEMED:
+        <p className="regular-text text-[14px] text-green mb-10">
+          Swap Success
+        </p>;
+      default:
+        return "";
+    }
+  }, [proposal]);
+
   /**
    * @dev Get proposal detail by id.
    */
@@ -175,6 +187,7 @@ const ProposalDetailPage: NextPage = () => {
                   Note
                 </div>
                 <div className="block mt-2">
+                  {renderProposalStatus}
                   <p className="regular-text text-[16px] break-all">
                     {proposal?.note}
                   </p>
