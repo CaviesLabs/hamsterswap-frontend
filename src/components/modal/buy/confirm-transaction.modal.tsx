@@ -1,22 +1,25 @@
-import { FC, useState, useCallback, useMemo } from "react";
+import { FC, useState, useCallback, useEffect } from "react";
 import { Modal } from "antd";
 import { ConfirmModalProps } from "./types";
 import { Row, Col } from "antd";
 import { utilsProvider } from "@/src/utils/utils.provider";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { ChainId } from "@/src/entities/chain.entity";
-import { RowNftItemProps } from "../../nfts";
-import { useSelector } from "@/src/redux";
+import { useEvmToken } from "@/src/hooks/wagmi";
+import { SwapItemType } from "@/src/entities/proposal.entity";
+import { useMain } from "@/src/hooks/pages/main";
 
-export const NftItem: FC<
-  RowNftItemProps & { isApproved?: boolean; handleApprove?(): void }
-> = (props) => {
-  /**
-   * @notice Define state variables present user execute approve token or not.
-   * @notice Default value is false.
-   * @notice Use this state to disable approve button or not.
-   */
-  const [approved, setApproved] = useState(false);
+export const ExecuteItem: FC<{
+  name: string;
+  image: string;
+  isLoading: boolean;
+  isApprove: boolean;
+  amount: number;
+  handleApprove(): Promise<void>;
+  handleCheckApproveAll(delay: number): Promise<void>;
+}> = (props) => {
+  const [approveSuccess, setApproveSuccess] = useState(false);
+  const [processingLoading, setProcessingLoading] = useState(false);
 
   /**
    * @dev The function to handle approve token.
@@ -25,12 +28,19 @@ export const NftItem: FC<
    * @notice Disable approve button after user click.
    * @returns {void}
    */
-  const handleApprove = useCallback(() => {
-    props.handleApprove && props.handleApprove();
-    setApproved(true);
+  const handleApprove = useCallback(async () => {
+    try {
+      setProcessingLoading(true);
+      await props.handleApprove();
+      setApproveSuccess(true);
+      await props.handleCheckApproveAll(7000);
+    } catch (err) {
+      toast.error("Approve token failed, please try again later.");
+      console.error("ERROR_APPROVE_TOKEN", err);
+    } finally {
+      setProcessingLoading(false);
+    }
   }, [props.handleApprove]);
-
-  console.log(props);
 
   return (
     <div className="flow-root mb-[10px]">
@@ -42,18 +52,27 @@ export const NftItem: FC<
           className="w-[36px] h-[36px] rounded-[8px] float-left"
         />
         <p className="float-left text-[#20242D] text-[16px] ml-[10px]">
-          {props.name}
+          {props.amount !== 0 && props.amount} {props.name}
         </p>
       </div>
-      {props?.isApproved === false && (
+      {!props.isApprove && !approveSuccess && (
         <div className="float-right">
           <Button
             type="button"
             onClick={handleApprove}
-            text="Approve"
-            disabled={approved}
+            disabled={approveSuccess || props.isLoading}
+            loading={processingLoading || props.isLoading}
             width={"100%"}
-            {...(approved && {
+            text={
+              props.isLoading
+                ? "Loading..."
+                : processingLoading
+                ? "Approving"
+                : approveSuccess
+                ? "Approved"
+                : "Approve"
+            }
+            {...(approveSuccess && {
               theme: {
                 backgroundColor: "#94A3B8",
                 color: "#FFFFFF",
@@ -72,29 +91,88 @@ export const NftItem: FC<
  * @returns {JSX.Element} The modal to confirm transaction.
  */
 export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
-  const { isLoading, buyer, seller } = props;
-  const { chainId } = useSelector();
+  const { isLoading, buyer, seller, swapItems } = props;
+  const { chainId } = useMain();
+
+  const { checkIsApproved, approveToken } = useEvmToken();
+  const [processingLoading, setProcessingLoading] = useState(false);
+  const [allApproved, setAllApproved] = useState(false);
+  const [approvedList, setApprovedList] = useState<boolean[]>([]);
 
   /**
-   * @dev The function to format nfts.
-   * @notice If chain id is solana, return nfts.
-   * @notice If chain id is not solana, return nfts with isApproved and handleApprove.
-   * @returns {RowNftItemProps[]} The formatted nfts.
+   * @dev The function to handle check all approved.
+   * @notice This function will be called when user click approve button.
    */
-  const formattedNfts = useMemo(
-    () =>
-      props.nfts.map((item) => {
-        if (chainId === ChainId.solana) return item;
-        return {
-          ...item,
-          isApproved: false,
-          handleApprove: () => {
-            console.log("Approve Token");
-          },
-        };
-      }),
-    [props.nfts, chainId]
+  const handleCheckAllApproved = useCallback(
+    async (delay = 0) => {
+      setProcessingLoading(true);
+      if (!swapItems) return setProcessingLoading(false);
+      setTimeout(async () => {
+        const isAllApproved = await Promise.all(
+          swapItems?.map((item) => {
+            try {
+              const isApproved = checkIsApproved(
+                item.contractAddress,
+                BigInt(item.amount),
+                item?.type === SwapItemType.NFT ? 0 : 1
+              );
+              return isApproved;
+            } catch (err) {
+              console.error("ERROR_CHECK_APPROVE", err);
+              return false;
+            }
+          })
+        );
+
+        setApprovedList(isAllApproved);
+        setAllApproved(isAllApproved.every((item) => item));
+        setProcessingLoading(false);
+      }, delay);
+    },
+    [swapItems, checkIsApproved]
   );
+
+  /**
+   * @dev The function to get executed items.
+   * @returns {Array<JSX.Element>} The array of executed items.
+   */
+  const getExecutedItems = useCallback(() => {
+    return swapItems?.map((item, index) => {
+      return {
+        name: item?.nftMetadata.metadata.name,
+        image:
+          item?.nftMetadata.metadata.image || item?.nftMetadata.metadata.icon,
+        isApprove: approvedList?.[index] || false,
+        amount:
+          item?.type === SwapItemType.CURRENCY
+            ? item?.amount / Math.pow(10, item?.nftMetadata?.metadata?.decimals)
+            : 0,
+        handleApprove: async () => {
+          await approveToken(
+            item.contractAddress,
+            item?.nftMetadata?.metadata?.tokenId
+          );
+        },
+        isApproved: async () =>
+          await checkIsApproved(
+            item.contractAddress,
+            BigInt(item.amount),
+            item?.type === SwapItemType.NFT ? 0 : 1
+          ),
+      };
+    });
+  }, [
+    swapItems,
+    chainId,
+    approvedList,
+    checkIsApproved,
+    handleCheckAllApproved,
+    approveToken,
+  ]);
+
+  useEffect(() => {
+    if (chainId !== ChainId.solana) handleCheckAllApproved(0);
+  }, [props.isModalOpen, chainId]);
 
   return (
     <Modal
@@ -144,18 +222,38 @@ export const ConfirmTransactionModal: FC<ConfirmModalProps> = (props) => {
             <strong>{utilsProvider.makeShort(seller?.walletAddress, 4)}</strong>
             .
           </p>
-          <div className="mt-[20px]">
-            {chainId !== ChainId.solana &&
-              formattedNfts?.map((nft, index) => (
-                <NftItem key={`pppsd${index}`} {...nft} />
+          {chainId !== ChainId.solana && (
+            <div className="mt-[20px]">
+              {getExecutedItems()?.map((item) => (
+                <ExecuteItem
+                  name={item.name}
+                  image={item.image}
+                  isApprove={item.isApprove}
+                  amount={item.amount}
+                  handleApprove={item.handleApprove}
+                  key={Math.random().toString()}
+                  handleCheckApproveAll={handleCheckAllApproved}
+                  isLoading={processingLoading}
+                />
               ))}
-          </div>
+            </div>
+          )}
           <Button
             type="button"
             onClick={props.handleOk}
             text={isLoading ? "Confirming transaction in Wallet" : "Confirm"}
-            loading={isLoading}
+            loading={isLoading || processingLoading}
             width={"100%"}
+            theme={
+              (processingLoading ||
+                (chainId !== ChainId.solana && !allApproved)) && {
+                color: "white",
+                backgroundColor: "#94A3B8",
+              }
+            }
+            disabled={
+              processingLoading || (chainId !== ChainId.solana && !allApproved)
+            }
           />
         </div>
       </div>

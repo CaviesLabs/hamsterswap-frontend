@@ -1,6 +1,6 @@
 import { FC, useRef, useState } from "react";
 import { RowNftItemProps } from "./types";
-import { GameItemModal, NFTDetailsModal } from "../modal";
+import { NFTDetailsModal } from "../modal";
 import { DetailIcon, VerticalDots } from "@/src/components/icons";
 import { SwapItemType } from "@/src/entities/proposal.entity";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
@@ -45,7 +45,7 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
           <div className="flex items-center">
             {!isSol && (
               <p className="text-[14px] regular-text text-purple cursor-auto mb-3">
-                {props.collection}
+                {props.collectionName}
               </p>
             )}
           </div>
@@ -82,22 +82,14 @@ export const RowNftItem: FC<RowNftItemProps> = (props) => {
           </div>
         )}
       </div>
-      {isNft ? (
+      {isNft && (
         <NFTDetailsModal
-          data={props}
+          tokenId={props?.tokenId}
+          address={props?.address}
           isModalOpen={isDetailOpen}
           handleCancel={() => setIsDetailOpen(false)}
           handleOk={() => setIsDetailOpen(false)}
         />
-      ) : (
-        isGameItem && (
-          <GameItemModal
-            data={props}
-            isModalOpen={isDetailOpen}
-            handleCancel={() => setIsDetailOpen(false)}
-            handleOk={() => setIsDetailOpen(false)}
-          />
-        )
       )}
     </>
   );

@@ -1,5 +1,5 @@
 import { encode } from "bs58";
-class UtilsProvider {
+export class UtilsProvider {
   /**
    * Will gracefuly scroll the page
    * This function will scroll the page using
@@ -196,5 +196,4 @@ class UtilsProvider {
 }
 
 export default UtilsProvider;
-
 export const utilsProvider = new UtilsProvider();

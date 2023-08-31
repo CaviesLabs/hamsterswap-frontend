@@ -1,10 +1,42 @@
 import { networkProvider } from "@/src/providers/network.provider";
-import { PlatformConfigDto } from "@/src/entities/platform-config.entity";
+import {
+  PlatformConfigDto,
+  PlatformConfigDtoV2,
+} from "@/src/entities/platform-config.entity";
+import { ChainId } from "@/src/entities/chain.entity";
+import { WSOL_ADDRESS } from "@/src/utils/constants";
+import { Keypair } from "@solana/web3.js";
 
 export class PlatformConfigService {
-  async get(): Promise<PlatformConfigDto> {
-    const resp = await networkProvider.request("/platform-config", {});
-    return resp as PlatformConfigDto;
+  /**
+   * @dev The function to get platform config.
+   * @param {ChainId} chainId.
+   * @notice Correct entity to bridge solana.
+   * @returns {Promise<PlatformConfigDto>}
+   * @see src/entities/platform-config.entity.ts
+   */
+  async get(chainId: ChainId): Promise<PlatformConfigDto> {
+    const v2PlatformConfig = await networkProvider.request<PlatformConfigDtoV2>(
+      "/evm/platform-config",
+      {}
+    );
+
+    return {
+      ...v2PlatformConfig[chainId],
+      maxAllowedItems: v2PlatformConfig[chainId].maxAllowedItems,
+      maxAllowedOptions: v2PlatformConfig[chainId].maxAllowedOptions,
+      allowNTFCollections: v2PlatformConfig[chainId].collections,
+      allowCurrencies: v2PlatformConfig[chainId].currencies.map((item) => ({
+        ...item,
+        decimals: 9, // Bridge solana only support 9 decimals
+        icon: item.icon || item.image,
+        realDecimals: item.decimals,
+        realAddress: item.address,
+        address: item.isNativeToken
+          ? WSOL_ADDRESS
+          : Keypair.generate().publicKey.toString(),
+      })),
+    };
   }
 }
 

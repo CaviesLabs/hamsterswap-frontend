@@ -1,7 +1,7 @@
 import { FC, useState, useEffect } from "react";
 import { ProposalItemProps } from "./types";
 import { UserAvatarCardItem } from "@/src/components/user-card";
-import { RowNftItem, RowNftItemProps } from "@/src/components/nfts";
+import { RowNftItem } from "@/src/components/nfts";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "./proposal-item.style";
 import { Button } from "@hamsterbox/ui-kit";
@@ -97,8 +97,8 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
           </Row>
           <Row className="mt-4">
             <Col span={10}>
-              {props.swapItems.map((item: RowNftItemProps, index) => (
-                <div className="mb-4" key={`proposal-item-${index}`}>
+              {props.swapItems.map((item) => (
+                <div className="mb-4" key={Math.random().toString()}>
                   <RowNftItem {...item} />
                 </div>
               ))}
@@ -109,13 +109,11 @@ export const ProposalItem: FC<ProposalItemProps> = (props) => {
               </div>
             </Col>
             <Col span={10}>
-              {props.receiveItems[optionSelected]?.map(
-                (item: RowNftItemProps, index: number) => (
-                  <div className="mb-4" key={`swapoptions-${index}`}>
-                    <RowNftItem {...item} />
-                  </div>
-                )
-              )}
+              {props.receiveItems[optionSelected]?.items.map((item) => (
+                <div className="mb-4" key={Math.random().toString()}>
+                  <RowNftItem {...item} />
+                </div>
+              ))}
             </Col>
           </Row>
         </div>

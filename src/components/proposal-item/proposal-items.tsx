@@ -9,10 +9,6 @@ import classnames from "classnames";
 
 const ProposalItems: FC<ProposalItemsProps> = (props) => {
   const { userAssets, userLookingFor, fulfilledWithOptionId } = props;
-
-  /**
-   * @dev Define value to display option.
-   */
   const [optionSelected, setOptionSelected] = useState(0);
 
   return (
@@ -26,7 +22,7 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
             <div className="semi-bold text-[16px] leading-9">looking for</div>
             <div className="flex flex-wrap">
               {userLookingFor.length > 1 &&
-                userLookingFor.map((_: any, index: number) => {
+                userLookingFor.map((item, index: number) => {
                   return (
                     <div className="ml-3 relative" key={`ml3dix-${index}`}>
                       <Button
@@ -49,8 +45,7 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
                         }
                         onClick={() => setOptionSelected(index)}
                       />
-                      {fulfilledWithOptionId &&
-                      fulfilledWithOptionId === _?.[0]?.optionId ? (
+                      {fulfilledWithOptionId === item.id ? (
                         <CheckIconProposal className="absolute top-[10px] left-[12px] w-[15px] h-[15px]" />
                       ) : null}
                     </div>
@@ -64,12 +59,7 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
         <Col lg={10} sm={24}>
           {userAssets.map((item, index) => (
             <div className="mb-4" key={`proposal-item-${index}`}>
-              <RowNftItem
-                {...item}
-                collectionId={item.nftMetadata?.nft_collection_id}
-                nftId={item.id}
-                assetType={item.type}
-              />
+              <RowNftItem assetType={item.assetType} {...item} />
             </div>
           ))}
         </Col>
@@ -77,14 +67,9 @@ const ProposalItems: FC<ProposalItemsProps> = (props) => {
           <TwoWayArrowIcon className="w-6" />
         </Col>
         <Col lg={10} sm={24}>
-          {userLookingFor[optionSelected]?.map((item: any, index: number) => (
+          {userLookingFor[optionSelected]?.items.map((item, index: number) => (
             <div className="mb-4" key={`swapoptions-${index}`}>
-              <RowNftItem
-                {...item}
-                collectionId={item.nftMetadata?.nft_collection_id}
-                nftId={item.id}
-                assetType={item.type as any}
-              />
+              <RowNftItem assetType={item.assetType} {...item} />
             </div>
           ))}
         </Col>

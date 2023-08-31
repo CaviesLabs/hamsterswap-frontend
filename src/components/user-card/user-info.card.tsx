@@ -1,13 +1,13 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { UserInfoCardProps } from "./types";
 import { completedOrderPercent, utilsProvider } from "@/src/utils";
 import { ReputationCard } from "./repuation.card";
-import styled from "@emotion/styled";
-import CopyText from "@/src/components/copy-text";
 import { useDispatch } from "react-redux";
 import { getHamsterPublicProfile } from "@/src/redux/actions/hamster-profile/profile.action";
-import { hProfileDto } from "@/src/dto/hProfile.dto";
 import { useRouter } from "next/router";
+import styled from "@emotion/styled";
+import CopyText from "@/src/components/copy-text";
+import { useMain } from "@/src/hooks/pages/main";
 
 /** @dev Define styled component. */
 export const StyledUserInfoCard = styled.div`
@@ -21,14 +21,11 @@ export const StyledUserInfoCard = styled.div`
 export const UserInfoCard: FC<UserInfoCardProps> = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const [profile, setProfile] = useState<hProfileDto>();
+  const { hPublicProfile: profile } = useMain();
 
   useEffect(() => {
-    dispatch(
-      getHamsterPublicProfile({ id: props.userId }, (_profile) =>
-        setProfile(_profile)
-      )
-    );
+    if (!props.userId) return;
+    dispatch(getHamsterPublicProfile({ id: props.userId }));
   }, [props.userId]);
 
   return (

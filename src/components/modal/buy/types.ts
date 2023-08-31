@@ -1,6 +1,6 @@
 import { MouseEvent } from "react";
 import { hProfileDto } from "@/src/dto/hProfile.dto";
-import { RowNftItemProps } from "../../nfts";
+import { SwapItemEntity } from "@/src/entities/proposal.entity";
 
 export type ModalProps = {
   isModalOpen: boolean;
@@ -14,5 +14,5 @@ export type BuyModalProps = ModalProps;
 export type ConfirmModalProps = ModalProps & {
   buyer: hProfileDto;
   seller: hProfileDto;
-  nfts?: RowNftItemProps[];
+  swapItems?: SwapItemEntity[];
 };

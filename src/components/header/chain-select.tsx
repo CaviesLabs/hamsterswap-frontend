@@ -1,10 +1,10 @@
 import { FC, useRef, useState } from "react";
 import { DropdownArrowIcon } from "@/src/components/icons";
 import { useAppWallet } from "@/src/hooks/useAppWallet";
+import { useMain } from "@/src/hooks/pages/main";
 import classnames from "classnames";
 import styles from "./index.module.scss";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
-import { useMain } from "@/src/hooks/pages/main";
 
 export const ChainSelect: FC = () => {
   const { selectChain, chainInfo, defaultChains } = useMain();
@@ -51,10 +51,9 @@ export const ChainSelect: FC = () => {
       >
         <div className={styles.container}>
           <ul>
-            {defaultChains.map((item, key) => (
-              <>
+            {defaultChains.map((item) => (
+              <div key={Math.random().toString()}>
                 <li
-                  key={`defaultchains-${key}`}
                   onClick={() => {
                     selectChain(item.chainId);
                     setShow(false);
@@ -68,7 +67,7 @@ export const ChainSelect: FC = () => {
                   <p className="ml-[5px]">{item.name || item.chainId}</p>
                 </li>
                 <div className="divider w-full h-[1px] bg-[#E2E8F0] w-[90%] mx-auto mt-[10px]"></div>
-              </>
+              </div>
             ))}
           </ul>
         </div>

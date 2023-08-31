@@ -1,14 +1,10 @@
 import { FC } from "react";
-import { useWallet } from "@/src/hooks/useWallet";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { useNativeBalance, useNativeToken } from "@/src/hooks/useAppWallet";
 
 export const Step4: FC = () => {
-  const { solBalance } = useWallet();
-
-  /**
-   * @dev Import functions from context screen.
-   */
+  const nativeTokenBalance = useNativeBalance();
+  const { nativeToken } = useNativeToken();
   const { setGuaranteeSol, guaranteeSol } = useCreateProposal();
 
   return (
@@ -35,27 +31,29 @@ export const Step4: FC = () => {
               <input
                 type="number"
                 className="border-[1px] border-solid border-dark30 rounded-[16px] w-full  px-[64px] py-[16px] focus:ring-0 focus:outline-0 regular-text"
-                placeholder="Enter SOL amount"
+                placeholder={`Enter ${nativeToken?.symbol?.toUpperCase()} amount`}
                 value={guaranteeSol}
                 onChange={(e) => setGuaranteeSol(parseFloat(e.target.value))}
               />
               <img
-                src="/assets/images/solana-icon.svg"
+                src={nativeToken?.icon}
                 alt="Solana Icon"
                 className="!w-[24px] h-[24px] absolute left-[24px] top-[16px]"
               />
-              <span className="absolute right-[24px] top-[16px]">SOL</span>
+              <span className="absolute right-[24px] top-[16px]">
+                {nativeToken?.symbol?.toUpperCase()}
+              </span>
             </div>
           </div>
           <div className="mt-[12px] flex items-center">
             <p className="regular-text text-[16px] float-left">Your balance:</p>
             <img
-              src="/assets/images/solana-icon.svg"
+              src={nativeToken?.icon}
               alt="Solana Icon"
               className="!w-[16px] h-[16px] ml-[12px] float-left"
             />
             <p className="ml-[12px] text-[16px] ml-[12px] float-left">
-              {Math.round(solBalance) / LAMPORTS_PER_SOL} SOL
+              {nativeTokenBalance} {nativeToken?.symbol?.toUpperCase()}
             </p>
           </div>
         </div>

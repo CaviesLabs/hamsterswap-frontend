@@ -1,4 +1,4 @@
-import { ReactNode, useState, useCallback } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { CreateProposalPageContext } from "./types";
 import { NftEntity } from "@/src/dto/nft.dto";
 import {
@@ -10,41 +10,26 @@ import {
 import { SwapProgramService } from "@/src/services/swap-program.service";
 import { BN } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
-import { useWallet } from "@/src/hooks/useWallet";
-import * as anchor from "@project-serum/anchor";
+import { ChainId } from "@/src/entities/chain.entity";
+import { useSubmitProposalSol } from "./useSubmitProposalSol";
+import { useSubmitProposalEvm } from "./useSubmitProposalEvm";
+import { useMain } from "../main";
 
 export const CreateProposalProvider = (props: { children: ReactNode }) => {
   /**
-   * @dev Get wallet.
+   * @dev Initialize state for create proposal.
+   * @notice This state will be used in all steps of create proposal.
    */
-  const { solanaWallet, programService } = useWallet();
-
-  /**
-   * @dev Items which user want to swap.
-   */
+  const [note, setNote] = useState("");
+  const [expiredTime, setExpiredTime] = useState<Date>();
+  const [guaranteeSol, setGuaranteeSol] = useState(0);
   const [offferedItems, setOfferItems] = useState<OfferedItemEntity[]>([]);
-
-  /**
-   * @dev Options of item which user want to recive.
-   */
   const [expectedItems, setExpectedItems] = useState<ExpectedOpitionEntity[]>(
     Array.from(Array(3).keys()).map(() => ({
       id: SwapProgramService.generateUID(),
       askingItems: [],
     }))
   );
-
-  /**
-   * @dev Description of proposal.
-   */
-  const [note, setNote] = useState("");
-
-  /**
-   * @dev Expired time of proposal, default is 7 days from now.
-   */
-  const [expiredTime, setExpiredTime] = useState<Date>();
-
-  const [guaranteeSol, setGuaranteeSol] = useState(0);
 
   /**
    * @dev Add expected item.
@@ -66,17 +51,17 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
           askingItems: [
             ...opinion.askingItems,
             {
+              ...item,
               nftId: item.nftId,
               assetType: item.assetType,
               id: SwapProgramService.generateUID(),
-              mintAccount: new PublicKey(item.nft_address),
+              mintAccount: new PublicKey(item.address),
               itemType: { [type]: {} },
               amount: amount
-                ? new BN(amount * Math.pow(10, item.decimal))
+                ? new BN(amount * Math.pow(10, item.decimals))
                 : null,
-              nft_address: item.nft_address,
+              nft_address: item.address,
               tokenAmount: amount,
-              ...item,
             },
           ],
         };
@@ -111,20 +96,19 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
     type: AssetTypes,
     amount?: number
   ) => {
-    console.log("add", amount, item.decimal);
     setOfferItems((prev) => {
       return [
         ...prev,
         {
+          ...item,
+          id: SwapProgramService.generateUID(),
           nftId: item?.nftId,
           assetType: item?.assetType,
-          id: SwapProgramService.generateUID(),
-          mintAccount: new PublicKey(item.nft_address),
+          mintAccount: new PublicKey(item.address),
           itemType: { [type]: {} },
-          amount: amount ? new BN(amount * Math.pow(10, item.decimal)) : null,
-          nft_address: item.nft_address,
+          amount: amount ? new BN(amount * Math.pow(10, item.decimals)) : null,
+          nft_address: item.address,
           tokenAmount: amount,
-          ...item,
         },
       ];
     });
@@ -139,52 +123,6 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
       return prev.filter((item) => item.id !== offerItemId);
     });
   };
-
-  /**
-   * @dev Submit proposal to Hamster server and on-chain.
-   */
-  const submitProposal = useCallback(async () => {
-    if (!solanaWallet.publicKey) return;
-    /**
-     * @dev Initialize params to create proposal program.
-     */
-    const createdData = {
-      note,
-      ownerAddress: solanaWallet?.publicKey?.toString(),
-      swapOptions: expectedItems
-        .filter((item) => item.askingItems.length)
-        .map((item) => ({
-          id: item.id,
-          askingItems: item.askingItems.map((askingItem) => ({
-            mintAccount: new PublicKey(askingItem.nft_address),
-            id: askingItem.id,
-            amount: askingItem.amount ? askingItem.amount : new anchor.BN(1),
-            itemType: askingItem.itemType,
-          })),
-        })),
-      offeredOptions: offferedItems.map((item) => ({
-        mintAccount: new PublicKey(item.nft_address),
-        id: item.id,
-        amount: item.amount ? item.amount : new anchor.BN(1),
-        itemType: item.itemType,
-      })),
-      expiredAt: expiredTime,
-    };
-
-    /**
-     * @dev Create proposal
-     *  - Hamster server
-     *  - Solana chain
-     */
-    return await programService.createProposal(solanaWallet, createdData);
-  }, [
-    expectedItems,
-    offferedItems,
-    note,
-    expiredTime,
-    guaranteeSol,
-    solanaWallet,
-  ]);
 
   return (
     <CreateProposalPageContext.Provider
@@ -201,10 +139,29 @@ export const CreateProposalProvider = (props: { children: ReactNode }) => {
         setNote,
         setExpiredTime,
         setGuaranteeSol,
-        submitProposal,
       }}
     >
       {props.children}
     </CreateProposalPageContext.Provider>
   );
+};
+
+/**
+ * @dev This hook will be used in create proposal page.
+ * @returns {CreateProposalPageContext}
+ */
+export const useSubmitProposal = () => {
+  const { chainId } = useMain();
+  const { submit: submitSol } = useSubmitProposalSol();
+  const { submit: submitEvm } = useSubmitProposalEvm();
+
+  return useMemo(() => {
+    return {
+      submit: async () => {
+        // eslint-disable-next-line prettier/prettier
+        if (chainId === ChainId.solana) return await submitSol();
+        return await submitEvm();
+      },
+    };
+  }, [chainId, submitSol, submitEvm]);
 };

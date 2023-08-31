@@ -39,6 +39,7 @@ export const CancelProposalModal: FC<ModalProps> = (props) => {
             theme={{ backgroundColor: "#DE2C47", color: "white" }}
             width="100%"
             text="Yes, Cancel Proposal"
+            loading={props.isLoading}
           />
           <div className="mt-4">
             <Button

@@ -1,6 +1,7 @@
 import { BN } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { NftEntity } from "@/src/dto/nft.dto";
+import { ChainId } from "./chain.entity";
 
 /**
  * @dev Expose asset types enum for UI handling.
@@ -158,7 +159,7 @@ export enum SwapProposalStatus {
   EXPIRED = "SWAP_PROPOSAL_STATUS::EXPIRED",
 }
 
-class TokenEntity {
+export class TokenEntity {
   /**
    * @dev Blockchain address of token.
    */
@@ -194,69 +195,46 @@ class TokenEntity {
  * @dev Expose interface for swap item.
  * */
 export class SwapItemEntity {
-  /**
-   * @dev Address to owner of swap item.
-   */
-  ownerAddress?: string;
-
-  /**
-   * @dev Condition whether swap item is nft or token currency.
-   */
   type: SwapItemType;
-
-  /**
-   * @dev Address of token.
-   */
-  contractAddress: string;
-
-  /**
-   * @dev The address which token was deposited to.
-   */
-  depositedAddress?: string;
-
-  /**
-   * @dev Amount of swap item which owner already configured when create proposal.
-   */
   amount: number;
-
-  /**
-   * @dev The status of swap item whether deposited or withdraw.
-   */
-  status: SwapItemStatus;
-
-  /**
-   * @dev The uri to meta data of token.
-   */
-  nftMetadata?: NftEntity & TokenEntity;
-
-  /**
-   * @dev The unique id of swap item.
-   */
+  chainId: string;
+  contractAddress: string;
+  createdAt: string;
+  deletedAt: null | string;
+  depositedAddress: null | string;
   id: string;
+  ownerAddress: string;
+  status: string;
+  updatedAt: string;
+  nftMetadata: {
+    id: string;
+    chainId: ChainId;
+    createdAt: Date;
+    deletedAt: Date;
+    isNft: false;
+    metadata: {
+      address: string;
+      chainId: ChainId;
+      decimals: number;
+      icon: string;
+      isWhiteListed: true;
+      name: string;
+      symbol: string;
+      collectionName?: string;
+      image?: string;
+      tokenId?: number;
+    };
+  };
 }
 
 /**
  * @dev Expose interface swap option.
  */
 export class SwapOptionEntity {
-  /**
-   * @dev The created date.
-   */
-  createdAt: string;
-
-  /**
-   * @dev The deleted date.
-   */
-  deletedAt: string;
-
-  /**
-   * @dev The unique id of swap option.
-   */
   id: string;
-
-  /**
-   * @dev The array contains swap items in option.
-   */
+  createdAt: Date;
+  deletedAt: Date;
+  chainId: ChainId;
   items: SwapItemEntity[];
 }
 
@@ -265,85 +243,24 @@ export class SwapOptionEntity {
  * @dev Expose interface for swap proposal entity.
  */
 export class SwapProposalEntity {
-  /**
-   * @dev The unique id of proposal.
-   */
-  id: string;
-
-  /**
-   * @dev The index number of proposal in database.
-   */
-  numberId: number;
-
-  /**
-   * @dev The id of user who created this proposal.
-   */
-  ownerId: string;
-
-  /**
-   * @dev The wallet address of user who created this proposal.
-   */
-  ownerAddress: string;
-
-  /**
-   * @dev The wallet address of user who created this proposal.
-   */
-  owner?: string;
-
-  /**
-   * @dev Offer items belongs to owner which user want to transfer.
-   */
-  offerItems: SwapItemEntity[] = [];
-
-  /**
-   * @dev Swap options which user want to reicive.
-   */
-  swapOptions: SwapOptionEntity[] = [];
-
-  /**
-   * @dev The id of user who buy proposal/
-   */
-  fulfillBy?: string;
-
-  /**
-   * @dev The id of user who buy proposal/
-   */
-  fulfillByUserId?: string;
-
-  /**
-   * @dev The id of option which user choosen before to buy proposal/
-   */
-  fulfilledWithOptionId?: string;
-
-  /**
-   * @dev The expired time of this proposal.
-   */
-  expiredAt: Date;
-
-  /**
-   * @dev The status of this proposal.
-   */
-  status: SwapProposalStatus;
-
-  /**
-   * @dev The specific keywords to search for looking this proposal.
-   */
-  searchText?: string;
-
-  /**
-   * @dev The description of this proposal
-   */
-  note?: string;
-
-  /**
-   * @dev The created time of this proposal.
-   */
+  fulfilledWithOptionId: null | string;
+  hainId: string;
   createdAt: Date;
-
-  /**
-   * @dev The updated time of this proposal.
-   */
+  deletedAt: null | Date;
+  expiredAt: Date;
+  fulfillBy: null | string;
+  id: string;
+  note: string;
+  numberId: number;
+  ownerAddress: string;
+  ownerId: string;
+  status: SwapProposalStatus;
   updatedAt: Date;
+  offerItems: SwapItemEntity[] = [];
+  swapOptions: SwapOptionEntity[] = [];
+  owner?: string;
+  fulfillByUserId?: string;
+  searchText?: string;
 }
 
 /**
@@ -370,6 +287,11 @@ export class GetProposalsDto {
     statuses?: SwapProposalStatus[] | SwapProposalStatus;
 
     /**
+     * @dev The chain id of proposal.
+     */
+    chainId?: ChainId;
+
+    /**
      * @dev The limit of proposal want to find.
      */
     limit?: number;
@@ -385,3 +307,12 @@ export class GetProposalsDto {
     search?: string;
   };
 }
+
+export type SwapItemInfo = {
+  name: string;
+  image: string;
+  collectionName: string;
+  tokenId?: number;
+  address?: string;
+  assetType?: SwapItemType;
+};

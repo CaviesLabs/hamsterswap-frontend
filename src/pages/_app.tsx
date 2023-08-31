@@ -7,7 +7,6 @@ import { FC, useMemo } from "react";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "@hamsterbox/ui-kit";
 import { WalletKitProvider } from "@gokiprotocol/walletkit";
-import { WalletProvider } from "@/src/hooks/useWallet";
 import { MainProvider } from "@/src/hooks/pages/main";
 import {
   ConnectionProvider,
@@ -24,7 +23,7 @@ import {
   SolletWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 import { SeoComponent } from "@/src/components/seo";
-import { EvmWalletKitProvider, EvmWalletProvider } from "src/hooks/wagmi";
+import { EvmWalletKitProvider } from "src/hooks/wagmi";
 import {
   legacyLogicalPropertiesTransformer,
   StyleProvider,
@@ -87,33 +86,29 @@ function MyApp({ Component, pageProps }: AppProps) {
             }
           >
             <EvmWalletKitProvider>
-              <EvmWalletProvider>
-                <SolanaWalletAdapterProvider wallets={walletAdapters}>
-                  {/**
-                   * @dev
-                   * Wrap the whole app in Goki Kit provider for use.
-                   */}
-                  <WalletKitProvider
-                    defaultNetwork={network}
-                    app={{
-                      name: "Hamsterswap",
-                      icon: (
-                        <img
-                          className="bg-dark60 rounded-full"
-                          src="/assets/icons/favicon-196.png"
-                        />
-                      ),
-                    }}
-                    debugMode={false} // you may want to set this in REACT_APP_DEBUG_MODE
-                  >
-                    <WalletProvider>
-                      <MainProvider>
-                        <AppComponent {...{ Component, pageProps }} />
-                      </MainProvider>
-                    </WalletProvider>
-                  </WalletKitProvider>
-                </SolanaWalletAdapterProvider>
-              </EvmWalletProvider>
+              <SolanaWalletAdapterProvider wallets={walletAdapters}>
+                {/**
+                 * @dev
+                 * Wrap the whole app in Goki Kit provider for use.
+                 */}
+                <WalletKitProvider
+                  defaultNetwork={network}
+                  app={{
+                    name: "Hamsterswap",
+                    icon: (
+                      <img
+                        className="bg-dark60 rounded-full"
+                        src="/assets/icons/favicon-196.png"
+                      />
+                    ),
+                  }}
+                  debugMode={false} // you may want to set this in REACT_APP_DEBUG_MODE
+                >
+                  <MainProvider>
+                    <AppComponent {...{ Component, pageProps }} />
+                  </MainProvider>
+                </WalletKitProvider>
+              </SolanaWalletAdapterProvider>
             </EvmWalletKitProvider>
           </ConnectionProvider>
         </ThemeProvider>

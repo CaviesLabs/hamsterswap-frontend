@@ -65,7 +65,7 @@ export const RedeemButton: FC<RedeemButtonProps> = (props) => {
           instructionHandler={async () =>
             (await redeemProposal(proposalId)) as unknown as {
               proposalId?: string;
-              fns: {
+              fnc: {
                 optimize(): Promise<void>;
                 confirm(): Promise<void>;
               };

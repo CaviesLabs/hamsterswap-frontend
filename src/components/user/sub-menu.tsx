@@ -15,11 +15,12 @@ const SubMenu: FC<SubMenuProps> = (props) => {
     ["History", "history"],
   ];
   if (userId && userId === profile?.id) {
-    menus.push(
+    menus
+      .push
       // ["Game ID", "#"],
-      ["Payment", "payment"],
-      ["Contacts", "contact"]
-    );
+      // ["Payment", "payment"],
+      // ["Contacts", "contact"]
+      ();
   }
   return (
     <div className="py-[40px]">

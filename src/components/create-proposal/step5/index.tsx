@@ -5,21 +5,14 @@ import { ConfirmedTransactionModal } from "@/src/components/create-proposal/step
 import { SummaryProps } from "@/src/components/create-proposal/step5/types";
 import { parseOfferCreateProposal } from "@/src/utils";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import { useMain } from "@/src/hooks/pages/main";
 import { DATE_TIME_FORMAT } from "@/src/utils";
 import moment from "moment";
+import { useMain } from "@/src/hooks/pages/main";
 
 export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
-  /**
-   * @dev Get all currencies which hamster support.
-   */
-  const {
-    platformConfig: { allowCurrencies },
-  } = useMain();
+  const { platformConfig } = useMain();
+  const allowCurrencies = platformConfig?.allowCurrencies;
 
-  /**
-   * @dev Import functions from context screen.
-   */
   const { expectedItems, offferedItems, note, expiredTime, guaranteeSol } =
     useCreateProposal();
 
@@ -43,11 +36,12 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
           )}
           receiveItems={clonedExpectedItems
             .filter((item) => item.askingItems.length)
-            .map((_) =>
-              _.askingItems.map((p) =>
+            .map((_) => ({
+              ..._,
+              items: _.askingItems.map((p) =>
                 parseOfferCreateProposal(p, allowCurrencies)
-              )
-            )}
+              ),
+            }))}
           isGuaranteedPayment={isGuaranteedPayment}
         />
       </div>
@@ -62,25 +56,6 @@ export const Step5: FC<SummaryProps> = ({ modalOpened, setModalOpened }) => {
             Expiration date:{" "}
             {expiredTime && moment(expiredTime).utc().format(DATE_TIME_FORMAT)}
           </p>
-        </Col>
-        <Col
-          span={isGuaranteedPayment ? 12 : 0}
-          className="float-left w-full pl=[20px]"
-        >
-          <p className="text-3xl">Warranty</p>
-          <div className="mt-[12px] flex items-center">
-            <p className="regular-text text-[16px] float-left">
-              Guarantee deposit amount:
-            </p>
-            <img
-              src="/assets/images/solana-icon.svg"
-              alt="Solana Icon"
-              className="!w-[16px] h-[16px] ml-[12px] float-left"
-            />
-            <p className="ml-[12px] text-[16px] ml-[12px] float-left">
-              {guaranteeSol} SOL
-            </p>
-          </div>
         </Col>
       </Row>
       <ConfirmedTransactionModal

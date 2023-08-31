@@ -1,21 +1,14 @@
+import classnames from "classnames";
 import React, { FC, useRef, useState } from "react";
 import { RowNftEditItemProps } from "./types";
 import { DeleteIcon, DetailIcon, VerticalDots } from "@/src/components/icons";
-import { GameItemModal, NFTDetailsModal } from "@/src/components/modal";
+import { NFTDetailsModal } from "@/src/components/modal";
 import { SwapItemType } from "@/src/entities/proposal.entity";
-import { useMain } from "@/src/hooks/pages/main";
-import UtilsProvider from "@/src/utils/utils.provider";
-import classnames from "classnames";
 import useOnClickOutside from "@/src/hooks/useOnClickOutside";
+import { UtilsProvider } from "@/src/utils";
+import { useMain } from "@/src/hooks/pages/main";
 
 export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
-  /**
-   * @dev Get cryptocurrencies which Hamster support.
-   */
-  const {
-    platformConfig: { allowCurrencies },
-  } = useMain();
-
   /**
    * @dev reference to the button
    * close the dropdown when user click outside
@@ -25,15 +18,10 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
     setCollapse(false);
   });
 
+  const { platformConfig } = useMain();
   const { assetType } = props;
-  /**
-   * @dev handle open option list
-   */
-  const [collapse, setCollapse] = useState(false);
 
-  /**
-   * @dev handle open modal by asset type
-   */
+  const [collapse, setCollapse] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const handleShowViewDetail = () => {
@@ -54,13 +42,14 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
             <img
               src={
                 assetType === SwapItemType.CURRENCY
-                  ? allowCurrencies.find((item) => item.id === props.nftAddress)
-                      ?.image
+                  ? platformConfig?.allowCurrencies?.find(
+                      (item) => item.address === props.address
+                    )?.icon
                   : props.image
               }
               alt="NFT image"
               className={classnames(
-                "!h-full !w-[80px] !object-cover !rounded-[8px]",
+                "h-auto !w-[80px] !object-cover !rounded-[8px]",
                 (assetType === SwapItemType.NFT ||
                   assetType === SwapItemType.GAME) &&
                   "bg-dark10"
@@ -71,14 +60,15 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
             <p className="semi-bold text-black truncate block capitalize">
               {assetType === SwapItemType.CURRENCY
                 ? `${UtilsProvider.formatLongNumber(props.tokenAmount)} ${
-                    allowCurrencies.find((item) => item.id === props.nftAddress)
-                      ?.name
+                    platformConfig?.allowCurrencies?.find(
+                      (item) => item.address === props.address
+                    )?.name
                   }`
                 : props.name}
             </p>
             <div className="flex items-center">
               <p className="text-[14px] regular-text text-purple cursor-auto mb-3">
-                {assetType !== SwapItemType.CURRENCY && props.collection}
+                {assetType !== SwapItemType.CURRENCY && props.collectionName}
               </p>
             </div>
           </div>
@@ -125,21 +115,14 @@ export const RowEditNftItem: FC<RowNftEditItemProps> = (props) => {
           </div>
         </div>
       </div>
-      {assetType === SwapItemType.NFT ? (
+      {assetType === SwapItemType.NFT && (
         <NFTDetailsModal
-          data={props}
+          address={props?.realAddress}
+          tokenId={props?.tokenId}
           isModalOpen={isDetailOpen}
           handleCancel={() => setIsDetailOpen(false)}
           handleOk={() => setIsDetailOpen(false)}
         />
-      ) : (
-        assetType === SwapItemType.GAME && (
-          <GameItemModal
-            isModalOpen={isDetailOpen}
-            handleCancel={() => setIsDetailOpen(false)}
-            handleOk={() => setIsDetailOpen(false)}
-          />
-        )
       )}
     </>
   );

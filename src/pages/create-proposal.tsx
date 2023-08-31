@@ -2,50 +2,34 @@ import { FC, useMemo, useCallback, useRef, useState, useEffect } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import MainLayout from "@/src/layouts/main";
-import { CreateProposalProvider } from "@/src/hooks/pages/create-proposal";
+import {
+  CreateProposalProvider,
+  useSubmitProposal,
+} from "@/src/hooks/pages/create-proposal";
 import { LayoutSection } from "@/src/components/layout-section";
 import { BreadCrumb } from "@/src/components/bread-crumb";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { StepProgressBar } from "@/src/components/stepper";
 import type { StepProgressHandle } from "@/src/components/stepper";
 import { Carousel } from "react-responsive-carousel";
 import { Form } from "antd";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
-import {
-  Step1,
-  Step2,
-  Step3,
-  Step4,
-  Step5,
-} from "@/src/components/create-proposal";
+import { Step1, Step2, Step3, Step5 } from "@/src/components/create-proposal";
 import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optimize-transaction-modal";
+import { SubmitProposalEvmModal } from "@/src/components/create-proposal/modal/submit-proposal-evm.modal";
 import { StorageProvider } from "@/src/providers/storage.provider";
-import { useConnectedWallet } from "@saberhq/use-solana";
-import { useWallet } from "@/src/hooks/useWallet";
+import { useAppWallet } from "@/src/hooks/useAppWallet";
 import classnames from "classnames";
+import { ChainId } from "../entities/chain.entity";
+import { useMain } from "@/src/hooks/pages/main";
 
 const Layout: FC = () => {
-  /**
-   * @dev Get wallet.
-   */
-  const { solanaWallet } = useWallet();
-
-  /**
-   * @dev Use next router.
-   */
   const router = useRouter();
-
-  /**
-   * @dev Import functions in screen context.
-   */
-  const {
-    offferedItems,
-    expectedItems,
-    note,
-    expiredTime,
-    guaranteeSol,
-    submitProposal,
-  } = useCreateProposal();
+  const { chainId } = useMain();
+  const { walletAddress } = useAppWallet();
+  const { submit: submitProposal } = useSubmitProposal();
+  const { offferedItems, expectedItems, note, expiredTime, guaranteeSol } =
+    useCreateProposal();
 
   /**
    * @dev Define proposal form, that include:
@@ -56,31 +40,19 @@ const Layout: FC = () => {
   const [formProposal] = Form.useForm();
 
   /**
-   * @dev Define step state.
+   * @dev Initilize state for control stepper
+   * @field currentStep
+   * @field modalOpened
+   * @field proposalId
+   * @field isDuringSubmit
+   * @field optimizedProposalOpen - open modal to optimize transaction (only for solana)
+   * @field stepperRef - ref to stepper component
    */
   const [currentStep, setCurrentStep] = useState(0);
-
-  /**
-   * @dev display modal when user confirm transaction successfully
-   */
   const [modalOpened, setModalOpened] = useState(false);
-
-  /**
-   * @dev Modal id.
-   */
   const [proposalId, setProposalId] = useState("");
-
-  /**
-   * @dev Define sate condition loading button during processing submit proposal.
-   */
   const [isDuringSubmit, setIsDuringSubmit] = useState(false);
-
-  /**
-   * @dev Condition to show popup to optimize proposal and submit proposal onchain.
-   */
-  const [optimizedProposalOpen, setOptimizedProposalOpen] = useState(false);
-
-  /** @dev Initilize ref for stepper component. */
+  const [submitModalOpen, setSubmitModalOpen] = useState(false);
   const stepperRef = useRef<StepProgressHandle>(null);
 
   /**
@@ -98,8 +70,6 @@ const Layout: FC = () => {
         );
       case 2:
         return !note || !expiredTime;
-      case 3:
-        return guaranteeSol <= 0;
       default:
         return true;
     }
@@ -140,41 +110,11 @@ const Layout: FC = () => {
   }, [currentStep]);
 
   /**
-   * @dev The function to create proposal without optimize option.
-   */
-  // const handleSubmitWithoutOptimize = async () => {
-  //   try {
-  //     setIsDuringSubmit(true);
-  //     const proposalId = (await submitProposal()) as string;
-  //     setProposalId(proposalId);
-  //     setModalOpened(true);
-  //     setIsDuringSubmit(false);
-  //   } catch (err: unknown) {
-  //     toast.error("Create proposal failed", (err as any).message);
-  //   } finally {
-  //     setIsDuringSubmit(false);
-  //   }
-  // };
-
-  /**
-   * @dev The function to create proposal with optimize option.
-   */
-  const handleSubmitWithOptimize = async () => {
-    try {
-      setIsDuringSubmit(true);
-      setOptimizedProposalOpen(true);
-    } catch {}
-  };
-
-  /**
    * @dev Click submit to create proposal.
    */
   const hanndleSubmitProposal = useCallback(async () => {
-    handleSubmitWithOptimize();
-    // if (router?.query?.optimized === "true") {
-    // } else {
-    //   handleSubmitWithoutOptimize();
-    // }
+    setIsDuringSubmit(true);
+    setSubmitModalOpen(true);
   }, [
     router,
     expectedItems,
@@ -182,7 +122,8 @@ const Layout: FC = () => {
     note,
     expiredTime,
     guaranteeSol,
-    solanaWallet,
+    walletAddress,
+    chainId,
   ]);
 
   function onFormSubmit() {
@@ -196,14 +137,13 @@ const Layout: FC = () => {
    * trigger wallet when user disconnected with
    * need stop to wait local storage remove access token
    */
-  const wallet = useConnectedWallet();
   useEffect(() => {
     setTimeout(() => {
       const storageProvider = new StorageProvider();
       const authen = storageProvider.getItem("hAccessToken");
       if (!authen) router.push("/");
     }, 500);
-  }, [wallet]);
+  }, [walletAddress]);
 
   return (
     <MainLayout>
@@ -233,10 +173,6 @@ const Layout: FC = () => {
                     name: "Additional info",
                   },
                   {
-                    label: "Warranty",
-                    name: "Warranty",
-                  },
-                  {
                     label: "Confirm",
                     name: "Confirm",
                   },
@@ -257,7 +193,6 @@ const Layout: FC = () => {
                   <Step1 />
                   <Step2 />
                   <Step3 form={formProposal} />
-                  <Step4 />
                   <Step5
                     modalOpened={modalOpened}
                     setModalOpened={(v) => {
@@ -280,7 +215,7 @@ const Layout: FC = () => {
                   size="large"
                 />
               )}
-              {currentStep < 4 ? (
+              {currentStep < 3 ? (
                 <Button
                   text="Next"
                   className={classnames(
@@ -306,28 +241,54 @@ const Layout: FC = () => {
                   size="large"
                 />
               )}
-              <OptimizeTransactionModal
-                isModalOpen={optimizedProposalOpen}
-                instructionHandler={async () =>
-                  (await submitProposal()) as unknown as {
-                    proposalId?: string;
-                    fns: {
-                      optimize(): Promise<void>;
-                      confirm(): Promise<void>;
-                    };
+              {chainId === ChainId.solana ? (
+                <OptimizeTransactionModal
+                  isModalOpen={submitModalOpen}
+                  instructionHandler={async () =>
+                    (await submitProposal()) as unknown as {
+                      proposalId?: string;
+                      fnc: {
+                        optimize(): Promise<void>;
+                        confirm(): Promise<void>;
+                      };
+                    }
                   }
-                }
-                handleCancel={() => {
-                  setOptimizedProposalOpen(false);
-                  setIsDuringSubmit(false);
-                }}
-                handleOk={(proposalId) => {
-                  setOptimizedProposalOpen(false);
-                  setProposalId(proposalId);
-                  setModalOpened(true);
-                  setIsDuringSubmit(false);
-                }}
-              />
+                  handleCancel={() => {
+                    setSubmitModalOpen(false);
+                    setIsDuringSubmit(false);
+                  }}
+                  handleOk={(proposalId) => {
+                    setSubmitModalOpen(false);
+                    setProposalId(proposalId);
+                    setModalOpened(true);
+                    setIsDuringSubmit(false);
+                  }}
+                />
+              ) : (
+                <SubmitProposalEvmModal
+                  isModalOpen={submitModalOpen}
+                  handleCancel={() => {
+                    setSubmitModalOpen(false);
+                    setIsDuringSubmit(false);
+                  }}
+                  handleOk={async () => {
+                    try {
+                      setSubmitModalOpen(false);
+                      const result = (await submitProposal()) as {
+                        proposalId: string;
+                        fnc: any;
+                      };
+                      setModalOpened(true);
+                      setProposalId(result.proposalId);
+                      setModalOpened(true);
+                      setIsDuringSubmit(false);
+                    } catch (err) {
+                      console.error("ERROR_CREATE_PROPOSAL: ", err);
+                      toast.error("Create proposal failed, please try again.");
+                    }
+                  }}
+                />
+              )}
             </div>
           </div>
         </LayoutSection>

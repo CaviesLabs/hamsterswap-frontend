@@ -1,86 +1,26 @@
-import {
-  createContext,
-  useContext,
-  useCallback,
-  useEffect,
-  useState,
-  ReactNode,
-  FC,
-} from "react";
-import { useSolana as useSaberhq } from "@saberhq/use-solana";
-import {
-  useWallet as useSolana,
-  useConnection,
-  WalletContextState as SolanaWalletContextState,
-  ConnectionContextState,
-} from "@solana/wallet-adapter-react";
-import web3 from "@solana/web3.js";
-import { useConnectedWallet } from "@saberhq/use-solana";
-import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
-import { SwapProgramProviderV0 } from "@/src/providers/program/swap-program-v0.provider";
-import { SwapProgramService } from "@/src/services/swap-program.service";
-import { getAuthService } from "@/src/actions/firebase.action";
-import { getWalletName } from "./utils";
-import { setProfile } from "@/src/redux/actions/hamster-profile/profile.action";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
+import web3, { Connection } from "@solana/web3.js";
+import {
+  useSolana as useSaberhq,
+  useConnectedWallet,
+} from "@saberhq/use-solana";
+import { useWallet as useAdapter } from "@solana/wallet-adapter-react";
+import type { MessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
+import { SwapProgramProviderV0 } from "@/src/providers/program/swap-program-v0.provider";
+import { getAuthService } from "@/src/actions/auth.action";
+import { setProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { SwapProgramServiceV0 } from "@/src/services/swap-program-v0.service";
-
-/** @dev Define state for context. */
-export interface WalletContextState {
-  /**
-   * @dev The function to sign message in Solana network.
-   * */
-  signMessage(message: string): Promise<Uint8Array>;
-
-  /**
-   * @dev The function to disconnect walle & logout to Hamster server and Firebase.
-   */
-  disconnect(): Promise<void>;
-
-  /**
-   * @dev The function to get sol balance of a specific wallet or signer.
-   * @param {PublicKey} pub
-   */
-  getSolBalance(pub?: web3.PublicKey): Promise<number>;
-
-  /**
-   * @dev Expose context frrom solana-adapter.
-   */
-  solanaWallet: SolanaWalletContextState;
-
-  /**
-   * @dev Solana chain connection.
-   */
-  walletConnection: ConnectionContextState;
-
-  /**
-   * @dev Define Program service.
-   */
-  programService: SwapProgramService | SwapProgramServiceV0;
-
-  /**
-   * @dev Sol balance of signer.
-   */
-  solBalance: number;
-}
-
-/** @dev Initiize context. */
-export const WalletContext = createContext<WalletContextState>(null);
+import { getWalletName } from "./utils";
 
 /** @dev Expose wallet provider for usage. */
-export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
+export const useWallet = () => {
   const router = useRouter();
-  /** @dev Get @var {walletProviderInfo} from @var {GokkiKit}. */
-  const { walletProviderInfo } = useSaberhq();
-
-  /** @dev Import providers to use from solana. */
-  const solanaWallet = useSolana();
-  const walletConnection = useConnection();
   const dispatch = useDispatch();
-
-  /** @dev Import wallet from Gokki library. */
-  const wallet = useConnectedWallet();
+  const solanaAdapter = useAdapter();
+  const solanaWallet = useConnectedWallet();
+  const { walletProviderInfo, provider, providerMut } = useSaberhq();
 
   /** @dev Program service */
   const [programService, initProgram] = useState<SwapProgramServiceV0>(null);
@@ -91,135 +31,112 @@ export const WalletProvider: FC<{ children: ReactNode }> = (props) => {
 
   /**
    * @dev The function to sign message in Solana network.
+   * @notice Step 1. Encode message to @var {Uint8Array}.
+   * @notice Step 2. Sign message with @var {MessageSignerWalletAdapter}.
+   * @returns {Uint8Array} signature.
    * */
   const signMessage = useCallback(
     async (message: string) => {
-      /**
-       * @dev Force to connect first.
-       */
-      await solanaWallet?.wallet?.adapter?.connect();
-
-      /**
-       * @dev Encode message to @var {Uint8Array}.
-       */
       const data = new TextEncoder().encode(message);
-
-      /**
-       * @dev Call function to sign message from solana adapter.
-       */
       return await (
-        solanaWallet.wallet.adapter as MessageSignerWalletAdapter
+        solanaAdapter?.wallet?.adapter as MessageSignerWalletAdapter
       ).signMessage(data);
     },
-    [walletProviderInfo, solanaWallet.wallet]
+    [walletProviderInfo, solanaAdapter, provider]
   );
 
   /**
-   * @dev Encode message to @var {Uint8Array}.
-   *      Step 1. Disconnect wallet.
-   *      Step 2. Logout user.
+   * @dev The function to disconnect walle & logout to Hamster server and Firebase.
+   * @notice Step 1. Disconnect wallet.
+   * @notice Step 2. Logout to Firebase.
+   * @notice Step 3. Set profile to null.
    */
   const disconnect = useCallback(async () => {
-    await wallet?.disconnect();
     await solanaWallet?.disconnect();
     await authService?.logout();
     dispatch(setProfile(null));
-  }, [solanaWallet, wallet]);
+  }, [solanaWallet]);
 
   /**
    * @dev Get sol balance of a wallet.
-   * @param address
+   * @param {PublicKey} address
+   * @notice Step 1. Get balance from solana network.
+   * @notice Step 2. Set balance to state.
+   * @notice Step 3. Return balance.
+   * @notice Step 4. If error, return 0.
    * @returns
    */
   const getSolBalance = useCallback(
     async (address?: web3.PublicKey) => {
       if (!address && !solanaWallet?.publicKey) return;
+      const balance = await new Connection(
+        process.env.SOLANA_RPC_URL,
+        "confirmed"
+      )
+        .getBalance(address || solanaWallet?.publicKey)
+        .catch(() => 0);
 
-      /**
-       * @dev Get blance if whether address or signer is valid.
-       */
-      const balance = await walletConnection.connection.getBalance(
-        address || solanaWallet?.publicKey
-      );
-
-      /**
-       * @dev Check signer sol balance if address is null.
-       */
-      if (!address && balance) {
-        setSolBalance(balance);
-      }
-
+      setSolBalance(balance || 0);
       return balance;
     },
     [solanaWallet]
   );
 
   /**
-   * @dev Watch changes in wallet adpater and update.
+   * @dev Initilize when solana wallet is connected.
+   * @notice Step 1. Init program service.
+   * @notice Step 2. Get sol balance.
+   * @notice Step 3. Get wallet name.
    * */
   useEffect(() => {
-    if (!walletProviderInfo) return;
-    solanaWallet.select(getWalletName(walletProviderInfo.name));
-  }, [walletProviderInfo, wallet, solanaWallet]);
-
-  useEffect(() => {
-    if (!wallet) return;
-    /**
-     * @dev Force to connect first.
-     */
-    solanaWallet?.wallet?.adapter?.connect();
-  }, [wallet, solanaWallet]);
-
-  /**
-   * @dev Initilize when wallet changed.
-   * */
-  useEffect(() => {
-    if (wallet?.publicKey?.toString()) {
+    if (solanaWallet?.publicKey?.toString() && providerMut !== null) {
       try {
-        /**
-         * @dev Initlize swap program service with initlized programProvider.
-         */
         const program = new SwapProgramServiceV0(
-          new SwapProgramProviderV0(solanaWallet)
+          new SwapProgramProviderV0(providerMut as any)
         );
 
-        /**
-         * @dev Init program into state for usage
-         */
         initProgram(program);
-
-        /**
-         * @dev update sol balance if wallet changes.
-         */
         getSolBalance();
       } catch (err: any) {
         console.log(err.message);
       }
     }
-  }, [wallet, solanaWallet, router.asPath]);
+  }, [solanaWallet, router.asPath, providerMut]);
 
-  return (
-    <WalletContext.Provider
-      value={{
-        signMessage,
-        disconnect,
-        getSolBalance,
-        solanaWallet,
-        walletConnection,
-        programService,
-        solBalance,
-      }}
-    >
-      {props.children}
-    </WalletContext.Provider>
+  /**
+   * @dev Watch changes in wallet adpater and update.
+   * */
+  useEffect(() => {
+    if (!walletProviderInfo) return;
+    solanaAdapter.select(getWalletName(walletProviderInfo.name));
+  }, [walletProviderInfo, solanaWallet, solanaAdapter]);
+
+  useEffect(() => {
+    if (!solanaWallet) return;
+    solanaAdapter?.wallet?.adapter?.connect();
+  }, [solanaWallet, solanaAdapter]);
+
+  return useMemo(
+    () => ({
+      signMessage,
+      disconnect,
+      getSolBalance,
+      solanaWallet,
+      programService,
+      solBalance,
+      provider: providerMut as any,
+    }),
+    [
+      signMessage,
+      disconnect,
+      getSolBalance,
+      solanaWallet,
+      programService,
+      solBalance,
+      providerMut as any,
+      router,
+      solanaWallet,
+      walletProviderInfo,
+    ]
   );
-};
-
-/** @dev Use context hook. */
-export const useWallet = () => {
-  const context = useContext(WalletContext);
-  if (!context) {
-    throw new Error("Must be in provider");
-  }
-  return context;
 };

@@ -26,7 +26,7 @@ const TestPage: NextPage = () => {
     SwapProposalEntity[]
   >([]);
   // const [proposalId, setProposalId] = useState("");
-  const { solanaWallet, programService } = useWallet();
+  const { solanaWallet, provider: solanaProvider, programService } = useWallet();
   const { proposals } = useMain();
 
   /**
@@ -78,7 +78,7 @@ const TestPage: NextPage = () => {
       /**
        * @dev Call create service.
        */
-      await programService.createProposal(solanaWallet, createdData);
+      await programService.createProposal(solanaProvider, createdData);
 
       /**
        * @dev Reload to get new proposals.
@@ -90,7 +90,7 @@ const TestPage: NextPage = () => {
     } catch (err: any) {
       console.error(err.message);
     }
-  }, [wallet, programService, solanaWallet]);
+  }, [wallet, programService, solanaWallet, solanaProvider]);
 
   const handleCancelProposal = useCallback(
     async (propsalId: string) => {
@@ -100,7 +100,7 @@ const TestPage: NextPage = () => {
         /**
          * @dev Call function to cancel.
          */
-        await programService.cancelProposal(solanaWallet, propsalId);
+        await programService.cancelProposal(solanaProvider, propsalId);
         toast.success("Cancel proposal successfully");
         /**
          * @dev Reload to get new proposals.
@@ -115,20 +115,20 @@ const TestPage: NextPage = () => {
         toast("Cancel proposal failed: ", err.message);
       }
     },
-    [wallet, programService, solanaWallet]
+    [wallet, programService, solanaWallet, solanaProvider]
   );
 
   const handleSwap = useCallback(
     async (proposalId: string, optionId: string) => {
       try {
-        await programService.swapProposal(solanaWallet, proposalId, optionId);
+        await programService.swapProposal(solanaProvider, proposalId, optionId);
         toast.success("Wrap proposal successfully");
       } catch (err: any) {
         console.log("error", err);
         toast("Swap proposal failed!", err);
       }
     },
-    [wallet, programService, solanaWallet]
+    [wallet, programService, solanaWallet, solanaProvider]
   );
 
   /**

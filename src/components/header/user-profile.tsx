@@ -1,12 +1,12 @@
 import { utilsProvider } from "@/src/utils";
 import { useDispatch } from "react-redux";
 import { FC, useEffect } from "react";
-import { getHamsterProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { useRouter } from "next/router";
-import { useMain } from "@/src/hooks/pages/main";
+import { getHamsterProfile } from "@/src/redux/actions/hamster-profile/profile.action";
 import { useAppWallet, useDisconnectWallet } from "@/src/hooks/useAppWallet";
 import classnames from "classnames";
 import styles from "./index.module.scss";
+import { useMain } from "@/src/hooks/pages/main";
 
 const UserProfile: FC = () => {
   const { disconnect } = useDisconnectWallet();

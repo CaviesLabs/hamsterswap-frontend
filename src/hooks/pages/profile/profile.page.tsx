@@ -1,71 +1,57 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
+import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
+import { getProposalService } from "@/src/services/proposal.service";
 import { SwapProposalStatus } from "@/src/entities/proposal.entity";
 import { useMain } from "@/src/hooks/pages/main";
-import { getExploreProposals } from "@/src/redux/actions/proposal/proposal.action";
 import { sortOptions } from "@/src/utils";
 import { ProfilePageContext } from "./types";
 
 export const ProfilePageProvider = (props: { children: ReactNode }) => {
-  const { hPublicProfile: profile } = useMain();
-
-  /**
-   * @description
-   * Fetch proposal by user id
-   */
   const dispatch = useDispatch();
-
-  /**
-   * @dev The function to process searching
-   * @param {string} _search
-   * @param {string} _statuses
-   */
-  const handleSearch = (_search?: string, _statuses?: SwapProposalStatus[]) => {
-    dispatch(
-      getExploreProposals({
-        walletAddress: profile?.walletAddress,
-        options: {
-          statuses: _statuses,
-          search: _search,
-        },
-      })
-    );
-  };
-
-  /**
-   * @description
-   * Handle state of selected values
-   */
+  const { hPublicProfile: profile, chainId } = useMain();
   const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
-
-  /**
-   * @dev Define search value.
-   */
   const [search, setSearch] = useState<string>("");
 
   /**
-   * @description
-   * handle parse status to filter and search nft
+   * @dev The function is used to filter the proposals based on the search text and status
+   * @param {string} searchText
+   * @param {string[]} statuses
+   * @returns {void}
    */
-  const handleFilter = (
-    searchText: string = search,
-    _selectedStatus: string[] = selectedStatus
-  ) => {
-    const status: SwapProposalStatus[] =
-      !_selectedStatus || _selectedStatus.length === 0 ? [] : [];
-    _selectedStatus?.includes(sortOptions[0].value) &&
-      status.push(SwapProposalStatus.ACTIVE);
-    _selectedStatus?.includes(sortOptions[1].value) &&
-      status.push(SwapProposalStatus.EXPIRED);
-    _selectedStatus?.includes(sortOptions[2].value) &&
-      status.push(SwapProposalStatus.REDEEMED);
-    _selectedStatus?.includes(sortOptions[3].value) &&
-      status.push(SwapProposalStatus.WITHDRAWN);
-    _selectedStatus?.includes(sortOptions[4].value) &&
-      status.push(SwapProposalStatus.SWAPPED);
+  const handleFilter = useCallback(
+    async (
+      searchText: string = search,
+      statuses: string[] = selectedStatus
+    ) => {
+      if (!profile?.walletAddress) return;
 
-    return handleSearch(searchText, status);
-  };
+      // @notice Process the status to get the status array
+      const status: SwapProposalStatus[] = [];
+      sortOptions.forEach(
+        (option) => statuses.includes(option.value) && status.push(option.value)
+      );
+
+      // @notice Sync the wallet proposals before fetching the proposals
+      await getProposalService().syncWalletProposals(
+        chainId,
+        profile?.walletAddress
+      );
+
+      // @notice Get the proposals based on the search text and status
+      // eslint-disable-next-line prettier/prettier
+      dispatch(getExploreProposals({
+          walletAddress: profile?.walletAddress,
+          options: {
+            search: searchText,
+            statuses: status,
+            chainId,
+          },
+        })
+      );
+    },
+    [profile, chainId]
+  );
 
   return (
     <ProfilePageContext.Provider

@@ -18,6 +18,11 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
   const router = useRouter();
   const { data } = props;
 
+  /**
+   * Get profile
+   * @note This is a temporary solution.
+   * @todo Get profile from redux-store.
+   */
   useEffect(() => {
     hProfileService
       .getPublicProfile({ id: data.ownerId })
@@ -62,8 +67,8 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
             walletAddress={utilsProvider.makeShort(data.ownerAddress, 4)}
           />
           <ProposalItems
-            userAssets={data.offerItems}
-            userLookingFor={data.swapOptions}
+            userAssets={props.swapItems}
+            userLookingFor={props.receiveItems}
           />
           <Row className="pt-8">
             <Col span={10}>
@@ -73,22 +78,6 @@ export const ProposalExploreItem: FC<ProposalItemProps> = (props) => {
                 <p className="mt-[16px] text-[14px] regular-text text-dark60">
                   Expiration date:{" "}
                   {moment(data.expiredAt).utc().format(DATE_TIME_FORMAT)}
-                </p>
-              </div>
-            </Col>
-            <Col offset={4} span={10}>
-              <div className="md:left">
-                <p className="semi-bold text-[16px] h-[36px] leading-9">
-                  Warranty
-                </p>
-                <p className="mt-[8px] text-[16px] regular-text flex">
-                  Guarantee deposit amount:
-                  <img
-                    src="/assets/images/solana-icon.svg"
-                    alt="Solana Icon"
-                    className="h-[24px] w-[24px] mx-[12px]"
-                  />
-                  <span className="semi-bold">300.00 SOL</span>
                 </p>
               </div>
             </Col>

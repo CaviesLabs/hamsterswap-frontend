@@ -71,13 +71,6 @@ export interface CreateProposalPageContextState {
    * @param {number} value
    */
   setGuaranteeSol(value: number): void;
-
-  /**
-   * @dev Expose function to submit proposal to hamster server and on-chain
-   */
-  submitProposal(): Promise<
-    string | { optimize(): Promise<void>; confirm(): Promise<void> }
-  >;
 }
 
 /** @dev Create context */

@@ -12,9 +12,29 @@ import {
   lightTheme,
 } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { klaytn } from "wagmi/chains";
+import { Chain, klaytn as WagmiKlaytn } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
+
+/**
+ * @dev Override rpc urls for klaytn.
+ * @notice The default rpc url is not working.
+ * @notice This is temporary solution.
+ * @returns {void}
+ * @todo Remove this when rpc url is working.
+ */
+const RPC_URL = "https://klaytn.blockpi.network/v1/rpc/public";
+const klaytn: Chain = {
+  ...WagmiKlaytn,
+  rpcUrls: {
+    default: {
+      http: [RPC_URL],
+    },
+    public: {
+      http: [RPC_URL],
+    },
+  },
+};
 
 /** @dev Initiize context. */
 export const WalletKitContext = createContext<any>(null);

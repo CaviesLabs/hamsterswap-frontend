@@ -2,8 +2,9 @@ import { FC, useEffect, useState } from "react";
 import { Modal } from "antd";
 import { NftDetailsModalProps } from "./types";
 import { Row, Col } from "antd";
-import { nftService } from "@/src/redux/saga/nft/nft.service";
-import { AttributeDto } from "@/src/dto/nft.dto";
+import { NftService } from "@/src/services/nft.service";
+import { AttributeDto, NftEntity } from "@/src/dto/nft.dto";
+import { useMain } from "@/src/hooks/pages/main";
 
 export const AttributeCard = (attr: AttributeDto) => (
   <div className="bg-gray-100 py-4 px-6 rounded-2xl	w-full">
@@ -13,21 +14,28 @@ export const AttributeCard = (attr: AttributeDto) => (
 );
 
 export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
-  const { data } = props;
+  const { chainId } = useMain();
+  const [nftData, setNftData] = useState<NftEntity>();
 
   /**
-   * Handle fetch metadata of NFT and set to attributes
+   * @dev Fetch nft detail when modal is open.
+   * @notice This is a temporary solution, we will refactor this later.
+   * @notice Get attributes from nft detail.
    */
-  const [attributes, setAttributes] = useState([]);
   useEffect(() => {
-    if (!data?.nftAddress) return;
-    nftService
-      .getNftDetail({
-        mintAddress: data.nftAddress,
-      })
-      .then((resp) => setAttributes(resp?.nft_attributes.attributes))
-      .catch(() => {});
-  }, [data?.nftAddress]);
+    (async () => {
+      try {
+        if (!props.isModalOpen) return;
+        setNftData(
+          await NftService.getService(chainId).getNftDetail({
+            contractAddress: props.address,
+            tokenId: props.tokenId.toString(),
+            chainId: chainId,
+          })
+        );
+      } catch {}
+    })();
+  }, [props, chainId, props.isModalOpen]);
 
   return (
     <Modal
@@ -44,7 +52,7 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
             <div className="md:basis-1/3 px-8">
               <div x-data="{ image: 1 }" x-cloak="true">
                 <img
-                  src={data?.image}
+                  src={nftData?.image}
                   alt="nft image"
                   className="bg-dark10 rounded"
                 />
@@ -53,13 +61,13 @@ export const NFTDetailsModal: FC<NftDetailsModalProps> = (props) => {
             <div className="md:basis-2/3 px-8 overflow-auto">
               <div>NFT name</div>
               <h2 className="mb-6 leading-tight tracking-tight font-bold text-gray-800 text-2xl md:text-3xl">
-                {data?.name}
+                {nftData?.name}
               </h2>
               <p className="text-gray-500 text-sm">Collection</p>
-              <div className="text-indigo-600">{data?.collection}</div>
+              <div className="text-indigo-600">{nftData?.collectionName}</div>
               <p className="mt-6 mb-3 text-gray-500 text-sm">Attributes</p>
               <Row gutter={[16, 16]}>
-                {attributes?.map((attr, index) => (
+                {nftData?.attributes?.map((attr, index) => (
                   <Col span={12} key={`attr-item-${index}`}>
                     <AttributeCard {...attr} />
                   </Col>

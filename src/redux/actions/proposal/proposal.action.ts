@@ -1,11 +1,10 @@
 import {
-  GET_PROPSALS,
-  SET_PROPSALS,
-  GET_EXPLORE_PROPOSALS,
-  GET_PROPOSAL,
   SET_PROPOSAL,
+  SET_PROPOSALS,
+  GET_PROPOSAL,
+  GET_PROPOSALS,
+  GET_EXPLORE_PROPOSALS,
 } from "@/src/redux/actions";
-import { ProposalItem } from "@/src/components/user/types";
 import { CallBackSaga } from "@/src/redux/entities";
 import {
   GetProposalsDto,
@@ -19,7 +18,7 @@ import { DetailDto } from "@/src/dto/detail.dto";
  * @description
  * Update proposal list in redux state
  */
-export const setProposal = (data: ProposalItem) => ({
+export const setProposal = (data: SwapProposalEntity) => ({
   type: SET_PROPOSAL,
   payload: data,
 });
@@ -29,7 +28,7 @@ export const setProposal = (data: ProposalItem) => ({
  * @returns reducer.
  */
 export const getPropsals = (data: GetProposalsDto) => ({
-  type: GET_PROPSALS,
+  type: GET_PROPOSALS,
   payload: data,
 });
 
@@ -38,7 +37,7 @@ export const getPropsals = (data: GetProposalsDto) => ({
  * @returns reducer.
  */
 export const setProposals = (data: SwapProposalEntity[]) => ({
-  type: SET_PROPSALS,
+  type: SET_PROPOSALS,
   payload: data,
 });
 

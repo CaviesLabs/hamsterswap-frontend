@@ -1,22 +1,31 @@
+import { ChainId } from "./chain.entity";
+
 /**
  * @dev The interface of currency which hamster allow to use.
  */
-export type AllowCurrency = {
-  id: string;
-  image: string;
+export type TokenEntity = {
+  explorerUrl: string;
+  currencyId: string;
+  address: string;
+  icon: string;
+  image?: string; // For solana schema, @todo Remove it later.
   name: string;
-  type: string;
+  symbol: string;
+  isNativeToken?: boolean;
+  realAddress?: string;
   decimals: number;
+  realDecimals?: number;
 };
 
 /**
  * @dev The interface of nft collection which hamster allow to use.
  */
 export type allowNTFCollection = {
-  idList: string[];
-  image: string;
+  addresses: string[];
+  marketUrl: string;
+  icon: string;
+  collectionId: string;
   name: string;
-  type: string;
 };
 
 /**
@@ -25,6 +34,32 @@ export type allowNTFCollection = {
 export class PlatformConfigDto {
   maxAllowedOptions: number;
   maxAllowedItems: number;
-  allowCurrencies: AllowCurrency[];
+  allowCurrencies: TokenEntity[];
   allowNTFCollections: allowNTFCollection[];
+  wagmiKey: string;
+  chainName: string;
+  chainIcon: string;
+  rpcUrl: string;
+  chainId: 8217;
+  programAddress: string;
+  multicall3Address: string;
+  explorerUrl: string;
 }
+
+export type PlatformConfigDtoV2 = Record<
+  ChainId,
+  {
+    maxAllowedOptions: number;
+    maxAllowedItems: number;
+    currencies: TokenEntity[];
+    collections: allowNTFCollection[];
+    wagmiKey: string;
+    chainName: string;
+    chainIcon: string;
+    rpcUrl: string;
+    chainId: 8217;
+    programAddress: string;
+    multicall3Address: string;
+    explorerUrl: string;
+  }
+>;

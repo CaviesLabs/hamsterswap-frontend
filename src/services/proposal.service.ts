@@ -4,7 +4,8 @@ import {
   GetProposalsDto,
 } from "@/src/entities/proposal.entity";
 import { DetailDto } from "@/src/dto/detail.dto";
-import { CreateProposalDto, ProposalDto } from "@/src/dto/proposal.dto";
+import { ProposalDto } from "@/src/dto/proposal.dto";
+import { ChainId } from "../entities/chain.entity";
 
 export class ProposalService {
   /**
@@ -41,21 +42,57 @@ export class ProposalService {
    * @param {DetailDto} payload
    * @returns {ProposalDto}
    */
-  getProposal(payload: DetailDto): Promise<ProposalDto> {
-    return networkProvider.request<ProposalDto>(`/proposal/${payload.id}`, {});
+  getProposal(payload: DetailDto): Promise<SwapProposalEntity> {
+    return networkProvider.request<SwapProposalEntity>(
+      `/proposal/${payload.id}`,
+      {}
+    );
   }
 
   /**
    * @dev Create proposal.
-   * @param {CreateProposalDto} payload.
+   * @param {SwapProposalEntity} payload
+   * @returns {SwapProposalEntity}
+   */
+  createProposal(payload: {
+    expiredAt: string;
+    chainId: string;
+    note: string;
+  }): Promise<SwapProposalEntity> {
+    return networkProvider.requestWithCredentials<SwapProposalEntity>(
+      `/proposal`,
+      {
+        method: "POST",
+        data: payload,
+      }
+    );
+  }
+
+  /**
+   * @dev The function to sync the data of proposal
+   * @param {string} proposalId
+   */
+  public async syncProposal(proposalId: string): Promise<any> {
+    return networkProvider.request(`/proposal/evm/${proposalId}/sync`, {
+      method: "PATCH",
+    });
+  }
+
+  /**
+   * @dev Update proposal.
+   * @param {ChainId} chainId.
+   * @param {string} walletAddress.
    * @returns {ProposalDto}
    */
-  createProposal(payload: CreateProposalDto): Promise<ProposalDto> {
-    return networkProvider.request<ProposalDto>(`/proposal/`, {
-      method: "POST",
-      data: payload,
-    });
+  syncWalletProposals(chainId: ChainId, walletAddress: string): Promise<void> {
+    return networkProvider.request<void>(
+      `/proposal/${chainId}/${walletAddress}/sync`,
+      {
+        method: "POST",
+      }
+    );
   }
 }
 
 export const proposalService = new ProposalService();
+export const getProposalService = () => new ProposalService();

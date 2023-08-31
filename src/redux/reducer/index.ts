@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import userReducer, { chainIdReducer } from "./user";
+import { chainIdReducer } from "./user";
 import userChatReducer from "./user-chat";
 import nftReducer from "./nft";
 import hProfileReducer from "./hamster-profile";
@@ -13,12 +13,12 @@ import { ChainId } from "@/src/entities/chain.entity";
  * @dev Initialize reducer for app state management.
  */
 const reducer = combineReducers<State>({
-  user: userReducer,
   userChats: userChatReducer,
   nft: nftReducer,
   platformConfig: platformConfigReducer,
-  hProfile: hProfileReducer,
+  user: hProfileReducer,
   hPublicProfile: hPublicProfileReducer,
+  hProfile: hProfileReducer,
   proposals: proposalsReducer,
   proposal: proposalReducer,
   chainId: chainIdReducer,
@@ -28,7 +28,7 @@ const reducer = combineReducers<State>({
  * @dev Declare default state for app.
  */
 export const initState: State = {
-  chainId: ChainId.solana,
+  chainId: ChainId.klaytn,
   user: null,
   userChats: [],
   nft: [],
@@ -36,12 +36,7 @@ export const initState: State = {
   proposal: null,
   hProfile: null,
   hPublicProfile: null,
-  platformConfig: {
-    maxAllowedOptions: 0,
-    maxAllowedItems: 0,
-    allowCurrencies: [],
-    allowNTFCollections: [],
-  },
+  platformConfig: null,
 };
 
 export default reducer;

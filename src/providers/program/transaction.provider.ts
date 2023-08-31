@@ -9,7 +9,7 @@ import {
   Commitment,
 } from "@solana/web3.js";
 import { Program } from "@project-serum/anchor";
-import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
+import { AugmentedProvider as WalletProvider } from "@saberhq/solana-contrib";
 import { SwapIdl } from "./swap.idl";
 import { LookupTableProvider } from "@/src/providers/program/lookup-table.provider";
 
@@ -43,12 +43,12 @@ export class TransactionProvider {
      */
     const tx = new Transaction().add(...instructions);
     tx.recentBlockhash = (await this.connection.getLatestBlockhash()).blockhash;
-    tx.feePayer = walletProvider.publicKey;
+    tx.feePayer = walletProvider?.wallet?.publicKey;
 
     /**
      * @dev Get raw transaction by signing in wallet.
      */
-    const rawTx = await walletProvider.signTransaction(tx);
+    const rawTx = await walletProvider?.wallet?.signTransaction(tx);
 
     /**
      * @dev Send a raw transaction.
@@ -75,7 +75,7 @@ export class TransactionProvider {
      * @dev Compile lookup message
      */
     const lookupMessage = new TransactionMessage({
-      payerKey: walletProvider.publicKey,
+      payerKey: walletProvider?.wallet?.publicKey,
       recentBlockhash: latestBlockHash.blockhash,
       instructions: instructions,
     }).compileToV0Message(addressLookupTableAccounts);
@@ -84,7 +84,9 @@ export class TransactionProvider {
      * @dev Sign v0 message
      */
     const lookupTransaction = new VersionedTransaction(lookupMessage);
-    const tx = await walletProvider.signTransaction(lookupTransaction);
+    const tx = await walletProvider?.wallet?.signTransaction(
+      lookupTransaction as any
+    );
 
     /**
      * @dev Send a raw transaction.

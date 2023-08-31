@@ -1,34 +1,43 @@
 import { FC, useState, useCallback } from "react";
-import { Button } from "@hamsterbox/ui-kit";
-import { useConnectedWallet } from "@saberhq/use-solana";
-import { useWalletKit } from "@gokiprotocol/walletkit";
-import { useWallet } from "@/src/hooks/useWallet";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import {
   ConfirmedTransactionModal,
   ConfirmTransactionModal,
   WalletEmptyModal,
 } from "@/src/components/modal";
-import { useMain } from "@/src/hooks/pages/main";
 import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optimize-transaction-modal";
+import { useAppWallet, useConnect } from "@/src/hooks/useAppWallet";
+import { SwapItemEntity } from "@/src/entities/proposal.entity";
+import { ChainId } from "@/src/entities/chain.entity";
+import { useMain } from "@/src/hooks/pages/main";
+import { getProposalService } from "@/src/services/proposal.service";
 
 const BuyButton: FC<{
-  handleSwap(): Promise<void | {
-    proposalId?: string;
-    fns: { optimize(): Promise<void>; confirm(): Promise<void> };
-  }>;
+  handleSwap(): Promise<
+    | any
+    | {
+        proposalId?: string;
+        fnc: { optimize(): Promise<void>; confirm(): Promise<void> };
+      }
+  >;
+  swapItems: SwapItemEntity[];
   optionIndex: number;
 }> = (props) => {
   /**
    * @dev Get user wallet
    */
-  const wallet = useConnectedWallet();
-  const { connect } = useWalletKit();
-  const { programService, solanaWallet } = useWallet();
+  const { walletAddress } = useAppWallet();
+  const { connect } = useConnect();
 
   /**
    * @dev Import redux states.
    */
-  const { proposal, hPublicProfile: seller, hProfile: buyer } = useMain();
+  const {
+    proposal,
+    hPublicProfile: seller,
+    hProfile: buyer,
+    chainId,
+  } = useMain();
 
   /**
    * States to handle display modal component
@@ -45,8 +54,8 @@ const BuyButton: FC<{
   const [optimizedProposalOpen, setOptimizedProposalOpen] = useState(false);
 
   const handleSwap = useCallback(async () => {
+    console.log(walletAddress, proposal, props.optionIndex);
     if (!proposal) return;
-    if (!solanaWallet.publicKey) return connect();
 
     /**
      * @dev Turn on loading status in buy button.
@@ -54,11 +63,28 @@ const BuyButton: FC<{
     setIsLoading(true);
     setIsBuyButtonLoading(true);
     setIsDisplayConfirm(false);
-    /**
-     * @dev Turn on optimized transaction modal if having optimized option.
-     */
-    setOptimizedProposalOpen(true);
-  }, [wallet, programService, solanaWallet, proposal, props.optionIndex]);
+
+    if (chainId === ChainId.solana) {
+      setOptimizedProposalOpen(true);
+    } else {
+      try {
+        await props.handleSwap();
+        setTimeout(() => {
+          getProposalService().syncProposal(proposal.id);
+        }, 2000);
+        setIsDisplayConfirmed(true);
+      } catch (err) {
+        toast.error(
+          "“Please ensure that your wallet is equipped with the necessary items."
+        );
+        console.error("ERROR_SWAP_PROPOSAL", err);
+      } finally {
+        setIsDisplayConfirm(false);
+        setIsBuyButtonLoading(false);
+        setIsLoading(false);
+      }
+    }
+  }, [walletAddress, proposal, props.optionIndex, chainId]);
 
   return (
     <>
@@ -70,16 +96,16 @@ const BuyButton: FC<{
         }
         className="!rounded-[100px] after:!rounded-[100px] float-right !w-[120px] md:!w-[200px]"
         size="large"
-        onClick={() => setIsDisplayConfirm(true)}
+        onClick={() => (!walletAddress ? connect() : setIsDisplayConfirm(true))}
         loading={isBuyButtonLoading}
       />
-      <Button
+      {/* <Button
         text="Order / Bid"
         shape="secondary"
         className="!border-[1.5px] ml-[24px] !rounded-[100px] after:!rounded-[100px] float-right !w-[150px] md:!w-[200px]"
         size="large"
-        onClick={() => setIsDisplayConfirm(true)}
-      />
+        onClick={() => (!walletAddress ? connect() : setIsDisplayConfirm(true))}
+      /> */}
       <ConfirmTransactionModal
         isLoading={isLoading}
         buyer={buyer}
@@ -87,6 +113,7 @@ const BuyButton: FC<{
         handleOk={() => handleSwap()}
         handleCancel={() => setIsDisplayConfirm(false)}
         isModalOpen={isDisplayConfirm}
+        swapItems={props.swapItems}
       />
       <ConfirmedTransactionModal
         buyer={buyer}
@@ -105,7 +132,7 @@ const BuyButton: FC<{
         instructionHandler={async () =>
           (await props.handleSwap()) as unknown as {
             proposalId?: string;
-            fns: {
+            fnc: {
               optimize(): Promise<void>;
               confirm(): Promise<void>;
             };

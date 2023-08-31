@@ -8,7 +8,7 @@ import {
   PublicKey,
   TransactionInstruction,
 } from "@solana/web3.js";
-import { WalletContextState as WalletProvider } from "@solana/wallet-adapter-react";
+import { AugmentedProvider as WalletProvider } from "@saberhq/solana-contrib";
 import _ from "lodash";
 
 export class LookupTableProvider {
@@ -312,8 +312,8 @@ export class LookupTableProvider {
        * @dev Extend lookup table
        */
       return AddressLookupTableProgram.extendLookupTable({
-        payer: walletProvider.publicKey,
-        authority: walletProvider.publicKey,
+        payer: walletProvider.wallet.publicKey,
+        authority: walletProvider.wallet.publicKey,
         lookupTable: lookupTableAddress,
         /**
          * @dev This is to reduce the transaction cost/size

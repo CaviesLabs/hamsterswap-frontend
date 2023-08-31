@@ -8,18 +8,16 @@ import {
   SwapItemType,
 } from "@/src/entities/proposal.entity";
 import { getStatus } from "@/src/utils/proposal-status";
-import { useMain } from "@/src/hooks/pages/main";
 import UtilsProvider from "@/src/utils/utils.provider";
 import moment from "moment";
+import { useMain } from "@/src/hooks/pages/main";
 
 function Proposal(props: ProposalHistoryProps) {
   const router = useRouter();
   const { data } = props;
   const { status, fulfillBy } = data;
-  const {
-    hPublicProfile,
-    platformConfig: { allowCurrencies },
-  } = useMain();
+  const { hPublicProfile, platformConfig } = useMain();
+  const allowCurrencies = platformConfig?.allowCurrencies;
 
   /**
    * @description
@@ -34,9 +32,11 @@ function Proposal(props: ProposalHistoryProps) {
           <img
             className="w-10 rounded-lg"
             src={
-              nftMetadata?.nft_image ||
-              nftMetadata?.icon ||
-              allowCurrencies.find((item) => item.id === contractAddress)?.image
+              nftMetadata?.metadata?.image ||
+              nftMetadata?.metadata?.icon ||
+              allowCurrencies.find(
+                (item) => item.realAddress === contractAddress
+              )?.icon
             }
           />
           <p className="ml-2">
@@ -44,16 +44,18 @@ function Proposal(props: ProposalHistoryProps) {
               ? `${UtilsProvider.formatLongNumber(
                   solAmount(
                     amount,
-                    allowCurrencies.find((item) => item.id === contractAddress)
-                      ?.decimals
+                    allowCurrencies.find(
+                      (item) => item.realAddress === contractAddress
+                    )?.realDecimals
                   )
                 )} ${
-                  allowCurrencies.find((item) => item.id === contractAddress)
-                    ?.name
+                  allowCurrencies.find(
+                    (item) => item.realAddress === contractAddress
+                  )?.name
                 }`
-              : nftMetadata?.nft_name ||
-                (nftMetadata?.symbol &&
-                  `${solAmount(amount, 9)} ${nftMetadata?.symbol}`)}
+              : nftMetadata?.metadata?.name ||
+                (nftMetadata?.metadata?.symbol &&
+                  `${solAmount(amount, 9)} ${nftMetadata?.metadata?.symbol}`)}
           </p>
         </div>
       )
@@ -67,9 +69,11 @@ function Proposal(props: ProposalHistoryProps) {
           <img
             className="w-10 rounded-lg"
             src={
-              nftMetadata?.nft_image ||
-              nftMetadata?.icon ||
-              allowCurrencies.find((item) => item.id === contractAddress)?.image
+              nftMetadata?.metadata?.image ||
+              nftMetadata?.metadata?.icon ||
+              allowCurrencies.find(
+                (item) => item.realAddress === contractAddress
+              )?.icon
             }
           />
           <p className="ml-2">
@@ -77,16 +81,18 @@ function Proposal(props: ProposalHistoryProps) {
               ? `${UtilsProvider.formatLongNumber(
                   solAmount(
                     amount,
-                    allowCurrencies.find((item) => item.id === contractAddress)
-                      ?.decimals
+                    allowCurrencies.find(
+                      (item) => item.realAddress === contractAddress
+                    )?.realDecimals
                   )
                 )} ${
-                  allowCurrencies.find((item) => item.id === contractAddress)
-                    ?.name
+                  allowCurrencies.find(
+                    (item) => item.realAddress === contractAddress
+                  )?.name
                 }`
-              : nftMetadata?.nft_name ||
-                (nftMetadata?.symbol &&
-                  `${solAmount(amount, 9)} ${nftMetadata?.symbol}`)}
+              : nftMetadata?.metadata?.name ||
+                (nftMetadata?.metadata?.symbol &&
+                  `${solAmount(amount, 9)} ${nftMetadata?.metadata?.symbol}`)}
           </p>
         </div>
       ));

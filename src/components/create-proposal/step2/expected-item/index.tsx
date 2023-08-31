@@ -1,4 +1,5 @@
-import { FC, useState } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { FC, useCallback, useState } from "react";
 import { Collapse } from "react-collapse";
 import { RowEditNftItem } from "@/src/components/nfts";
 import { Button, toast } from "@hamsterbox/ui-kit";
@@ -7,7 +8,7 @@ import {
   AddCashModal,
   AddGameItemModal,
   AddExpectedNftModal,
-  AddSolModal,
+  AddTokenModal,
 } from "@/src/components/create-proposal";
 import classnames from "classnames";
 import { EmptyBox } from "@/src/components/create-proposal/empty-box";
@@ -16,6 +17,7 @@ import { useSelector } from "react-redux";
 import { useCreateProposal } from "@/src/hooks/pages/create-proposal";
 import { AssetTypes, SwapItemType } from "@/src/entities/proposal.entity";
 import { Col, Row } from "antd";
+import { TokenEntity } from "@/src/entities/platform-config.entity";
 
 export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
   const { expectedItems, removeExpectedItem, addExpectedItem } =
@@ -44,29 +46,28 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
    * Handle save sol value into swapItems array of redux-store
    * @param value [string]
    */
-  const handleAddSol = (
-    mintAccount: string,
-    value: string,
-    decimal: number
-  ) => {
-    if (expectedItems[props.index]?.askingItems.length === 4) {
-      return toast.warn("Only a maximum of 4 items are allowed");
-    }
+  const handleAddToken = useCallback(
+    async (token: TokenEntity, amount: string) => {
+      if (expectedItems[props.index]?.askingItems.length === 4) {
+        return toast.warn("Only a maximum of 4 items are allowed");
+      }
 
-    if (!value) return;
-    if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) return;
-    addExpectedItem(
-      {
-        nft_address: mintAccount,
-        assetType: SwapItemType.CURRENCY,
-        decimal,
-      } as any,
-      AssetTypes.token,
-      props.index,
-      parseFloat(value)
-    );
-    setIsAddSol(false);
-  };
+      if (!amount) return;
+      if (isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) return;
+      addExpectedItem(
+        {
+          ...token,
+          assetType: SwapItemType.CURRENCY,
+          address: token.address,
+        } as any,
+        AssetTypes.token,
+        props?.index,
+        parseFloat(amount)
+      );
+      setIsAddSol(false);
+    },
+    [props]
+  );
 
   /**
    * Handle save cash value into receiveItems array of redux-store
@@ -144,17 +145,17 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                 onClick={() => setIsAddSol(true)}
                 size="small"
               />
-              <AddSolModal
+              <AddTokenModal
                 isModalOpen={isAddSol}
                 handleCancel={() => setIsAddSol(false)}
                 addInOwner={false}
-                handleAddSol={(mintAccount, value, decimal) => {
+                handleAddToken={(token, amount) => {
                   setIsAddSol(false);
-                  handleAddSol(mintAccount, value, decimal);
+                  handleAddToken(token, amount);
                 }}
               />
             </div>
-            <div className="ml-[12px]">
+            {/* <div className="ml-[12px]">
               <Button
                 text="Add in-game item"
                 className="!rounded-[100px] after:!rounded-[100px] !px-4"
@@ -191,7 +192,7 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                 }
                 handleCancel={() => setIsAddCash(false)}
               />
-            </div>
+            </div> */}
           </div>
           <div className="block py-5">
             <Row gutter={[139, 20]}>
@@ -208,13 +209,8 @@ export const ExpectedItem: FC<ExpectedItemProps> = (props) => {
                   </div>
                   <div className="pt-[16px]">
                     <RowEditNftItem
-                      collection={item.nft_symbol}
-                      image={item.nft_image_uri}
-                      name={item.nft_name}
-                      collectionId={item.nft_collection_id}
-                      nftId={item.id}
+                      {...item}
                       assetType={item.assetType}
-                      nftAddress={item?.nft_address}
                       tokenAmount={item?.tokenAmount}
                       onDelete={() => {
                         removeExpectedItem(item.id);

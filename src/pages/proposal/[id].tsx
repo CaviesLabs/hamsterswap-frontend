@@ -1,79 +1,126 @@
-import { FC, useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
+import { Col, Row } from "antd";
+import dynamic from "next/dynamic";
+import moment from "moment";
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+
 import MainLayout from "@/src/layouts/main";
-import { ProposalDetailPageProvider } from "@/src/hooks/pages/proposal-detail";
 import { ProposalItem } from "@/src/components/proposal-item";
 import { StyledProposalDetailPage } from "@/src/styled/proposal-detail-page.style";
 import { LayoutSection } from "@/src/components/layout-section";
 import { GuaranteedCard } from "@/src/components/guaranteed.card";
 import { UserInfoCard } from "@/src/components/user-card";
 import { BreadCrumb } from "@/src/components/bread-crumb";
-import { Col, Row } from "antd";
-import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
 import { getProposal } from "@/src/redux/actions/proposal/proposal.action";
 import {
+  SwapItemType,
   SwapOptionEntity,
-  SwapProposalEntity,
   SwapProposalStatus,
 } from "@/src/entities/proposal.entity";
 import { DATE_TIME_FORMAT, parseProposal } from "@/src/utils";
-import { useWallet } from "@/src/hooks/useWallet";
+import { useAppWallet } from "@/src/hooks/useAppWallet";
+import { useProgram } from "@/src/hooks/useProgram";
 import { useMain } from "@/src/hooks/pages/main";
-import { useConnectedWallet } from "@saberhq/use-solana";
-import moment from "moment";
-import BuyButton from "@/src/components/advertisment/buy-button";
+import { RefreshButton } from "@/src/components/refresh-button";
+import { getProposalService } from "@/src/services/proposal.service";
 
-const Layout: FC = () => {
+const BuyButton = dynamic(import("@/src/components/advertisment/buy-button"), {
+  ssr: false,
+});
+
+const ProposalDetailPage: NextPage = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { programService, solanaWallet } = useWallet();
-  const {
-    platformConfig: { allowCurrencies },
-  } = useMain();
-
-  /**
-   * @dev Declare option which user chose to swap.
-   * @default {0}.
-   */
+  const { swapProposal } = useProgram();
+  const { platformConfig, proposal } = useMain();
+  const { walletAddress } = useAppWallet();
   const [optionSelected, setOptionSelected] = useState(0);
-
-  /**
-   * @dev Decalre state condition whenther the proposal is expired.
-   */
   const [isExpired, setIsExpired] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   /**
-   * @dev Get user wallet
+   * @dev Handle refresh proposals.
+   * @note This is a temporary solution.
    */
-  const wallet = useConnectedWallet();
+  const handleRefreshProposals = useCallback(async () => {
+    setRefreshing(true);
+    await getProposalService().syncProposal(proposal?.id);
+    dispatch(getProposal({ id: proposal?.id }));
+    setRefreshing(false);
+  }, [proposal, setRefreshing]);
 
   /**
-   * @dev Proposal state.
-   */
-  const [proposal, setProposal] = useState<SwapProposalEntity>();
-
-  /**
-   * @dev The function to process swaping when click buy button.
+   * @dev The function handle swap proposal.
+   * @notice If proposal require user deposit native token to swap, then user need to approve first.
+   * @notice If proposal require user recive native token after swap, then user need to approve first.
+   * @returns {Promise<void>}
    */
   const handleSwap = useCallback(async () => {
-    return await programService.swapProposal(
-      solanaWallet,
+    /**
+     * @dev Find if proposal require user deposit native token to swap.
+     * @notice If not, set nativeToken to null.
+     */
+    const nativeToken = proposal?.swapOptions[optionSelected].items
+      .filter((item) => item.type === SwapItemType.CURRENCY)
+      .find((item) =>
+        platformConfig?.allowCurrencies.find(
+          // eslint-disable-next-line prettier/prettier
+          (token) => token.realAddress === item.contractAddress && token.isNativeToken
+        )
+      );
+
+    /**
+     * @dev Find if user recive native token after swap, then unwrap it.
+     * @notice If not, set recipientNativeToken to null.
+     */
+    const recipientNativeToken = proposal?.offerItems
+      .filter((item) => item.type === SwapItemType.CURRENCY)
+      .find((item) =>
+        platformConfig?.allowCurrencies.find(
+          // eslint-disable-next-line prettier/prettier
+          (token) => token.realAddress === item.contractAddress && token.isNativeToken
+        )
+      );
+
+    return await swapProposal(
       proposal.id,
-      proposal.swapOptions[optionSelected].id
+      proposal.swapOptions[optionSelected].id,
+      nativeToken ? BigInt(nativeToken.amount) : null,
+      recipientNativeToken ? BigInt(recipientNativeToken.amount) : null
     );
-  }, [wallet, programService, solanaWallet, proposal, optionSelected]);
+  }, [walletAddress, proposal, optionSelected, platformConfig, swapProposal]);
+
+  const expiredText = useMemo(() => {
+    if (!proposal?.expiredAt) return "";
+    return moment(proposal?.expiredAt).utc().format(DATE_TIME_FORMAT);
+  }, [proposal]);
+
+  const renderProposalStatus = useMemo(() => {
+    switch (proposal?.status) {
+      case SwapProposalStatus.FULFILLED:
+      case SwapProposalStatus.REDEEMED:
+        return (
+          <p className="regular-text text-[14px] text-green mt-10">
+            Swap Success
+          </p>
+        );
+    }
+
+    return (
+      <p className="regular-text text-[14px] text-red300 mt-10">
+        {isExpired ? "Expired" : <>Expiration date: {expiredText}</>}
+      </p>
+    );
+  }, [proposal, isExpired]);
 
   /**
    * @dev Get proposal detail by id.
    */
   useEffect(() => {
     if (!router.query.id) return;
-    dispatch(
-      getProposal({ id: router.query.id as string }, (data) =>
-        setProposal(data)
-      )
-    );
+    dispatch(getProposal({ id: router.query.id as string }));
   }, [router.query.id]);
 
   /**
@@ -107,9 +154,15 @@ const Layout: FC = () => {
           </LayoutSection>
         </div>
         <LayoutSection className="relative">
-          <h3 className="mt-[60px] semi-bold text-2xl font-bold tracking-tight text-gray-900">
-            Active Swaps
-          </h3>
+          <div className="flex items-center mt-[60px] ">
+            <h3 className="semi-bold text-2xl font-bold tracking-tight text-gray-900">
+              Active Swaps
+            </h3>
+            <RefreshButton
+              loading={refreshing}
+              handleClick={handleRefreshProposals}
+            />
+          </div>
           <div className="block mt-[20px]">
             <ProposalItem
               data={proposal}
@@ -118,19 +171,21 @@ const Layout: FC = () => {
               }}
               swapItems={
                 proposal?.offerItems.map((_) =>
-                  parseProposal(_, allowCurrencies)
+                  parseProposal(_, platformConfig?.allowCurrencies)
                 ) ?? []
               }
               receiveItems={
                 proposal?.swapOptions.map((swapOption: SwapOptionEntity) => {
-                  return swapOption.items.map((_) =>
-                    parseProposal(_, allowCurrencies)
-                  );
+                  return {
+                    ...swapOption,
+                    items: swapOption.items.map((_) =>
+                      parseProposal(_, platformConfig?.allowCurrencies)
+                    ),
+                  };
                 }) ?? []
               }
             />
           </div>
-
           <div className="mt-14">
             <Row gutter={20} className="mb-[20px]">
               <Col span={10}>
@@ -141,42 +196,14 @@ const Layout: FC = () => {
                   <p className="regular-text text-[16px] break-all">
                     {proposal?.note}
                   </p>
-                  <p className="regular-text text-[14px] text-red300 mt-10">
-                    {isExpired ? (
-                      "Expired"
-                    ) : (
-                      <>
-                        Expiration date:{" "}
-                        {moment(proposal?.expiredAt)
-                          .utc()
-                          .format(DATE_TIME_FORMAT)}
-                      </>
-                    )}
-                  </p>
+                  {renderProposalStatus}
                 </div>
-              </Col>
-              <Col offset={4} span={10}>
-                <div className="text-2xl semi-bold tracking-tight text-gray-900">
-                  Warranty
-                </div>
-                <p className="mt-2 text-[16px] regular-text flex">
-                  Guarantee deposit amount:
-                  <img
-                    src="/assets/images/solana-icon.svg"
-                    alt="Solana Icon"
-                    className="h-[24px] w-[24px] mx-[12px]"
-                  />
-                  <span className="semi-bold">300.00 SOL</span>
-                </p>
               </Col>
             </Row>
           </div>
-
           <div className="mt-12">
             <Row justify="end">
-              {solanaWallet.publicKey &&
-                solanaWallet.publicKey?.toBase58().toString() !==
-                  proposal?.ownerAddress &&
+              {walletAddress !== proposal?.ownerAddress &&
                 !isExpired &&
                 proposal?.status !== SwapProposalStatus.FULFILLED &&
                 proposal?.status !== SwapProposalStatus.SWAPPED &&
@@ -184,6 +211,7 @@ const Layout: FC = () => {
                   <BuyButton
                     handleSwap={handleSwap}
                     optionIndex={optionSelected}
+                    swapItems={proposal?.swapOptions[optionSelected].items}
                   />
                 )}
             </Row>
@@ -191,14 +219,6 @@ const Layout: FC = () => {
         </LayoutSection>
       </StyledProposalDetailPage>
     </MainLayout>
-  );
-};
-
-const ProposalDetailPage: NextPage = () => {
-  return (
-    <ProposalDetailPageProvider>
-      <Layout />
-    </ProposalDetailPageProvider>
   );
 };
 

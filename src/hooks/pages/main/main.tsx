@@ -1,7 +1,6 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MainContext } from "./types";
-import { NFTDetailsModal } from "@/src/components/modal";
 import { useUI } from "./useUI";
 import { useAuth } from "./useAuth";
 import { useRouter } from "./useRouter";
@@ -46,8 +45,8 @@ export const MainProvider = (props: { children: ReactNode }) => {
    * @returns {void}
    */
   useEffect(() => {
-    dispatch(getPlatformConfig());
-  }, []);
+    dispatch(getPlatformConfig(chainId));
+  }, [chainId]);
 
   /**
    * @dev Call hooks to get chain id when component mounted.
@@ -101,19 +100,7 @@ export const MainProvider = (props: { children: ReactNode }) => {
         ...reduxState,
       }}
     >
-      {/**
-       * @dev Render pages.
-       */}
       {props.children}
-
-      {/**
-       * @dev Place to show nft modal.
-       */}
-      <NFTDetailsModal
-        isModalOpen={nftModal}
-        handleOk={() => setNftModal(true)}
-        handleCancel={() => setNftModal(false)}
-      />
     </MainContext.Provider>
   );
 };

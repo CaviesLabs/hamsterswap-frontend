@@ -1,16 +1,17 @@
 import { hProfileDto } from "@/src/dto/hProfile.dto";
 import { RowNftItemProps } from "../components/nfts";
-import { SwapItemType } from "../entities/proposal.entity";
+import { SwapProposalStatus } from "../entities/proposal.entity";
+// import { SwapItemType } from "../entities/proposal.entity";
 
 /**
  * @dev Define value data to sort NFTs.
  */
 export const sortOptions = [
-  { value: "Active", name: "Active" },
-  { value: "Expired", name: "Expired" },
-  { value: "Completed", name: "Completed" },
-  { value: "Withdrawn", name: "Withdrawn" },
-  { value: "Swapped", name: "Swapped" },
+  { value: SwapProposalStatus.ACTIVE, name: "Active" },
+  { value: SwapProposalStatus.EXPIRED, name: "Expired" },
+  { value: SwapProposalStatus.REDEEMED, name: "Completed" },
+  { value: SwapProposalStatus.WITHDRAWN, name: "Withdrawn" },
+  { value: SwapProposalStatus.SWAPPED, name: "Swapped" },
 ];
 
 /**
@@ -96,44 +97,44 @@ export const DUMMY_PROFILES: hProfileDto[] = [
  * @todo Remove this when API is ready.
  */
 export const DUMMY_NFTS: RowNftItemProps[] = [
-  {
-    image: "https://i.imgflip.com/648kob.jpg",
-    name: "NFT Artwork 1",
-    collection: "Art Collection",
-    collectionId: "collection_123",
-    nftId: "nft_456",
-    assetType: SwapItemType.NFT,
-    nftAddress: "0x123abc",
-    tokenAmount: undefined, // No token amount for NFTs
-  },
-  {
-    image: "https://i.imgflip.com/648kob.jpg",
-    name: "NFT Artwork 2",
-    collection: "Fantasy Collection",
-    collectionId: "collection_789",
-    nftId: "nft_1011",
-    assetType: SwapItemType.NFT,
-    nftAddress: "0xdef456",
-    tokenAmount: undefined, // No token amount for NFTs
-  },
-  {
-    image: "https://i.imgflip.com/648kob.jpg",
-    name: "NFT Artwork 3",
-    collection: "Digital Art Collection",
-    collectionId: "collection_1213",
-    nftId: "nft_1415",
-    assetType: SwapItemType.NFT,
-    nftAddress: "0xghijk",
-    tokenAmount: undefined, // No token amount for NFTs
-  },
-  {
-    image: "https://i.imgflip.com/648kob.jpg",
-    name: "ERC20 Token 1",
-    collection: "Token Collection",
-    collectionId: "collection_1617",
-    nftId: undefined, // Not an NFT, no NFT ID
-    assetType: SwapItemType.NFT,
-    nftAddress: undefined, // Not an NFT, no NFT address
-    tokenAmount: 100, // Display WSOL amount for the ERC20 token
-  },
+  // {
+  //   image: "https://i.imgflip.com/648kob.jpg",
+  //   name: "NFT Artwork 1",
+  //   collectionName: "Art Collection",
+  //   collectionId: "collection_123",
+  //   nftId: "nft_456",
+  //   assetType: SwapItemType.NFT,
+  //   nftAddress: "0x123abc",
+  //   tokenAmount: undefined, // No token amount for NFTs
+  // },
+  // {
+  //   image: "https://i.imgflip.com/648kob.jpg",
+  //   name: "NFT Artwork 2",
+  //   collectionName: "Fantasy Collection",
+  //   collectionId: "collection_789",
+  //   nftId: "nft_1011",
+  //   assetType: SwapItemType.NFT,
+  //   nftAddress: "0xdef456",
+  //   tokenAmount: undefined, // No token amount for NFTs
+  // },
+  // {
+  //   image: "https://i.imgflip.com/648kob.jpg",
+  //   name: "NFT Artwork 3",
+  //   collectionName: "Digital Art Collection",
+  //   collectionId: "collection_1213",
+  //   nftId: "nft_1415",
+  //   assetType: SwapItemType.NFT,
+  //   nftAddress: "0xghijk",
+  //   tokenAmount: undefined, // No token amount for NFTs
+  // },
+  // {
+  //   image: "https://i.imgflip.com/648kob.jpg",
+  //   name: "ERC20 Token 1",
+  //   collectionName: "Token Collection",
+  //   collectionId: "collection_1617",
+  //   id: undefined, // Not an NFT, no NFT ID
+  //   assetType: SwapItemType.NFT,
+  //   address: undefined, // Not an NFT, no NFT address
+  //   tokenAmount: 100, // Display WSOL amount for the ERC20 token
+  // },
 ];

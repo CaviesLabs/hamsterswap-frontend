@@ -1,11 +1,10 @@
 import { FC, useCallback, useState, useMemo } from "react";
-import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { Col, Row } from "antd";
 import { UserAvatarCardItem } from "@/src/components/user-card";
 import { utilsProvider } from "@/src/utils/utils.provider";
 import { StyledProposalItem } from "@/src/components/proposal-item/proposal-item.style";
-import { Button } from "@hamsterbox/ui-kit";
+import { Button, toast } from "@hamsterbox/ui-kit";
 import { CancelProposalModal } from "@/src/components/user/modal/cancel-proposal.modal";
 import { ProposalDetailProps } from "./types";
 import { CanceledProposalModal } from "@/src/components/user/modal/canceled-proposal.modal";
@@ -19,8 +18,10 @@ import { useProfilePage } from "@/src/hooks/pages/profile";
 import { OptimizeTransactionModal } from "@/src/components/create-proposal/modal/optimize-transaction-modal";
 import classnames from "classnames";
 import ProposalItems from "@/src/components/proposal-item/proposal-items";
-import State from "@/src/redux/entities/state";
 import moment from "moment";
+import { useAppWallet } from "@/src/hooks/useAppWallet";
+import { ChainId } from "@/src/entities/chain.entity";
+import { useMain } from "@/src/hooks/pages/main";
 
 type Method = "cancel" | "widthdraw";
 
@@ -28,7 +29,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   /** @todo Get all data from @var {props} */
   const { data, status, isGuaranteedPayment, proposalId } = props;
 
-  const profile = useSelector((state: State) => state.hPublicProfile);
+  const { hPublicProfile: profile, chainId } = useMain();
   const router = useRouter();
 
   /** @todo Declare all states related to modal appearance */
@@ -38,16 +39,16 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   const [isDuringSubmitCancel, setIsDuringSubmitCancel] = useState(false);
 
   /** @todo Get wallet proivder */
-  const { solanaWallet, programService } = useWallet();
+  const { programService } = useWallet();
+  const { walletAddress } = useAppWallet();
 
   /** @todo Condition when proposal is already deposited offered items */
   const isPending = status.valueOf() === SwapProposalStatus.DEPOSITED.valueOf();
 
   /** @todo Condition when proposal belong to signer */
   const isOwner = useMemo(
-    () =>
-      solanaWallet?.publicKey?.toBase58().toString() === props.proposalOwner,
-    [props.proposalOwner, solanaWallet]
+    () => walletAddress === props.proposalOwner,
+    [props.proposalOwner, walletAddress]
   );
 
   /** @todo Condition when proposal is expired but not canceled */
@@ -105,11 +106,32 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
   const handleCancleProposal = useCallback(
     async (method: Method) => {
       setIsDuringSubmitCancel(true);
-      setMethod(method);
-      setOptimizedProposalOpen(true);
-      setCancelModal(false);
+      if (chainId === ChainId.solana) {
+        setMethod(method);
+        setOptimizedProposalOpen(true);
+        setCancelModal(false);
+      } else {
+        try {
+          await cancelProposal(props.proposalId);
+          setCancelModal(false);
+          setCanceledModal(true);
+          handleFilter();
+        } catch (err) {
+          toast.error("Cancel proposal failed, please try again later.");
+          console.log(err);
+        } finally {
+          setIsDuringSubmitCancel(false);
+        }
+      }
     },
-    [props.proposalId, router, isOptimized, solanaWallet, programService]
+    [
+      props.proposalId,
+      router,
+      isOptimized,
+      walletAddress,
+      programService,
+      chainId,
+    ]
   );
 
   /**
@@ -172,8 +194,8 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
               />
             </div>
             <ProposalItems
-              userAssets={data.offerItems}
-              userLookingFor={data.swapOptions}
+              userAssets={props.swapItems}
+              userLookingFor={props.receiveItems}
               fulfilledWithOptionId={data.fulfilledWithOptionId}
             />
             <Row className="mt-4">
@@ -206,22 +228,6 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                       )}
                     </p>
                   )}
-                </div>
-              </Col>
-              <Col offset={4} span={isPending ? 10 : 0}>
-                <div className="md:left">
-                  <p className="semi-bold text-[16px] h-[36px] leading-9">
-                    Warranty
-                  </p>
-                  <p className="mt-[12px] text-[16px] regular-text flex">
-                    Guarantee deposit amount:
-                    <img
-                      src="/assets/images/solana-icon.svg"
-                      alt="Solana Icon"
-                      className="h-[24px] w-[24px] mx-[12px]"
-                    />
-                    <span className="semi-bold">2.0 SOL</span>
-                  </p>
                 </div>
               </Col>
             </Row>
@@ -267,6 +273,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
                         Cancel Proposal
                       </button>
                       <CancelProposalModal
+                        isLoading={isDuringSubmitCancel}
                         isModalOpen={cancelModal}
                         handleCancel={() => setCancelModal(false)}
                         handleOk={() => handleCancleProposal("cancel")}
@@ -301,7 +308,7 @@ export const ProposalDetail: FC<ProposalDetailProps> = (props) => {
         instructionHandler={async () =>
           (await cancelProposal(props.proposalId)) as unknown as {
             proposalId?: string;
-            fns: {
+            fnc: {
               optimize(): Promise<void>;
               confirm(): Promise<void>;
             };

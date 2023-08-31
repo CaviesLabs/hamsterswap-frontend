@@ -28,7 +28,7 @@ const Layout: FC = () => {
             )}
           </div>
         </div>
-        <SubMenu curTab={3} />
+        <SubMenu curTab={2} />
         <div className="mt-10">
           <div className="flex justify-between">
             <h3 className="text-2xl font-bold tracking-tight text-gray-900">
