@@ -25,6 +25,14 @@ export const useAppWallet = () => {
   const { walletAddress: evmAddress } = useEvmWallet();
   const { solanaWallet } = useSolWallet();
 
+  try {
+    (window as any).hashmail.identify(
+      chainId === ChainId.solana
+        ? solanaWallet?.publicKey?.toString()
+        : evmAddress
+    )
+  } catch {}
+
   return useMemo(() => {
     return {
       walletAddress:
@@ -91,6 +99,11 @@ export const useDisconnectWallet = () => {
       } else {
         await disconnectWagmi();
       }
+
+      try {
+        (window as any).hashmail.disconnect()
+      } catch {}
+
     }, [chainId, dispatch]),
   };
 };

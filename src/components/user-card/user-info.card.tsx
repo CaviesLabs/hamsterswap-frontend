@@ -118,7 +118,7 @@ export const UserInfoCard: FC<UserInfoCardProps> = (props) => {
                   </a>
                 )}
                 <span className="text-[16px] regular-text text-purple">
-                  Send Message
+                  N/A
                 </span>
               </div>
             </div>

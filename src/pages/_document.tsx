@@ -24,6 +24,7 @@ export default function Document() {
         <NextScript />
       </body>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/flowbite.min.js"></script>
+      <script src="/assets/js/hashmail.js"></script>
     </Html>
   );
 }
