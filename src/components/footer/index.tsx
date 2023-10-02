@@ -72,7 +72,7 @@ const Footer: FC = () => {
               <div className="top-0 regular-text text-[14px] mr-[5px]">by</div>
               <a href="https://cavies.xyz/" target="_blank">
                 <img
-                  src="https://cavies.xyz/assets/images/logo.png"
+                  src="/assets/images/cavies-logo.png"
                   className="w-[110px] h-auto"
                 />
               </a>
