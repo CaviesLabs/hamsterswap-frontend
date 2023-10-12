@@ -30,7 +30,7 @@ export const useAppWallet = () => {
       chainId === ChainId.solana
         ? solanaWallet?.publicKey?.toString()
         : evmAddress
-    )
+    );
   } catch {}
 
   return useMemo(() => {
@@ -101,9 +101,8 @@ export const useDisconnectWallet = () => {
       }
 
       try {
-        (window as any).hashmail.disconnect()
+        (window as any).hashmail.disconnect();
       } catch {}
-
     }, [chainId, dispatch]),
   };
 };
