@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:16.18.1
 
 ARG NODE_ENV=prod
 ENV NODE_ENV ${NODE_ENV}
