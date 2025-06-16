@@ -28,7 +28,7 @@ const reducer = combineReducers<State>({
  * @dev Declare default state for app.
  */
 export const initState: State = {
-  chainId: ChainId.klaytn,
+  chainId: ChainId.solana,
   user: null,
   userChats: [],
   nft: [],
