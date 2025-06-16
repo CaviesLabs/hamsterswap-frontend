@@ -1,4 +1,4 @@
-FROM node:18-slim
+FROM node:20-slim
 
 ARG NODE_ENV=prod
 ENV NODE_ENV ${NODE_ENV}
