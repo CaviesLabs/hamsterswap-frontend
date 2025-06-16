@@ -1,5 +1,5 @@
 import { FC, useState, useCallback } from "react";
-import { Button, toast } from "@hamsterbox/ui-kit";
+import { Button as _Button, toast } from "@hamsterbox/ui-kit";
 import {
   ConfirmedTransactionModal,
   ConfirmTransactionModal,
@@ -12,6 +12,7 @@ import { ChainId } from "@/src/entities/chain.entity";
 import { useMain } from "@/src/hooks/pages/main";
 import { getProposalService } from "@/src/services/proposal.service";
 
+const Button = _Button as any;
 const BuyButton: FC<{
   handleSwap(): Promise<
     | any
