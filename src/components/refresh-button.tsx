@@ -1,6 +1,7 @@
-import { SyncOutlined } from "@ant-design/icons";
+import { SyncOutlined as _SyncOutlined } from "@ant-design/icons";
 import { Tooltip as AntdTooltip } from "antd";
 
+const SyncOutlined = _SyncOutlined as any;
 type RefreshButtonProps = {
   handleClick: () => void;
   loading: boolean;
