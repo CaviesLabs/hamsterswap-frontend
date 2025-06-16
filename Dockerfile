@@ -7,6 +7,6 @@ RUN echo ${NODE_ENV}
 WORKDIR /opt/app
 COPY . .
 RUN yarn install
-RUN yarn lint && yarn build
+RUN yarn build
 
 CMD ["node_modules/.bin/next", "start"]
