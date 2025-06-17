@@ -13,7 +13,7 @@ export class SolTokenService implements ITokenService {
        */
       const response =
         await networkProvider.request<GetBalanceSplResponseEntity>(
-          "https://boldest-few-field.solana-mainnet.quiknode.pro/0ffa9f9f5e9141aa33a030081b78fdfe40bfbae6/",
+          "https://silent-twilight-wildflower.solana-mainnet.quiknode.pro/82f3034e016e3b800a8e2fc6d00efe9e270c046b/",
           {
             method: "POST",
             data: {

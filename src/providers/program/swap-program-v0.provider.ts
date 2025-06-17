@@ -25,7 +25,7 @@ import { InstructionProviderV0 } from "./instruction-v0.provider";
 
 export const SOLANA_DEVNET_RPC_ENDPOINT = "https://api.devnet.solana.com";
 export const SOLANA_MAINNET_RPC_RPC_ENDPOINT =
-  "https://boldest-few-field.solana-mainnet.quiknode.pro/0ffa9f9f5e9141aa33a030081b78fdfe40bfbae6/";
+  "https://silent-twilight-wildflower.solana-mainnet.quiknode.pro/82f3034e016e3b800a8e2fc6d00efe9e270c046b/";
 
 /**
  * @dev Swap Program Provider acts as an interface to interact with hamsterswap program on solana.
